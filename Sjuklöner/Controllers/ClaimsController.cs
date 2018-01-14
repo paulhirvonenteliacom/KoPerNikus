@@ -1,0 +1,1148 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using Sjuklöner.Models;
+using Sjuklöner.Viewmodels;
+using Microsoft.AspNet.Identity;
+using System.Globalization;
+using System.Threading;
+using System.IO;
+using System.Runtime.Serialization.Json;
+
+namespace Sjuklöner.Controllers
+{
+    [Authorize]
+
+    public class ClaimsController : Controller
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: Claims
+        public ActionResult Index()
+        {
+            if (User.IsInRole("Ombud"))
+            {
+                return RedirectToAction("IndexPageOmbud", "Claims");
+            }
+            else if (User.IsInRole("AdministrativeOfficial"))
+            {
+                return RedirectToAction("IndexPageAdmOff", "Claims");
+            }
+            else
+            {
+                return View(db.Claims.ToList());
+            }
+        }
+
+        // GET: Claims
+        public ActionResult IndexPageOmbud()
+        {
+            IndexPageOmbudVM indexPageOmbudVM = new IndexPageOmbudVM();
+
+            var me = db.Users.Find(User.Identity.GetUserId());
+
+            var claims = db.Claims.Where(c => c.OwnerId == me.Id).ToList();
+            if (claims.Count > 0)
+            {
+                indexPageOmbudVM.RejectedClaims = claims.Where(c => c.StatusId == 1).ToList();
+                indexPageOmbudVM.DraftClaims = claims.Where(c => c.StatusId == 2).ToList();
+                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.StatusId == 3).ToList();
+                indexPageOmbudVM.ApprovedClaims = claims.Where(c => c.StatusId == 4).ToList();
+            }
+
+            return View("IndexPageOmbud", indexPageOmbudVM);
+        }
+
+        // GET: Claims
+        public ActionResult IndexPageAdmOff()
+        {
+            IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
+
+            var me = db.Users.Find(User.Identity.GetUserId());
+
+            var claims = db.Claims.Include(c => c.CareCompany).ToList();
+            if (claims.Count > 0)
+            {
+                indexPageAdmOffVM.RejectedClaims = claims.Where(c => c.StatusId == 1).ToList();
+                //indexPageAdmOffVM.DraftClaims = claims.Where(c => c.StatusId == 2).ToList();
+                indexPageAdmOffVM.UnderReviewClaims = claims.Where(c => c.StatusId == 3).ToList();
+                indexPageAdmOffVM.ApprovedClaims = claims.Where(c => c.StatusId == 4).ToList();
+            }
+
+            return View("IndexPageAdmOff", indexPageAdmOffVM);
+        }
+
+        // GET: Claims/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Claim claim = db.Claims.Find(id);
+            if (claim == null)
+            {
+                return HttpNotFound();
+            }
+            return View(claim);
+        }
+
+        // GET: Claims/Create
+        public ActionResult Create(string refNumber, int? id)
+        {
+
+            if (refNumber != null && id == 2) //True if returning from the view "ClaimAmount" and wanting to see the view "Hours"
+            {
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+                ScheduleVM scheduleVM = new ScheduleVM();
+                List<ScheduleRow> scheduleRowList = new List<ScheduleRow>();
+
+                for (int i = 0; i < claimDays.Count; i++)
+                {
+                    //Instantiate a new scheduleRow in the viewmodel
+                    ScheduleRow scheduleRow = new ScheduleRow();
+
+                    scheduleRow.ScheduleRowDateTest = claimDays[i].DateString;
+
+                    scheduleRow.StartTimeHour = claimDays[i].StartHour;
+                    scheduleRow.StartTimeMinute = claimDays[i].StartMinute;
+                    scheduleRow.StopTimeHour = claimDays[i].StopHour;
+                    scheduleRow.StopTimeMinute = claimDays[i].StopMinute;
+                    scheduleRow.NumberOfHours = claimDays[i].NumberOfHours;
+                    scheduleRow.NumberOfUnsocialHours = claimDays[i].NumberOfUnsocialHours;
+                    scheduleRow.NumberOfUnsocialHoursEvening = claimDays[i].NumberOfUnsocialHoursEvening;
+                    scheduleRow.NumberOfUnsocialHoursNight = claimDays[i].NumberOfUnsocialHoursNight;
+
+                    scheduleRow.StartTimeHourOnCall = claimDays[i].StartHourOnCall;
+                    scheduleRow.StartTimeMinuteOnCall = claimDays[i].StartMinuteOnCall;
+                    scheduleRow.StopTimeHourOnCall = claimDays[i].StartHourOnCall;
+                    scheduleRow.StopTimeMinuteOnCall = claimDays[i].StopMinuteOnCall;
+                    scheduleRow.NumberOfOnCallHours = claimDays[i].NumberOfOnCallHours;
+                    scheduleRow.NumberOfOnCallHoursEvening = claimDays[i].NumberOfOnCallHoursEvening;
+                    scheduleRow.NumberOfOnCallHoursNight = claimDays[i].NumberOfOnCallHoursNight;
+
+                    scheduleRow.StartTimeHourSI = claimDays[i].StartHourSI;
+                    scheduleRow.StartTimeMinuteSI = claimDays[i].StartMinuteSI;
+                    scheduleRow.StopTimeHourSI = claimDays[i].StopHourSI;
+                    scheduleRow.StopTimeMinuteSI = claimDays[i].StopMinuteSI;
+                    scheduleRow.NumberOfHoursSI = claimDays[i].NumberOfHoursSI;
+                    scheduleRow.NumberOfUnsocialHoursSI = claimDays[i].NumberOfUnsocialHoursSI;
+                    scheduleRow.NumberOfUnsocialHoursEveningSI = claimDays[i].NumberOfUnsocialHoursEveningSI;
+                    scheduleRow.NumberOfUnsocialHoursNightSI = claimDays[i].NumberOfUnsocialHoursNightSI;
+
+                    scheduleRow.StartTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
+                    scheduleRow.StartTimeMinuteOnCallSI = claimDays[i].StartMinuteOnCallSI;
+                    scheduleRow.StopTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
+                    scheduleRow.StopTimeMinuteOnCallSI = claimDays[i].StopMinuteOnCallSI;
+                    scheduleRow.NumberOfOnCallHoursSI = claimDays[i].NumberOfOnCallHoursSI;
+                    scheduleRow.NumberOfOnCallHoursEveningSI = claimDays[i].NumberOfOnCallHoursEveningSI;
+                    scheduleRow.NumberOfOnCallHoursNightSI = claimDays[i].NumberOfOnCallHoursNightSI;
+
+                    scheduleRowList.Add(scheduleRow);
+                }
+
+                scheduleVM.ReferenceNumber = refNumber;
+                scheduleVM.ScheduleRowList = scheduleRowList;
+
+                return View("Hours", scheduleVM);
+            }
+            else if (refNumber != null && id == 1)  //True if returning from the view "ClaimAmount" and wanting to see the view "Create"
+            {
+                var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                if (claim != null)
+                {
+                    AssistantClaimVM existingClaim = new AssistantClaimVM();
+                    existingClaim.AssistantSSN = claim.AssistantSSN;
+                    existingClaim.CustomerSSN = claim.CustomerSSN;
+                    existingClaim.FirstDayOfSicknessDate = claim.QualifyingDate;
+                    existingClaim.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+                    existingClaim.OrganisationNumber = claim.OrganisationNumber;
+
+                    //THIS IS A DANGEROUS LINE. IT MAKES THE REFERENCENUMBER NULL!
+                    existingClaim.ClaimReference = refNumber;
+                    return View("Create", existingClaim);
+                }
+            }
+
+            AssistantClaimVM claimVM = new AssistantClaimVM();
+
+            claimVM.AssistantSSN = "19930701-4168";
+            claimVM.CustomerSSN = "19391025-7246";
+            claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
+            claimVM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
+
+            claimVM.Rejected = false;
+
+            return View(claimVM);
+        }
+
+        // POST: Claims/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpGet]
+        //public ActionResult AddHours(AssistantClaimVM claimVM)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //public ActionResult Create(AssistantClaimVM claimVM, string refNumber)
+        public ActionResult Create(AssistantClaimVM claimVM)
+        //public ActionResult Create([Bind(Include = "Id,CustomerSSN,QualifyingDate,LastDayOfSicknessDate")] Claim claim)
+        //public ActionResult Create([Bind(Include = "Id,OwnerId,StatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
+        {
+            string newReferenceNumber = "";
+            string existingReferenceNumber = claimVM.ClaimReference;
+
+            if (ModelState.IsValid)
+            {
+                List<ScheduleRow> rowList = new List<ScheduleRow>();
+                ScheduleVM scheduleVM = new ScheduleVM();
+
+                //Check that the last day of sickness is equal to or greater than the first day of sickness.
+                if (claimVM.LastDayOfSicknessDate >= claimVM.FirstDayOfSicknessDate)
+                {
+                    ////Check if a claim with overlapping dates already has been saved THIS CHECK COMMENTED OUT FOR DEMO 
+                    //string currentUserId = User.Identity.GetUserId();
+                    //if (overlappingClaim(claimVM.LastDayOfSicknessDate, claimVM.FirstDayOfSicknessDate, currentUserId, claimVM.CustomerSSN))
+                    //{
+                    //    claimVM.Rejected = true;
+                    //    claimVM.RejectReason = "Du har redan ansökt om ersättning för minst en av dagarna för samma kund." + "\n" + "Vänligen uppdatera ansökan.";
+                    //    return View(claimVM);
+                    //}
+
+                    //Check that the assistant's profile is complete. If not complete, then display a message to the assistant and request the missing information
+
+                    if (existingReferenceNumber != null)
+                    {
+                        //This is an update of an existing claim record. Find the record and update it.
+                        var existingClaim = db.Claims.Where(c => c.ReferenceNumber == existingReferenceNumber).FirstOrDefault();
+                        if (existingClaim != null)
+                        {
+                            existingClaim.AssistantSSN = claimVM.AssistantSSN;
+                            existingClaim.CustomerSSN = claimVM.CustomerSSN;
+                            existingClaim.QualifyingDate = claimVM.FirstDayOfSicknessDate;
+                            existingClaim.LastDayOfSicknessDate = claimVM.LastDayOfSicknessDate;
+                            existingClaim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
+                            existingClaim.OrganisationNumber = claimVM.OrganisationNumber;
+                            db.Entry(existingClaim).State = EntityState.Modified;
+                            db.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        //New claim
+                        //Save the new claim if the assistant's profile is complete.
+                        Claim claim = new Claim();
+                        claim.OrganisationNumber = claimVM.OrganisationNumber;
+                        //Hardcoded SSNs for demo
+                        claim.CustomerSSN = "930701-4168";
+                        claim.AssistantSSN = "391025-7246";
+                        //claim.CustomerSSN = claimVM.CustomerSSN;
+                        //claim.AssistantSSN = claimVM.AssistantSSN;
+                        //claim.StandInSSN = claimVM.StandInSSN;
+                        claim.QualifyingDate = claimVM.FirstDayOfSicknessDate;
+                        claim.LastDayOfSicknessDate = claimVM.LastDayOfSicknessDate;
+                        claim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
+                        var currentUserId = User.Identity.GetUserId();
+                        claim.OwnerId = currentUserId;
+                        claim.StatusId = 2;  //ClaimStatus.Name = "Utkast"
+                        claim.CareCompanyId = (int)db.Users.Where(u => u.Id == currentUserId).First().CareCompanyId;
+
+                        //Generate a Reference Number for the claim and update the latest Reference Number in the db
+                        //There is always only one row in the ClaimReferenceNo class in the database
+                        var latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
+                        //Check if first claim in a new year. Need to update the LatestYear property and reset the LatestReferenceNumber property.
+                        if (latestReference.LatestYear != DateTime.Now.Year)
+                        {
+                            db.ClaimReferenceNumbers.FirstOrDefault().LatestYear = DateTime.Now.Year;
+                            db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 0;
+                            db.SaveChanges();
+                            latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
+                        }
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
+                        newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber + 1).ToString("D5");
+                        claim.ReferenceNumber = newReferenceNumber;
+                        db.Claims.Add(claim);
+                        db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    claimVM.Rejected = true;
+                    claimVM.RejectReason = "Sista sjukdag kan inte vara före första sjukdag." + "\n" + "Vänligen uppdatera ansökan.";
+                    return View(claimVM);
+                }
+
+                if (existingReferenceNumber != null)
+                {
+                    //This is an existing claim
+                    var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == existingReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+                    for (int i = 0; i < claimDays.Count; i++)
+                    {
+                        //Instantiate a new scheduleRow in the viewmodel
+                        ScheduleRow scheduleRow = new ScheduleRow();
+
+                        scheduleRow.ScheduleRowDateTest = claimDays[i].DateString;
+
+                        scheduleRow.StartTimeHour = claimDays[i].StartHour;
+                        scheduleRow.StartTimeMinute = claimDays[i].StartMinute;
+                        scheduleRow.StopTimeHour = claimDays[i].StopHour;
+                        scheduleRow.StopTimeMinute = claimDays[i].StopMinute;
+                        scheduleRow.NumberOfHours = claimDays[i].NumberOfHours;
+                        scheduleRow.NumberOfUnsocialHours = claimDays[i].NumberOfUnsocialHours;
+                        scheduleRow.NumberOfUnsocialHoursEvening = claimDays[i].NumberOfUnsocialHoursEvening;
+                        scheduleRow.NumberOfUnsocialHoursNight = claimDays[i].NumberOfUnsocialHoursNight;
+
+                        scheduleRow.StartTimeHourOnCall = claimDays[i].StartHourOnCall;
+                        scheduleRow.StartTimeMinuteOnCall = claimDays[i].StartMinuteOnCall;
+                        scheduleRow.StopTimeHourOnCall = claimDays[i].StartHourOnCall;
+                        scheduleRow.StopTimeMinuteOnCall = claimDays[i].StopMinuteOnCall;
+                        scheduleRow.NumberOfOnCallHours = claimDays[i].NumberOfOnCallHours;
+                        scheduleRow.NumberOfOnCallHoursEvening = claimDays[i].NumberOfOnCallHoursEvening;
+                        scheduleRow.NumberOfOnCallHoursNight = claimDays[i].NumberOfOnCallHoursNight;
+
+                        scheduleRow.StartTimeHourSI = claimDays[i].StartHourSI;
+                        scheduleRow.StartTimeMinuteSI = claimDays[i].StartMinuteSI;
+                        scheduleRow.StopTimeHourSI = claimDays[i].StopHourSI;
+                        scheduleRow.StopTimeMinuteSI = claimDays[i].StopMinuteSI;
+                        scheduleRow.NumberOfHoursSI = claimDays[i].NumberOfHoursSI;
+                        scheduleRow.NumberOfUnsocialHoursSI = claimDays[i].NumberOfUnsocialHoursSI;
+                        scheduleRow.NumberOfUnsocialHoursEveningSI = claimDays[i].NumberOfUnsocialHoursEveningSI;
+                        scheduleRow.NumberOfUnsocialHoursNightSI = claimDays[i].NumberOfUnsocialHoursNightSI;
+
+                        scheduleRow.StartTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
+                        scheduleRow.StartTimeMinuteOnCallSI = claimDays[i].StartMinuteOnCallSI;
+                        scheduleRow.StopTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
+                        scheduleRow.StopTimeMinuteOnCallSI = claimDays[i].StopMinuteOnCallSI;
+                        scheduleRow.NumberOfOnCallHoursSI = claimDays[i].NumberOfOnCallHoursSI;
+                        scheduleRow.NumberOfOnCallHoursEveningSI = claimDays[i].NumberOfOnCallHoursEveningSI;
+                        scheduleRow.NumberOfOnCallHoursNightSI = claimDays[i].NumberOfOnCallHoursNightSI;
+                        rowList.Add(scheduleRow);
+                    }
+                    scheduleVM.ReferenceNumber = existingReferenceNumber;
+                }
+                else
+                {
+                    //This is a new claim
+                    //Calculate number of schedule rows based on sickness start date and end date
+                    TimeSpan sicknessSpan;
+                    sicknessSpan = claimVM.LastDayOfSicknessDate - claimVM.FirstDayOfSicknessDate;
+                    int numberOfDays = int.Parse((sicknessSpan.Days + 1).ToString());
+
+                    scheduleVM.ReferenceNumber = newReferenceNumber;
+
+                    //Populate viewmodel properties by iterating over each row in the schedule
+                    for (int i = 0; i < numberOfDays; i++)
+                    {
+                        //Instantiate a new scheduleRow in the viewmodel
+                        ScheduleRow scheduleRow = new ScheduleRow();
+
+                        //Assign values to the ScheduleRowDate and ScheduleRowWeekDay properties in the viewmodel
+                        var dateInSchedule = claimVM.FirstDayOfSicknessDate.AddDays(i);
+
+                        CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
+                        Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SV");
+
+                        //Test
+                        var dateInScheduleTest = claimVM.FirstDayOfSicknessDate.AddDays(i);
+                        var dateInScheduleTest2 = dateInScheduleTest.ToString(format: "ddd d MMM");
+                        //dateInScheduleTest2.ToTitleCase(TitleCase.All);
+                        scheduleRow.ScheduleRowDateTest = dateInScheduleTest2;
+
+                        scheduleRow.ScheduleRowDate = dateInSchedule.ToShortDateString();
+                        scheduleRow.ScheduleRowWeekDay = DateTimeFormatInfo.CurrentInfo.GetDayName(dateInSchedule.DayOfWeek).ToString().Substring(0, 2);
+                        //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
+                        rowList.Add(scheduleRow);
+                    }
+                }
+                scheduleVM.ScheduleRowList = rowList;
+                return View("Hours", scheduleVM);
+            }
+            return View(claimVM);
+        }
+
+        //POST: Claims/Hours
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddHours(ScheduleVM scheduleVM, string claimNumber)
+        {
+            //int numberOfHours = 0;
+            //int numberOfMinutes = 0;
+            //int numberOfMorningHours = 0;
+            //int numberOfMorningMinutes = 0;
+
+            //Calculate number of ordinary working hours for each date
+            for (int i = 0; i < scheduleVM.ScheduleRowList.Count(); i++)
+            {
+                if (scheduleVM.ScheduleRowList[i].StartTimeMinute == null)
+                {
+                    scheduleVM.ScheduleRowList[i].StartTimeMinute = "00";
+                }
+                if (scheduleVM.ScheduleRowList[i].StopTimeMinute == null)
+                {
+                    scheduleVM.ScheduleRowList[i].StopTimeMinute = "00";
+                }
+
+                if (scheduleVM.ScheduleRowList[i].StartTimeMinuteOnCall == null)
+                {
+                    scheduleVM.ScheduleRowList[i].StartTimeMinuteOnCall = "00";
+                }
+                if (scheduleVM.ScheduleRowList[i].StopTimeMinuteOnCall == null)
+                {
+                    scheduleVM.ScheduleRowList[i].StopTimeMinuteOnCall = "00";
+                }
+
+                //Calculate number of working hours for the day
+                scheduleVM.ScheduleRowList[i] = CalculateWorkingHours(scheduleVM.ScheduleRowList[i]);
+
+                //Calculate number of unsocial hours for the day. Distinguish between the total number of unsocial hours, unsocial hours in the morning (00.00 - 07.00) and
+                //unsocial hours in the evening (18.00 - 24.00). 
+                scheduleVM.ScheduleRowList[i] = CalculateUnsocialHours(scheduleVM.ScheduleRowList[i]);
+
+                //Calculate number of oncall hours for the day. Distinguish between the total number of oncall hours, oncall hours in the morning (00.00 - 07.00) and
+                //oncall hours in the evening (18.00 - 24.00). 
+                scheduleVM.ScheduleRowList[i] = CalculateOnCallHours(scheduleVM.ScheduleRowList[i]);
+            }
+
+            //If there are existing ClaimDay records for this claim: remove them. The new records will be added to the db instead.
+            db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == scheduleVM.ReferenceNumber));
+            db.SaveChanges();
+
+            int dayIdx = 1;
+            foreach (var day in scheduleVM.ScheduleRowList)
+            {
+                var claimDay = new ClaimDay
+                {
+                    ReferenceNumber = scheduleVM.ReferenceNumber,
+                    DateString = day.ScheduleRowDateTest,
+                    SickDayNumber = dayIdx,
+
+                    StartHour = day.StartTimeHour,
+                    StartMinute = day.StartTimeMinute,
+                    StopHour = day.StopTimeHour,
+                    StopMinute = day.StopTimeMinute,
+
+                    NumberOfHours = day.NumberOfHours,
+                    NumberOfUnsocialHours = day.NumberOfUnsocialHours,
+                    NumberOfUnsocialHoursEvening = day.NumberOfUnsocialHoursEvening,
+                    NumberOfUnsocialHoursNight = day.NumberOfUnsocialHoursNight,
+
+                    StartHourOnCall = day.StartTimeHourOnCall,
+                    StartMinuteOnCall = day.StartTimeMinuteOnCall,
+                    StopHourOnCall = day.StopTimeHourOnCall,
+                    StopMinuteOnCall = day.StartTimeMinuteOnCall,
+
+                    NumberOfOnCallHours = day.NumberOfOnCallHours,
+                    NumberOfOnCallHoursEvening = day.NumberOfOnCallHoursEvening,
+                    NumberOfOnCallHoursNight = day.NumberOfOnCallHoursNight,
+
+                    StartHourSI = day.StartTimeHourSI,
+                    StartMinuteSI = day.StartTimeMinuteSI,
+                    StopHourSI = day.StopTimeHourSI,
+                    StopMinuteSI = day.StopTimeMinuteSI,
+
+                    NumberOfHoursSI = day.NumberOfHoursSI,
+                    NumberOfUnsocialHoursSI = day.NumberOfUnsocialHoursSI,
+                    NumberOfUnsocialHoursEveningSI = day.NumberOfUnsocialHoursEveningSI,
+                    NumberOfUnsocialHoursNightSI = day.NumberOfUnsocialHoursNightSI,
+
+                    StartHourOnCallSI = day.StartTimeHourOnCall,
+                    StartMinuteOnCallSI = day.StartTimeMinuteOnCall,
+                    StopHourOnCallSI = day.StopTimeHourOnCall,
+                    StopMinuteOnCallSI = day.StartTimeMinuteOnCall,
+
+                    NumberOfOnCallHoursSI = day.NumberOfOnCallHoursSI,
+                    NumberOfOnCallHoursEveningSI = day.NumberOfOnCallHoursEveningSI,
+                    NumberOfOnCallHoursNightSI = day.NumberOfOnCallHoursNightSI
+                };
+                db.ClaimDays.Add(claimDay);
+                dayIdx++;
+            }
+
+            //if (scheduleVM.ScheduleRowList.Count > 0)
+            //{
+            db.SaveChanges();
+            //}
+
+            //TEST FOR INSERTING ANOTHER PAGE FOR ENTERING CLAIM AMOUNT BEFORE THE REVIEW PAGE
+            ClaimAmountVM claimAmountVM = new ClaimAmountVM();
+
+            claimAmountVM.ClaimNumber = scheduleVM.ReferenceNumber;
+
+            return View("ClaimAmount", claimAmountVM);
+
+
+            //REVIEW PAGE THIS CODE IS NOT EXECUTED AS LONG AS THE TEST ABOVE IS DONE
+
+            ClaimFormVM claimFormVM = new ClaimFormVM();
+
+            claimFormVM.Workplace = "Frösunda, Birgittagården";
+            claimFormVM.CollectiveAgreement = "KFO-LO";
+            claimFormVM.Salary = 120.00;  //This property is used either as an hourly salary or as a monthly salary in ClaimFormVM.cs.
+            claimFormVM.HourlySalary = 120.00;    //This property is used as the hourly salary in calculations.
+            claimFormVM.HolidayPayRate = 12.00;
+            claimFormVM.SocialFeeRate = 31.42;
+            claimFormVM.PensionAndInsuranceRate = 6.00;
+            claimFormVM.SickPayRate = 80.00;
+            //claimFormVM.QualifyingDayDate = scheduleVM.ScheduleRowList.First().ScheduleRowDate;
+            claimFormVM.QualifyingDayDate = "2018-01-01";
+
+            //Kommun
+            claimFormVM.Council = "Helsingborgs kommun";
+            claimFormVM.Administration = "Vård- och omsorgsförvaltningen";
+
+            //Assistansberättigad
+            claimFormVM.CustomerName = "Kund Kundsson";
+            claimFormVM.CustomerSSN = "4808025077";
+            claimFormVM.CustomerAddress = "Tolvangatan 12, 123 45 Tolvsta";
+            claimFormVM.CustomerPhoneNumber = "019-124 6578";
+
+            //Ombud/uppgiftslämnare
+            claimFormVM.OmbudName = "Ombud Ombudsson";
+            claimFormVM.OmbudPhoneNumber = "010-986 3124";
+
+            //Assistansanordnare
+            claimFormVM.CompanyName = "Tolvan Omsorg AB";
+            claimFormVM.OrganisationNumber = "";
+            claimFormVM.GiroNumber = "4321-9876";
+            claimFormVM.CompanyAddress = "Omsorgsgatan 117, 987 00 Omsorgköping";
+            claimFormVM.CompanyPhoneNumber = "010-986 0000";
+            claimFormVM.CollectiveAgreement = "Vårdföretagarna-Kommunal, Personlig assistans (Branch G)";
+
+            //Insjuknad ordinarie assistent
+            //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
+            claimFormVM.PerHourUnsocialEvening = 21.08;
+            claimFormVM.PerHourUnsocialNight = 42.54;
+            claimFormVM.PerHourUnsocialWeekend = 52.47;
+            claimFormVM.PerHourUnsocialHoliday = 105.03;
+            claimFormVM.PerHourOnCallWeekday = 28.13;
+            claimFormVM.PerHourOnCallWeekend = 56.32;
+
+            //Calculate salary for qualifying day
+            double salaryQualifyingDay = 0;
+            if (scheduleVM.ScheduleRowList[0].NumberOfHours > 8.00)
+            {
+                //This calculation needs to be enhanced to take unsocial hours and oncall hours into account. For now only ordinary working hours are considered in the calculation.
+                salaryQualifyingDay = claimFormVM.SickPayRate * claimFormVM.HourlySalary * (scheduleVM.ScheduleRowList[0].NumberOfHours - 8) / 100;
+            }
+            claimFormVM.SalaryQualifyingDay = salaryQualifyingDay;
+
+            //Calculate salary for day 2 to day 14
+            double salaryDay2To14 = 0;
+            for (int i = 1; i < scheduleVM.ScheduleRowList.Count(); i++)
+            {
+                salaryDay2To14 = salaryDay2To14 + (claimFormVM.HourlySalary * scheduleVM.ScheduleRowList[i].NumberOfHours);
+            }
+            salaryDay2To14 = claimFormVM.SickPayRate * salaryDay2To14 / 100;
+            claimFormVM.SalaryDay2To14 = salaryDay2To14;
+
+            //The Sickpay property contains the salary for all days during the sickleave period.
+            claimFormVM.Sickpay = salaryQualifyingDay + salaryDay2To14;
+
+            claimFormVM.UnsocialHoursPayQualifyingDay = 0;
+            //It is a question mark whether unsocial hours beyond the first 8 hours of the qualifying day should be paid. If they should be paid then the code below is needed.
+            //Calculate pay for unsocial hours for qualifying day
+            //Calculate the point in time which is 8 hours after the assistant was supposed to start working, i.e. 8 hours after startTimeHour
+            //Then check if there are any unsocial hours after startTimeHour + 8 hours. Those should be payed for.
+            double payUnsocialQualifyingDay = 0;
+            int hoursBeyond18 = 0;
+            int minutesBeyond18 = 0;
+
+            if (scheduleVM.ScheduleRowList[0].NumberOfHours > 8)
+            {
+                if (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 < 24)
+                {
+                    if (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 < 18 || (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 == 18 && Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeMinute) == 0))
+                    {
+                        //In this case startTimeHour + 8 goes maximum up to 18.00
+                        //All unsocial hours in the evening should be payed in this case
+                        if (scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "sön")
+                        {
+                            payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialWeekend * scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening;
+                        }
+                        else
+                        {
+                            payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialEvening * scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening;
+                        }
+                    }
+                    //Calculate how much time of startTimeHour + 8 goes beyond 18.00. This amount of time must be subtracted from the evening unsocial hours. The difference should be payed. 
+                    else if (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 > 18)
+                    {
+                        hoursBeyond18 = Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 - 18;
+                        minutesBeyond18 = Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeMinute);
+                        payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialEvening * (scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening - (((float)hoursBeyond18 * 60) + minutesBeyond18) / 60);
+                    }
+                    else if (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 == 18)
+                    {
+                        minutesBeyond18 = Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeMinute);
+                        payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialEvening * (scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening - (((float)hoursBeyond18 * 60) + minutesBeyond18) / 60);
+                    }
+                }
+            }
+            claimFormVM.UnsocialHoursPayQualifyingDay = claimFormVM.SickPayRate * payUnsocialQualifyingDay / 100;
+
+            //Calculate pay for unsocial hours for day 2 to day 14
+            double payUnsocialHoursDay2To14 = 0;
+            for (int i = 1; i < scheduleVM.ScheduleRowList.Count(); i++)
+            {
+                if (scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "lör")
+                {
+                    payUnsocialHoursDay2To14 = payUnsocialHoursDay2To14 + (claimFormVM.PerHourUnsocialNight * scheduleVM.ScheduleRowList[i].NumberOfUnsocialHoursNight) +
+                        (claimFormVM.PerHourUnsocialWeekend * (scheduleVM.ScheduleRowList[i].NumberOfUnsocialHours - scheduleVM.ScheduleRowList[i].NumberOfUnsocialHoursNight));
+                }
+                else if (scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "sön")
+                {
+                    payUnsocialHoursDay2To14 = payUnsocialHoursDay2To14 + (claimFormVM.PerHourUnsocialWeekend * scheduleVM.ScheduleRowList[i].NumberOfUnsocialHours);
+                }
+                else
+                {
+                    payUnsocialHoursDay2To14 = payUnsocialHoursDay2To14 + (claimFormVM.PerHourUnsocialNight * scheduleVM.ScheduleRowList[i].NumberOfUnsocialHoursNight) +
+                        (claimFormVM.PerHourUnsocialEvening * scheduleVM.ScheduleRowList[i].NumberOfUnsocialHoursEvening);
+                }
+            }
+
+            claimFormVM.UnsocialHoursPayDay2To14 = claimFormVM.SickPayRate * payUnsocialHoursDay2To14 / 100;
+            claimFormVM.UnsocialHoursPay = claimFormVM.UnsocialHoursPayQualifyingDay + claimFormVM.UnsocialHoursPayDay2To14;
+
+            //Calculate pay for oncall hours
+            //Calculate pay for oncall hours for qualifying day.
+            //Enligt KFO görs avdrag med max 8 timmar för karensdag.
+            double payOnCallHoursQualifyingDay = 0;
+            int gapHours = 0;
+            int gapMinutes = 0;
+            float gapHoursOnCall = 0;
+
+            if (scheduleVM.ScheduleRowList[0].NumberOfHours + scheduleVM.ScheduleRowList[0].NumberOfOnCallHours > 8)
+            {
+                //If on call hours come before ordinary working hours
+                if (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHourOnCall) < Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour))
+                {
+                    //Calculate the gap between on call hours and ordinary working hours
+                    gapHours = Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) - Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHourOnCall);
+                    gapMinutes = 60 - Int32.Parse(scheduleVM.ScheduleRowList[0].StopTimeMinuteOnCall) + Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeMinute);
+                    gapHoursOnCall = (((float)gapHours * 60) + gapMinutes) / 60;
+                }
+                else
+                {
+                    //On call hours come after ordinary working hours. Calculate the gap between ordinary working hours and on call hours.
+
+                }
+            }
+
+            //if (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 < 18 || (Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeHour) + 8 == 18 && Int32.Parse(scheduleVM.ScheduleRowList[0].StartTimeMinute) == 0))
+            //{
+            //    //In this case startTimeHour + 8 goes maximum up to 18.00
+            //    //All unsocial hours in the evening should be payed in this case
+            //    if (scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "sön")
+            //    {
+            //        payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialWeekend * scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening;
+            //    }
+            //    else
+            //    {
+            //        payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialEvening * scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening;
+            //    }
+            //}
+
+            //Calculate pay for oncall hours for day 2 to day 14
+            double payOnCallHoursDay2To14 = 0;
+            for (int i = 1; i < scheduleVM.ScheduleRowList.Count(); i++)
+            {
+                if (scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "sön")
+                {
+                    payOnCallHoursDay2To14 = payOnCallHoursDay2To14 + (claimFormVM.PerHourOnCallWeekend * scheduleVM.ScheduleRowList[i].NumberOfOnCallHours);
+                }
+                else
+                {
+                    payOnCallHoursDay2To14 = payOnCallHoursDay2To14 + (claimFormVM.PerHourOnCallWeekend * scheduleVM.ScheduleRowList[i].NumberOfOnCallHoursNight) +
+                        (claimFormVM.PerHourOnCallWeekday * (scheduleVM.ScheduleRowList[i].NumberOfOnCallHours - scheduleVM.ScheduleRowList[i].NumberOfOnCallHoursNight));
+                }
+            }
+
+            claimFormVM.OnCallHoursPayDay2To14 = claimFormVM.SickPayRate * payUnsocialHoursDay2To14 / 100;
+            claimFormVM.OnCallHoursPay = claimFormVM.OnCallHoursPayQualifyingDay + claimFormVM.OnCallHoursPayDay2To14;
+
+            //Calculate holiday pay
+
+
+            //This sum needs to be enhanced with unsocial and oncall hours, holiday pay, social fees, pensions
+            claimFormVM.ClaimSum = claimFormVM.SalaryQualifyingDay + claimFormVM.SalaryDay2To14;
+
+            return View("ClaimForm", claimFormVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //public ActionResult SaveAmounts(double sickPay, double parHolidayPay, double parSocialFees, double parPensionAndInsurance, double parClaimSum, string parClaimReference)
+        public ActionResult SaveAmounts(ClaimAmountVM claimAmountVM)
+        {
+            //double sickPay = Convert.ToDouble(parSickPay);
+            //double holidayPay = System.Web.Helpers.Json.Decode<double>(parholidayPay);
+            //double socialFees = System.Web.Helpers.Json.Decode<double>(parsocialFees);
+            //double pensionAndInsurance = System.Web.Helpers.Json.Decode<double>(parpensionAndInsurance);
+            //double claimSum = System.Web.Helpers.Json.Decode<double>(parclaimSum);
+
+            var existingClaim = db.Claims.Where(c => c.ReferenceNumber == claimAmountVM.ClaimNumber).FirstOrDefault();
+            if (existingClaim != null)
+            {
+                existingClaim.SickPay = claimAmountVM.SickPay;
+                existingClaim.HolidayPay = claimAmountVM.HolidayPay;
+                existingClaim.SocialFees = claimAmountVM.SocialFees;
+                existingClaim.PensionAndInsurance = claimAmountVM.PensionAndInsurance;
+                existingClaim.ClaimSum = claimAmountVM.SickPay + claimAmountVM.HolidayPay + claimAmountVM.SocialFees + claimAmountVM.PensionAndInsurance;
+                claimAmountVM.ClaimSum = existingClaim.ClaimSum;
+
+                //Calculate the model sum
+                //Find ClaimDay records for the claim
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claimAmountVM.ClaimNumber).OrderBy(c => c.ReferenceNumber).ToList();
+
+                //ADD CALCULATIONS FOR QUALIFYING DAY LATER, FOR NOW ONLY DAY 2 TO DAY 14 ARE TAKEN INTO ACCOUNT
+
+                //Calculate lost pay for unsocial hours for day 2 to 14, for now with hardcoded amounts according to Vårdföretagarna, for now excluding "storhelger"
+                existingClaim.UnsocialHoursPayDay2To14 = CalculateUnsocialHoursPayDay2To14(existingClaim, claimDays);
+
+                //Calculate lost pay for oncall hours for day 2 to 14
+                existingClaim.OnCallHoursPayDay2To14 = CalculateOnCallHoursPayDay2To14(existingClaim, claimDays);
+
+                //Calculate 80% of lost salary, including lost pay for unsocial hours and on call hours, for day 2 to day 14 and
+                existingClaim.SickPayDay2To14 = 80 * (CalculateSalaryDay2To14(existingClaim, claimDays) + existingClaim.UnsocialHoursPayDay2To14 + existingClaim.OnCallHoursPayDay2To14) / 100;
+
+                //Calculate holiday pay for day 2 to day 14
+                existingClaim.HolidayPayDay2To14 = CalculateHolidayPayDay2To14(existingClaim, claimDays);
+
+                //Calculate social fees for day 2 to day 14, hardcoded to 31.42% for now
+                existingClaim.PayrollTaxDay2To14 = 31.42 * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
+
+                //Calculate pensions and insurances for day 2 to day 14, hardcoded to 6.00% for now
+                existingClaim.PensionAndInsurance = 6.00 * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
+
+                //SO FAR ONLY DAY 2 TO 14 HAVE BEEN TAKEN INTO ACCOUNT. THE QUALYFYING WILL NEED TO BE ADDED.
+                existingClaim.ModelSum = existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14 + existingClaim.PayrollTaxDay2To14 + existingClaim.PensionAndInsurance;
+
+                existingClaim.StatusId = 3;
+                existingClaim.StatusDate = DateTime.Now;
+                db.Entry(existingClaim).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("ShowReceipt", claimAmountVM);
+        }
+
+        
+
+        public ActionResult ShowReceipt(ClaimAmountVM claimAmountVM)
+        {
+            return View("Receipt", claimAmountVM);
+        }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult AddHours(ScheduleVM scheduleVM, int stage)
+        //{
+        //    return View();
+        //}
+
+        // GET: Claims/Decide/5
+        public ActionResult DecisionBoard(int? id)
+        {
+            DecisionVM decisionVM = new DecisionVM();
+            var claim = db.Claims.Where(c => c.Id == id).FirstOrDefault();
+            if (claim != null)
+            {
+                //Find ClaimDay records for the claim
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.ReferenceNumber).ToList();
+
+                decisionVM.ModelSum = claim.ModelSum;
+                decisionVM.ClaimSum = claim.ClaimSum;
+
+                return View("Decision", decisionVM);
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        // POST: Claims/Decide/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Decide(DecisionVM decisionVM)
+        {
+            if (ModelState.IsValid)
+            {
+                //db.Entry(claim).State = EntityState.Modified;
+                //db.SaveChanges();
+                //return RedirectToAction("Index");
+            }
+            return View(decisionVM);
+        }
+
+        // GET: Claims/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Claim claim = db.Claims.Find(id);
+            if (claim == null)
+            {
+                return HttpNotFound();
+            }
+            return View(claim);
+        }
+
+        // POST: Claims/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,OwnerId,StatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(claim);
+        }
+
+        // GET: Claims/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Claim claim = db.Claims.Find(id);
+            if (claim == null)
+            {
+                return HttpNotFound();
+            }
+            return View(claim);
+        }
+
+        // POST: Claims/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Claim claim = db.Claims.Find(id);
+            db.Claims.Remove(claim);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        private bool overlappingClaim(DateTime? lastDayOfSicknessDate, DateTime? firstDayOfSicknessDate, string userId, string SSN)
+        {
+            //Check if a claim for overlapping dates already exists.
+            var claims = db.Claims.Where(c => c.OwnerId == userId).Where(c => c.CustomerSSN == SSN).ToList();
+            if (claims != null)
+            {
+                foreach (var claim in claims)
+                {
+                    if (firstDayOfSicknessDate <= claim.LastDayOfSicknessDate && firstDayOfSicknessDate >= claim.QualifyingDate)
+                    {
+                        return true;
+                    }
+                    if (lastDayOfSicknessDate <= claim.LastDayOfSicknessDate && lastDayOfSicknessDate >= claim.QualifyingDate)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
+
+        //CalculateWorkingHours calculates the number of working hours for one day. Unsocial and oncall hours are not included.
+        //The method returns the input row with the calculated number of working hours added to it.
+        private ScheduleRow CalculateWorkingHours(ScheduleRow scheduleRow)
+        {
+            int numberOfHours = 0;
+            int numberOfMinutes = 0;
+
+            if (scheduleRow.StartTimeHour != null && scheduleRow.StopTimeHour != null && (Int32.Parse(scheduleRow.StopTimeHour) >= Int32.Parse(scheduleRow.StartTimeHour)))
+            {
+                numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinute) - Int32.Parse(scheduleRow.StartTimeMinute);
+                if (numberOfMinutes >= 0)
+                {
+                    numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - Int32.Parse(scheduleRow.StartTimeHour);
+                }
+                else
+                {
+                    numberOfMinutes = numberOfMinutes + 60;
+                    numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - Int32.Parse(scheduleRow.StartTimeHour) - 1;
+                }
+                scheduleRow.NumberOfHours = (((float)numberOfHours * 60) + numberOfMinutes) / 60;
+            }
+            return scheduleRow;
+        }
+
+        //CalculateUnsocialHours calculates the number of unsocial hours for the day. The method distinguishes between the total number of unsocial hours, unsocial hours in the morning (00.00 - 07.00) and
+        //unsocial hours in the evening (18.00 - 24.00).
+        //The method returns the input row with the calculated number of unsocial hours added to it.
+        private ScheduleRow CalculateUnsocialHours(ScheduleRow scheduleRow)
+        {
+            int numberOfHours = 0;
+            int numberOfMinutes = 0;
+            int numberOfMorningHours = 0;
+            int numberOfMorningMinutes = 0;
+
+            //Check if there is working time before 07:00
+            if (scheduleRow.StartTimeHour != null && scheduleRow.StopTimeHour != null && Int32.Parse(scheduleRow.StartTimeHour) < 7)
+            {
+                //Calculate number of unsocial hours in the morning
+                if (Int32.Parse(scheduleRow.StopTimeHour) < 7 || (Int32.Parse(scheduleRow.StopTimeHour) == 7 && Int32.Parse(scheduleRow.StopTimeMinute) == 0))
+                {
+                    numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinute) - Int32.Parse(scheduleRow.StartTimeMinute);
+                    if (numberOfMinutes >= 0)
+                    {
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - Int32.Parse(scheduleRow.StartTimeHour);
+                    }
+                    else
+                    {
+                        numberOfMinutes = numberOfMinutes + 60;
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - Int32.Parse(scheduleRow.StartTimeHour) - 1;
+                    }
+                    scheduleRow.NumberOfUnsocialHoursNight = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                else
+                {
+                    numberOfMinutes = 60 - Int32.Parse(scheduleRow.StartTimeMinute);
+                    numberOfHours = 7 - Int32.Parse(scheduleRow.StartTimeHour) - 1;
+                    scheduleRow.NumberOfUnsocialHoursNight = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                numberOfMorningHours = numberOfHours;
+                numberOfMorningMinutes = numberOfMinutes;
+            }
+
+            //Check if there is working time after 18:00
+            if (scheduleRow.StartTimeHour != null && scheduleRow.StopTimeHour != null && Int32.Parse(scheduleRow.StopTimeHour) >= 18)
+            {
+                //Calculate number of unsocial hours in the evening
+                if (Int32.Parse(scheduleRow.StartTimeHour) >= 18)
+                {
+                    numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinute) - Int32.Parse(scheduleRow.StartTimeMinute);
+                    if (numberOfMinutes >= 0)
+                    {
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - Int32.Parse(scheduleRow.StartTimeHour);
+                    }
+                    else
+                    {
+                        numberOfMinutes = numberOfMinutes + 60;
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - Int32.Parse(scheduleRow.StartTimeHour) - 1;
+                    }
+                    scheduleRow.NumberOfUnsocialHoursEvening = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                else
+                {
+                    numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinute);
+                    numberOfHours = Int32.Parse(scheduleRow.StopTimeHour) - 18;
+                    scheduleRow.NumberOfUnsocialHoursEvening = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                numberOfMinutes = numberOfMinutes + numberOfMorningMinutes;
+                numberOfHours = numberOfHours + numberOfMorningHours;
+            }
+            //Here the total number of unsocial hours are stored (morning + evening hours), all hours if weekend
+            //Check if weekend
+            if (scheduleRow.ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleRow.ScheduleRowDateTest.Substring(0, 3) == "sön")
+            {
+                scheduleRow.NumberOfUnsocialHours = scheduleRow.NumberOfHours;
+            }
+            else
+            {
+                scheduleRow.NumberOfUnsocialHours = (((float)numberOfHours * 60) + numberOfMinutes) / 60;
+            }
+            return scheduleRow;
+        }
+
+        //CalculateOnCalllHours calculates the number of oncall hours for the day. The method distinguishes between the total number of oncall hours, oncall hours in the morning (00.00 - 07.00) and
+        //oncall hours in the evening (18.00 - 24.00).
+        //The method returns the input row with the calculated number of oncall hours added to it.
+        private ScheduleRow CalculateOnCallHours(ScheduleRow scheduleRow)
+        {
+            int numberOfHours = 0;
+            int numberOfMinutes = 0;
+
+            int numberOfMorningHours = 0;
+            int numberOfMorningMinutes = 0;
+
+            //Check if there is working time before 07:00
+            if (scheduleRow.StartTimeHourOnCall != null && scheduleRow.StopTimeHourOnCall != null && Int32.Parse(scheduleRow.StartTimeHourOnCall) < 7)
+            {
+                //Calculate number of oncall hours in the morning
+                if (Int32.Parse(scheduleRow.StopTimeHourOnCall) < 7 || (Int32.Parse(scheduleRow.StopTimeHourOnCall) == 7 && Int32.Parse(scheduleRow.StopTimeMinuteOnCall) == 0))
+                {
+                    numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinuteOnCall) - Int32.Parse(scheduleRow.StartTimeMinuteOnCall);
+                    if (numberOfMinutes >= 0)
+                    {
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - Int32.Parse(scheduleRow.StartTimeHourOnCall);
+                    }
+                    else
+                    {
+                        numberOfMinutes = numberOfMinutes + 60;
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - Int32.Parse(scheduleRow.StartTimeHourOnCall) - 1;
+                    }
+                    scheduleRow.NumberOfOnCallHoursNight = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                else
+                {
+                    numberOfMinutes = 60 - Int32.Parse(scheduleRow.StartTimeMinuteOnCall);
+                    numberOfHours = 7 - Int32.Parse(scheduleRow.StartTimeHourOnCall) - 1;
+                    scheduleRow.NumberOfOnCallHoursNight = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                numberOfMorningHours = numberOfHours;
+                numberOfMorningMinutes = numberOfMinutes;
+            }
+
+            //Check if there is working time after 18:00
+            if (scheduleRow.StartTimeHourOnCall != null && scheduleRow.StopTimeHourOnCall != null && Int32.Parse(scheduleRow.StopTimeHourOnCall) >= 18)
+            {
+                //Calculate number of oncall hours in the evening
+                if (Int32.Parse(scheduleRow.StartTimeHourOnCall) >= 18)
+                {
+                    numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinuteOnCall) - Int32.Parse(scheduleRow.StartTimeMinuteOnCall);
+                    if (numberOfMinutes >= 0)
+                    {
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - Int32.Parse(scheduleRow.StartTimeHourOnCall);
+                    }
+                    else
+                    {
+                        numberOfMinutes = numberOfMinutes + 60;
+                        numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - Int32.Parse(scheduleRow.StartTimeHourOnCall) - 1;
+                    }
+                    scheduleRow.NumberOfOnCallHoursEvening = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                else
+                {
+                    numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinuteOnCall);
+                    numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - 18;
+                    scheduleRow.NumberOfOnCallHoursEvening = ((((float)numberOfHours * 60) + numberOfMinutes) / 60);
+                }
+                numberOfMinutes = numberOfMinutes + numberOfMorningMinutes;
+                numberOfHours = numberOfHours + numberOfMorningHours;
+            }
+            //Here the total number of oncall hours are stored (morning + evening hours)
+            scheduleRow.NumberOfOnCallHours = (((float)numberOfHours * 60) + numberOfMinutes) / 60;
+
+
+
+            if (scheduleRow.StartTimeHourOnCall != null && scheduleRow.StopTimeHourOnCall != null && (Int32.Parse(scheduleRow.StopTimeHourOnCall) >= Int32.Parse(scheduleRow.StartTimeHourOnCall)))
+            {
+                numberOfMinutes = Int32.Parse(scheduleRow.StopTimeMinuteOnCall) - Int32.Parse(scheduleRow.StartTimeMinuteOnCall);
+                if (numberOfMinutes >= 0)
+                {
+                    numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - Int32.Parse(scheduleRow.StartTimeHourOnCall);
+                }
+                else
+                {
+                    numberOfMinutes = numberOfMinutes + 60;
+                    numberOfHours = Int32.Parse(scheduleRow.StopTimeHourOnCall) - Int32.Parse(scheduleRow.StartTimeHourOnCall) - 1;
+                }
+                scheduleRow.NumberOfOnCallHours = (((float)numberOfHours * 60) + numberOfMinutes) / 60;
+            }
+            return scheduleRow;
+        }
+
+        private double CalculateUnsocialHoursPayDay2To14(Claim existingClaim, List<ClaimDay> claimDayList)
+        {
+            double unsocialHoursPayDay2To14 = 0;
+            
+            //Do not count the qualifying day
+            for (int i = 1; i < claimDayList.Count(); i++)
+            {
+                //Hourly rates hardcoded according to Vårdföretagarna, to be improved later
+                if (claimDayList[i].DateString.Substring(0, 3) == "lör")
+                {
+                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (42.54 * claimDayList[i].NumberOfUnsocialHoursNight) +
+                        (52.47 * (claimDayList[i].NumberOfUnsocialHours - claimDayList[i].NumberOfUnsocialHoursNight));
+                }
+                else if (claimDayList[i].DateString.Substring(0, 3) == "sön")
+                {
+                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (52.47 * claimDayList[i].NumberOfUnsocialHours);
+                }
+                else
+                {
+                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (21.08 * claimDayList[i].NumberOfUnsocialHoursEvening) +
+                    (42.54 * claimDayList[i].NumberOfUnsocialHoursNight);
+                }
+            }
+            return unsocialHoursPayDay2To14;
+        }
+
+        private double CalculateOnCallHoursPayDay2To14(Claim existingClaim, List<ClaimDay> claimDayList)
+        {
+            double onCallHoursPayDay2To14 = 0;
+
+            //Do not count the qualifying day
+            for (int i = 1; i < claimDayList.Count(); i++)
+            {
+                //Hourly rates hardcoded according to Vårdföretagarna, to be improved later
+                if (claimDayList[i].DateString.Substring(0, 3) == "lör" || claimDayList[i].DateString.Substring(0, 3) == "sön")
+                {
+                    onCallHoursPayDay2To14 = onCallHoursPayDay2To14 + (56.32 * claimDayList[i].NumberOfOnCallHours);
+                }
+                else
+                {
+                    onCallHoursPayDay2To14 = onCallHoursPayDay2To14 + (56.32 * claimDayList[i].NumberOfOnCallHoursNight) +
+                        (28.13 * (claimDayList[i].NumberOfOnCallHours - claimDayList[i].NumberOfOnCallHoursNight));
+                }
+            }
+            return onCallHoursPayDay2To14;
+        }
+
+        private double CalculateSalaryDay2To14(Claim claim, List<ClaimDay> claimDayList)
+        {
+            double salaryDay2To14 = 0;
+
+            //Do not count the qualifying day
+            for (int i = 1; i < claimDayList.Count(); i++)
+            {
+                //salaryDay2To14 = salaryDay2To14 + (claimFormVM.HourlySalary * scheduleVM.ScheduleRowList[i].NumberOfHours);
+                salaryDay2To14 = salaryDay2To14 + (120 * claimDayList[i].NumberOfHours); //Hourly salary hardcoded to 120,00 kr/hour
+            }
+
+            return salaryDay2To14;
+        }
+
+        private double CalculateHolidayPayDay2To14(Claim claim, List<ClaimDay> claimDayList)
+        {
+            double holidayPayDay2To14 = 0;
+            float numberOfHours = 0;
+
+            //Do not count the qualifying day
+            for (int i = 1; i < claimDayList.Count(); i++)
+            {
+                numberOfHours = numberOfHours + claimDayList[i].NumberOfHours;
+            }
+            holidayPayDay2To14 = 12 * numberOfHours / 100;
+
+            return holidayPayDay2To14;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

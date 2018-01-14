@@ -1,0 +1,39 @@
+﻿@*@model Sjuklöner.Viewmodels.AssistantClaimVM*@
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <body class="assistant-claim">
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="page-header col col-md-10">Administration av e-tjänsten för sjuklöner</p>
+        </div>
+
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col col-md-10">@Html.ActionLink("Administrera handläggare", "Index", "Home")</p>
+        </div>
+
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col col-md-10">@Html.ActionLink("Administrera assistanspersonal", "Index", "Home")</p>
+        </div>
+
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col col-md-10">@Html.ActionLink("Administrera ombud", "Index", "Home")</p>
+        </div>
+
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col col-md-10">@Html.ActionLink("Konfigurera e-tjänsten", "Index", "Home")</p>
+        </div>
+    </body>
+}
+

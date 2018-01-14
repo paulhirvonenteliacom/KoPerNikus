@@ -1,0 +1,47 @@
+﻿@model Sjuklöner.Viewmodels.AssistantClaimVM
+
+@{
+    ViewBag.Title = "Submitted";
+}
+
+<body class="assistant-claim">
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="page-header col col-md-10">Tack för din ansökan!</p>
+    </div>
+
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10">Referensnummer: @Model.ReferenceNumber</p>
+        @*<p class="col col-md-10 bold-14">Referensnummer: </p><div class="same-line">@Model.ReferenceNumber</div>*@
+    </div>
+
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10">Kundens personnummer: @Model.CustomerSSN</p>
+        @*<p class="col col-md-10 bold-14">Kundens personnummer: </p><div class="same-line">@Model.CustomerSSN</div>*@
+    </div>
+
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10">Första sjukdag: @Model.FirstDayOfSicknessDate</p>
+        @*<p class="col col-md-10 bold-14">Första sjukdag: </p><div class="same-line">@Model.FirstDayOfSicknessDate</div>*@
+    </div>
+
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10">Sista sjukdag: @Model.LastDayOfSicknessDate</p>
+        @*<p class="col col-md-10 bold-14">Sista sjukdag: </p><div class="same-line">@Model.LastDayOfSicknessDate</div>*@
+    </div>
+
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10">@Html.ActionLink("Mina ansökningar", "Index", "Claims")</p>
+    </div>
+
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10">@Html.ActionLink("Min profil", "Edit", "Profiles")</p>
+    </div>
+
+</body>

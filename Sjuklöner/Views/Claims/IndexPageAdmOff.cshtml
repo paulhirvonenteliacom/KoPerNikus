@@ -1,0 +1,329 @@
+﻿@model Sjuklöner.Viewmodels.IndexPageAdmOffVM
+
+@{
+    ViewBag.Title = "Index";
+}
+<body>
+    <div class="row index-page-margin">
+        <p class="col col-md-2"></p>
+        <p class="page-header col col-md-10">Ansökningar</p>
+        <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
+    </div>
+
+    <br />
+    <br />
+    @*<div class="row">
+        <div class="col col-md-offset-2">
+            @Html.ActionLink("Skapa ny ansökan", "Create")
+        </div>
+    </div>*@
+    <div class="row">
+        <div class="col col-md-offset-2">
+            <div class="second-page-header">
+                Avslagna
+            </div>
+            @if (Model.RejectedClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col">
+                            Referensnummer
+                        </th>
+                        <th class="small-col">
+                            Senaste statusändring
+                        </th>
+                        <th class="small-col">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col">
+                            Sista sjukdag
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.RejectedClaims)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StatusDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="padding-left-no-claim">
+                    Det finns inga avslagna ansökningar.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <hr class="claim-divider col-md-offset-2" />
+
+    @*<div class="row">
+        <div class="col col-md-offset-2">
+            <div class="second-page-header">
+                Utkast
+            </div>
+            @if (Model.DraftClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col">
+                            Referensnummer
+                        </th>
+                        <th class="small-col">
+                            Senaste statusändring
+                        </th>
+                        <th class="small-col">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col">
+                            Sista sjukdag
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.DraftClaims)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StatusDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="padding-left-no-claim">
+                    Du har inga utkast.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <hr class="claim-divider col-md-offset-2" />*@
+
+    <div class="row">
+        <div class="col col-md-offset-2">
+            <div class="second-page-header">
+                Under handläggning
+            </div>
+            @if (Model.UnderReviewClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col">
+                            Referensnummer
+                        </th>
+                        <th class="small-col">
+                            Inkommen
+                        </th>
+                        <th class="small-col">
+                            Assistansbolag
+                        </th>
+                        <th class="small-col">
+                            Assistentens personnummer
+                        </th>
+                        <th class="small-col">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col">
+                            Sista sjukdag
+                        </th>
+                        <th class="small-col">
+                            Antal sjukdagar
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.UnderReviewClaims)
+                    {
+                        <tr>
+                            <td>
+                                <a target="_blank" href="@Url.Action("DecisionBoard", "Claims", new { id = item.Id })">
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                </a>
+                                @*@Html.ActionLink(@Html.DisplayFor(modelItem => item.ReferenceNumber), "DecisionBoard", "Claims", new { id = item.Id })*@
+                                @*@Html.DisplayFor(modelItem => item.ReferenceNumber)*@
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StatusDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CareCompany.CompanyName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AssistantSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                            </td>
+                            <td>
+                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |*@
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                                @*@Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="padding-left-no-claim">
+                    Det finns inga ansökningar som är under handläggning.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <hr class="claim-divider col-md-offset-2"/>
+
+    <div class="row">
+        <div class="col col-md-offset-2">
+            <div class="second-page-header">
+                Godkända
+            </div>
+            @if (Model.ApprovedClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col">
+                            Referensnummer
+                        </th>
+                        <th class="small-col">
+                            Senaste statusändring
+                        </th>
+                        <th class="small-col">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col">
+                            Sista sjukdag
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.ApprovedClaims)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StatusDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="padding-left-no-claim">
+                    Det finns inga godkända ansökningar.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+
+</body>

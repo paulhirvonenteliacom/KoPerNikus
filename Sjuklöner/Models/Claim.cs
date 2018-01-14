@@ -1,0 +1,164 @@
+﻿using Sjuklöner.Viewmodels;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace Sjuklöner.Models
+{
+    public class Claim
+    {
+        public int Id { get; set; }
+
+        public string OwnerId { get; set; }
+
+        public int StatusId { get; set; }
+
+        public int CareCompanyId { get; set; }
+
+        [Display(Name = "Referensnummer")]
+        public string ReferenceNumber { get; set; }
+
+        [Display(Name = "Senaste statusändring")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? StatusDate { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0: yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeadlineDate { get; set; }
+
+        [Display(Name = "Kundens förnamn")]
+        public string CustomerFirstName { get; set; }
+
+        [Display(Name = "Kundens efternamn")]
+        public string CustomerLastName { get; set; }
+
+        //[Required]
+        [Display(Name = "Organiationsnummer")]
+        public string OrganisationNumber { get; set; }
+
+        [Required]
+        [Display(Name = "Kundens personnummer")]
+        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
+        public string CustomerSSN { get; set; }
+
+        [Required]
+        [Display(Name = "Ordinarie assistents personnummer")]
+        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
+        public string AssistantSSN { get; set; }
+
+        //[Required]
+        //[Display(Name = "Vikarierande assistents personnummer")]
+        //[RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
+        //public string StandInSSN { get; set; }
+
+        [Display(Name = "Första sjukdag")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]        
+        public DateTime QualifyingDate { get; set; }
+
+        [Display(Name = "Sista sjukdag")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime LastDayOfSicknessDate { get; set; }
+
+        [Display(Name = "Antal sjukdagar")]
+        public int NumberOfSickDays { get; set; }
+
+        [Display(Name = "Sjuklön (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public double SickPay { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public double HolidayPay { get; set; }
+
+        [Display(Name = "Sociala avgifter (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public double SocialFees { get; set; }
+
+        [Display(Name = "Övriga avtalsbundna kostnader (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public double PensionAndInsurance { get; set; }
+
+        [Display(Name = "Yrkat belopp (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public double ClaimSum { get; set; }
+
+        [Display(Name = "Modellbelopp (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public double ModelSum { get; set; }
+
+        [Display(Name = "Antal timmar som skulle arbetats karensdagen")]
+        public double HoursQualifyingDay { get; set; }
+
+        [Display(Name = "Semesterersättning för karensdag")]
+        public double HolidayPayQualDay { get; set; }
+
+        [Display(Name = "Arbetsgivaravgift för karensdag")]
+        public double PayrollTaxQualDay { get; set; }
+
+        [Display(Name = "Avtalsförsäkring för karensdag")]
+        public double InsuranceQualDay { get; set; }
+
+        [Display(Name = "Kollektivavtalad pension för karensdag")]
+        public double PensionQualDay { get; set; }
+
+        [Display(Name = "Ersättningsanspråk för karensdag")]
+        public double ClaimQualDay { get; set; }
+
+        [Display(Name = "Antal timmar dag 2 - dag 14, inkl. jour/beredskap")]
+        public double HoursDay2To14 { get; set; }
+
+        [Display(Name = "Sjuklön per timme (80% av ordinarie timlön)")]
+        public double HourlySickPay { get; set; }
+
+        [Display(Name = "Sjuklön dag 2 - dag 14")]
+        public double SickPayDay2To14 { get; set; }
+
+        [Display(Name = "Semesterersättning dag 2 - dag 14")]
+        public double HolidayPayDay2To14 { get; set; }
+
+        [Display(Name = "OB-ersättning dag 2 - dag 14")]
+        public double UnsocialHoursPayDay2To14 { get; set; }
+
+        [Display(Name = "Jour/beredskap dag 2 - dag 14")]
+        public double OnCallHoursPayDay2To14 { get; set; }
+
+        [Display(Name = "Arbetsgivaravgift dag 2 - dag 14")]
+        public double PayrollTaxDay2To14 { get; set; }
+
+        [Display(Name = "Avtalsförsäkring dag 2 - dag 14")]
+        public double InsuranceDay2To14 { get; set; }
+
+        [Display(Name = "Kollektivavtalad pension dag 2 - dag 14")]
+        public double PensionDay2To14 { get; set; }
+
+        [Display(Name = "Ersättningsanspråk dag 2 - dag 14")]
+        public double ClaimDay2To14 { get; set; }
+
+        //[Display(Name = "Yrkat belopp")]
+        //public decimal ClaimSum { get; set; }
+
+        //public List<string> StartHour { get; set; }
+        //public List<string> StartMinute { get; set; }
+        //public List<string> StopHour { get; set; }
+        //public List<string> StopMinute { get; set; }
+        //public List<string> CalculatedHours { get; set; }
+        //public List<string> CalculatedUnsocialHours { get; set; }
+
+        //public List<string> StartHourOnCall { get; set; }
+        //public List<string> StartMinuteOnCall { get; set; }
+        //public List<string> StopHourOnCall { get; set; }
+        //public List<string> StopMinuteOnCall { get; set; }
+        //public List<string> CalculatedHoursOnCall { get; set; }
+
+        public virtual CareCompany CareCompany { get; set; }
+
+        public virtual List<Document> Documents { get; set; }
+
+        public virtual List<Message> Messages { get; set; }
+    }
+}

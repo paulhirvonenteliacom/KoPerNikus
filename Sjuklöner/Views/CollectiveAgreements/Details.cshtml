@@ -1,0 +1,106 @@
+﻿@model Sjuklöner.Models.CollectiveAgreement
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CollectiveAgreement</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialEvening)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourUnsocialEvening)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialNight)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourUnsocialNight)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialWeekend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourUnsocialWeekend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialHoliday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourUnsocialHoliday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourOnCallWeekday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourOnCallWeekday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourOnCallWeekend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourOnCallWeekend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourPreparedWeekday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourPreparedWeekday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PerHourPreparedWeekend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PerHourPreparedWeekend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OvertimeFactor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OvertimeFactor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExtraHOurFactor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExtraHOurFactor)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

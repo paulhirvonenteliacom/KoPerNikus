@@ -1,0 +1,1503 @@
+﻿@model Sjuklöner.Viewmodels.ScheduleVM
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "Hours";
+}
+
+<div class="row margin-breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item breadcrumb-font"><a class="breadcrumb-padding" href="../Account/Login">Hem</a></li>
+            <li class="breadcrumb-item breadcrumb-font"><a class="breadcrumb-padding" href="./Create">Organisationsnummer</a></li>
+            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Arbetstid</li>
+        </ol>
+    </nav>
+</div>
+@*@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post, new { claimNumber = Model.ReferenceNumber }))*@
+@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+    {
+        Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDateTest);
+        Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDate);
+    }
+    @Html.HiddenFor(m => m.ReferenceNumber)
+
+    <body>
+        <div class="row">
+
+            <p class="col col-md-2"></p>
+            <p class="page-header col col-md-10">Ansökan om sjuklöneersättning</p>
+            <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
+            <br>
+            <p class="col col-md-offset-2 col-md-10 second-page-header">Steg 2: Ange arbetstid och jourtid</p>
+        </div>
+
+
+        @*<br />*@
+
+        @*TEST2*@
+
+        <div class="row">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col col-md-2 date-padding">
+
+                    @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                    {
+                        <div class="row row-height-42 line-height-06">
+                            <div class="col col-md-12 col-padding-40 schedule-date">
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                            </div>
+                        </div>
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                    }
+                </div>
+                <div class="col col-md-9 div-assistant-frame div-padding">
+                    <div2 class="row row-height">
+                        <div class="col col-md-6 assistant-heading">
+                            Ordinarie assistent
+                        </div>
+
+                        <div class="col col-md-2">
+                            <button type="button" onclick="calculateHours(1)" class="btn btn-default btn-calc-hours">Visa timmar</button>
+                        </div>
+                        <div class="col col-md-2">
+                            <button type="button" onclick="copyToStandin()" class="btn btn-default btn-copy-to-si">Kopiera till vikarie</button>
+                        </div>
+                    </div2>
+                    <div class="row negative-padding-top">
+                        <div class="col col-md-6 div-frame line-height-08 div-margin-left">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Ordinarie arbetstid
+                            </div5>
+                            <div6 class="row height-14 line-height-08">
+                                <div class="col col-md-4 bold-14 col-md-nopadding">
+                                    Start
+                                </div>
+                                <div class="col col-md-4 bold-14 col-md-nopadding">
+                                    Slut
+                                </div>
+                                <div class="col col-md-4 bold-14 col-md-nopadding">
+                                    <div class="row small-row-margin">
+                                        <div class="col-md-nopadding col col-md-4">
+                                            Timmar
+                                        </div>
+                                        <div class="col-md-nopadding col col-md-2">
+
+                                        </div>
+                                        <div class="col-md-nopadding col col-md-4 display-unsocial-hour-heading">
+                                            OB
+                                        </div>
+                                    </div>
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                            {
+                                <div class="row row-height-42 line-height-06">
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 start-time-hour", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, null, new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 start-time-minute", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width col-margin-left">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4 col-margin-left-stoptime">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 stop-time-hour", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 stop-time-minute", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4">
+                                        <div class="row small-row-margin2">
+                                            <div class="col-md-nopadding col col-md-4 display-hours number-of-hours">
+                                                @if (Model.ScheduleRowList[i].NumberOfHours != 0)
+                                                {
+                                                    @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].NumberOfHours)
+                                                }
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4 display-unsocial-hours number-of-unsocial-hours">
+                                                @if (Model.ScheduleRowList[i].NumberOfUnsocialHours != 0)
+                                                {
+                                                    @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours)
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="col col-md-5 div-frame line-height-08 div-oncall-hours">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Jourtid
+                            </div5>
+                            <div6 class="row height-14 line-height-08">
+                                <div class="col col-md-4 bold-14 col-md-nopadding small-row-fixed-width3">
+                                    Start
+                                </div>
+                                <div class="col col-md-4 bold-14 col-md-nopadding small-row-fixed-width3">
+                                    Slut
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    <div class="row small-row-margin">
+                                        <div class="col-md-nopadding col col-md-4 small-row-fixed-width2 display-hour-heading">
+                                            Timmar
+                                        </div>
+                                    </div>
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                            {
+                                <div class="row row-height-42 line-height-06">
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 start-time-hour-oncall", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 start-time-minute-oncall", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width col-margin-left">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4 col-margin-left-stoptime">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 stop-time-hour-oncall", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 stop-time-minute-oncall", onblur = "calculateHours(1)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-2 small-row-fixed-width2">
+                                        <div class="row small-row-margin2 small-row-fixed-width2">
+                                            <div class="col-md-nopadding col col-md-4 display-hours number-of-oncall-hours">
+                                                @if (Model.ScheduleRowList[i].NumberOfOnCallHours != 0)
+                                                {
+                                                    @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+                @*Stand-in assistant*@
+                <div class="col col-md-2 date-padding">
+
+                    @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                    {
+                        <div class="row row-height-42 line-height-06">
+                            <div class="col col-md-12 col-padding-40 schedule-date">
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                            </div>
+                        </div>
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                    }
+                </div>
+                <div class="col col-md-9 div-assistant-frame div-padding">
+                    <div2 class="row row-height">
+                        <div class="col col-md-6 assistant-heading">
+                            Vikarierande assistent
+                        </div>
+
+                        <div class="col col-md-5">
+                            <button type="button" onclick="calculateHours(2)" class="btn btn-default btn-calc-hours">Visa timmar</button>
+                        </div>
+                    </div2>
+                    <div class="row  negative-pading-top">
+                        <div class="col col-md-6 div-frame line-height-08 div-margin-left">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Ordinarie arbetstid
+                            </div5>
+                            <div6 class="row height-14 line-height-08">
+                                <div class="col col-md-4 bold-14 col-md-nopadding">
+                                    Start
+                                </div>
+                                <div class="col col-md-4 bold-14 col-md-nopadding">
+                                    Slut
+                                </div>
+                                <div class="col col-md-4 bold-14 col-md-nopadding">
+                                    <div class="row small-row-margin">
+                                        <div class="col-md-nopadding col col-md-4">
+                                            Timmar
+                                        </div>
+                                        <div class="col-md-nopadding col col-md-2">
+
+                                        </div>
+                                        <div class="col-md-nopadding col col-md-4 display-unsocial-hour-heading">
+                                            OB
+                                        </div>
+                                    </div>
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                            {
+                                <div class="row row-height-42 line-height-06">
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHourSI, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 start-time-hour-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHourSI, null, new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteSI, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 start-time-minute-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width col-margin-left">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4 col-margin-left-stoptime">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHourSI, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 stop-time-hour-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHourSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteSI, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 stop-time-minute-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4">
+                                        <div class="row small-row-margin2">
+                                            <div class="col-md-nopadding col col-md-4 display-hours number-of-hours-si">
+                                                @if (Model.ScheduleRowList[i].NumberOfHoursSI != 0)
+                                                {
+                                                    @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].NumberOfHoursSI)
+                                                }
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4 display-unsocial-hours number-of-unsocial-hours-si">
+                                                @if (Model.ScheduleRowList[i].NumberOfUnsocialHoursSI != 0)
+                                                {
+                                                    @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHoursSI)
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="col col-md-5 div-frame line-height-08 div-oncall-hours">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Jourtid
+                            </div5>
+                            <div6 class="row height-14 line-height-08">
+                                <div class="col col-md-4 bold-14 col-md-nopadding small-row-fixed-width3">
+                                    Start
+                                </div>
+                                <div class="col col-md-4 bold-14 col-md-nopadding small-row-fixed-width3">
+                                    Slut
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    <div class="row small-row-margin">
+                                        <div class="col-md-nopadding col col-md-4 small-row-fixed-width2 display-hour-heading">
+                                            Timmar
+                                        </div>
+                                    </div>
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                            {
+                                <div class="row row-height-42 line-height-06">
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCallSI, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 start-time-hour-oncall-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCallSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCallSI, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 start-time-minute-oncall-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCallSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fixed-width col-margin-left">
+                                        <div class="row small-row-margin2 small-row-fixed-width">
+                                            <div class="col-md-nopadding col col-md-4 col-margin-left-stoptime">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCallSI, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control-time2 low-form-control2 border-radius-1 stop-time-hour-oncall-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCallSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon3">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCallSI, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control-time2 low-form-control2 special-left-margin border-radius-1 stop-time-minute-oncall-si", onblur = "calculateHours(2)" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCallSI, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-2 small-row-fixed-width2">
+                                        <div class="row small-row-margin2 small-row-fixed-width2">
+                                            <div class="col-md-nopadding col col-md-4 display-hours number-of-oncall-hours-si">
+                                                @if (Model.ScheduleRowList[i].NumberOfOnCallHoursSI != 0)
+                                                {
+                                                    @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHoursSI)
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                            }
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input class="btn btn-default" type="submit" value="Till steg 3" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @*<div>@Html.ActionLink("Visa timmar", "AddHours", "Claims", new { modelString = Sjuklöner.Viewmodels.ScheduleVM.Serialize(Model) }, new { @class = "btn btn-default" })</div>*@
+                    @*<div>@Html.ActionLink("Lägg till vikarie", "AddHours", "Claims", new { scheduleVM = Model }, new { @class = "btn btn-default" })</div>*@
+                    @*<div>@Html.ActionLink("Visa timmar", "AddHours", "Claims", new { startTimeHourString = Json.Encode(startTimeHour) }, new { @class = "btn btn-default" })</div>*@
+                    @*<div>@Html.ActionLink("Visa timmar", "AddhOurs", "Claims", new { scheduleRows = Json.Encode(Model) }, FormMethod.Post, new { @class = "btn btn-default" })</div>*@
+                    @*<div>@AjaxExtensions.ActionLink("Visa timmar", "AddhOurs", "Claims", new { scheduleRows = Json.Encode(Model) }, FormMethod.Post, new { @class = "btn btn-default" })</div>*@
+                    @*<input class="btn btn-default" type="submit" value="Visa timmar" />
+                        <input class="btn btn-default" type="submit" value="Lägg till vikarie" id="add-stand-in-btn" />*@
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        @*<div class="row line-height-08">
+            <div class="col col-md-2">
+                <div class="row height-38">
+
+                </div>
+                <div class="row height-38">
+
+                </div>
+                <div class="row height-28">
+
+                </div>
+
+                @foreach (var row in Model.ScheduleRowList)
+                {
+                    <div class="row height-28">
+                        <div class="col col-md-12 col-padding-40">
+                            @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <div1 class="col col-md-5 div-frame">
+                <div2 class="row height-38 role-padding">
+                    Ordinarie assistent
+                </div2>
+
+                <div3 class="row">
+                    <div4 class="col col-md-6 div-frame">
+                        <div5 class="row height-38 role-padding">
+                            Ordinarie arbetstid
+                        </div5>
+                        <div6 class="row height-28">
+                            <div class="col col-md-3 bold-14 left-col-padding">
+                                Start
+                            </div>
+                            <div class="col col-md-3 bold-14 col-padding">
+                                Slut
+                            </div>
+                            <div class="col col-md-3 bold-14 col-padding">
+                                Timmar
+                            </div>
+                            <div class="col col-md-2 bold-14 col-padding">
+                                OB
+                            </div>
+                        </div6>
+                        @foreach (var row in Model.ScheduleRowList)
+                        {
+                            <div class="row height-28">
+                                <div class="col col-md-3 left-col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col col-md-3 col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col col-md-3 col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col col-md-2 col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        }
+                    </div4>
+
+                    <div4 class="col col-md-1">
+                    </div4>
+
+                    <div4 class="col col-md-5 div-frame">
+                        <div5 class="row height-38 role-padding">
+                            Jourtid
+                        </div5>
+                        <div6 class="row height-28">
+                            <div class="col col-md-4 bold-14 left-col-padding">
+                                Start
+                            </div>
+                            <div class="col col-md-4 bold-14 col-padding">
+                                Slut
+                            </div>
+                            <div class="col col-md-2 bold-14 col-padding">
+                                Jour
+                            </div>
+                        </div6>
+                        @foreach (var row in Model.ScheduleRowList)
+                        {
+                            <div class="row height-28">
+                                <div class="col col-md-4 col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col col-md-4 col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col col-md-2 col-padding">
+                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
+                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        }
+                    </div4>
+                </div3>
+            </div1>*@
+
+
+        @*<div class="col col-md-6">
+                <div class="row height-28">
+                    <div class="col col-md-3 bold-14 left-col-padding">
+                        Start
+                    </div>
+                    <div class="col col-md-3 bold-14 col-padding">
+                        Slut
+                    </div>
+                    <div class="col col-md-3 bold-14 col-padding">
+                        Timmar
+                    </div>
+                    <div class="col col-md-2 bold-14 col-padding">
+                        OB
+                    </div>
+                </div>
+            </div>*@
+        @*</div>
+
+
+            <div class="row line-height-08">
+                <div class="col col-md-2">
+                    <div class="row height-38">
+
+                    </div>
+                    <div class="row height-38">
+
+                    </div>
+                    <div class="row height-28">
+
+                    </div>
+
+                    @foreach (var row in Model.ScheduleRowList)
+                    {
+                        <div class="row height-28">
+                            <div class="col col-md-12 col-padding-40">
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+                <div1 class="col col-md-5 div-frame">
+                    <div2 class="row height-38 role-padding">
+                        Ordinarie assistent
+                    </div2>
+
+                    <div3 class="row">
+                        <div4 class="col col-md-6 div-frame">
+                            <div5 class="row height-38 role-padding">
+                                Ordinarie arbetstid
+                            </div5>
+                            <div6 class="row height-28">
+                                <div class="col col-md-3 bold-14 left-col-padding">
+                                    Start
+                                </div>
+                                <div class="col col-md-3 bold-14 col-padding">
+                                    Slut
+                                </div>
+                                <div class="col col-md-3 bold-14 col-padding">
+                                    Timmar
+                                </div>
+                                <div class="col col-md-2 bold-14 col-padding">
+                                    OB
+                                </div>
+                            </div6>
+                            @foreach (var row in Model.ScheduleRowList)
+                            {
+                                <div class="row height-28">
+                                    <div class="col col-md-1 left-col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control low-form-control col-left-margin border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-1 col-padding bold-colon">
+                                        :
+                                    </div>
+                                    <div class="col col-md-1 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control low-form-control col-left-margin special-left-margin border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-1 left-col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control low-form-control col-left-margin border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-1 col-padding bold-colon">
+                                        :
+                                    </div>
+                                    <div class="col col-md-1 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control low-form-control col-left-margin special-left-margin border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-3 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-2 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                        </div4>
+
+                        <div4 class="col col-md-1">
+                        </div4>
+
+                        <div4 class="col col-md-5 div-frame">
+                            <div5 class="row height-38 role-padding">
+                                Jourtid
+                            </div5>
+                            <div6 class="row height-28">
+                                <div class="col col-md-4 bold-14 left-col-padding">
+                                    Start
+                                </div>
+                                <div class="col col-md-4 bold-14 col-padding">
+                                    Slut
+                                </div>
+                                <div class="col col-md-2 bold-14 col-padding">
+                                    Jour
+                                </div>
+                            </div6>
+                            @foreach (var row in Model.ScheduleRowList)
+                            {
+                                <div class="row height-28">
+                                    <div class="col col-md-4 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-4 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-2 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            }
+                        </div4>
+                    </div3>
+                </div1>
+
+
+                @*<div class="col col-md-6">
+                        <div class="row height-28">
+                            <div class="col col-md-3 bold-14 left-col-padding">
+                                Start
+                            </div>
+                            <div class="col col-md-3 bold-14 col-padding">
+                                Slut
+                            </div>
+                            <div class="col col-md-3 bold-14 col-padding">
+                                Timmar
+                            </div>
+                            <div class="col col-md-2 bold-14 col-padding">
+                                OB
+                            </div>
+                        </div>
+                    </div>*@
+        @*</div>*@
+
+
+        @*TEST1*@
+
+        @*<div class="row">
+                <div class="col col-md-2">
+
+                </div>
+                <div class="col col-md-5">
+                    <div class="row">
+                        <div class="col col-md-6">
+
+                            @foreach (var row in Model.ScheduleRowList)
+                            {
+                                <div class="row height-28 div-frame">
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fw">
+                                        <div class="row small-row-margin small-row-fw">
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, new { htmlAttributes = new { placeholder = "tim", @class = "form-control small-form-control-time low-form-control border-radius-1" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon2">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, new { htmlAttributes = new { placeholder = "min", @class = "form-control small-form-control-time low-form-control special-left-margin border-radius-1" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-4 col-md-4-fw col-margin-left">
+                                        <div class="row small-row-margin small-row-fw">
+                                            <div class="col-md-nopadding col col-md-4 col-margin-left-stoptime">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, new { htmlAttributes = new { placeholder = "tim", @class = "form-control small-form-control-time low-form-control border-radius-1" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2 bold-colon2">
+                                                :
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, new { htmlAttributes = new { placeholder = "min", @class = "form-control small-form-control-time low-form-control special-left-margin border-radius-1" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-nopadding col col-md-2">
+                                        <div class="row small-row-margin">
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control small-form-control low-form-control border-radius-1" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-md-nopadding col col-md-4">
+                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control small-form-control low-form-control form-control-width border-radius-1" } })
+                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>*@
+
+
+        @*<div class="col col-md-1">
+                <div class="row height-28">
+                </div>
+            </div>
+
+            <div class="row div-frame">
+                <div class="row height-38 role-padding">
+                    Jourtid
+                </div>
+
+
+                <div class="col col-md-5">
+                    <div class="row height-28">
+                        <div class="col col-md-4 bold-14 col-padding">
+                            Start
+                        </div>
+                        <div class="col col-md-4 bold-14 col-padding">
+                            Slut
+                        </div>
+                        <div class="col col-md-2 bold-14 col-padding">
+                            Jour
+                        </div>
+                    </div>
+                </div>
+
+                @foreach (var row in Model.ScheduleRowList)
+                        {
+                    <div class="col col-md-6">
+                        <div class="row height-28">
+                            <div class="col col-md-3 left-col-padding">
+                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
+                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col col-md-3 col-padding">
+                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
+                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col col-md-3 col-padding">
+                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control border-radius-1" } })
+                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col col-md-2 col-padding">
+                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
+                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col col-md-1">
+                        <div class="row height-28">
+                        </div>
+                    </div>
+                            <div class="col col-md-5">
+                                <div class="row height-28">
+                                    <div class="col col-md-4 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-4 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col col-md-2 col-padding">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                }
+            </div>
+                </div1>
+
+            <div class="col col-md-5 col-left-margin div-frame">
+                <div class="row height-38 role-padding">
+                    Vikarierande assistent
+                </div>
+                <div class="row height-28">
+                    @*<div class="col col-md-3 col-padding bold-14">
+                            Datum
+                        </div>
+                        <div class="col col-md-1 bold-14">
+                            Dag
+                        </div>*@
+        @*<div class="col col-md-3 col-padding bold-14">
+                </div>
+                <div class="col col-md-1 bold-14">
+                </div>
+                <div class="col col-md-2 bold-14 col-padding">
+                    Starttid
+                </div>
+                <div class="col col-md-2 bold-14">
+                    Sluttid
+                </div>
+                <div class="col col-md-2 bold-14">
+                    Timmar
+                </div>
+                <div class="col col-md-1 bold-14">
+                    OB
+                </div>
+                <div class="col col-md-2 bold-14">
+                    Starttid
+                </div>
+                <div class="col col-md-2 bold-14">
+                    Sluttid
+                </div>
+                <div class="col col-md-1 bold-14">
+                    Jour
+                </div>
+            </div>
+            @foreach (var row in Model.ScheduleRowList)
+                    {
+                <div class="row height-28">*@
+        @*<div class="col col-md-3 col-padding">
+                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDate)
+            </div>
+            <div class="col col-md-1">
+                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowWeekDay)
+            </div>*@
+        @*<div class="col col-md-3 col-padding">
+                        </div>
+                        <div class="col col-md-1">
+                        </div>
+                        <div class="col col-md-2 col-padding">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col col-md-2">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col col-md-2">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col col-md-1">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col col-md-2">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col col-md-2">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col col-md-1">
+                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width" } })
+                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="row">
+
+            </div>
+            </div>*@
+
+        @*<br />
+            <br />
+            <br />
+            <p>*@
+        @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")*@
+        @*</p>*@
+    </body>
+}
+<div class="row">
+    <div class="col-md-offset-2 col-md-10">
+        @*<button id="show-hours-btn" class="btn btn-default">Visa timmar script</button>*@
+        @*<button onclick="calculateHours()" class="btn btn-default">Visa timmar</button>*@
+        @*<button onclick="copyToStandin()" class="btn btn-default">Kopiera till vikarie</button>*@
+    </div>
+</div>
+<script type='text/javascript'>
+    function calculateHours(id) {
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+
+        var startTimeHour = document.getElementsByClassName("start-time-hour");
+        var startTimeMinute = document.getElementsByClassName("start-time-minute");
+        var stopTimeHour = document.getElementsByClassName("stop-time-hour");
+        var stopTimeMinute = document.getElementsByClassName("stop-time-minute");
+
+        var startTimeHourOnCall = document.getElementsByClassName("start-time-hour-oncall");
+        var startTimeMinuteOnCall = document.getElementsByClassName("start-time-minute-oncall");
+        var stopTimeHourOnCall = document.getElementsByClassName("stop-time-hour-oncall");
+        var stopTimeMinuteOnCall = document.getElementsByClassName("stop-time-minute-oncall");
+
+        var numberOfCalcHours = document.getElementsByClassName("number-of-hours");
+        var numberOfUnsocialHours = document.getElementsByClassName("number-of-unsocial-hours");
+        var numberOfOnCallHours = document.getElementsByClassName("number-of-oncall-hours");
+
+        var startTimeHourSI = document.getElementsByClassName("start-time-hour-si");
+        var startTimeMinuteSI = document.getElementsByClassName("start-time-minute-si");
+        var stopTimeHourSI = document.getElementsByClassName("stop-time-hour-si");
+        var stopTimeMinuteSI = document.getElementsByClassName("stop-time-minute-si");
+
+        var startTimeHourOnCallSI = document.getElementsByClassName("start-time-hour-oncall-si");
+        var startTimeMinuteOnCallSI = document.getElementsByClassName("start-time-minute-oncall-si");
+        var stopTimeHourOnCallSI = document.getElementsByClassName("stop-time-hour-oncall-si");
+        var stopTimeMinuteOnCallSI = document.getElementsByClassName("stop-time-minute-oncall-si");
+
+        var numberOfCalcHoursSI = document.getElementsByClassName("number-of-hours-si");
+        var numberOfUnsocialHoursSI = document.getElementsByClassName("number-of-unsocial-hours-si");
+        var numberOfOnCallHoursSI = document.getElementsByClassName("number-of-oncall-hours-si");
+
+        var scheduleDate = document.getElementsByClassName("schedule-date");
+
+        var startMinute;
+        var stopMinute;
+        var startMinuteOnCall;
+        var stopMinuteOnCall;
+
+        var startMinuteSI;
+        var stopMinuteSI;
+        var startMinuteOnCallSI;
+        var stopMinuteOnCallSI;
+
+        //alert(numberOfCalcHours.length);
+        var numberOfHours = [];
+        var numberOfMinutes = [];
+
+        var numberOfMorningMinutes = 0;
+        var numberOfMorningHours = 0;
+
+        if (id === 1) {
+            for (var i = 0; i < data.ScheduleRowList.length; i++) {
+                //To be added: Check that the input is numeric, for example use var n = 'a'; if (+n === +n) { // is number }
+                //To be added: Allowed range for hours and minutes? Or can that be done in the model?
+
+                //Replace undefined minutes with minutes = 0
+                if (!startTimeMinute[i].value || 0 === startTimeMinute[i].value.length) {
+                    startMinute = 0;
+                }
+                else {
+                    startMinute = parseFloat(startTimeMinute[i].value);
+                }
+                if (!stopTimeMinute[i].value || 0 === stopTimeMinute[i].value.length) {
+                    stopMinute = 0;
+                }
+                else {
+                    stopMinute = parseFloat(stopTimeMinute[i].value);
+                }
+                if (!startTimeMinuteOnCall[i].value || 0 === startTimeMinuteOnCall[i].value.length) {
+                    startMinuteOnCall = 0;
+                }
+                else {
+                    startMinuteOnCall = parseFloat(startTimeMinuteOnCall[i].value);
+                }
+                if (!stopTimeMinuteOnCall[i].value || 0 === stopTimeMinuteOnCall[i].value.length) {
+                    stopMinuteOnCall = 0;
+                }
+                else {
+                    stopMinuteOnCall = parseFloat(stopTimeMinuteOnCall[i].value);
+                }
+
+                if (startTimeHour[i].value != null && stopTimeHour[i].value != null && (parseFloat(stopTimeHour[i].value) >= parseFloat(startTimeHour[i].value))) {
+                    numberOfMinutes[i] = stopMinute - startMinute;
+                    if (numberOfMinutes[i] >= 0) {
+                        numberOfHours[i] = parseFloat(stopTimeHour[i].value) - parseFloat(startTimeHour[i].value);
+                    }
+                    else {
+                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                        numberOfHours[i] = parseFloat(stopTimeHour[i].value) - parseFloat(startTimeHour[i].value) - 1;
+                    }
+                    numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+                    numberOfCalcHours[i].innerHTML = numberOfHours[i].toFixed(2);
+
+                    //Unsocial hours
+
+                    //Check if weekend
+                    if (scheduleDate[i].innerHTML.trim().substring(0, 3) == "lör" || scheduleDate[i].innerHTML.trim().substring(0, 3) == "sön") {
+                        numberOfUnsocialHours[i].innerHTML = numberOfHours[i].toFixed(2);
+                    }
+
+                    //Check if early or late hours
+                    else if ((parseFloat(startTimeHour[i].value) < 7) || parseFloat(stopTimeHour[i].value) >= 18) {
+
+                        //Check if there is working time before 07:00
+                        if (parseFloat(startTimeHour[i].value) < 7) {
+                            //Calculate number of unsocial hours in the morning
+                            if (parseFloat(stopTimeHour[i].value) < 7 || (parseFloat(stopTimeHour[i].value) == 7 && parseFloat(stopTimeMinute[i].value) == 0)) {
+                                numberOfMinutes[i] = stopMinute - startMinute;
+                                if (numberOfMinutes[i] >= 0) {
+                                    numberOfHours[i] = parseFloat(stopTimeHour[i].value) - parseFloat(startTimeHour[i].value);
+                                }
+                                else {
+                                    numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                                    numberOfHours[i] = parseFloat(stopTimeHour[i].value) - parseFloat(startTimeHour[i].value) - 1;
+                                }
+                            }
+                            else {
+                                numberOfMinutes[i] = 60 - startMinute;
+                                numberOfHours[i] = 7 - parseFloat(startTimeHour[i].value) - 1;
+                            }
+                            numberOfMorningMinutes = numberOfMinutes[i];
+                            numberOfMorningHours = numberOfHours[i];
+                        }
+
+                        //Check if there is working time after 18:00
+                        if (parseFloat(stopTimeHour[i].value) >= 18) {
+                            //Calculate number of unsocial hours in the evening
+                            if (parseFloat(startTimeHour[i].value) >= 18) {
+                                numberOfMinutes[i] = stopMinute - startMinute;
+                                if (numberOfMinutes[i] >= 0) {
+                                    numberOfHours[i] = parseFloat(stopTimeHour[i].value) - parseFloat(startTimeHour[i].value);
+                                }
+                                else {
+                                    numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                                    numberOfHours[i] = parseFloat(stopTimeHour[i].value) - parseFloat(startTimeHour[i].value) - 1;
+                                }
+                            }
+                            else {
+                                numberOfMinutes[i] = stopMinute;
+                                numberOfHours[i] = parseFloat(stopTimeHour[i].value) - 18;
+                            }
+                            numberOfMinutes[i] = numberOfMinutes[i] + numberOfMorningMinutes
+                            numberOfHours[i] = numberOfHours[i] + numberOfMorningHours
+                        }
+                        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+                        numberOfUnsocialHours[i].innerHTML = numberOfHours[i].toFixed(2);
+                        numberOfMorningMinutes = 0;
+                        numberOfMorningHours = 0;
+                    }
+                }
+
+                //Calculate number of on call hours for each date
+                if (startTimeHourOnCall[i].value != null && stopTimeHourOnCall[i].value != null && (parseFloat(stopTimeHourOnCall[i].value) >= parseFloat(startTimeHourOnCall[i].value))) {
+                    numberOfMinutes[i] = stopMinuteOnCall - startMinuteOnCall;
+                    if (numberOfMinutes[i] >= 0) {
+                        numberOfHours[i] = parseFloat(stopTimeHourOnCall[i].value) - parseFloat(startTimeHourOnCall[i].value);
+                    }
+                    else {
+                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                        numberOfHours[i] = parseFloat(stopTimeHourOnCall[i].value) - parseFloat(startTimeHourOnCall[i].value) - 1;
+                    }
+                    numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+                    numberOfOnCallHours[i].innerHTML = numberOfHours[i].toFixed(2);
+                }
+            }
+        }
+        else if (id === 2) {
+            for (var i = 0; i < data.ScheduleRowList.length; i++) {
+                //To be added: Check that the input is numeric, for example use var n = 'a'; if (+n === +n) { // is number }
+                //To be added: Allowed range for hours and minutes? Or can that be done in the model?
+
+                //Replace undefined minutes with minutes = 0
+                if (!startTimeMinuteSI[i].value || 0 === startTimeMinuteSI[i].value.length) {
+                    startMinuteSI = 0;
+                }
+                else {
+                    startMinuteSI = parseFloat(startTimeMinuteSI[i].value);
+                }
+                if (!stopTimeMinuteSI[i].value || 0 === stopTimeMinuteSI[i].value.length) {
+                    stopMinuteSI = 0;
+                }
+                else {
+                    stopMinuteSI = parseFloat(stopTimeMinuteSI[i].value);
+                }
+                if (!startTimeMinuteOnCallSI[i].value || 0 === startTimeMinuteOnCallSI[i].value.length) {
+                    startMinuteOnCallSI = 0;
+                }
+                else {
+                    startMinuteOnCallSI = parseFloat(startTimeMinuteOnCallSI[i].value);
+                }
+                if (!stopTimeMinuteOnCallSI[i].value || 0 === stopTimeMinuteOnCallSI[i].value.length) {
+                    stopMinuteOnCallSI = 0;
+                }
+                else {
+                    stopMinuteOnCallSI = parseFloat(stopTimeMinuteOnCallSI[i].value);
+                }
+
+                if (startTimeHourSI[i].value != null && stopTimeHourSI[i].value != null && (parseFloat(stopTimeHourSI[i].value) >= parseFloat(startTimeHourSI[i].value))) {
+                    numberOfMinutes[i] = stopMinuteSI - startMinuteSI;
+                    if (numberOfMinutes[i] >= 0) {
+                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
+                    }
+                    else {
+                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
+                    }
+                    numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+                    numberOfCalcHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+
+                    //Unsocial hours
+
+                    //Check if weekend
+                    if (scheduleDate[i].innerHTML.trim().substring(0, 3) == "lör" || scheduleDate[i].innerHTML.trim().substring(0, 3) == "sön") {
+                        numberOfUnsocialHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+                    }
+
+                    //Check if early or late hours
+                    else if ((parseFloat(startTimeHour[i].value) < 7) || parseFloat(stopTimeHourSI[i].value) >= 18) {
+
+                        //Check if there is working time before 07:00
+                        if (parseFloat(startTimeHourSI[i].value) <= 7) {
+                            //Calculate number of unsocial hours in the morning
+                            if (parseFloat(stopTimeHourSI[i].value) < 7 || (parseFloat(stopTimeHourSI[i].value) == 7 && parseFloat(stopTimeMinuteSI[i].value) == 0)) {
+                                numberOfMinutes[i] = stopMinuteSI - startMinuteSI;
+                                if (numberOfMinutes[i] >= 0) {
+                                    numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
+                                }
+                                else {
+                                    numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                                    numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
+                                }
+                            }
+                            else {
+                                numberOfMinutes[i] = 60 - startMinuteSI;
+                                numberOfHours[i] = 7 - parseFloat(startTimeHourSI[i].value) - 1;
+                            }
+                            numberOfMorningMinutes = numberOfMinutes[i];
+                            numberOfMorningHours = numberOfHours[i];
+                        }
+
+                        //Check if there is working time after 18:00
+                        if (parseFloat(stopTimeHourSI[i].value) >= 18) {
+                            //Calculate number of unsocial hours in the evening
+                            if (parseFloat(startTimeHourSI[i].value) >= 18) {
+                                numberOfMinutes[i] = stopMinuteSI - startMinuteSI;
+                                if (numberOfMinutes[i] >= 0) {
+                                    numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
+                                }
+                                else {
+                                    numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                                    numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
+                                }
+                            }
+                            else {
+                                numberOfMinutes[i] = stopMinuteSI;
+                                numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - 18;
+                            }
+                            numberOfMinutes[i] = numberOfMinutes[i] + numberOfMorningMinutes
+                            numberOfHours[i] = numberOfHours[i] + numberOfMorningHours
+                        }
+                        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+                        numberOfUnsocialHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+                        numberOfMorningMinutes = 0;
+                        numberOfMorningHours = 0;
+                    }
+                }
+
+                //Calculate number of on call hours for each date
+                if (startTimeHourOnCallSI[i].value != null && stopTimeHourOnCallSI[i].value != null && (parseFloat(stopTimeHourOnCallSI[i].value) >= parseFloat(startTimeHourOnCallSI[i].value))) {
+                    numberOfMinutes[i] = stopMinuteOnCallSI - startMinuteOnCallSI;
+                    if (numberOfMinutes[i] >= 0) {
+                        numberOfHours[i] = parseFloat(stopTimeHourOnCallSI[i].value) - parseFloat(startTimeHourOnCallSI[i].value);
+                    }
+                    else {
+                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
+                        numberOfHours[i] = parseFloat(stopTimeHourOnCallSI[i].value) - parseFloat(startTimeHourOnCallSI[i].value) - 1;
+                    }
+                    numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+                    numberOfOnCallHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+                }
+            }
+        }
+
+
+
+
+
+        //event.preventDefault();
+        //event.stopPropagation();
+        //return false;
+    }
+
+    function copyToStandin() {
+
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        //alert(data.ScheduleRowList.length)
+
+        var startTimeHour = document.getElementsByClassName("start-time-hour");
+        var startTimeMinute = document.getElementsByClassName("start-time-minute");
+        var stopTimeHour = document.getElementsByClassName("stop-time-hour");
+        var stopTimeMinute = document.getElementsByClassName("stop-time-minute");
+
+        var startTimeHourOnCall = document.getElementsByClassName("start-time-hour-oncall");
+        var startTimeMinuteOnCall = document.getElementsByClassName("start-time-minute-oncall");
+        var stopTimeHourOnCall = document.getElementsByClassName("stop-time-hour-oncall");
+        var stopTimeMinuteOnCall = document.getElementsByClassName("stop-time-minute-oncall");
+
+        var numberOfCalcHours = document.getElementsByClassName("number-of-hours");
+        var numberOfUnsocialHours = document.getElementsByClassName("number-of-unsocial-hours");
+        var numberOfOnCallHours = document.getElementsByClassName("number-of-oncall-hours");
+
+        var startTimeHourSI = document.getElementsByClassName("start-time-hour-si");
+        var startTimeMinuteSI = document.getElementsByClassName("start-time-minute-si");
+        var stopTimeHourSI = document.getElementsByClassName("stop-time-hour-si");
+        var stopTimeMinuteSI = document.getElementsByClassName("stop-time-minute-si");
+
+        var startTimeHourOnCallSI = document.getElementsByClassName("start-time-hour-oncall-si");
+        var startTimeMinuteOnCallSI = document.getElementsByClassName("start-time-minute-oncall-si");
+        var stopTimeHourOnCallSI = document.getElementsByClassName("stop-time-hour-oncall-si");
+        var stopTimeMinuteOnCallSI = document.getElementsByClassName("stop-time-minute-oncall-si");
+
+        var numberOfCalcHoursSI = document.getElementsByClassName("number-of-hours-si");
+        var numberOfUnsocialHoursSI = document.getElementsByClassName("number-of-unsocial-hours-si");
+        var numberOfOnCallHoursSI = document.getElementsByClassName("number-of-oncall-hours-si");
+
+        for (var i = 0; i < data.ScheduleRowList.length; i++) {
+            if (startTimeHour[i].value != null) {
+                startTimeHourSI[i].value = startTimeHour[i].value;
+            }
+            if (startTimeMinute[i].value != null) {
+                startTimeMinuteSI[i].value = startTimeMinute[i].value;
+            }
+            else {
+                startTimeMinute[i].value = "00";
+                startTimeMinuteSI[i].value = "00";
+            }
+            if (stopTimeHour[i].value != null) {
+                stopTimeHourSI[i].value = stopTimeHour[i].value;
+            }
+            if (stopTimeMinute[i].value != null) {
+                stopTimeMinuteSI[i].value = stopTimeMinute[i].value;
+            }
+            else {
+                stopTimeMinute[i].value = "00";
+                stopTimeMinuteSI[i].value = "00";
+            }
+
+            if (startTimeHourOnCall[i].value != null) {
+                startTimeHourOnCallSI[i].value = startTimeHourOnCall[i].value;
+            }
+            if (startTimeMinuteOnCall[i].value != null) {
+                startTimeMinuteOnCallSI[i].value = startTimeMinuteOnCall[i].value;
+            }
+            else {
+                startTimeMinuteOnCall[i].value = "00";
+                startTimeMinuteOnCallSI[i].value = "00";
+            }
+            if (stopTimeHourOnCall[i].value != null) {
+                stopTimeHourOnCallSI[i].value = stopTimeHourOnCall[i].value;
+            }
+            if (stopTimeMinuteOnCall[i].value != null) {
+                stopTimeMinuteOnCallSI[i].value = stopTimeMinuteOnCall[i].value;
+            }
+            else {
+                stopTimeMinuteOnCall[i].value = "00";
+                stopTimeMinuteOnCallSI[i].value = "00";
+            }
+
+            if (numberOfCalcHours[i].innerHTML != null) {
+                numberOfCalcHoursSI[i].innerHTML = numberOfCalcHours[i].innerHTML.trim();
+            }
+            if (numberOfUnsocialHours[i].innerHTML != null) {
+                numberOfUnsocialHoursSI[i].innerHTML = numberOfUnsocialHours[i].innerHTML.trim();
+            }
+            if (numberOfOnCallHours[i].innerHTML != null) {
+                numberOfOnCallHoursSI[i].innerHTML = numberOfOnCallHours[i].innerHTML.trim();
+            }
+
+            //event.preventDefault();
+            //event.stopPropagation();
+            //return false;
+        }
+
+        //var numberOfHours = [];
+        //var numberOfMinutes = [];
+
+        //var numberOfMorningMinutes = 0;
+        //var numberOfMorningHours = 0;
+
+
+
+        //for (var i = 0; i < data.ScheduleRowList.length; i++) {
+        //    alert(startTimeHourSI.[i].value);
+        //    //To be added: Check that the input is numeric, for example use var n = 'a'; if (+n === +n) { // is number }
+        //    //To be added: Allowed range for hours and minutes? Or can that be done in the model?
+        //    if (startTimeHourSI[i].value != null && stopTimeHourSI[i].value != null && (parseFloat(stopTimeHourSI[i].value) >= parseFloat(startTimeHourSI[i].value))) {
+        //        numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value) - parseFloat(startTimeMinuteSI[i].value);
+        //        if (numberOfMinutes[i] >= 0) {
+        //            numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
+        //        }
+        //        else {
+        //            numberOfMinutes[i] = numberOfMinutes[i] + 60;
+        //            numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
+        //        }
+        //        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+        //        numberOfCalcHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+
+
+        //        //Unsocial hours
+        //        if ((parseFloat(startTimeHourSI[i].value) < 7) || parseFloat(stopTimeHourSI[i].value) >= 18) {
+
+
+        //            //Check if there is working time before 07:00
+        //            if (parseFloat(startTimeHourSI[i].value) <= 7) {
+        //                //Calculate number of unsocial hours in the morning
+        //                if (parseFloat(stopTimeHourSI[i].value) < 7 || (parseFloat(stopTimeHourSI[i].value) == 7 && parseFloat(stopTimeMinuteSI[i].value) == 0)) {
+        //                    numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value) - parseFloat(startTimeMinuteSI[i].value);
+        //                    if (numberOfMinutes[i] >= 0) {
+        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
+        //                    }
+        //                    else {
+        //                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
+        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
+        //                    }
+        //                }
+        //                else {
+        //                    numberOfMinutes[i] = 60 - parseFloat(startTimeMinuteSI[i].value);
+        //                    numberOfHours[i] = 7 - parseFloat(startTimeHourSI[i].value) - 1;
+        //                }
+        //                numberOfMorningMinutes = numberOfMinutes[i];
+        //                numberOfMorningHours = numberOfHours[i];
+        //            }
+
+        //            //Check if there is working time after 18:00
+        //            if (parseFloat(stopTimeHourSI[i].value) >= 18) {
+        //                //Calculate number of unsocial hours in the evening
+        //                if (parseFloat(startTimeHourSI[i].value) >= 18) {
+        //                    numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value) - parseFloat(startTimeMinuteSI[i].value);
+        //                    if (numberOfMinutes[i] >= 0) {
+        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
+        //                    }
+        //                    else {
+        //                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
+        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
+        //                    }
+        //                }
+        //                else {
+        //                    numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value);
+        //                    numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - 18;
+        //                }
+        //                numberOfMinutes[i] = numberOfMinutes[i] + numberOfMorningMinutes
+        //                numberOfHours[i] = numberOfHours[i] + numberOfMorningHours
+        //            }
+        //            numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+        //            numberOfUnsocialHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+        //            numberOfMorningMinutes = 0;
+        //            numberOfMorningHours = 0;
+        //        }
+        //    }
+
+        //    //Calculate number of on call hours for each date
+        //    if (startTimeHourOnCallSI[i].value != null && stopTimeHourOnCallSI[i].value != null && (parseFloat(stopTimeHourOnCallSI[i].value) >= parseFloat(startTimeHourOnCallSI[i].value))) {
+        //        numberOfMinutes[i] = parseFloat(stopTimeMinuteOnCallSI[i].value) - parseFloat(startTimeMinuteOnCallSI[i].value);
+        //        if (numberOfMinutes[i] >= 0) {
+        //            numberOfHours[i] = parseFloat(stopTimeHourOnCallSI[i].value) - parseFloat(startTimeHourOnCallSI[i].value);
+        //        }
+        //        else {
+        //            numberOfMinutes[i] = numberOfMinutes[i] + 60;
+        //            numberOfHours[i] = parseFloat(stopTimeHourOnCallSI[i].value) - parseFloat(startTimeHourOnCallSI[i].value) - 1;
+        //        }
+        //        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+        //        numberOfOnCallHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
+        //    }
+        //}
+    }
+
+    //$(document).ready(function () {
+    //    $("#show-hours-btn").click(function () {
+    //        alert("Hello");
+            @*var scheduleRows = @Html.Raw(Json.Encode(Model.ScheduleRowList));
+            var startTimeHour = [];
+            var startTimeMinute = [];
+            var stopTimeHour = [];
+            var stopTimeMinute = [];
+            var numberOfHours = [];
+            var numberOfMinutes = [];
+            for (var i = 0; i < scheduleRows.length; i++) {
+                alert(scheduleRows[i].StartTimeHour);
+            }*@
+
+            //for (var i = 0; i < scheduleRows.length; i++) {
+            //    startTimeHour[i] = scheduleRows[i].startTimeHour;
+            //    startTimeMinute[i] = scheduleRows[i].startTimeMinute;
+            //    stopTimeHour[i] = scheduleRows[i].stopTimeHour;
+            //    stopTimeMinute[i] = scheduleRows[i].stopTimeMinute;
+
+            //    if (StartTimeHour[i].value != null && (Int32.Parse(StopTimeHour[i].value) >= Int32.Parse(StartTimeHour[i].value))) {
+            //        numberOfMinutes[i] = Int32.Parse(StopTimeMinute[i].value) - Int32.Parse(StartTimeMinute[i].value);
+            //        if (numberOfMinutes[i] >= 0) {
+            //            numberOfHours[i] = Int32.Parse(StopTimeHour[i].value) - Int32.Parse(StartTimeHour[i].value);
+            //        }
+            //        else {
+            //            numberOfMinutes[i] = numberOfMinutes[i] + 60;
+            //            numberOfHours[i] = Int32.Parse(StopTimeHour[i].value) - Int32.Parse(StartTimeHour[i].value) - 1;
+            //        }
+            //        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
+            //    }
+            //}
+            //for (var eachItem in numberOfHours) {
+            //    alert(eachItem);
+            //}
+    //    });
+    //});
+</script>

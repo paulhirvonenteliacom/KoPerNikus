@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Sjuklöner.Models.CollectiveAgreement>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialEvening)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialNight)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialWeekend)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourUnsocialHoliday)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourOnCallWeekday)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourOnCallWeekend)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourPreparedWeekday)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PerHourPreparedWeekend)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OvertimeFactor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExtraHOurFactor)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourUnsocialEvening)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourUnsocialNight)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourUnsocialWeekend)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourUnsocialHoliday)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourOnCallWeekday)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourOnCallWeekend)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourPreparedWeekday)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PerHourPreparedWeekend)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OvertimeFactor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExtraHOurFactor)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
