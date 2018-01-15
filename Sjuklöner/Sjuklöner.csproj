@@ -199,9 +199,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801142255400_initial.cs" />
-    <Compile Include="Migrations\201801142255400_initial.Designer.cs">
-      <DependentUpon>201801142255400_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201801152236303_initial.cs" />
+    <Compile Include="Migrations\201801152236303_initial.Designer.cs">
+      <DependentUpon>201801152236303_initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801152239245_statusToDocStatus.cs" />
+    <Compile Include="Migrations\201801152239245_statusToDocStatus.Designer.cs">
+      <DependentUpon>201801152239245_statusToDocStatus.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -226,6 +230,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Viewmodels\AssistantClaimVM.cs" />
     <Compile Include="Viewmodels\ClaimAmountVM.cs" />
+    <Compile Include="Viewmodels\ClaimDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
     <Compile Include="Viewmodels\IndexPageAdmOffVM.cs" />
@@ -312,6 +317,7 @@
     <Content Include="Views\Claims\IndexPageOmbud.cshtml" />
     <Content Include="Views\Claims\Receipt.cshtml" />
     <Content Include="Views\Claims\IndexPageAdmOff.cshtml" />
+    <Content Include="Views\Claims\ClaimDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -330,8 +336,11 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801142255400_initial.resx">
-      <DependentUpon>201801142255400_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801152236303_initial.resx">
+      <DependentUpon>201801152236303_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801152239245_statusToDocStatus.resx">
+      <DependentUpon>201801152239245_statusToDocStatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

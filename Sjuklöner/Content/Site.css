@@ -208,6 +208,22 @@ li {
     border: none;
 }
 
+.second-page-header-large {
+    font-size: 36px;
+    /*line-height: 34px;*/
+    padding: 20px 15px 0 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+    text-align: right;
+} 
+
+
 .second-page-header-no-padding-left {
     font-size: 24px;
     /*line-height: 34px;*/
@@ -289,8 +305,27 @@ li {
 }
 
 .btn-primary {
-    margin-left: 10px;
+    margin-left: 58px;
+    font-size: 22px;
+    width: 130px;
 }
+
+.btn-success {
+    margin-left: 0;
+    font-size: 22px;
+    width: 130px;
+}
+
+.btn-danger {
+    margin-left: 58px;
+    font-size: 22px;
+    width: 130px;
+}
+
+.btn-left-margin-5 {
+    margin-left: 5px;
+}
+
 
 #add-stand-in-btn {
     font-weight: bold;
@@ -312,6 +347,14 @@ li {
 .font-size-12 {
     font-size: 12px;
     padding-left: 5px;
+}
+
+.font-size-16 {
+    font-size: 16px;
+}
+
+.small-font {
+    font-size: 10px;
 }
 
 .schedule-table {
@@ -559,6 +602,10 @@ special-left-margin {
     height: 30px;
 }
 
+.height-40 {
+    height: 30px;
+}
+
 .negative-padding-top {
     padding-top: -15px;
 }
@@ -637,6 +684,14 @@ special-left-margin {
     padding-left: 0;
 }
 
+.col-no-left-padding {
+    padding-left: 0;
+}
+
+.col-small-left-padding {
+    padding-left: 5px;
+}
+
 .line-height-10 {
     line-height: 1.0;
 }
@@ -670,7 +725,8 @@ special-left-margin {
 }
 
 .control-label-large {
-    font-size: 22px;
+    font-size: 19px;
+    font-weight: normal;
 }
 
 .display-large-font {
@@ -745,6 +801,27 @@ a:hover, a:focus {
     margin-top: 150px;
 }
 
+.no-breadcrumb-top2 {
+    margin-top: 140px;
+}
+
 .control-width {
     width: 255px;
+}
+
+.large-form-control {
+    font-size: 22px;
+}
+
+.decision-padding-left {
+    padding-left: 28px;
+}
+
+.control-width-small {
+    width: 130px;
+    height: 45px;
+}
+
+.float-right {
+    float: right;
 }

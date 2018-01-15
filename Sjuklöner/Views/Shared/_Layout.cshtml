@@ -29,7 +29,7 @@
                         <li>@Html.ActionLink("Anordnarens profil", "Create", "Claims")</li>
                     }
                 </ul>*@
-                @*@Html.Partial("_LoginPartial")*@
+            @*@Html.Partial("_LoginPartial")*@
             @*</div>*@
         </div>
         @*<div class="navbar navbar-inverse2 navbar-fixed-top2">
@@ -98,7 +98,15 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Bitoreq AB</p>
+            <div class="row">
+                <div class="col col-md-9 small-font">
+                    <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun </p>
+                </div>
+                <div class="col col-md-2 small-font">
+                    &copy; @DateTime.Now.Year - Bitoreq AB
+                </div>
+
+            </div>
         </footer>
     </div>
 

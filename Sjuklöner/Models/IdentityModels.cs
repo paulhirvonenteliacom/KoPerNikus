@@ -40,7 +40,7 @@ namespace Sjuklöner.Models
         public DbSet<MimeType> MimeTypes { get; set; }
         public DbSet<Purpose> Purposes { get; set; }
         public DbSet<Document> Documents { get; set; }
-        public DbSet<DocStatus> Statuses { get; set; }
+        public DbSet<DocStatus> DocStatuses { get; set; }
         public DbSet<ClaimReferenceNumber> ClaimReferenceNumbers { get; set; }
         public DbSet<ClaimStatus> ClaimStatuses { get; set; }
         public DbSet<CollectiveAgreement> CollectiveAgreements { get; set; }

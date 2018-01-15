@@ -8,31 +8,34 @@ namespace Sjuklöner.Viewmodels
 {
     public class DecisionVM
     {
-        [Display(Name = "Vårdgivarregistret, IVO:")]
+        [Display(Name = "Referensnummer")]
+        public string ClaimNumber { get; set; }
+
+        [Display(Name = "Vårdgivarregistret, IVO")]
         public string IvoCheck { get; set; }
 
-        [Display(Name = "Beslut om assistans i Procapita:")]
+        [Display(Name = "Beslut om assistans i Procapita")]
         public string AssistanceCheck { get; set; }
 
-        [Display(Name = "Yrkat belopp (Kr):")]
+        [Display(Name = "Yrkat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double ClaimSum { get; set; }
+        public decimal ClaimSum { get; set; }
 
-        [Display(Name = "Modellbelopp (Kr):")]
+        [Display(Name = "Modellbelopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double ModelSum { get; set; }
+        public decimal ModelSum { get; set; }
 
-        [Display(Name = "Diff. mellan yrkat belopp och modellbelopp (Kr):")]
+        [Display(Name = "Diff. mellan yrkat belopp och modellbelopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double DiffClaimModel { get; set; }
+        public decimal DiffClaimModel { get; set; }
 
-        [Display(Name = "Diff. mellan yrkat belopp och beslutat belopp (Kr):")]
+        [Display(Name = "Diff. mellan yrkat belopp och beslutat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double DiffClaimDecided { get; set; }
+        public decimal DiffClaimDecided { get; set; }
 
-        [Display(Name = "Beslutat belopp (Kr):")]
+        [Display(Name = "Beslutat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double DecidedSum { get; set; }
+        public decimal DecidedSum { get; set; }
 
         //public List<CheckBox> OfficialsCheck { get; set; }
 

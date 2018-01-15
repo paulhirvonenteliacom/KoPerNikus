@@ -19,6 +19,9 @@ namespace Sjuklöner.Viewmodels
     {
         public string ScheduleRowDate { get; set; }
 
+        [DataType(DataType.DateTime)]
+        public DateTime DayDate { get; set; }
+
         public string ScheduleRowDateTest { get; set; }
 
         public string ScheduleRowWeekDay { get; set; }

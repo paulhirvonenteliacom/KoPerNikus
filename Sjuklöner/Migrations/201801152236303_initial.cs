@@ -31,6 +31,7 @@ namespace Sjuklöner.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ReferenceNumber = c.String(),
+                        ClaimDayDate = c.String(),
                         DateString = c.String(),
                         SickDayNumber = c.Int(nullable: false),
                         StartHour = c.String(),
@@ -82,7 +83,7 @@ namespace Sjuklöner.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         OwnerId = c.String(),
-                        StatusId = c.Int(nullable: false),
+                        ClaimStatusId = c.Int(nullable: false),
                         CareCompanyId = c.Int(nullable: false),
                         ReferenceNumber = c.String(),
                         StatusDate = c.DateTime(),
@@ -95,32 +96,52 @@ namespace Sjuklöner.Migrations
                         QualifyingDate = c.DateTime(nullable: false),
                         LastDayOfSicknessDate = c.DateTime(nullable: false),
                         NumberOfSickDays = c.Int(nullable: false),
-                        SickPay = c.Double(nullable: false),
-                        HolidayPay = c.Double(nullable: false),
-                        SocialFees = c.Double(nullable: false),
-                        PensionAndInsurance = c.Double(nullable: false),
-                        ClaimSum = c.Double(nullable: false),
-                        ModelSum = c.Double(nullable: false),
-                        HoursQualifyingDay = c.Double(nullable: false),
-                        HolidayPayQualDay = c.Double(nullable: false),
-                        PayrollTaxQualDay = c.Double(nullable: false),
-                        InsuranceQualDay = c.Double(nullable: false),
-                        PensionQualDay = c.Double(nullable: false),
-                        ClaimQualDay = c.Double(nullable: false),
-                        HoursDay2To14 = c.Double(nullable: false),
-                        HourlySickPay = c.Double(nullable: false),
-                        SickPayDay2To14 = c.Double(nullable: false),
-                        HolidayPayDay2To14 = c.Double(nullable: false),
-                        UnsocialHoursPayDay2To14 = c.Double(nullable: false),
-                        OnCallHoursPayDay2To14 = c.Double(nullable: false),
-                        PayrollTaxDay2To14 = c.Double(nullable: false),
-                        InsuranceDay2To14 = c.Double(nullable: false),
-                        PensionDay2To14 = c.Double(nullable: false),
-                        ClaimDay2To14 = c.Double(nullable: false),
+                        NumberOfAbsenceHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOrdinaryHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfUnsocialHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOnCallHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfHoursWithSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOrdinaryHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfUnsocialHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOnCallHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SickPay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HolidayPay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SocialFees = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PensionAndInsurance = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ModelSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        DecidedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HoursQualifyingDay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HolidayPayQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PayrollTaxQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        InsuranceQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PensionQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HoursDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HourlySickPay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SickPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HolidayPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        UnsocialHoursPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        OnCallHoursPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PayrollTaxDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        InsuranceDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PensionDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.CareCompanies", t => t.CareCompanyId, cascadeDelete: true)
+                .ForeignKey("dbo.ClaimStatus", t => t.ClaimStatusId, cascadeDelete: true)
+                .Index(t => t.ClaimStatusId)
                 .Index(t => t.CareCompanyId);
+            
+            CreateTable(
+                "dbo.ClaimStatus",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.Documents",
@@ -272,15 +293,6 @@ namespace Sjuklöner.Migrations
                 .Index(t => t.ClaimId);
             
             CreateTable(
-                "dbo.ClaimStatus",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "dbo.CollectiveAgreements",
                 c => new
                     {
@@ -323,6 +335,7 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Documents", "OwnerId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Documents", "MimeTypeId", "dbo.MimeTypes");
+            DropForeignKey("dbo.Claims", "ClaimStatusId", "dbo.ClaimStatus");
             DropForeignKey("dbo.Claims", "CareCompanyId", "dbo.CareCompanies");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.Messages", new[] { "ClaimId" });
@@ -337,9 +350,9 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.Documents", new[] { "StatusId" });
             DropIndex("dbo.Documents", new[] { "MimeTypeId" });
             DropIndex("dbo.Claims", new[] { "CareCompanyId" });
+            DropIndex("dbo.Claims", new[] { "ClaimStatusId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.CollectiveAgreements");
-            DropTable("dbo.ClaimStatus");
             DropTable("dbo.Messages");
             DropTable("dbo.DocStatus");
             DropTable("dbo.Purposes");
@@ -349,6 +362,7 @@ namespace Sjuklöner.Migrations
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.MimeTypes");
             DropTable("dbo.Documents");
+            DropTable("dbo.ClaimStatus");
             DropTable("dbo.Claims");
             DropTable("dbo.ClaimReferenceNumbers");
             DropTable("dbo.ClaimDays");

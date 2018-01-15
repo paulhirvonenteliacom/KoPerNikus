@@ -12,7 +12,7 @@ namespace Sjuklöner.Models
 
         public int MimeTypeId { get; set; }
 
-        public int StatusId { get; set; }
+        public int DocStatusId { get; set; }
 
         public int PurposeId { get; set; }
 
@@ -35,7 +35,7 @@ namespace Sjuklöner.Models
 
         public virtual MimeType MimeType { get; set; }
 
-        public virtual DocStatus Status { get; set; }
+        public virtual DocStatus DocStatus { get; set; }
 
         public virtual Purpose Purpose { get; set; }
 

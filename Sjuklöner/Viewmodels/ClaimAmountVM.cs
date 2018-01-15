@@ -14,26 +14,26 @@ namespace Sjuklöner.Viewmodels
         [Required]
         [Display(Name = "Sjuklön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double SickPay { get; set; }
+        public decimal SickPay { get; set; }
 
         [Required]
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double HolidayPay { get; set; }
+        public decimal HolidayPay { get; set; }
 
         [Required]
         [Display(Name = "Sociala avgifter (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double SocialFees { get; set; }
+        public decimal SocialFees { get; set; }
 
         [Required]
         [Display(Name = "Övriga avtalsbundna kostnader (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double PensionAndInsurance { get; set; }
+        public decimal PensionAndInsurance { get; set; }
 
         [Required]
         [Display(Name = "Yrkat belopp (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public double ClaimSum { get; set; }
+        public decimal ClaimSum { get; set; }
     }
 }

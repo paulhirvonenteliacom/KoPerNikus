@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -10,6 +11,8 @@ namespace Sjuklöner.Models
         public int Id { get; set; }
 
         public string ReferenceNumber { get; set; }
+
+        public string ClaimDayDate { get; set; }
 
         public string DateString { get; set; }
 

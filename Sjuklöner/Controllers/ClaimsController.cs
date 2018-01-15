@@ -49,18 +49,30 @@ namespace Sjuklöner.Controllers
             var claims = db.Claims.Where(c => c.OwnerId == me.Id).ToList();
             if (claims.Count > 0)
             {
-                indexPageOmbudVM.RejectedClaims = claims.Where(c => c.StatusId == 1).ToList();
-                indexPageOmbudVM.DraftClaims = claims.Where(c => c.StatusId == 2).ToList();
-                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.StatusId == 3).ToList();
-                indexPageOmbudVM.ApprovedClaims = claims.Where(c => c.StatusId == 4).ToList();
+                indexPageOmbudVM.RejectedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
+                indexPageOmbudVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
+                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
+                indexPageOmbudVM.ApprovedClaims = claims.Where(c => c.ClaimStatusId == 4).ToList();
             }
 
             return View("IndexPageOmbud", indexPageOmbudVM);
         }
 
         // GET: Claims
-        public ActionResult IndexPageAdmOff()
+        public ActionResult IndexPageAdmOff(string referenceNumber = null)
         {
+            //Check if the AdmOff arrived from the decision page and rejected the claim. In that case the ClaimStatus of the claim needs to be updated. 
+            if (referenceNumber != null)
+            {
+                //Rejected claim
+                var claim = db.Claims.Where(c => c.ReferenceNumber == referenceNumber).FirstOrDefault();
+                claim.ClaimStatusId = 1;
+                //claim.DecidedSum = 0;
+                claim.StatusDate = DateTime.Now;
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
 
             var me = db.Users.Find(User.Identity.GetUserId());
@@ -68,10 +80,10 @@ namespace Sjuklöner.Controllers
             var claims = db.Claims.Include(c => c.CareCompany).ToList();
             if (claims.Count > 0)
             {
-                indexPageAdmOffVM.RejectedClaims = claims.Where(c => c.StatusId == 1).ToList();
-                //indexPageAdmOffVM.DraftClaims = claims.Where(c => c.StatusId == 2).ToList();
-                indexPageAdmOffVM.UnderReviewClaims = claims.Where(c => c.StatusId == 3).ToList();
-                indexPageAdmOffVM.ApprovedClaims = claims.Where(c => c.StatusId == 4).ToList();
+                indexPageAdmOffVM.RejectedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
+                //indexPageAdmOffVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
+                indexPageAdmOffVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
+                indexPageAdmOffVM.ApprovedClaims = claims.Where(c => c.ClaimStatusId == 4).ToList();
             }
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
@@ -109,6 +121,7 @@ namespace Sjuklöner.Controllers
                     ScheduleRow scheduleRow = new ScheduleRow();
 
                     scheduleRow.ScheduleRowDateTest = claimDays[i].DateString;
+                    scheduleRow.DayDate = DateTime.Now.AddDays(i);
 
                     scheduleRow.StartTimeHour = claimDays[i].StartHour;
                     scheduleRow.StartTimeMinute = claimDays[i].StartMinute;
@@ -192,7 +205,7 @@ namespace Sjuklöner.Controllers
         //public ActionResult Create(AssistantClaimVM claimVM, string refNumber)
         public ActionResult Create(AssistantClaimVM claimVM)
         //public ActionResult Create([Bind(Include = "Id,CustomerSSN,QualifyingDate,LastDayOfSicknessDate")] Claim claim)
-        //public ActionResult Create([Bind(Include = "Id,OwnerId,StatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
+        //public ActionResult Create([Bind(Include = "Id,OwnerId,ClaimStatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
         {
             string newReferenceNumber = "";
             string existingReferenceNumber = claimVM.ClaimReference;
@@ -249,7 +262,7 @@ namespace Sjuklöner.Controllers
                         claim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
                         var currentUserId = User.Identity.GetUserId();
                         claim.OwnerId = currentUserId;
-                        claim.StatusId = 2;  //ClaimStatus.Name = "Utkast"
+                        claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
                         claim.CareCompanyId = (int)db.Users.Where(u => u.Id == currentUserId).First().CareCompanyId;
 
                         //Generate a Reference Number for the claim and update the latest Reference Number in the db
@@ -262,9 +275,13 @@ namespace Sjuklöner.Controllers
                             db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 0;
                             db.SaveChanges();
                             latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
+                            newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber + 1).ToString("D5");
                         }
-                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
-                        newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber + 1).ToString("D5");
+                        else
+                        {
+                            db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
+                            newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                        }
                         claim.ReferenceNumber = newReferenceNumber;
                         db.Claims.Add(claim);
                         db.SaveChanges();
@@ -288,6 +305,7 @@ namespace Sjuklöner.Controllers
                         ScheduleRow scheduleRow = new ScheduleRow();
 
                         scheduleRow.ScheduleRowDateTest = claimDays[i].DateString;
+                        scheduleRow.DayDate = DateTime.Now.AddDays(i);
 
                         scheduleRow.StartTimeHour = claimDays[i].StartHour;
                         scheduleRow.StartTimeMinute = claimDays[i].StartMinute;
@@ -353,6 +371,7 @@ namespace Sjuklöner.Controllers
                         var dateInScheduleTest2 = dateInScheduleTest.ToString(format: "ddd d MMM");
                         //dateInScheduleTest2.ToTitleCase(TitleCase.All);
                         scheduleRow.ScheduleRowDateTest = dateInScheduleTest2;
+                        scheduleRow.DayDate = DateTime.Now.AddDays(i);
 
                         scheduleRow.ScheduleRowDate = dateInSchedule.ToShortDateString();
                         scheduleRow.ScheduleRowWeekDay = DateTimeFormatInfo.CurrentInfo.GetDayName(dateInSchedule.DayOfWeek).ToString().Substring(0, 2);
@@ -420,6 +439,7 @@ namespace Sjuklöner.Controllers
                 {
                     ReferenceNumber = scheduleVM.ReferenceNumber,
                     DateString = day.ScheduleRowDateTest,
+                    ClaimDayDate = day.DayDate.ToShortDateString(),
                     SickDayNumber = dayIdx,
 
                     StartHour = day.StartTimeHour,
@@ -715,23 +735,21 @@ namespace Sjuklöner.Controllers
                 existingClaim.HolidayPayDay2To14 = CalculateHolidayPayDay2To14(existingClaim, claimDays);
 
                 //Calculate social fees for day 2 to day 14, hardcoded to 31.42% for now
-                existingClaim.PayrollTaxDay2To14 = 31.42 * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
+                existingClaim.PayrollTaxDay2To14 = 31.42m * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
 
                 //Calculate pensions and insurances for day 2 to day 14, hardcoded to 6.00% for now
-                existingClaim.PensionAndInsurance = 6.00 * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
+                existingClaim.PensionAndInsurance = 6.00m * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
 
                 //SO FAR ONLY DAY 2 TO 14 HAVE BEEN TAKEN INTO ACCOUNT. THE QUALYFYING WILL NEED TO BE ADDED.
                 existingClaim.ModelSum = existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14 + existingClaim.PayrollTaxDay2To14 + existingClaim.PensionAndInsurance;
 
-                existingClaim.StatusId = 3;
+                existingClaim.ClaimStatusId = 3;
                 existingClaim.StatusDate = DateTime.Now;
                 db.Entry(existingClaim).State = EntityState.Modified;
                 db.SaveChanges();
             }
             return RedirectToAction("ShowReceipt", claimAmountVM);
         }
-
-        
 
         public ActionResult ShowReceipt(ClaimAmountVM claimAmountVM)
         {
@@ -755,6 +773,7 @@ namespace Sjuklöner.Controllers
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.ReferenceNumber).ToList();
 
+                decisionVM.ClaimNumber = claim.ReferenceNumber;
                 decisionVM.ModelSum = claim.ModelSum;
                 decisionVM.ClaimSum = claim.ClaimSum;
 
@@ -766,24 +785,113 @@ namespace Sjuklöner.Controllers
             }
         }
 
+        public ActionResult ShowClaimDetails(string referenceNumber)
+        {
+            var claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == referenceNumber).FirstOrDefault();
+
+            List<ClaimDay> claimDays = new List<ClaimDay>();
+            claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+            var ombudId = claim.OwnerId;
+            var ombud = db.Users.Where(u => u.Id == ombudId).FirstOrDefault();
+
+
+            ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
+
+            claimDetailsVM.ReferenceNumber = referenceNumber;
+            claimDetailsVM.StatusName = claim.ClaimStatus.Name;
+
+            //Kommun
+            claimDetailsVM.Council = "Helsingborgs kommun";
+            claimDetailsVM.Administration = "Vård- och omsorgsförvaltningen";
+
+            //Assistansberättigad
+            claimDetailsVM.CustomerName = "Kund Kundsson";
+            claimDetailsVM.CustomerSSN = claim.CustomerSSN;
+            claimDetailsVM.CustomerAddress = "Tolvangatan 12, 123 45 Tolvsta";
+            claimDetailsVM.CustomerPhoneNumber = "019-124 6578";
+
+            //Ombud/uppgiftslämnare
+            claimDetailsVM.OmbudName = ombud.FirstName + " " + ombud.LastName;
+            claimDetailsVM.OmbudPhoneNumber = ombud.PhoneNumber;
+
+            //Assistansanordnare
+            claimDetailsVM.CompanyName = "Tolvan Omsorg AB";
+            claimDetailsVM.OrganisationNumber = claim.OrganisationNumber;
+            claimDetailsVM.GiroNumber = "4321-9876";
+            claimDetailsVM.CompanyAddress = "Omsorgsgatan 117, 987 00 Omsorgköping";
+            claimDetailsVM.CompanyPhoneNumber = "010-986 0000";
+            claimDetailsVM.CollectiveAgreement = "Vårdföretagarna-Kommunal, Personlig assistans (Branch G)";
+
+            //Insjuknad ordinarie assistent
+            //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
+            claimDetailsVM.AssistantName = "Sixten Assistentsson";
+            claimDetailsVM.AssistantSSN = claim.AssistantSSN;
+            claimDetailsVM.QualifyingDayDate = claimDays[0].ClaimDayDate;
+            claimDetailsVM.LastDayOfSicknessDate = claimDays.Last().ClaimDayDate;
+
+            claimDetailsVM.Salary = (decimal)120.00;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsVM.cs.
+            claimDetailsVM.HourlySalary = (decimal)120.00;    //This property is used as the hourly salary in calculations.
+            claimDetailsVM.Sickpay = claim.SickPay;
+            claimDetailsVM.HolidayPay = claim.HolidayPay;
+            claimDetailsVM.SocialFees = claim.SocialFees;
+            claimDetailsVM.PensionAndInsurance = claim.PensionAndInsurance;
+
+            claimDetailsVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
+            claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
+            claimDetailsVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
+            claimDetailsVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
+
+            claimDetailsVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
+            claimDetailsVM.NumberOfOrdinaryHoursSI = claim.NumberOfOrdinaryHoursSI;
+            claimDetailsVM.NumberOfUnsocialHoursSI = claim.NumberOfUnsocialHoursSI;
+            claimDetailsVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
+
+            claimDetailsVM.ClaimSum = claim.ClaimSum;
+
+            //Underlag lönekostnader
+            claimDetailsVM.PerHourUnsocialEvening = (decimal)21.08;
+            claimDetailsVM.PerHourUnsocialNight = (decimal)42.54;
+            claimDetailsVM.PerHourUnsocialWeekend = (decimal)52.47;
+            claimDetailsVM.PerHourUnsocialHoliday = (decimal)105.03;
+            claimDetailsVM.PerHourOnCallWeekday = (decimal)28.13;
+            claimDetailsVM.PerHourOnCallWeekend = (decimal)56.32;
+
+            claimDetailsVM.Workplace = "Björkängen, Birgittagården";
+            claimDetailsVM.CollectiveAgreement = "Vårdföretagarna";
+            
+            claimDetailsVM.HolidayPayRate = (decimal)12.00;
+            claimDetailsVM.SocialFeeRate = (decimal)31.42;
+            claimDetailsVM.PensionAndInsuranceRate = (decimal)6.00;
+            claimDetailsVM.SickPayRate = (decimal)80.00;
+            //claimDetailsVM.QualifyingDayDate = scheduleVM.ScheduleRowList.First().ScheduleRowDate;
+
+            return View("ClaimDetails", claimDetailsVM);
+        }
+
         // POST: Claims/Decide/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Decide(DecisionVM decisionVM)
+        public ActionResult ApproveClaim(DecisionVM decisionVM)
         {
             if (ModelState.IsValid)
             {
-                //db.Entry(claim).State = EntityState.Modified;
-                //db.SaveChanges();
-                //return RedirectToAction("Index");
+                //Approved claim
+                var claim = db.Claims.Where(c => c.ReferenceNumber == decisionVM.ClaimNumber).FirstOrDefault();
+                claim.ClaimStatusId = 4;
+                claim.DecidedSum = decisionVM.DecidedSum;
+                claim.StatusDate = DateTime.Now;
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+                
             }
-            return View(decisionVM);
+            return RedirectToAction("IndexPageAdmOff");
         }
 
-        // GET: Claims/Edit/5
-        public ActionResult Edit(int? id)
+            // GET: Claims/Edit/5
+            public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -802,7 +910,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,OwnerId,StatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
+        public ActionResult Edit([Bind(Include = "Id,OwnerId,ClaimStatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
         {
             if (ModelState.IsValid)
             {
@@ -1060,35 +1168,35 @@ namespace Sjuklöner.Controllers
             return scheduleRow;
         }
 
-        private double CalculateUnsocialHoursPayDay2To14(Claim existingClaim, List<ClaimDay> claimDayList)
+        private decimal CalculateUnsocialHoursPayDay2To14(Claim existingClaim, List<ClaimDay> claimDayList)
         {
-            double unsocialHoursPayDay2To14 = 0;
-            
+            decimal unsocialHoursPayDay2To14 = 0;
+
             //Do not count the qualifying day
             for (int i = 1; i < claimDayList.Count(); i++)
             {
                 //Hourly rates hardcoded according to Vårdföretagarna, to be improved later
                 if (claimDayList[i].DateString.Substring(0, 3) == "lör")
                 {
-                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (42.54 * claimDayList[i].NumberOfUnsocialHoursNight) +
-                        (52.47 * (claimDayList[i].NumberOfUnsocialHours - claimDayList[i].NumberOfUnsocialHoursNight));
+                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (42.54m * (decimal)claimDayList[i].NumberOfUnsocialHoursNight) +
+                        (52.47m * ((decimal)claimDayList[i].NumberOfUnsocialHours - (decimal)claimDayList[i].NumberOfUnsocialHoursNight));
                 }
                 else if (claimDayList[i].DateString.Substring(0, 3) == "sön")
                 {
-                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (52.47 * claimDayList[i].NumberOfUnsocialHours);
+                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (52.47m * (decimal)claimDayList[i].NumberOfUnsocialHours);
                 }
                 else
                 {
-                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (21.08 * claimDayList[i].NumberOfUnsocialHoursEvening) +
-                    (42.54 * claimDayList[i].NumberOfUnsocialHoursNight);
+                    unsocialHoursPayDay2To14 = unsocialHoursPayDay2To14 + (21.08m * (decimal)claimDayList[i].NumberOfUnsocialHoursEvening) +
+                    (42.54m * (decimal)claimDayList[i].NumberOfUnsocialHoursNight);
                 }
             }
             return unsocialHoursPayDay2To14;
         }
 
-        private double CalculateOnCallHoursPayDay2To14(Claim existingClaim, List<ClaimDay> claimDayList)
+        public decimal CalculateOnCallHoursPayDay2To14(Claim existingClaim, List<ClaimDay> claimDayList)
         {
-            double onCallHoursPayDay2To14 = 0;
+            decimal onCallHoursPayDay2To14 = 0;
 
             //Do not count the qualifying day
             for (int i = 1; i < claimDayList.Count(); i++)
@@ -1096,40 +1204,40 @@ namespace Sjuklöner.Controllers
                 //Hourly rates hardcoded according to Vårdföretagarna, to be improved later
                 if (claimDayList[i].DateString.Substring(0, 3) == "lör" || claimDayList[i].DateString.Substring(0, 3) == "sön")
                 {
-                    onCallHoursPayDay2To14 = onCallHoursPayDay2To14 + (56.32 * claimDayList[i].NumberOfOnCallHours);
+                    onCallHoursPayDay2To14 = onCallHoursPayDay2To14 + (56.32m * (decimal)claimDayList[i].NumberOfOnCallHours);
                 }
                 else
                 {
-                    onCallHoursPayDay2To14 = onCallHoursPayDay2To14 + (56.32 * claimDayList[i].NumberOfOnCallHoursNight) +
-                        (28.13 * (claimDayList[i].NumberOfOnCallHours - claimDayList[i].NumberOfOnCallHoursNight));
+                    onCallHoursPayDay2To14 = onCallHoursPayDay2To14 + (56.32m * (decimal)claimDayList[i].NumberOfOnCallHoursNight) +
+                        (28.13m * ((decimal)claimDayList[i].NumberOfOnCallHours - (decimal)claimDayList[i].NumberOfOnCallHoursNight));
                 }
             }
             return onCallHoursPayDay2To14;
         }
 
-        private double CalculateSalaryDay2To14(Claim claim, List<ClaimDay> claimDayList)
+        public decimal CalculateSalaryDay2To14(Claim claim, List<ClaimDay> claimDayList)
         {
-            double salaryDay2To14 = 0;
+            decimal salaryDay2To14 = 0;
 
             //Do not count the qualifying day
             for (int i = 1; i < claimDayList.Count(); i++)
             {
                 //salaryDay2To14 = salaryDay2To14 + (claimFormVM.HourlySalary * scheduleVM.ScheduleRowList[i].NumberOfHours);
-                salaryDay2To14 = salaryDay2To14 + (120 * claimDayList[i].NumberOfHours); //Hourly salary hardcoded to 120,00 kr/hour
+                salaryDay2To14 = salaryDay2To14 + (120 * (decimal)claimDayList[i].NumberOfHours); //Hourly salary hardcoded to 120,00 kr/hour
             }
 
             return salaryDay2To14;
         }
 
-        private double CalculateHolidayPayDay2To14(Claim claim, List<ClaimDay> claimDayList)
+        public decimal CalculateHolidayPayDay2To14(Claim claim, List<ClaimDay> claimDayList)
         {
-            double holidayPayDay2To14 = 0;
-            float numberOfHours = 0;
+            decimal holidayPayDay2To14 = 0;
+            decimal numberOfHours = 0;
 
             //Do not count the qualifying day
             for (int i = 1; i < claimDayList.Count(); i++)
             {
-                numberOfHours = numberOfHours + claimDayList[i].NumberOfHours;
+                numberOfHours = numberOfHours + (decimal)claimDayList[i].NumberOfHours;
             }
             holidayPayDay2To14 = 12 * numberOfHours / 100;
 

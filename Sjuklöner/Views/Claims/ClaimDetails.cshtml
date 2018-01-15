@@ -1,0 +1,855 @@
+﻿@model Sjuklöner.Viewmodels.ClaimDetailsVM
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post))
+{
+    @*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
+
+    @Html.AntiForgeryToken()
+
+    <body>
+        <div class="row no-breadcrumb-top">
+            <p class="col col-md-offset-2 col-md-10 page-header">Ansökan, detaljerad vy</p>
+            <p class="col col-md-offset-2 col-md-10 bold-14 col-small-left-padding">Referensnummer: @Model.ReferenceNumber</p>
+            <p class="col col-md-offset-2 col-md-10 bold-14 col-small-left-padding">Status: @Model.StatusName</p>
+        </div>
+
+        @*Grunduppgifter*@
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Kommun
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.Council, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.Council)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.Administration, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.Administration)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Assistansberättigad
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CustomerName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CustomerSSN)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CustomerAddress)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CustomerPhoneNumber)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Ombud/uppgiftslämnare
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.OmbudName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.OmbudName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.OmbudPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.OmbudPhoneNumber)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Assistansanordnare
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CompanyName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.OrganisationNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.OrganisationNumber)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CompanyAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CompanyAddress)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CompanyPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CompanyPhoneNumber)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.GiroNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.GiroNumber)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CollectiveAgreement, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CollectiveAgreement)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Insjuknad ordinarie assistent
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.AssistantName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.AssistantName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.AssistantSSN)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.QualifyingDayDate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.LastDayOfSicknessDate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.LastDayOfSicknessDate)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.Salary)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.Sickpay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.Sickpay)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.HolidayPay)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.SocialFees)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PensionAndInsurance)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfAbsenceHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.NumberOfAbsenceHours)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfUnsocialHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.NumberOfUnsocialHours)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfOnCallHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.NumberOfOnCallHours)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12 display-large-font">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.ClaimSum)
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.AssistantSSN)
+                                </div>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Grunduppgifter
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.OrganisationNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.OrganisationNumber)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.Workplace, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.Workplace)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CollectiveAgreement, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CollectiveAgreement)
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col col-md-3">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.HourlySalary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.HourlySalary)
+                                    </div>
+                                </div>
+                            </div>*@
+                    @*</div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NameOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.NameOfOmbud)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PhonenUmberOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PhonenUmberOfOmbud)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.CustomerSSN)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.AssistantSSN)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>*@
+
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Underlag lönekostnader
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.HourlySalary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.HourlySalary)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PerHourOnCallWeekday, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PerHourOnCallWeekday)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PerHourOnCallWeekend, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PerHourOnCallWeekend)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            @*<div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.PensionAndInsuranceRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceRate)
+                                    </div>
+                                </div>*@
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PerHourUnsocialEvening, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialEvening)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PerHourUnsocialNight, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialNight)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PerHourUnsocialWeekend, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialWeekend)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PerHourUnsocialHoliday, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialHoliday)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.HolidayPayRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.HolidayPayRate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.SocialFeeRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.SocialFeeRate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PensionAndInsuranceRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceRate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.SickPayRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.SickPayRate)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="row">
+                    <div class="col col-md-2">
+                    </div>
+                    <div class="col col-md-10 form-group-div-frame">
+                        <div class="row">
+                            <div class="col col-md-4 form-group-heading">
+                                Dag 1, karensdag
+                            </div>
+                            <div class="col col-md-4 label-padding">
+                                Datum:
+                            </div>
+                            <div class="col col-md-4">
+                                @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
+                            </div>
+                        </div>
+                        <div class="row form-group-subheading">
+                            <div class="col col-md-4 subheading-padding">
+                                Grundlön
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.NumberOfHoursQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.NumberOfHoursQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.SalaryQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.SalaryQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                            </div>
+                        </div>
+                        <div class="row form-group-subheading">
+                            <div class="col col-md-4 subheading-padding">
+                                Tillägg och avgifter
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.HolidayPayQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.HolidayPayQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.SocialFeesQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.SocialFeesQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.PensionAndInsuranceQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group-subheading">
+                            <div class="col col-md-8 subheading-padding">
+                                Lönekostnad karensdag (Kr)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-8">
+                                <div class="form-group line-height-12">
+                                    @*<div class="row label-padding">
+                                            @Html.LabelFor(model => model.CostQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                        </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.CostQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row">
+                        <div class="col col-md-4 form-group-heading">
+                            Dag 1, karensdag
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <div class="form-group line-height-12">
+                                <div class="row">
+                                    <div class="col col-md-7">
+                                        @Html.LabelFor(model => model.QualifyingDayDate, htmlAttributes: new { @class = "control-label-left-small-padding col-md-12" })
+                                    </div>
+                                    <div class="col col-md-4">
+                                        @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group-subheading">
+                        <div class="col col-md-4 subheading-padding">
+                            Grundlön
+                        </div>
+                    </div>
+                    @*<div class="row">
+                        <div class="col col-md-4">
+                            <div class="form-group line-height-12">
+                                <div class="row">
+                                    <div class="col col-md-5 label-padding">
+                                        @Html.LabelFor(model => model.NumberOfHoursQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="col col-md-1">
+                                        @Html.DisplayFor(modelItem => Model.NumberOfHoursQualifyingDay)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        @Html.LabelFor(model => model.SalaryQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })*@
+                    @*</div>
+                                    <div class="col col-md-5 label-padding no-right-padding">
+                                        @Html.LabelFor(model => model.SalaryQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                    @*<div class="col col-md-1 display-padding display-right-align">
+                                @Html.DisplayFor(modelItem => Model.SalaryQualifyingDay)
+                            </div>
+                        </div>*@
+
+                    <div class="row form-group line-height-10">
+                        <div class="col col-md-2 small-col-padding">
+                            @Html.LabelFor(model => model.NumberOfHoursQualifyingDay, htmlAttributes: new { @class = "control-label-left-no-padding col-md-12" })
+                        </div>
+                        <div class="col col-md-2 display-padding-large">
+                            @Html.DisplayFor(modelItem => Model.NumberOfHoursQualifyingDay)
+                        </div>
+                    </div>
+
+                    <div class="row form-group line-height-10">
+                        <div class="col col-md-4 small-col-padding">
+                            @Html.LabelFor(model => model.SalaryQualifyingDay, htmlAttributes: new { @class = "control-label-left-no-padding col-md-12" })
+                        </div>
+                        <div class="col col-md-2 display-padding display-right-align">
+                            @Html.DisplayFor(modelItem => Model.SalaryQualifyingDay)
+                        </div>
+                    </div>
+
+                    <div class="row form-group-subheading">
+                        <div class="col col-md-4 subheading-padding">
+                            Tillägg och avgifter
+                        </div>
+                    </div>
+                    <div class="row form-group line-height-10">
+                        <div class="col col-md-4 small-col-padding">
+                            @Html.LabelFor(model => model.HolidayPayQualifyingDay, htmlAttributes: new { @class = "control-label-left-no-padding col-md-12" })
+                        </div>
+                        <div class="col col-md-2 display-padding display-right-align">
+                            @Html.DisplayFor(modelItem => Model.HolidayPayQualifyingDay)
+                        </div>
+                    </div>
+                    <div class="row form-group line-height-10">
+                        <div class="col col-md-4 small-col-padding">
+                            @Html.LabelFor(model => model.SocialFeesQualifyingDay, htmlAttributes: new { @class = "control-label-left-no-padding col-md-12" })
+                        </div>
+                        <div class="col col-md-2 display-padding display-right-align">
+                            @Html.DisplayFor(modelItem => Model.SocialFeesQualifyingDay)
+                        </div>
+                    </div>
+                    <div class="row form-group line-height-10">
+                        <div class="col col-md-4 small-col-padding">
+                            @Html.LabelFor(model => model.PensionAndInsuranceQualifyingDay, htmlAttributes: new { @class = "control-label-left-no-padding col-md-12" })
+                        </div>
+                        <div class="col col-md-2 display-padding display-right-align">
+                            @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQualifyingDay, new { @class = "display-right-align" })
+                        </div>
+                    </div>
+                    <div class="row form-group-subheading">
+                        <div class="col col-md-4 subheading-padding">
+                            Lönekostnad karensdag (Kr):
+                        </div>
+                        <div class="col col-md-2 display-padding form-group-subheading display-right-align">
+                            @Html.DisplayFor(modelItem => Model.CostQualifyingDay, new { @class = "display-right-align" })
+                        </div>
+                    </div>
+                    @*<div class="row">
+                        <div class="col col-md-8">
+                            <div class="form-group line-height-12">
+                                @*<div class="row label-padding">
+                                        @Html.LabelFor(model => model.CostQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>*@
+                    @*<div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.CostQualifyingDay)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                            </div>
+                        </div>*@
+                </div>
+
+            </div>
+        </div>
+
+        @*<br />
+            <br />
+            <br />
+            <p>*@
+        @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")*@
+        @*</p>*@
+    </body>
+}
+@*<div class="row">
+        <div class="col-md-offset-2 col-md-10">
+            <button id="show-hours-btn" class="btn btn-default">Visa timmar script</button>
+            <button onclick="calculateHours()" class="btn btn-default">Visa timmar</button>
+            <button onclick="copyToStandin()" class="btn btn-default">Kopiera till vikarie</button>
+        </div>
+    </div>*@
+<script type='text/javascript'>
+
+    //$(document).ready(function () {
+    //    $("#show-hours-btn").click(function () {
+    //        alert("Hello");
+    //    });
+    //});
+</script>
