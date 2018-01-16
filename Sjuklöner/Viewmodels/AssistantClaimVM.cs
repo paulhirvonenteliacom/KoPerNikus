@@ -13,6 +13,7 @@ namespace Sjuklöner.Viewmodels
         public string ClaimReference { get; set; }
 
         [Display(Name = "Vårdgivarens organisationsnummer")]
+        [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
         public string OrganisationNumber { get; set; }
 
         [Required]
