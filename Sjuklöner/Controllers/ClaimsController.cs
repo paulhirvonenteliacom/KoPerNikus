@@ -13,6 +13,9 @@ using System.Globalization;
 using System.Threading;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Net.Mail;
+using System.Configuration;
+using System.Xml;
 
 namespace Sjuklöner.Controllers
 {
@@ -71,6 +74,15 @@ namespace Sjuklöner.Controllers
                 claim.StatusDate = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress("ourrobotdemo@gmail.com");
+                //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
+                message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.Subject = "Avlsagen ansökan: " + referenceNumber;
+                message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
+
+                SendEmail(message);
             }
 
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
@@ -753,6 +765,31 @@ namespace Sjuklöner.Controllers
 
         public ActionResult ShowReceipt(ClaimAmountVM claimAmountVM)
         {
+            var claim = db.Claims.Where(rn => rn.ReferenceNumber == claimAmountVM.ClaimNumber).FirstOrDefault();
+
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress("ourrobotdemo@gmail.com");
+            //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
+            message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+            message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
+            message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
+
+            SendEmail(message);
+
+            string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
+
+            Directory.CreateDirectory(appdataPath);
+            using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+            {
+                writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                        writer.WriteElementString("SSN", claim.CustomerSSN);
+                        writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                        writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                    writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+
             return View("Receipt", claimAmountVM);
         }
 
@@ -885,7 +922,15 @@ namespace Sjuklöner.Controllers
                 claim.StatusDate = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
-                
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress("ourrobotdemo@gmail.com");
+                //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
+                message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
+                message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
+
+                SendEmail(message);
             }
             return RedirectToAction("IndexPageAdmOff");
         }
@@ -1242,6 +1287,16 @@ namespace Sjuklöner.Controllers
             holidayPayDay2To14 = 12 * numberOfHours / 100;
 
             return holidayPayDay2To14;
+        }
+
+        private static void SendEmail(MailMessage message)
+        {
+            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", Convert.ToInt32(587));
+            NetworkCredential credentials = new NetworkCredential(ConfigurationManager.AppSettings["mailAccount"], ConfigurationManager.AppSettings["mailPassword"]);
+            smtpClient.Credentials = credentials;
+            smtpClient.EnableSsl = true;
+            smtpClient.Send(message);
+            return;
         }
 
         protected override void Dispose(bool disposing)
