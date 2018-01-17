@@ -44,7 +44,7 @@ namespace Sjuklöner.Models
         [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string CustomerSSN { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Ordinarie assistents personnummer")]
         [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string AssistantSSN { get; set; }
@@ -63,6 +63,9 @@ namespace Sjuklöner.Models
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime LastDayOfSicknessDate { get; set; }
+
+        [Display(Name = "Mottagare av beslut (e-post)")]
+        public string Email { get; set; }
 
         [Display(Name = "Antal sjukdagar")]
         public int NumberOfSickDays { get; set; }
@@ -166,6 +169,15 @@ namespace Sjuklöner.Models
 
         [Display(Name = "Ersättningsanspråk dag 2 - dag 14")]
         public decimal ClaimDay2To14 { get; set; }
+
+        //public bool Step1Saved { get; set; }
+        //public bool Step1Complete { get; set; }
+
+        //public bool Step2Saved { get; set; }
+        //public bool Step2Complete { get; set; }
+
+        //public bool Step3Saved { get; set; }
+        //public bool Step3Complete { get; set; }
 
         //[Display(Name = "Yrkat belopp")]
         //public decimal ClaimSum { get; set; }

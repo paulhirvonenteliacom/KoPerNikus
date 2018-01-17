@@ -31,7 +31,7 @@ namespace Sjuklöner.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ReferenceNumber = c.String(),
-                        ClaimDayDate = c.String(),
+                        ClaimDayDate = c.DateTime(),
                         DateString = c.String(),
                         SickDayNumber = c.Int(nullable: false),
                         StartHour = c.String(),
@@ -92,9 +92,10 @@ namespace Sjuklöner.Migrations
                         CustomerLastName = c.String(),
                         OrganisationNumber = c.String(),
                         CustomerSSN = c.String(nullable: false),
-                        AssistantSSN = c.String(nullable: false),
+                        AssistantSSN = c.String(),
                         QualifyingDate = c.DateTime(nullable: false),
                         LastDayOfSicknessDate = c.DateTime(nullable: false),
+                        Email = c.String(),
                         NumberOfSickDays = c.Int(nullable: false),
                         NumberOfAbsenceHours = c.Decimal(nullable: false, precision: 18, scale: 2),
                         NumberOfOrdinaryHours = c.Decimal(nullable: false, precision: 18, scale: 2),
@@ -149,7 +150,7 @@ namespace Sjuklöner.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         MimeTypeId = c.Int(nullable: false),
-                        StatusId = c.Int(nullable: false),
+                        DocStatusId = c.Int(nullable: false),
                         PurposeId = c.Int(nullable: false),
                         OwnerId = c.String(maxLength: 128),
                         Filename = c.String(nullable: false),
@@ -160,16 +161,25 @@ namespace Sjuklöner.Migrations
                         Claim_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.DocStatus", t => t.DocStatusId, cascadeDelete: true)
                 .ForeignKey("dbo.MimeTypes", t => t.MimeTypeId, cascadeDelete: true)
                 .ForeignKey("dbo.AspNetUsers", t => t.OwnerId)
                 .ForeignKey("dbo.Purposes", t => t.PurposeId, cascadeDelete: true)
-                .ForeignKey("dbo.DocStatus", t => t.StatusId, cascadeDelete: true)
                 .ForeignKey("dbo.Claims", t => t.Claim_Id)
                 .Index(t => t.MimeTypeId)
-                .Index(t => t.StatusId)
+                .Index(t => t.DocStatusId)
                 .Index(t => t.PurposeId)
                 .Index(t => t.OwnerId)
                 .Index(t => t.Claim_Id);
+            
+            CreateTable(
+                "dbo.DocStatus",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.MimeTypes",
@@ -270,15 +280,6 @@ namespace Sjuklöner.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.DocStatus",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "dbo.Messages",
                 c => new
                     {
@@ -328,13 +329,13 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.Messages", "ClaimId", "dbo.Claims");
             DropForeignKey("dbo.Documents", "Claim_Id", "dbo.Claims");
-            DropForeignKey("dbo.Documents", "StatusId", "dbo.DocStatus");
             DropForeignKey("dbo.Documents", "PurposeId", "dbo.Purposes");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Documents", "OwnerId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Documents", "MimeTypeId", "dbo.MimeTypes");
+            DropForeignKey("dbo.Documents", "DocStatusId", "dbo.DocStatus");
             DropForeignKey("dbo.Claims", "ClaimStatusId", "dbo.ClaimStatus");
             DropForeignKey("dbo.Claims", "CareCompanyId", "dbo.CareCompanies");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
@@ -347,20 +348,20 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.Documents", new[] { "Claim_Id" });
             DropIndex("dbo.Documents", new[] { "OwnerId" });
             DropIndex("dbo.Documents", new[] { "PurposeId" });
-            DropIndex("dbo.Documents", new[] { "StatusId" });
+            DropIndex("dbo.Documents", new[] { "DocStatusId" });
             DropIndex("dbo.Documents", new[] { "MimeTypeId" });
             DropIndex("dbo.Claims", new[] { "CareCompanyId" });
             DropIndex("dbo.Claims", new[] { "ClaimStatusId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.CollectiveAgreements");
             DropTable("dbo.Messages");
-            DropTable("dbo.DocStatus");
             DropTable("dbo.Purposes");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.MimeTypes");
+            DropTable("dbo.DocStatus");
             DropTable("dbo.Documents");
             DropTable("dbo.ClaimStatus");
             DropTable("dbo.Claims");

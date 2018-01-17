@@ -12,7 +12,9 @@ namespace Sjuklöner.Models
 
         public string ReferenceNumber { get; set; }
 
-        public string ClaimDayDate { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? ClaimDayDate { get; set; }
 
         public string DateString { get; set; }
 

@@ -22,7 +22,7 @@ namespace Sjuklöner.Viewmodels
         [DataType(DataType.DateTime)]
         public DateTime DayDate { get; set; }
 
-        public string ScheduleRowDateTest { get; set; }
+        public string ScheduleRowDateString { get; set; }
 
         public string ScheduleRowWeekDay { get; set; }
 

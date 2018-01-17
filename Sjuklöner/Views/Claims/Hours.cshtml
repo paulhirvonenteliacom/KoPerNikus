@@ -8,30 +8,34 @@
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item breadcrumb-font"><a class="breadcrumb-padding" href="../Account/Login">Hem</a></li>
-            <li class="breadcrumb-item breadcrumb-font"><a class="breadcrumb-padding" href="./Create">Organisationsnummer</a></li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Organisationsnummer", "Create", new { refNumber = Model.ReferenceNumber, id = 1 }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Arbetstid</li>
         </ol>
     </nav>
 </div>
 @*@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post, new { claimNumber = Model.ReferenceNumber }))*@
-@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
+@using (Html.BeginForm("AddHours", "Claims", new { claimNumber = Model.ReferenceNumber }))
+    {
+        @Html.AntiForgeryToken()
+
 
     for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
     {
-        Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDateTest);
+        Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDateString);
         Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDate);
+        //Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].DayDate);
     }
-    @Html.HiddenFor(m => m.ReferenceNumber)
+        @Html.HiddenFor(m => m.ReferenceNumber)
 
-    <body>
-        <div class="row">
+        <body>
+
+
+            <div class="row">
 
             <p class="col col-md-2"></p>
             <p class="page-header col col-md-10">Ansökan om sjuklöneersättning</p>
-            <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
+            @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
             <br>
             <p class="col col-md-offset-2 col-md-10 second-page-header">Steg 2: Ange arbetstid och jourtid</p>
         </div>
@@ -50,10 +54,10 @@
                     {
                         <div class="row row-height-42 line-height-06">
                             <div class="col col-md-12 col-padding-40 schedule-date">
-                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
-                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
                 </div>
                 <div class="col col-md-9 div-assistant-frame div-padding">
@@ -250,10 +254,10 @@
                     {
                         <div class="row row-height-42 line-height-06">
                             <div class="col col-md-12 col-padding-40 schedule-date">
-                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
-                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
                 </div>
                 <div class="col col-md-9 div-assistant-frame div-padding">
@@ -440,7 +444,7 @@
                 <br>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input class="btn btn-default" type="submit" value="Till steg 3" />
+                        <input class="btn btn-primary btn-primary-small" type="submit" value="Till steg 3" />
                     </div>
                 </div>
             </div>
@@ -481,7 +485,7 @@
                 {
                     <div class="row height-28">
                         <div class="col col-md-12 col-padding-40">
-                            @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                            @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                         </div>
                     </div>
                 }
@@ -610,7 +614,7 @@
                     {
                         <div class="row height-28">
                             <div class="col col-md-12 col-padding-40">
-                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateTest)
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
                     }

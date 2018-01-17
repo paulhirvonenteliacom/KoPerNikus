@@ -53,13 +53,21 @@ li {
     float: left;
 }
 
-    li a {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 0 36px;
-        text-decoration: none;
-    }
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 0 36px;
+    text-decoration: none;
+}
+
+.li-a-less-padding-left {
+    /*display: block;
+    color: white;
+    text-align: center;*/
+    padding: 0 36px 0 24px;
+    /*text-decoration: none;*/
+}
 
 .nav > li > a:hover, .nav > li > a:focus {
     color: #ffffff;
@@ -171,6 +179,20 @@ li {
     /*line-height: 34px;*/
     padding: 0 15px 0 5px;
     margin-top: 151px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
+.page-header {
+    font-size: 50px;
+    /*line-height: 34px;*/
+    padding: 0 15px 0 0;
+    margin-top: 10px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
     /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
@@ -310,10 +332,36 @@ li {
     width: 130px;
 }
 
+.btn-primary-small {
+    margin-left: 0;
+    font-size: 14px;
+    width: 90px;
+    padding: 6px 6px;
+}
+
+.btn-primary-wide {
+    margin-left: 5px;
+    font-size: 22px;
+    width: 220px;
+}
+
 .btn-success {
     margin-left: 0;
     font-size: 22px;
     width: 130px;
+}
+
+.btn-success-small {
+    margin-left: 0;
+    font-size: 14px;
+    width: 90px;
+    padding: 6px 6px;
+}
+
+.btn-success-wide {
+    margin-left: 5px;
+    font-size: 22px;
+    width: 220px;
 }
 
 .btn-danger {
@@ -322,10 +370,33 @@ li {
     width: 130px;
 }
 
+.btn-danger-small {
+    margin-left: 0;
+    font-size: 14px;
+    width: 90px;
+    padding: 6px 6px;
+}
+
+.btn-secondary {
+    margin-left: 0;
+    font-size: 22px;
+    width: 130px;
+}
+
+.btn-secondary-small {
+    margin-left: 0;
+    font-size: 14px;
+    width: 90px;
+    padding: 6px 6px;
+}
+
 .btn-left-margin-5 {
     margin-left: 5px;
 }
 
+.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+    vertical-align: middle;
+}
 
 #add-stand-in-btn {
     font-weight: bold;
@@ -824,4 +895,12 @@ a:hover, a:focus {
 
 .float-right {
     float: right;
+}
+
+.no-padding-left {
+    padding-left: 0;
+}
+
+.table-button-cell {
+    width: 114px;
 }

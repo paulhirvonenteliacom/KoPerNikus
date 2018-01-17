@@ -76,9 +76,9 @@
             @if (User.IsInRole("Ombud"))
             {
                 <ul>
-                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink" })</li>
+                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>
                     <li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                    <li>@Html.ActionLink("Anordnare", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>
+                    <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>
                 </ul>
             }
             else
@@ -99,11 +99,11 @@
         <hr />
         <footer>
             <div class="row">
-                <div class="col col-md-9 small-font">
-                    <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun </p>
+                <div class="col col-md-offset-2 col-md-9 small-font padding-left-no-claim">
+                    <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
                 </div>
-                <div class="col col-md-2 small-font">
-                    &copy; @DateTime.Now.Year - Bitoreq AB
+                <div class="col col-md-1 small-font">
+                    &copy; Bitoreq AB
                 </div>
 
             </div>

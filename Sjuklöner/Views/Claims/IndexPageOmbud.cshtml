@@ -6,17 +6,18 @@
 <body>
     <div class="row index-page-margin">
         <p class="col col-md-2"></p>
-        <p class="page-header col col-md-10">Ansökningar</p>
-        <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
+        <p class="page-header col col-md-10">Ansökningar, ombud</p>
+        @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
     </div>
 
     <br />
     <br />
     <div class="row">
         <div class="col col-md-offset-2">
-            @Html.ActionLink("Skapa ny ansökan", "Create")
+            @Html.ActionLink("Skapa ny ansökan", "Create", null, new { @class = "btn btn-primary btn-primary-wide" })
         </div>
     </div>
+    <hr class="claim-divider col-md-offset-2" />
     <div class="row">
         <div class="col col-md-offset-2">
             <div class="second-page-header">
@@ -30,7 +31,7 @@
                             Referensnummer
                         </th>
                         <th class="small-col">
-                            Senaste statusändring
+                            Avslagen datum
                         </th>
                         <th class="small-col">
                             Kundens personnummer
@@ -51,7 +52,9 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber })">
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                </a>
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -69,9 +72,9 @@
                                 @Html.DisplayFor(modelItem => item.ClaimSum)
                             </td>
                             <td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                                @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success-small" }) |*@
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                                @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary-small" })*@
                             </td>
                         </tr>
                     }
@@ -80,7 +83,7 @@
             }
             else
             {
-                <div class="padding-left-no-claim">
+                <div class="padding-left-no-claim font-size-16">
                     Du har inga avslagna ansökningar.
                 </div>
                 <br />
@@ -102,7 +105,7 @@
                             Referensnummer
                         </th>
                         <th class="small-col">
-                            Senaste statusändring
+                            Skapad datum
                         </th>
                         <th class="small-col">
                             Kundens personnummer
@@ -116,14 +119,18 @@
                         <th class="medium-col">
                             Yrkat belopp (Kr)
                         </th>
-                        <th></th>
+                        <th class="table-button-cell"></th>
+                        <th class="table-button-cell"></th>
+                        <th class="table-button-cell"></th>
                     </tr>
 
                     @foreach (var item in Model.DraftClaims)
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber })">
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                </a>
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -141,9 +148,16 @@
                                 @Html.DisplayFor(modelItem => item.ClaimSum)
                             </td>
                             <td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                                @Html.ActionLink("Uppdatera", "Create", new { refNumber = item.ReferenceNumber, id = 1 }, new { @class = "btn btn-success btn-success-small" })
+                            </td>
+                            <td>
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                            </td>
+                            <td>
+                                @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })
+                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
                             </td>
                         </tr>
                     }
@@ -152,7 +166,7 @@
             }
             else
             {
-                <div class="padding-left-no-claim">
+                <div class="padding-left-no-claim font-size-16">
                     Du har inga utkast.
                 </div>
                 <br />
@@ -164,7 +178,7 @@
     <div class="row">
         <div class="col col-md-offset-2">
             <div class="second-page-header">
-                Under handläggning
+                Inskickade
             </div>
             @if (Model.UnderReviewClaims?.Count() > 0)
             {
@@ -174,7 +188,7 @@
                             Referensnummer
                         </th>
                         <th class="small-col">
-                            Senaste statusändring
+                            Inskickad datum
                         </th>
                         <th class="small-col">
                             Kundens personnummer
@@ -195,7 +209,9 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber })">
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                </a>
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -213,9 +229,12 @@
                                 @Html.DisplayFor(modelItem => item.ClaimSum)
                             </td>
                             <td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                                @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
+                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" }) |
+                                    @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
                             </td>
                         </tr>
                     }
@@ -224,14 +243,14 @@
             }
             else
             {
-                <div class="padding-left-no-claim">
-                    Du har inga ansökningar som är under handläggning.
+                <div class="padding-left-no-claim font-size-16">
+                    Du har inga inskickade ansökningar.
                 </div>
                 <br />
             }
         </div>
     </div>
-    <hr class="claim-divider col-md-offset-2"/>
+    <hr class="claim-divider col-md-offset-2" />
 
     <div class="row">
         <div class="col col-md-offset-2">
@@ -246,7 +265,7 @@
                             Referensnummer
                         </th>
                         <th class="small-col">
-                            Senaste statusändring
+                            Godkänd datum
                         </th>
                         <th class="small-col">
                             Kundens personnummer
@@ -285,9 +304,10 @@
                                 @Html.DisplayFor(modelItem => item.ClaimSum)
                             </td>
                             <td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
                             </td>
                         </tr>
                     }
@@ -296,12 +316,13 @@
             }
             else
             {
-                <div class="padding-left-no-claim">
+                <div class="padding-left-no-claim font-size-16">
                     Du har inga godkända ansökningar.
                 </div>
                 <br />
             }
         </div>
     </div>
+    <hr class="claim-divider col-md-offset-2" />
 
 </body>

@@ -80,7 +80,7 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "Sista sjukdag, datum:")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [DataType(DataType.DateTime)]
+        //[DataType(DataType.DateTime)]
         public string LastDayOfSicknessDate { get; set; }
 
         [Display(Name = "Lön, tim- eller månadslön (Kr):")]
