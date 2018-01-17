@@ -5,7 +5,7 @@
 }
 <body>
     <div class="row index-page-margin">
-        <p class="col col-md-2"></p>
+        @*<p class="col col-md-2"></p>*@
         <p class="page-header col col-md-10">Ansökningar, handläggare</p>
         @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
     </div>
@@ -18,11 +18,103 @@
         </div>
     </div>*@
 
-    <hr class="claim-divider col-md-offset-2" />
+    <hr class="claim-divider" />
     <div class="row">
-        <div class="col col-md-offset-2">
+        <div class="col">
             <div class="second-page-header">
                 Inkorgen
+            </div>
+            @if (Model.InInboxClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col">
+                            Referensnummer
+                        </th>
+                        <th class="small-col">
+                            Inkommen datum
+                        </th>
+                        <th class="small-col">
+                            Assistansbolag
+                        </th>
+                        <th class="small-col">
+                            Assistentens personnummer
+                        </th>
+                        <th class="small-col">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col">
+                            Sista sjukdag
+                        </th>
+                        <th class="small-col">
+                            Antal sjukdagar
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        @*<th></th>*@
+                    </tr>
+
+                    @foreach (var item in Model.InInboxClaims)
+                    {
+                        <tr>
+                            <td>
+                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("DecisionBoard", "Claims", new { id = item.Id })">
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                </a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StatusDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CareCompany.CompanyName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AssistantSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                            </td>
+                            @*<td>
+                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                            </td>*@
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="left-margin-23 font-size-16">
+                    Det finns inga ansökningar i inkorgen.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+
+    <hr class="claim-divider" />
+    <div class="row">
+        <div class="col">
+            <div class="second-page-header">
+                Under bearbetning
             </div>
             @if (Model.UnderReviewClaims?.Count() > 0)
             {
@@ -91,10 +183,10 @@
                                 @Html.DisplayFor(modelItem => item.ClaimSum)
                             </td>
                             @*<td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
-                            </td>*@
+                                    @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                                </td>*@
                         </tr>
                     }
 
@@ -102,17 +194,17 @@
             }
             else
             {
-                <div class="padding-left-no-claim font-size-16">
-                    Det finns inga ansökningar i inkorgen.
+                <div class="left-margin-23 font-size-16">
+                    Det finns inga ansökningar under bearbetning.
                 </div>
                 <br />
             }
         </div>
     </div>
-    <hr class="claim-divider col-md-offset-2" />
 
+    <hr class="claim-divider" />
     <div class="row">
-        <div class="col col-md-offset-2">
+        <div class="col">
             <div class="second-page-header">
                 Avslagna
             </div>
@@ -194,14 +286,14 @@
             }
             else
             {
-                <div class="padding-left-no-claim font-size-16">
+                <div class="left-margin-23 font-size-16">
                     Det finns inga avslagna ansökningar.
                 </div>
                 <br />
             }
         </div>
     </div>
-    <hr class="claim-divider col-md-offset-2" />
+    <hr class="claim-divider" />
 
     @*<div class="row">
         <div class="col col-md-offset-2">
@@ -278,7 +370,7 @@
     
 
     <div class="row">
-        <div class="col col-md-offset-2">
+        <div class="col">
             <div class="second-page-header">
                 Godkända
             </div>
@@ -366,13 +458,13 @@
             }
             else
             {
-                <div class="padding-left-no-claim font-size-16">
+                <div class="left-margin-23 font-size-16">
                     Det finns inga godkända ansökningar.
                 </div>
                 <br />
             }
         </div>
     </div>
-    <hr class="claim-divider col-md-offset-2" />
+    <hr class="claim-divider" />
 
 </body>

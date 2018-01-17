@@ -54,7 +54,7 @@ namespace Sjuklöner.Controllers
             {
                 indexPageOmbudVM.RejectedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
                 indexPageOmbudVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
-                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
+                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList().Concat(claims.Where(c => c.ClaimStatusId == 5)).ToList();
                 indexPageOmbudVM.ApprovedClaims = claims.Where(c => c.ClaimStatusId == 4).ToList();
             }
 
@@ -93,7 +93,7 @@ namespace Sjuklöner.Controllers
             if (claims.Count > 0)
             {
                 indexPageAdmOffVM.RejectedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
-                //indexPageAdmOffVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
+                indexPageAdmOffVM.InInboxClaims = claims.Where(c => c.ClaimStatusId == 5).ToList();
                 indexPageAdmOffVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
                 indexPageAdmOffVM.ApprovedClaims = claims.Where(c => c.ClaimStatusId == 4).ToList();
             }
@@ -197,8 +197,8 @@ namespace Sjuklöner.Controllers
 
             AssistantClaimVM claimVM = new AssistantClaimVM();
 
-            claimVM.AssistantSSN = "19930701-4168";
-            claimVM.CustomerSSN = "19391025-7246";
+            claimVM.AssistantSSN = "930701-4168";
+            claimVM.CustomerSSN = "391025-7246";
             claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
             claimVM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
 
@@ -270,8 +270,8 @@ namespace Sjuklöner.Controllers
                             Claim claim = new Claim();
                             claim.OrganisationNumber = claimVM.OrganisationNumber;
                             //Hardcoded SSNs for demo
-                            claim.CustomerSSN = "19391025-7246";
-                            claim.AssistantSSN = "19930701-4168";
+                            claim.CustomerSSN = "391025-7246";
+                            claim.AssistantSSN = "930701-4168";
                             claim.Email = claimVM.Email;
                             //claim.CustomerSSN = claimVM.CustomerSSN;
                             //claim.AssistantSSN = claimVM.AssistantSSN;
@@ -793,7 +793,7 @@ namespace Sjuklöner.Controllers
                 //SO FAR ONLY DAY 2 TO 14 HAVE BEEN TAKEN INTO ACCOUNT. THE QUALYFYING WILL NEED TO BE ADDED.
                 existingClaim.ModelSum = existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14 + existingClaim.PayrollTaxDay2To14 + existingClaim.PensionAndInsurance;
 
-                existingClaim.ClaimStatusId = 3;
+                existingClaim.ClaimStatusId = 5;
                 existingClaim.StatusDate = DateTime.Now;
                 db.Entry(existingClaim).State = EntityState.Modified;
                 db.SaveChanges();

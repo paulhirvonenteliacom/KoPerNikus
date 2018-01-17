@@ -85,6 +85,8 @@ namespace Sjuklöner.Migrations
                         OwnerId = c.String(),
                         ClaimStatusId = c.Int(nullable: false),
                         CareCompanyId = c.Int(nullable: false),
+                        IVOCheck = c.String(),
+                        ProCapitaCheck = c.String(),
                         ReferenceNumber = c.String(),
                         StatusDate = c.DateTime(),
                         DeadlineDate = c.DateTime(),

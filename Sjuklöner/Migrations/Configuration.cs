@@ -149,7 +149,8 @@ namespace Sjuklöner.Migrations
                 new ClaimStatus { Id = 1, Name = "Avslagen" },
                 new ClaimStatus { Id = 2, Name = "Utkast" },
                 new ClaimStatus { Id = 3, Name = "Under handläggning" },
-                new ClaimStatus { Id = 4, Name = "Godkänd" }
+                new ClaimStatus { Id = 4, Name = "Godkänd" },
+                new ClaimStatus { Id = 5, Name = "Inkorgen" }
             };
             foreach (var claimStatus in claimStatuses)
             {

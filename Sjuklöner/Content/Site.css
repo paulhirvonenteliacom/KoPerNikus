@@ -76,7 +76,7 @@ li a {
 }
 
 .navbar-actionlink {
-    font-weight: bold;
+    font-weight: normal;
     color: #ffffff;
     font-size: 18px;
     margin-top: 18px;
@@ -123,6 +123,10 @@ li a {
     margin-top: 6px;
 }
 
+.container {
+    padding-left: 0;
+}
+
 .helsingborg-logo {
     width: 20%;
     height: 20%;
@@ -147,13 +151,26 @@ li a {
 }
 
 .red-bar-filler {
-    width: 350px;
+    width: 158px;
     height: 65px;
     background-color: #ae0b05;
     float: left;
     margin-bottom: 6px;
 }
 
+.blue-bar {
+    height: 65px;
+    width: 100%;
+    background-color: #005c86;
+}
+
+.blue-bar-filler {
+    width: 158px;
+    height: 65px;
+    background-color: #005c86;
+    float: left;
+    margin-bottom: 6px;
+}
 
 .assistant-claim {
     margin-top: 15px;
@@ -163,7 +180,7 @@ li a {
 .page-header {
     font-size: 50px;
     /*line-height: 34px;*/
-    padding: 0 15px 0 5px;
+    padding: 0 15px 0 18px;
     margin-top: 10px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
@@ -177,7 +194,7 @@ li a {
 .page-header1 {
     font-size: 50px;
     /*line-height: 34px;*/
-    padding: 0 15px 0 5px;
+    padding: 0 15px 18px 5px;
     margin-top: 151px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
@@ -188,10 +205,10 @@ li a {
     border: none;
 }
 
-.page-header {
+.page-header2 {
     font-size: 50px;
     /*line-height: 34px;*/
-    padding: 0 15px 0 0;
+    padding: 0 15px 18px 0;
     margin-top: 10px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
@@ -219,9 +236,10 @@ li a {
 .second-page-header {
     font-size: 24px;
     /*line-height: 34px;*/
-    padding: 20px 15px 0 5px;
+    padding: 20px 15px 18px 5px;
     margin-top: 5px;
     margin-bottom: 10px;
+    margin-left: 18px;
     /*margin-bottom: 40px;*/
     /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
     font-family: 'Chonburi', cursive;
@@ -233,9 +251,10 @@ li a {
 .second-page-header-large {
     font-size: 36px;
     /*line-height: 34px;*/
-    padding: 20px 15px 0 5px;
+    padding: 20px 15px 18px 5px;
     margin-top: 5px;
     margin-bottom: 10px;
+    margin-left: 18px;
     /*margin-bottom: 40px;*/
     /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
     font-family: 'Chonburi', cursive;
@@ -249,7 +268,7 @@ li a {
 .second-page-header-no-padding-left {
     font-size: 24px;
     /*line-height: 34px;*/
-    padding: 20px 15px 0 0;
+    padding: 20px 15px 18px 0;
     margin-top: 5px;
     margin-bottom: 10px;
     /*margin-bottom: 40px;*/
@@ -260,6 +279,15 @@ li a {
     border: none;
 }
 
+.left-margin-18 {
+    margin-left: 18px;
+}
+
+.left-margin-23 {
+    margin-left: 23px;
+}
+
+
 .subtitle-padding {
     padding-bottom: 50px;
 }
@@ -267,7 +295,7 @@ li a {
 .page-header-claim {
     font-size: 30px;
     line-height: 34px;
-    padding: 20px 15px 0 5px;
+    padding: 20px 15px 18px 5px;
     margin-top: 10px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
@@ -340,7 +368,7 @@ li a {
 }
 
 .btn-primary-wide {
-    margin-left: 5px;
+    margin-left: 18px;
     font-size: 22px;
     width: 220px;
 }
