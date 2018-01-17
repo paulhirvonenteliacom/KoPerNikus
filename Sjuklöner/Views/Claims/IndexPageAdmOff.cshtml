@@ -62,9 +62,7 @@
                     {
                         <tr>
                             <td>
-                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("DecisionBoard", "Claims", new { id = item.Id })">
-                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
-                                </a>
+                                @Html.ActionLink(item.ReferenceNumber, "DecisionBoard", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -154,9 +152,7 @@
                     {
                         <tr>
                             <td>
-                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("DecisionBoard", "Claims", new { id = item.Id })">
-                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
-                                </a>
+                                @Html.ActionLink(item.ReferenceNumber, "DecisionBoard", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -246,9 +242,7 @@
                     {
                         <tr>
                             <td>
-                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber })">
-                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
-                                </a>
+                                @Html.ActionLink(item.ReferenceNumber, "DecisionBoard", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -415,9 +409,7 @@
                     {
                         <tr>
                             <td>
-                                <a target="_blank" class="btn btn-primary btn-primary-small" href="@Url.Action("ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber })">
-                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
-                                </a>
+                                @Html.ActionLink(item.ReferenceNumber, "DecisionBoard", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
