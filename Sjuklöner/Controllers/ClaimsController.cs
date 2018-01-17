@@ -91,7 +91,7 @@ namespace Sjuklöner.Controllers
                 string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
                 Directory.CreateDirectory(appdataPath);
-                using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+                using (var writer = XmlWriter.Create(appdataPath + "\\reject.xml"))
                 {
                     writer.WriteStartDocument();
                     writer.WriteStartElement("claiminformation");
@@ -288,7 +288,7 @@ namespace Sjuklöner.Controllers
                             Claim claim = new Claim();
                             claim.OrganisationNumber = claimVM.OrganisationNumber;
                             //Hardcoded SSNs for demo
-                            claim.CustomerSSN = "391025-7246";
+                            claim.CustomerSSN = claimVM.CustomerSSN;
                             claim.AssistantSSN = "930701-4168";
                             claim.Email = claimVM.Email;
                             //claim.CustomerSSN = claimVM.CustomerSSN;
@@ -1001,7 +1001,7 @@ namespace Sjuklöner.Controllers
                 string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
                 Directory.CreateDirectory(appdataPath);
-                using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+                using (var writer = XmlWriter.Create(appdataPath + "\\approve.xml"))
                 {
                     writer.WriteStartDocument();
                     writer.WriteStartElement("claiminformation");
