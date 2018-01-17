@@ -77,8 +77,8 @@ namespace Sjuklöner.Controllers
 
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
-                //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
-                message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.To.Add(new MailAddress(claim.Email));
+                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Avlsagen ansökan: " + referenceNumber;
                 message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
 
@@ -132,7 +132,7 @@ namespace Sjuklöner.Controllers
                     //Instantiate a new scheduleRow in the viewmodel
                     ScheduleRow scheduleRow = new ScheduleRow();
 
-                    scheduleRow.ScheduleRowDateTest = claimDays[i].DateString;
+                    scheduleRow.ScheduleRowDateString = claimDays[i].DateString;
                     scheduleRow.DayDate = DateTime.Now.AddDays(i);
 
                     scheduleRow.StartTimeHour = claimDays[i].StartHour;
@@ -177,7 +177,7 @@ namespace Sjuklöner.Controllers
 
                 return View("Hours", scheduleVM);
             }
-            else if (refNumber != null && id == 1)  //True if returning from the view "ClaimAmount" and wanting to see the view "Create"
+            else if (refNumber != null && id == 1)  //True if returning from the view "ClaimAmount" and wanting to see the view "Create". Also true if updating an existing draft claim.
             {
                 var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
                 if (claim != null)
@@ -215,186 +215,221 @@ namespace Sjuklöner.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create(AssistantClaimVM claimVM, string refNumber)
-        public ActionResult Create(AssistantClaimVM claimVM)
+        public ActionResult Create(AssistantClaimVM claimVM, string answer)
         //public ActionResult Create([Bind(Include = "Id,CustomerSSN,QualifyingDate,LastDayOfSicknessDate")] Claim claim)
         //public ActionResult Create([Bind(Include = "Id,OwnerId,ClaimStatusId,ReferenceNumber,StatusDate,DeadlineDate,CustomerFirstName,CustomerLastName,CustomerSSN,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,QualifyingDate,LastDayOfSicknessDate,HoursQualifyingDay,HolidayPayQualDay,PayrollTaxQualDay,InsuranceQualDay,PensionQualDay,ClaimQualDay,HoursDay2To14,HourlySickPay,SickPayDay2To14,HolidayPayDay2To14,UnsocialHoursBonusDay2To14,OnCallDutyDay2To14,PayrollTaxDay2To14,InsuranceDay2To14,PensionDay2To14,ClaimDay2To14,ClaimSum")] Claim claim)
         {
-            string newReferenceNumber = "";
-            string existingReferenceNumber = claimVM.ClaimReference;
-
-            if (ModelState.IsValid)
+            if (answer == "Avbryt")
             {
-                List<ScheduleRow> rowList = new List<ScheduleRow>();
-                ScheduleVM scheduleVM = new ScheduleVM();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                string newReferenceNumber = "";
+                string existingReferenceNumber = claimVM.ClaimReference;
 
-                //Check that the last day of sickness is equal to or greater than the first day of sickness.
-                if (claimVM.LastDayOfSicknessDate >= claimVM.FirstDayOfSicknessDate)
+                if (ModelState.IsValid)
                 {
-                    ////Check if a claim with overlapping dates already has been saved THIS CHECK COMMENTED OUT FOR DEMO 
-                    //string currentUserId = User.Identity.GetUserId();
-                    //if (overlappingClaim(claimVM.LastDayOfSicknessDate, claimVM.FirstDayOfSicknessDate, currentUserId, claimVM.CustomerSSN))
-                    //{
-                    //    claimVM.Rejected = true;
-                    //    claimVM.RejectReason = "Du har redan ansökt om ersättning för minst en av dagarna för samma kund." + "\n" + "Vänligen uppdatera ansökan.";
-                    //    return View(claimVM);
-                    //}
+                    List<ScheduleRow> rowList = new List<ScheduleRow>();
+                    ScheduleVM scheduleVM = new ScheduleVM();
 
-                    //Check that the assistant's profile is complete. If not complete, then display a message to the assistant and request the missing information
-
-                    if (existingReferenceNumber != null)
+                    //Check that the last day of sickness is equal to or greater than the first day of sickness.
+                    if (claimVM.LastDayOfSicknessDate >= claimVM.FirstDayOfSicknessDate)
                     {
-                        //This is an update of an existing claim record. Find the record and update it.
-                        var existingClaim = db.Claims.Where(c => c.ReferenceNumber == existingReferenceNumber).FirstOrDefault();
-                        if (existingClaim != null)
+                        ////Check if a claim with overlapping dates already has been saved THIS CHECK COMMENTED OUT FOR DEMO 
+                        //string currentUserId = User.Identity.GetUserId();
+                        //if (overlappingClaim(claimVM.LastDayOfSicknessDate, claimVM.FirstDayOfSicknessDate, currentUserId, claimVM.CustomerSSN))
+                        //{
+                        //    claimVM.Rejected = true;
+                        //    claimVM.RejectReason = "Du har redan ansökt om ersättning för minst en av dagarna för samma kund." + "\n" + "Vänligen uppdatera ansökan.";
+                        //    return View(claimVM);
+                        //}
+
+                        //Check that the assistant's profile is complete. If not complete, then display a message to the assistant and request the missing information
+
+                        if (existingReferenceNumber != null)
                         {
-                            existingClaim.AssistantSSN = claimVM.AssistantSSN;
-                            existingClaim.CustomerSSN = claimVM.CustomerSSN;
-                            existingClaim.QualifyingDate = claimVM.FirstDayOfSicknessDate;
-                            existingClaim.LastDayOfSicknessDate = claimVM.LastDayOfSicknessDate;
-                            existingClaim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
-                            existingClaim.OrganisationNumber = claimVM.OrganisationNumber;
-                            db.Entry(existingClaim).State = EntityState.Modified;
+                            //This is an update of an existing claim record. Find the record and update it.
+                            var existingClaim = db.Claims.Where(c => c.ReferenceNumber == existingReferenceNumber).FirstOrDefault();
+                            if (existingClaim != null)
+                            {
+                                existingClaim.AssistantSSN = claimVM.AssistantSSN;
+                                existingClaim.CustomerSSN = claimVM.CustomerSSN;
+                                existingClaim.QualifyingDate = claimVM.FirstDayOfSicknessDate;
+                                existingClaim.LastDayOfSicknessDate = claimVM.LastDayOfSicknessDate;
+                                existingClaim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
+                                existingClaim.OrganisationNumber = claimVM.OrganisationNumber;
+                                db.Entry(existingClaim).State = EntityState.Modified;
+                                db.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            //New claim
+                            //Save the new claim if the assistant's profile is complete.
+                            Claim claim = new Claim();
+                            claim.OrganisationNumber = claimVM.OrganisationNumber;
+                            //Hardcoded SSNs for demo
+                            claim.CustomerSSN = "19391025-7246";
+                            claim.AssistantSSN = "19930701-4168";
+                            claim.Email = claimVM.Email;
+                            //claim.CustomerSSN = claimVM.CustomerSSN;
+                            //claim.AssistantSSN = claimVM.AssistantSSN;
+                            //claim.StandInSSN = claimVM.StandInSSN;
+                            claim.StatusDate = DateTime.Now;
+                            claim.QualifyingDate = claimVM.FirstDayOfSicknessDate;
+                            claim.LastDayOfSicknessDate = claimVM.LastDayOfSicknessDate;
+                            claim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
+                            var currentUserId = User.Identity.GetUserId();
+                            claim.OwnerId = currentUserId;
+                            claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
+                            claim.CareCompanyId = (int)db.Users.Where(u => u.Id == currentUserId).First().CareCompanyId;
+
+                            //Generate a Reference Number for the claim and update the latest Reference Number in the db
+                            //There is always only one row in the ClaimReferenceNo class in the database
+                            var latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
+                            //Check if first claim in a new year. Need to update the LatestYear property and reset the LatestReferenceNumber property.
+                            if (latestReference.LatestYear != DateTime.Now.Year)
+                            {
+                                db.ClaimReferenceNumbers.FirstOrDefault().LatestYear = DateTime.Now.Year;
+                                db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 0;
+                                db.SaveChanges();
+                                latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
+                                newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber + 1).ToString("D5");
+                            }
+                            else
+                            {
+                                db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
+                                newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                            }
+                            claim.ReferenceNumber = newReferenceNumber;
+                            db.Claims.Add(claim);
                             db.SaveChanges();
                         }
                     }
                     else
                     {
-                        //New claim
-                        //Save the new claim if the assistant's profile is complete.
-                        Claim claim = new Claim();
-                        claim.OrganisationNumber = claimVM.OrganisationNumber;
-                        //Hardcoded SSNs for demo
-                        claim.CustomerSSN = "930701-4168";
-                        claim.AssistantSSN = "391025-7246";
-                        //claim.CustomerSSN = claimVM.CustomerSSN;
-                        //claim.AssistantSSN = claimVM.AssistantSSN;
-                        //claim.StandInSSN = claimVM.StandInSSN;
-                        claim.QualifyingDate = claimVM.FirstDayOfSicknessDate;
-                        claim.LastDayOfSicknessDate = claimVM.LastDayOfSicknessDate;
-                        claim.NumberOfSickDays = 1 + (claimVM.LastDayOfSicknessDate.Date - claimVM.FirstDayOfSicknessDate.Date).Days;
-                        var currentUserId = User.Identity.GetUserId();
-                        claim.OwnerId = currentUserId;
-                        claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
-                        claim.CareCompanyId = (int)db.Users.Where(u => u.Id == currentUserId).First().CareCompanyId;
-
-                        //Generate a Reference Number for the claim and update the latest Reference Number in the db
-                        //There is always only one row in the ClaimReferenceNo class in the database
-                        var latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
-                        //Check if first claim in a new year. Need to update the LatestYear property and reset the LatestReferenceNumber property.
-                        if (latestReference.LatestYear != DateTime.Now.Year)
-                        {
-                            db.ClaimReferenceNumbers.FirstOrDefault().LatestYear = DateTime.Now.Year;
-                            db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 0;
-                            db.SaveChanges();
-                            latestReference = db.ClaimReferenceNumbers.FirstOrDefault();
-                            newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber + 1).ToString("D5");
-                        }
-                        else
-                        {
-                            db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
-                            newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
-                        }
-                        claim.ReferenceNumber = newReferenceNumber;
-                        db.Claims.Add(claim);
-                        db.SaveChanges();
+                        claimVM.Rejected = true;
+                        claimVM.RejectReason = "Sista sjukdag kan inte vara före första sjukdag." + "\n" + "Vänligen uppdatera ansökan.";
+                        return View(claimVM);
                     }
-                }
-                else
-                {
-                    claimVM.Rejected = true;
-                    claimVM.RejectReason = "Sista sjukdag kan inte vara före första sjukdag." + "\n" + "Vänligen uppdatera ansökan.";
-                    return View(claimVM);
-                }
 
-                if (existingReferenceNumber != null)
-                {
-                    //This is an existing claim
-                    var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == existingReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
-
-                    for (int i = 0; i < claimDays.Count; i++)
+                    if (answer == "Till steg 2")
                     {
-                        //Instantiate a new scheduleRow in the viewmodel
-                        ScheduleRow scheduleRow = new ScheduleRow();
+                        bool claimDaysExist = false;
+                            List<ClaimDay> claimDays = new List<ClaimDay>();
 
-                        scheduleRow.ScheduleRowDateTest = claimDays[i].DateString;
-                        scheduleRow.DayDate = DateTime.Now.AddDays(i);
+                        if (existingReferenceNumber != null)
+                        {
+                            
+                            //This is an existing claim
+                            claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == existingReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
 
-                        scheduleRow.StartTimeHour = claimDays[i].StartHour;
-                        scheduleRow.StartTimeMinute = claimDays[i].StartMinute;
-                        scheduleRow.StopTimeHour = claimDays[i].StopHour;
-                        scheduleRow.StopTimeMinute = claimDays[i].StopMinute;
-                        scheduleRow.NumberOfHours = claimDays[i].NumberOfHours;
-                        scheduleRow.NumberOfUnsocialHours = claimDays[i].NumberOfUnsocialHours;
-                        scheduleRow.NumberOfUnsocialHoursEvening = claimDays[i].NumberOfUnsocialHoursEvening;
-                        scheduleRow.NumberOfUnsocialHoursNight = claimDays[i].NumberOfUnsocialHoursNight;
+                            //Does this need a null check as well??
+                            if (claimDays != null && claimDays.Count() > 0)
+                            {
+                                claimDaysExist = true;
+                            }
+                        }
 
-                        scheduleRow.StartTimeHourOnCall = claimDays[i].StartHourOnCall;
-                        scheduleRow.StartTimeMinuteOnCall = claimDays[i].StartMinuteOnCall;
-                        scheduleRow.StopTimeHourOnCall = claimDays[i].StartHourOnCall;
-                        scheduleRow.StopTimeMinuteOnCall = claimDays[i].StopMinuteOnCall;
-                        scheduleRow.NumberOfOnCallHours = claimDays[i].NumberOfOnCallHours;
-                        scheduleRow.NumberOfOnCallHoursEvening = claimDays[i].NumberOfOnCallHoursEvening;
-                        scheduleRow.NumberOfOnCallHoursNight = claimDays[i].NumberOfOnCallHoursNight;
+                        if (existingReferenceNumber != null && claimDaysExist)
+                        {
+                            //This is an existing claim
+                                //This means that ClaimDays have been saved for this claim
+                                for (int i = 0; i < claimDays.Count; i++)
+                                {
+                                    //Instantiate a new scheduleRow in the viewmodel
+                                    ScheduleRow scheduleRow = new ScheduleRow();
 
-                        scheduleRow.StartTimeHourSI = claimDays[i].StartHourSI;
-                        scheduleRow.StartTimeMinuteSI = claimDays[i].StartMinuteSI;
-                        scheduleRow.StopTimeHourSI = claimDays[i].StopHourSI;
-                        scheduleRow.StopTimeMinuteSI = claimDays[i].StopMinuteSI;
-                        scheduleRow.NumberOfHoursSI = claimDays[i].NumberOfHoursSI;
-                        scheduleRow.NumberOfUnsocialHoursSI = claimDays[i].NumberOfUnsocialHoursSI;
-                        scheduleRow.NumberOfUnsocialHoursEveningSI = claimDays[i].NumberOfUnsocialHoursEveningSI;
-                        scheduleRow.NumberOfUnsocialHoursNightSI = claimDays[i].NumberOfUnsocialHoursNightSI;
+                                    scheduleRow.ScheduleRowDateString = claimDays[i].DateString;
+                                    scheduleRow.DayDate = DateTime.Now.AddDays(i);
 
-                        scheduleRow.StartTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
-                        scheduleRow.StartTimeMinuteOnCallSI = claimDays[i].StartMinuteOnCallSI;
-                        scheduleRow.StopTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
-                        scheduleRow.StopTimeMinuteOnCallSI = claimDays[i].StopMinuteOnCallSI;
-                        scheduleRow.NumberOfOnCallHoursSI = claimDays[i].NumberOfOnCallHoursSI;
-                        scheduleRow.NumberOfOnCallHoursEveningSI = claimDays[i].NumberOfOnCallHoursEveningSI;
-                        scheduleRow.NumberOfOnCallHoursNightSI = claimDays[i].NumberOfOnCallHoursNightSI;
-                        rowList.Add(scheduleRow);
+                                    scheduleRow.StartTimeHour = claimDays[i].StartHour;
+                                    scheduleRow.StartTimeMinute = claimDays[i].StartMinute;
+                                    scheduleRow.StopTimeHour = claimDays[i].StopHour;
+                                    scheduleRow.StopTimeMinute = claimDays[i].StopMinute;
+                                    scheduleRow.NumberOfHours = claimDays[i].NumberOfHours;
+                                    scheduleRow.NumberOfUnsocialHours = claimDays[i].NumberOfUnsocialHours;
+                                    scheduleRow.NumberOfUnsocialHoursEvening = claimDays[i].NumberOfUnsocialHoursEvening;
+                                    scheduleRow.NumberOfUnsocialHoursNight = claimDays[i].NumberOfUnsocialHoursNight;
+
+                                    scheduleRow.StartTimeHourOnCall = claimDays[i].StartHourOnCall;
+                                    scheduleRow.StartTimeMinuteOnCall = claimDays[i].StartMinuteOnCall;
+                                    scheduleRow.StopTimeHourOnCall = claimDays[i].StartHourOnCall;
+                                    scheduleRow.StopTimeMinuteOnCall = claimDays[i].StopMinuteOnCall;
+                                    scheduleRow.NumberOfOnCallHours = claimDays[i].NumberOfOnCallHours;
+                                    scheduleRow.NumberOfOnCallHoursEvening = claimDays[i].NumberOfOnCallHoursEvening;
+                                    scheduleRow.NumberOfOnCallHoursNight = claimDays[i].NumberOfOnCallHoursNight;
+
+                                    scheduleRow.StartTimeHourSI = claimDays[i].StartHourSI;
+                                    scheduleRow.StartTimeMinuteSI = claimDays[i].StartMinuteSI;
+                                    scheduleRow.StopTimeHourSI = claimDays[i].StopHourSI;
+                                    scheduleRow.StopTimeMinuteSI = claimDays[i].StopMinuteSI;
+                                    scheduleRow.NumberOfHoursSI = claimDays[i].NumberOfHoursSI;
+                                    scheduleRow.NumberOfUnsocialHoursSI = claimDays[i].NumberOfUnsocialHoursSI;
+                                    scheduleRow.NumberOfUnsocialHoursEveningSI = claimDays[i].NumberOfUnsocialHoursEveningSI;
+                                    scheduleRow.NumberOfUnsocialHoursNightSI = claimDays[i].NumberOfUnsocialHoursNightSI;
+
+                                    scheduleRow.StartTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
+                                    scheduleRow.StartTimeMinuteOnCallSI = claimDays[i].StartMinuteOnCallSI;
+                                    scheduleRow.StopTimeHourOnCallSI = claimDays[i].StartHourOnCallSI;
+                                    scheduleRow.StopTimeMinuteOnCallSI = claimDays[i].StopMinuteOnCallSI;
+                                    scheduleRow.NumberOfOnCallHoursSI = claimDays[i].NumberOfOnCallHoursSI;
+                                    scheduleRow.NumberOfOnCallHoursEveningSI = claimDays[i].NumberOfOnCallHoursEveningSI;
+                                    scheduleRow.NumberOfOnCallHoursNightSI = claimDays[i].NumberOfOnCallHoursNightSI;
+                                    rowList.Add(scheduleRow);
+                                }
+                                scheduleVM.ReferenceNumber = existingReferenceNumber;
+                            
+                        }
+
+                        if (existingReferenceNumber == null || (existingReferenceNumber != null && claimDaysExist == false))
+                        {
+                            //This is a new claim
+                            //Calculate number of schedule rows based on sickness start date and end date
+                            TimeSpan sicknessSpan;
+                            sicknessSpan = claimVM.LastDayOfSicknessDate - claimVM.FirstDayOfSicknessDate;
+                            int numberOfDays = int.Parse((sicknessSpan.Days + 1).ToString());
+
+                            scheduleVM.ReferenceNumber = newReferenceNumber;
+
+                            DateTime dateInSchedule;
+
+                            //Populate viewmodel properties by iterating over each row in the schedule
+                            for (int i = 0; i < numberOfDays; i++)
+                            {
+                                //Instantiate a new scheduleRow in the viewmodel
+                                ScheduleRow scheduleRow = new ScheduleRow();
+
+                                //Assign values to the ScheduleRowDate and ScheduleRowWeekDay properties in the viewmodel
+                                dateInSchedule = claimVM.FirstDayOfSicknessDate.AddDays(i);
+
+                                CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
+                                Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SV");
+
+                                //Test
+                                //var dateInScheduleTest = claimVM.FirstDayOfSicknessDate.AddDays(i);
+                                //var dateInScheduleTest2 = dateInScheduleTest.ToString(format: "ddd d MMM");
+                                //dateInScheduleTest2.ToTitleCase(TitleCase.All);
+                                scheduleRow.ScheduleRowDateString = dateInSchedule.ToString(format: "ddd d MMM");
+                                scheduleRow.DayDate = dateInSchedule;
+
+                                //scheduleRow.ScheduleRowDate = dateInSchedule.ToShortDateString();
+                                scheduleRow.ScheduleRowWeekDay = DateTimeFormatInfo.CurrentInfo.GetDayName(dateInSchedule.DayOfWeek).ToString().Substring(0, 2);
+                                //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
+                                rowList.Add(scheduleRow);
+                            }
+                        }
+                        scheduleVM.ScheduleRowList = rowList;
+                        return View("Hours", scheduleVM);
                     }
-                    scheduleVM.ReferenceNumber = existingReferenceNumber;
-                }
-                else
-                {
-                    //This is a new claim
-                    //Calculate number of schedule rows based on sickness start date and end date
-                    TimeSpan sicknessSpan;
-                    sicknessSpan = claimVM.LastDayOfSicknessDate - claimVM.FirstDayOfSicknessDate;
-                    int numberOfDays = int.Parse((sicknessSpan.Days + 1).ToString());
-
-                    scheduleVM.ReferenceNumber = newReferenceNumber;
-
-                    //Populate viewmodel properties by iterating over each row in the schedule
-                    for (int i = 0; i < numberOfDays; i++)
+                    else
                     {
-                        //Instantiate a new scheduleRow in the viewmodel
-                        ScheduleRow scheduleRow = new ScheduleRow();
-
-                        //Assign values to the ScheduleRowDate and ScheduleRowWeekDay properties in the viewmodel
-                        var dateInSchedule = claimVM.FirstDayOfSicknessDate.AddDays(i);
-
-                        CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
-                        Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SV");
-
-                        //Test
-                        var dateInScheduleTest = claimVM.FirstDayOfSicknessDate.AddDays(i);
-                        var dateInScheduleTest2 = dateInScheduleTest.ToString(format: "ddd d MMM");
-                        //dateInScheduleTest2.ToTitleCase(TitleCase.All);
-                        scheduleRow.ScheduleRowDateTest = dateInScheduleTest2;
-                        scheduleRow.DayDate = DateTime.Now.AddDays(i);
-
-                        scheduleRow.ScheduleRowDate = dateInSchedule.ToShortDateString();
-                        scheduleRow.ScheduleRowWeekDay = DateTimeFormatInfo.CurrentInfo.GetDayName(dateInSchedule.DayOfWeek).ToString().Substring(0, 2);
-                        //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
-                        rowList.Add(scheduleRow);
+                        return View(claimVM);
                     }
                 }
-                scheduleVM.ScheduleRowList = rowList;
-                return View("Hours", scheduleVM);
+                return View(claimVM);
             }
-            return View(claimVM);
         }
 
         //POST: Claims/Hours
@@ -444,14 +479,17 @@ namespace Sjuklöner.Controllers
             db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == scheduleVM.ReferenceNumber));
             db.SaveChanges();
 
+            var claim = db.Claims.Where(c => c.ReferenceNumber == scheduleVM.ReferenceNumber).FirstOrDefault();
+            DateTime claimDate = claim.QualifyingDate;
+
             int dayIdx = 1;
             foreach (var day in scheduleVM.ScheduleRowList)
             {
                 var claimDay = new ClaimDay
                 {
                     ReferenceNumber = scheduleVM.ReferenceNumber,
-                    DateString = day.ScheduleRowDateTest,
-                    ClaimDayDate = day.DayDate.ToShortDateString(),
+                    DateString = day.ScheduleRowDateString,
+                    ClaimDayDate = claimDate.AddDays(dayIdx - 1),
                     SickDayNumber = dayIdx,
 
                     StartHour = day.StartTimeHour,
@@ -593,7 +631,7 @@ namespace Sjuklöner.Controllers
                     {
                         //In this case startTimeHour + 8 goes maximum up to 18.00
                         //All unsocial hours in the evening should be payed in this case
-                        if (scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "sön")
+                        if (scheduleVM.ScheduleRowList[0].ScheduleRowDateString.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[0].ScheduleRowDateString.Substring(0, 3) == "sön")
                         {
                             payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialWeekend * scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening;
                         }
@@ -622,12 +660,12 @@ namespace Sjuklöner.Controllers
             double payUnsocialHoursDay2To14 = 0;
             for (int i = 1; i < scheduleVM.ScheduleRowList.Count(); i++)
             {
-                if (scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "lör")
+                if (scheduleVM.ScheduleRowList[i].ScheduleRowDateString.Substring(0, 3) == "lör")
                 {
                     payUnsocialHoursDay2To14 = payUnsocialHoursDay2To14 + (claimFormVM.PerHourUnsocialNight * scheduleVM.ScheduleRowList[i].NumberOfUnsocialHoursNight) +
                         (claimFormVM.PerHourUnsocialWeekend * (scheduleVM.ScheduleRowList[i].NumberOfUnsocialHours - scheduleVM.ScheduleRowList[i].NumberOfUnsocialHoursNight));
                 }
-                else if (scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "sön")
+                else if (scheduleVM.ScheduleRowList[i].ScheduleRowDateString.Substring(0, 3) == "sön")
                 {
                     payUnsocialHoursDay2To14 = payUnsocialHoursDay2To14 + (claimFormVM.PerHourUnsocialWeekend * scheduleVM.ScheduleRowList[i].NumberOfUnsocialHours);
                 }
@@ -670,7 +708,7 @@ namespace Sjuklöner.Controllers
             //{
             //    //In this case startTimeHour + 8 goes maximum up to 18.00
             //    //All unsocial hours in the evening should be payed in this case
-            //    if (scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[0].ScheduleRowDateTest.Substring(0, 3) == "sön")
+            //    if (scheduleVM.ScheduleRowList[0].ScheduleRowDateString.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[0].ScheduleRowDateString.Substring(0, 3) == "sön")
             //    {
             //        payUnsocialQualifyingDay = claimFormVM.PerHourUnsocialWeekend * scheduleVM.ScheduleRowList[0].NumberOfUnsocialHoursEvening;
             //    }
@@ -684,7 +722,7 @@ namespace Sjuklöner.Controllers
             double payOnCallHoursDay2To14 = 0;
             for (int i = 1; i < scheduleVM.ScheduleRowList.Count(); i++)
             {
-                if (scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[i].ScheduleRowDateTest.Substring(0, 3) == "sön")
+                if (scheduleVM.ScheduleRowList[i].ScheduleRowDateString.Substring(0, 3) == "lör" || scheduleVM.ScheduleRowList[i].ScheduleRowDateString.Substring(0, 3) == "sön")
                 {
                     payOnCallHoursDay2To14 = payOnCallHoursDay2To14 + (claimFormVM.PerHourOnCallWeekend * scheduleVM.ScheduleRowList[i].NumberOfOnCallHours);
                 }
@@ -769,8 +807,8 @@ namespace Sjuklöner.Controllers
 
             MailMessage message = new MailMessage();
             message.From = new MailAddress("ourrobotdemo@gmail.com");
-            //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
-            message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+            message.To.Add(new MailAddress(claim.Email));
+            //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
             message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
             message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
 
@@ -864,8 +902,8 @@ namespace Sjuklöner.Controllers
             //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
             claimDetailsVM.AssistantName = "Sixten Assistentsson";
             claimDetailsVM.AssistantSSN = claim.AssistantSSN;
-            claimDetailsVM.QualifyingDayDate = claimDays[0].ClaimDayDate;
-            claimDetailsVM.LastDayOfSicknessDate = claimDays.Last().ClaimDayDate;
+            claimDetailsVM.QualifyingDayDate = claimDays[0].ClaimDayDate.ToString();
+            claimDetailsVM.LastDayOfSicknessDate = claimDays.Last().ClaimDayDate.ToString();
 
             claimDetailsVM.Salary = (decimal)120.00;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsVM.cs.
             claimDetailsVM.HourlySalary = (decimal)120.00;    //This property is used as the hourly salary in calculations.
@@ -896,7 +934,7 @@ namespace Sjuklöner.Controllers
 
             claimDetailsVM.Workplace = "Björkängen, Birgittagården";
             claimDetailsVM.CollectiveAgreement = "Vårdföretagarna";
-            
+
             claimDetailsVM.HolidayPayRate = (decimal)12.00;
             claimDetailsVM.SocialFeeRate = (decimal)31.42;
             claimDetailsVM.PensionAndInsuranceRate = (decimal)6.00;
@@ -925,8 +963,8 @@ namespace Sjuklöner.Controllers
 
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
-                //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
-                message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.To.Add(new MailAddress(claim.Email));
+                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
                 message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
 
@@ -935,8 +973,8 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("IndexPageAdmOff");
         }
 
-            // GET: Claims/Edit/5
-            public ActionResult Edit(int? id)
+        // GET: Claims/Edit/5
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -987,6 +1025,7 @@ namespace Sjuklöner.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Claim claim = db.Claims.Find(id);
+            db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
             db.Claims.Remove(claim);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -1114,7 +1153,7 @@ namespace Sjuklöner.Controllers
             }
             //Here the total number of unsocial hours are stored (morning + evening hours), all hours if weekend
             //Check if weekend
-            if (scheduleRow.ScheduleRowDateTest.Substring(0, 3) == "lör" || scheduleRow.ScheduleRowDateTest.Substring(0, 3) == "sön")
+            if (scheduleRow.ScheduleRowDateString.Substring(0, 3) == "lör" || scheduleRow.ScheduleRowDateString.Substring(0, 3) == "sön")
             {
                 scheduleRow.NumberOfUnsocialHours = scheduleRow.NumberOfHours;
             }

@@ -16,12 +16,15 @@ namespace Sjuklöner.Viewmodels
         [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
         public string OrganisationNumber { get; set; }
 
+        [Display(Name = "Mottagare av beslut (e-post)")]
+        public string Email { get; set; }
+
         [Required]
         [Display(Name = "Kundens personnummer")]
         [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string CustomerSSN { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Assistentens personnummer")]
         [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string AssistantSSN { get; set; }

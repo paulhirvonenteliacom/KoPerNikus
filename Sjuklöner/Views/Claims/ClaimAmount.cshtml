@@ -3,18 +3,12 @@
 
 @{
     ViewBag.Title = "Amount";
-    //double parSickPay;
-    //string jsonHolidayPay = "";
-    //string jsonSocialFees = "";
-    //string jsonPensionAndInsurance = "";
-    //string jsonClaimSum = "";
 }
 
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item breadcrumb-font"><a class="breadcrumb-padding" href="../Account/Login">Hem</a></li>
-            @*<li class="breadcrumb-item breadcrumb-font"><a class="breadcrumb-padding" href="./Create">Organisationsnummer</a></li>*@
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Organisationsnummer", "Create", new { refNumber = Model.ClaimNumber, id = 1 }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Arbetstid", "Create", new { refNumber = Model.ClaimNumber, id = 2 }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Belopp</li>
@@ -28,16 +22,11 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ClaimNumber)
 
-    //jsonHolidayPay = Model.SickPay.ToString();
-    //jsonSocialFees = Model.SickPay.ToString();
-    //jsonPensionAndInsurance = Model.SickPay.ToString();
-    //jsonClaimSum = Model.SickPay.ToString();
-
     @*<body class="assistant-claim">*@
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="page-header col col-md-10">Ansökan om sjuklöneersättning</p>
-        <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
+        @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
         <br>
         <p class="col col-md-offset-2 col-md-10 second-page-header">Steg 3: Ange belopp och skicka in ansökan</p>
     </div>
@@ -98,7 +87,7 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input class="btn btn-default" type="submit" value="Skicka in" id="assistance-claim-btn" />
+                    <input class="btn btn-primary btn-primary-small" type="submit" value="Skicka in" id="assistance-claim-btn" />
                 </div>
             </div>
             @*<div>
