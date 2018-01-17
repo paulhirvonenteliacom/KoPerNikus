@@ -9,7 +9,7 @@
         <li>
             @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class="user-id" })
         </li>
-        <li><a class="logoff" href="javascript:document.getElementById('logoutForm').submit()">Logga ut</a></li>
+        <li><a class="logoff" id="logoff" href="javascript:document.getElementById('logoutForm').submit()">Logga ut</a></li>
     </ul>
     }
 }

@@ -13,14 +13,14 @@
     <body>
         <div class="row no-breadcrumb-top">
             <p class="col col-md-10 page-header">Ansökan, detaljerad vy</p>
-            <p class="col col-md-10 bold-14 col-small-left-padding">Referensnummer: @Model.ReferenceNumber</p>
+            <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Referensnummer: @Model.ReferenceNumber</p>
             @if ((User.IsInRole("Ombud") && @Model.StatusName == "Inkorgen") || (User.IsInRole("Ombud") && @Model.StatusName == "Under handläggning"))
             {
-                <p class="col col-md-10 bold-14 col-small-left-padding">Status: Inskickad</p>
+                <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Status: Inskickad</p>
             }
             else
             {
-                <p class="col col-md-10 bold-14 col-small-left-padding">Status: @Model.StatusName</p>
+                <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Status: @Model.StatusName</p>
             }
         </div>
 

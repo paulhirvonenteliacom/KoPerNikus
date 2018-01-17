@@ -279,6 +279,10 @@ li a {
     border: none;
 }
 
+.left-margin-12 {
+    margin-left: 12px;
+}
+''
 .left-margin-18 {
     margin-left: 18px;
 }
@@ -287,6 +291,9 @@ li a {
     margin-left: 23px;
 }
 
+.table {
+    margin-left: 15px;
+}
 
 .subtitle-padding {
     padding-bottom: 50px;
@@ -748,6 +755,7 @@ special-left-margin {
     border-color: #ae0b05;
     border-radius: 1px;
     margin-bottom: 25px;
+    margin-left: 18px;
 }
 
 .label-padding {
