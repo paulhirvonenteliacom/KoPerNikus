@@ -870,6 +870,8 @@ namespace Sjuklöner.Controllers
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.ReferenceNumber).ToList();
 
+                decisionVM.AssistanceCheck = claim.ProCapitaCheck;
+                decisionVM.IvoCheck = claim.IVOCheck;
                 decisionVM.ClaimNumber = claim.ReferenceNumber;
                 decisionVM.ModelSum = claim.ModelSum;
                 decisionVM.ClaimSum = claim.ClaimSum;
