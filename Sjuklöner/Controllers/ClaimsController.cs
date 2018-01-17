@@ -91,7 +91,7 @@ namespace Sjuklöner.Controllers
                 string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
                 Directory.CreateDirectory(appdataPath);
-                using (var writer = XmlWriter.Create(appdataPath + "\\reject.xml"))
+                using (var writer = XmlWriter.Create(appdataPath + "\\decided.xml"))
                 {
                     writer.WriteStartDocument();
                     writer.WriteStartElement("claiminformation");
@@ -1001,7 +1001,7 @@ namespace Sjuklöner.Controllers
                 string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
                 Directory.CreateDirectory(appdataPath);
-                using (var writer = XmlWriter.Create(appdataPath + "\\approve.xml"))
+                using (var writer = XmlWriter.Create(appdataPath + "\\decided.xml"))
                 {
                     writer.WriteStartDocument();
                     writer.WriteStartElement("claiminformation");
