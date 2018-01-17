@@ -87,6 +87,20 @@ namespace Sjuklöner.Controllers
 
                     SendEmail(message);
                 }
+
+                string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
+
+                Directory.CreateDirectory(appdataPath);
+                using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("SSN", claim.CustomerSSN);
+                    writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                    writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                }
             }
 
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
@@ -980,6 +994,20 @@ namespace Sjuklöner.Controllers
                     message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
 
                     SendEmail(message);
+                }
+
+                string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
+
+                Directory.CreateDirectory(appdataPath);
+                using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("SSN", claim.CustomerSSN);
+                    writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                    writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
                 }
             }
             return RedirectToAction("IndexPageAdmOff");
