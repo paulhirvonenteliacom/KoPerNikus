@@ -77,8 +77,8 @@ namespace Sjuklöner.Controllers
 
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
-                //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
-                message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.To.Add(new MailAddress(claim.Email));
+                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Avlsagen ansökan: " + referenceNumber;
                 message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
 
@@ -807,8 +807,8 @@ namespace Sjuklöner.Controllers
 
             MailMessage message = new MailMessage();
             message.From = new MailAddress("ourrobotdemo@gmail.com");
-            //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
-            message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+            message.To.Add(new MailAddress(claim.Email));
+            //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
             message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
             message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
 
@@ -963,8 +963,8 @@ namespace Sjuklöner.Controllers
 
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
-                //message.To.Add(new MailAddress(db.Claims.Where(rn => rn.ReferenceNumber == referenceNumber).FirstOrDefault().Email);
-                message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.To.Add(new MailAddress(claim.Email));
+                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
                 message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
 
