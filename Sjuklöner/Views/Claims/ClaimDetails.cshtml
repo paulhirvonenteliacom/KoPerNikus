@@ -12,9 +12,16 @@
 
     <body>
         <div class="row no-breadcrumb-top">
-            <p class="col col-md-offset-2 col-md-10 page-header">Ansökan, detaljerad vy</p>
-            <p class="col col-md-offset-2 col-md-10 bold-14 col-small-left-padding">Referensnummer: @Model.ReferenceNumber</p>
-            <p class="col col-md-offset-2 col-md-10 bold-14 col-small-left-padding">Status: @Model.StatusName</p>
+            <p class="col col-md-10 page-header">Ansökan, detaljerad vy</p>
+            <p class="col col-md-10 bold-14 col-small-left-padding">Referensnummer: @Model.ReferenceNumber</p>
+            @if ((User.IsInRole("Ombud") && @Model.StatusName == "Inkorgen") || (User.IsInRole("Ombud") && @Model.StatusName == "Under handläggning"))
+            {
+                <p class="col col-md-10 bold-14 col-small-left-padding">Status: Inskickad</p>
+            }
+            else
+            {
+                <p class="col col-md-10 bold-14 col-small-left-padding">Status: @Model.StatusName</p>
+            }
         </div>
 
         @*Grunduppgifter*@
@@ -22,8 +29,8 @@
         <div class="form-horizontal">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Kommun
@@ -53,8 +60,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Assistansberättigad
@@ -104,8 +111,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Ombud/uppgiftslämnare
@@ -135,8 +142,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Assistansanordnare
@@ -209,8 +216,8 @@
             </div>
 
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Insjuknad ordinarie assistent
@@ -463,8 +470,8 @@
             </div>*@
 
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Underlag lönekostnader
@@ -704,8 +711,8 @@
                 </div>*@
 
             <div class="row">
-                <div class="col col-md-2">
-                </div>
+                @*<div class="col col-md-2">
+                </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row">
                         <div class="col col-md-4 form-group-heading">

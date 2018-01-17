@@ -75,14 +75,18 @@ namespace Sjuklöner.Controllers
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress("ourrobotdemo@gmail.com");
-                message.To.Add(new MailAddress(claim.Email));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-                message.Subject = "Avlsagen ansökan: " + referenceNumber;
-                message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
+                if (!string.IsNullOrWhiteSpace(claim.Email))
+                {
+                    MailMessage message = new MailMessage();
+                    message.From = new MailAddress("ourrobotdemo@gmail.com");
 
-                SendEmail(message);
+                    message.To.Add(new MailAddress(claim.Email));
+                    //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                    message.Subject = "Avlsagen ansökan: " + referenceNumber;
+                    message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
+
+                    SendEmail(message);
+                }
             }
 
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
@@ -805,14 +809,18 @@ namespace Sjuklöner.Controllers
         {
             var claim = db.Claims.Where(rn => rn.ReferenceNumber == claimAmountVM.ClaimNumber).FirstOrDefault();
 
-            MailMessage message = new MailMessage();
-            message.From = new MailAddress("ourrobotdemo@gmail.com");
-            message.To.Add(new MailAddress(claim.Email));
-            //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-            message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
-            message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
+            if (!string.IsNullOrWhiteSpace(claim.Email))
+            {
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress("ourrobotdemo@gmail.com");
+                
+                message.To.Add(new MailAddress(claim.Email));
+                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
+                message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
 
-            SendEmail(message);
+                SendEmail(message);
+            }
 
             string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
@@ -961,14 +969,18 @@ namespace Sjuklöner.Controllers
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress("ourrobotdemo@gmail.com");
-                message.To.Add(new MailAddress(claim.Email));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-                message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
-                message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
+                if (!string.IsNullOrWhiteSpace(claim.Email))
+                {
+                    MailMessage message = new MailMessage();
+                    message.From = new MailAddress("ourrobotdemo@gmail.com");
 
-                SendEmail(message);
+                    message.To.Add(new MailAddress(claim.Email));
+                    //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                    message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
+                    message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
+
+                    SendEmail(message);
+                }
             }
             return RedirectToAction("IndexPageAdmOff");
         }
