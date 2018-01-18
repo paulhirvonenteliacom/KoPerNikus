@@ -199,9 +199,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801171305069_initial.cs" />
-    <Compile Include="Migrations\201801171305069_initial.Designer.cs">
-      <DependentUpon>201801171305069_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201801180721203_initial.cs" />
+    <Compile Include="Migrations\201801180721203_initial.Designer.cs">
+      <DependentUpon>201801180721203_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -209,6 +209,7 @@
     <Compile Include="Models\AdministrativeOfficial.cs" />
     <Compile Include="Models\Assistant.cs" />
     <Compile Include="Models\Claim.cs" />
+    <Compile Include="Models\ClaimDaySeed.cs" />
     <Compile Include="Models\ClaimDay.cs" />
     <Compile Include="Models\ClaimReferenceNumber.cs" />
     <Compile Include="Models\CollectiveAgreement.cs" />
@@ -332,8 +333,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801171305069_initial.resx">
-      <DependentUpon>201801171305069_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801180721203_initial.resx">
+      <DependentUpon>201801180721203_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

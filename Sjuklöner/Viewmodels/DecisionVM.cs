@@ -11,11 +11,25 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Referensnummer")]
         public string ClaimNumber { get; set; }
 
-        [Display(Name = "Vårdgivarregistret, IVO")]
-        public string IvoCheck { get; set; }
+        [Display(Name = "Komplett ansökan")]
+        public bool CompleteCheck { get; set; }
 
-        [Display(Name = "Beslut om assistans i Procapita")]
-        public string AssistanceCheck { get; set; }
+        public string CompleteCheckMsg { get; set; }
+
+        [Display(Name = "Kontroll av fullmakt i ProCapita")]
+        public bool ProxyCheck { get; set; }
+
+        public string ProxyCheckMsg { get; set; }
+
+        [Display(Name = "Vårdgivarregistret, IVO")]
+        public bool IvoCheck { get; set; }
+
+        public string IvoCheckMsg { get; set; }
+
+        [Display(Name = "Beslut om assistans i ProCapita")]
+        public bool AssistanceCheck { get; set; }
+
+        public string AssistanceCheckMsg { get; set; }
 
         [Display(Name = "Yrkat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

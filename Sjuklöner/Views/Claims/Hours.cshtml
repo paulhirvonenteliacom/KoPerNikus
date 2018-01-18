@@ -16,8 +16,8 @@
 </div>
 @*@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post, new { claimNumber = Model.ReferenceNumber }))*@
 @using (Html.BeginForm("AddHours", "Claims", new { claimNumber = Model.ReferenceNumber }))
-    {
-        @Html.AntiForgeryToken()
+{
+    @Html.AntiForgeryToken()
 
 
     for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
@@ -26,20 +26,20 @@
         Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDate);
         //Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].DayDate);
     }
-        @Html.HiddenFor(m => m.ReferenceNumber)
+    @Html.HiddenFor(m => m.ReferenceNumber)
 
-        <body>
+    <body>
 
 
-            <div class="row">
-
+        <div class="row">
             <p class="col col-md-2"></p>
             <p class="page-header col col-md-10">Ansökan om sjuklöneersättning</p>
             @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
-            <br>
-            <p class="col col-md-offset-2 col-md-10 second-page-header">Steg 2: Ange arbetstid och jourtid</p>
         </div>
-
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col col-md-10 second-page-header2">Steg 2: Ange arbetstid och jourtid</p>
+        </div>
 
         @*<br />*@
 
@@ -57,7 +57,7 @@
                                 @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
-                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                            @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
                 </div>
                 <div class="col col-md-9 div-assistant-frame div-padding">
@@ -235,11 +235,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                                    @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
                             }
 
                         </div>
@@ -257,7 +257,7 @@
                                 @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
-                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                            @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
                 </div>
                 <div class="col col-md-9 div-assistant-frame div-padding">
@@ -432,11 +432,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                                    @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
+                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
                             }
                         </div>
                     </div>

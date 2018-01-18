@@ -17,9 +17,9 @@ namespace Sjuklöner.Models
 
         public int CareCompanyId { get; set; }
 
-        public string IVOCheck { get; set; }
+        public bool IVOCheck { get; set; }
 
-        public string ProCapitaCheck { get; set; }
+        public bool ProCapitaCheck { get; set; }
 
         [Display(Name = "Referensnummer")]
         public string ReferenceNumber { get; set; }

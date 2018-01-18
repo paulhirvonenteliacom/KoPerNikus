@@ -46,6 +46,10 @@ namespace Sjuklöner.Models
         public DbSet<CollectiveAgreement> CollectiveAgreements { get; set; }
         public DbSet<CareCompany> CareCompanies { get; set; }
 
+        //Only needed for demo
+        public DbSet<ClaimDaySeed> ClaimDaySeeds { get; set; }
+
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

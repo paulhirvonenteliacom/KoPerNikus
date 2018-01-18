@@ -217,7 +217,7 @@ namespace Sjuklöner.Controllers
 
             claimVM.AssistantSSN = "930701-4168";
             claimVM.CustomerSSN = "391025-7246";
-            claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
+            claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
             claimVM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
 
             claimVM.Rejected = false;
@@ -413,6 +413,9 @@ namespace Sjuklöner.Controllers
 
                             DateTime dateInSchedule;
 
+                            //Seed for demo only
+                            var claimDaySeeds = db.ClaimDaySeeds.ToList();
+
                             //Populate viewmodel properties by iterating over each row in the schedule
                             for (int i = 0; i < numberOfDays; i++)
                             {
@@ -435,6 +438,18 @@ namespace Sjuklöner.Controllers
                                 //scheduleRow.ScheduleRowDate = dateInSchedule.ToShortDateString();
                                 scheduleRow.ScheduleRowWeekDay = DateTimeFormatInfo.CurrentInfo.GetDayName(dateInSchedule.DayOfWeek).ToString().Substring(0, 2);
                                 //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
+
+                                //For seeding demo only
+                                scheduleRow.StartTimeHour = claimDaySeeds[i].StartHour;
+                                scheduleRow.StartTimeMinute = claimDaySeeds[i].StartMinute;
+                                scheduleRow.StopTimeHour = claimDaySeeds[i].StopHour;
+                                scheduleRow.StopTimeMinute = claimDaySeeds[i].StopMinute;
+
+                                scheduleRow.StartTimeHourOnCall = claimDaySeeds[i].StartHourOnCall;
+                                scheduleRow.StartTimeMinuteOnCall = claimDaySeeds[i].StartMinuteOnCall;
+                                scheduleRow.StopTimeHourOnCall = claimDaySeeds[i].StopHourOnCall;
+                                scheduleRow.StopTimeMinuteOnCall = claimDaySeeds[i].StopMinuteOnCall;  //End demo seed
+
                                 rowList.Add(scheduleRow);
                             }
                         }
@@ -561,6 +576,16 @@ namespace Sjuklöner.Controllers
             ClaimAmountVM claimAmountVM = new ClaimAmountVM();
 
             claimAmountVM.ClaimNumber = scheduleVM.ReferenceNumber;
+
+            //Seed for demo only
+            var numberOfSickDays = scheduleVM.ScheduleRowList.Count();
+            claimAmountVM.SickPay = (decimal)867.23 * (numberOfSickDays - 1);
+            claimAmountVM.PensionAndInsurance = (decimal)0.06 * (decimal)867.23 * numberOfSickDays;
+            claimAmountVM.SocialFees = (decimal)0.3142 * (decimal)867.23 * numberOfSickDays;
+            claimAmountVM.HolidayPay = (decimal)0.12 * (claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees);
+
+            claimAmountVM.ClaimSum = claimAmountVM.HolidayPay + claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees;
+
 
             return View("ClaimAmount", claimAmountVM);
 
@@ -870,8 +895,49 @@ namespace Sjuklöner.Controllers
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.ReferenceNumber).ToList();
 
+                //These check results are hardcoded for the demo. Need to be changed for the real solution.
+                decisionVM.CompleteCheck = false;
+                decisionVM.ProxyCheck = true;
+                if (!decisionVM.CompleteCheck)
+                {
+                    decisionVM.CompleteCheckMsg = "Bilaga saknas";
+                }
+                else
+                {
+                    decisionVM.CompleteCheckMsg = "Alla bilagor är med";
+                }
+                if (!decisionVM.ProxyCheck)
+                {
+                    decisionVM.ProxyCheckMsg = "Ombudet saknar giltig fullmakt";
+                }
+                else
+                {
+                    decisionVM.ProxyCheckMsg = "Ombudet har giltig fullmakt";
+                }
+
+                decisionVM.AssistanceCheck = false;
+                decisionVM.IvoCheck = false;
+
                 decisionVM.AssistanceCheck = claim.ProCapitaCheck;
                 decisionVM.IvoCheck = claim.IVOCheck;
+                if (!decisionVM.AssistanceCheck)
+                {
+                    decisionVM.AssistanceCheckMsg = "Beslut om assistans saknas";
+                }
+                else
+                {
+                    decisionVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
+                }
+
+                if (!decisionVM.IvoCheck)
+                {
+                    decisionVM.IvoCheckMsg = "Verksamheten saknas i IVO";
+                }
+                else
+                {
+                    decisionVM.IvoCheckMsg = "Verksamheten finns i IVO";
+                }
+
                 decisionVM.ClaimNumber = claim.ReferenceNumber;
                 decisionVM.ModelSum = claim.ModelSum;
                 decisionVM.ClaimSum = claim.ClaimSum;
