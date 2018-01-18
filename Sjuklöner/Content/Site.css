@@ -938,6 +938,10 @@ a:hover, a:focus {
     width: 60px;
 }
 
+.small-col-ombud {
+    width: 70px;
+}
+
 .medium-col {
     width: 90px;
 }
