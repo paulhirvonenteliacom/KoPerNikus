@@ -30,6 +30,7 @@ namespace Sjuklöner.Models
         public int? CareCompanyId { get; set; }
 
         public virtual List<Document> Documents { get; set; }
+        public virtual List<Message> Message { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
