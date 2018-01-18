@@ -25,10 +25,14 @@
     @*<body class="assistant-claim">*@
     <div class="row">
         <p class="col col-md-2"></p>
-        <p class="page-header col col-md-10">Ansökan om sjuklöneersättning</p>
+        <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
         @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
         <br>
-        <p class="col col-md-offset-2 col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>
+        @*<p class="col col-md-offset-2 col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>*@
+    </div>
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>
     </div>
 
     <div class="row">
@@ -68,8 +72,8 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10 align-bottom3" id="claimsum">
+                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
+                <div class="col-md-10 align-bottom3 display-large-font1" id="claimsum">
                     @Html.DisplayFor(model => Model.ClaimSum)
                     @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })*@
                 </div>

@@ -225,6 +225,20 @@ li a {
     border: none;
 }
 
+.page-header3 {
+    font-size: 50px;
+    line-height: 1.0;
+    padding: 0 15px 0 5px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
 .page-header-no-padding-left {
     font-size: 50px;
     /*line-height: 34px;*/
@@ -869,6 +883,10 @@ special-left-margin {
     font-size: 22px;
 }
 
+.display-large-font1 {
+    font-size: 19px;
+}
+
 .align-bottom1 {
     margin-top: 12px;
     margin-bottom: 0;
@@ -974,10 +992,12 @@ a:hover, a:focus {
     /*color: #ffffff;*/
     color: #d2322d;
     /*background-color: #d2322d;*/
+    /*margin-left: 4px;*/
 }
 
 .positive-result {
     /*color: #ffffff;*/
     color: #47a447;
     /*background-color: #47a447;*/
+    /*margin-left: 4px;*/
 }
