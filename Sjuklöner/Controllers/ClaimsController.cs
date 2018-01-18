@@ -54,7 +54,7 @@ namespace Sjuklöner.Controllers
             {
                 indexPageOmbudVM.RejectedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
                 indexPageOmbudVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
-                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
+                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList().Concat(claims.Where(c => c.ClaimStatusId == 5)).ToList();
                 indexPageOmbudVM.ApprovedClaims = claims.Where(c => c.ClaimStatusId == 4).ToList();
             }
 
@@ -75,14 +75,32 @@ namespace Sjuklöner.Controllers
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress("ourrobotdemo@gmail.com");
-                message.To.Add(new MailAddress(claim.Email));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-                message.Subject = "Avlsagen ansökan: " + referenceNumber;
-                message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
+                if (!string.IsNullOrWhiteSpace(claim.Email))
+                {
+                    MailMessage message = new MailMessage();
+                    message.From = new MailAddress("ourrobotdemo@gmail.com");
 
-                SendEmail(message);
+                    message.To.Add(new MailAddress(claim.Email));
+                    //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                    message.Subject = "Avlsagen ansökan: " + referenceNumber;
+                    message.Body = "Hej, ansökan med referensnummer " + referenceNumber + " har blivit avslagen. Vänligen dubbelkolla informationen";
+
+                    SendEmail(message);
+                }
+
+                string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
+
+                Directory.CreateDirectory(appdataPath);
+                using (var writer = XmlWriter.Create(appdataPath + "\\decided.xml"))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("SSN", claim.CustomerSSN);
+                    writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                    writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                }
             }
 
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
@@ -93,7 +111,7 @@ namespace Sjuklöner.Controllers
             if (claims.Count > 0)
             {
                 indexPageAdmOffVM.RejectedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
-                //indexPageAdmOffVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
+                indexPageAdmOffVM.InInboxClaims = claims.Where(c => c.ClaimStatusId == 5).ToList();
                 indexPageAdmOffVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
                 indexPageAdmOffVM.ApprovedClaims = claims.Where(c => c.ClaimStatusId == 4).ToList();
             }
@@ -197,9 +215,9 @@ namespace Sjuklöner.Controllers
 
             AssistantClaimVM claimVM = new AssistantClaimVM();
 
-            claimVM.AssistantSSN = "19930701-4168";
-            claimVM.CustomerSSN = "19391025-7246";
-            claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
+            claimVM.AssistantSSN = "930701-4168";
+            claimVM.CustomerSSN = "391025-7246";
+            claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
             claimVM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
 
             claimVM.Rejected = false;
@@ -270,8 +288,8 @@ namespace Sjuklöner.Controllers
                             Claim claim = new Claim();
                             claim.OrganisationNumber = claimVM.OrganisationNumber;
                             //Hardcoded SSNs for demo
-                            claim.CustomerSSN = "19391025-7246";
-                            claim.AssistantSSN = "19930701-4168";
+                            claim.CustomerSSN = claimVM.CustomerSSN;
+                            claim.AssistantSSN = "930701-4168";
                             claim.Email = claimVM.Email;
                             //claim.CustomerSSN = claimVM.CustomerSSN;
                             //claim.AssistantSSN = claimVM.AssistantSSN;
@@ -395,6 +413,9 @@ namespace Sjuklöner.Controllers
 
                             DateTime dateInSchedule;
 
+                            //Seed for demo only
+                            var claimDaySeeds = db.ClaimDaySeeds.ToList();
+
                             //Populate viewmodel properties by iterating over each row in the schedule
                             for (int i = 0; i < numberOfDays; i++)
                             {
@@ -417,6 +438,18 @@ namespace Sjuklöner.Controllers
                                 //scheduleRow.ScheduleRowDate = dateInSchedule.ToShortDateString();
                                 scheduleRow.ScheduleRowWeekDay = DateTimeFormatInfo.CurrentInfo.GetDayName(dateInSchedule.DayOfWeek).ToString().Substring(0, 2);
                                 //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
+
+                                //For seeding demo only
+                                scheduleRow.StartTimeHour = claimDaySeeds[i].StartHour;
+                                scheduleRow.StartTimeMinute = claimDaySeeds[i].StartMinute;
+                                scheduleRow.StopTimeHour = claimDaySeeds[i].StopHour;
+                                scheduleRow.StopTimeMinute = claimDaySeeds[i].StopMinute;
+
+                                scheduleRow.StartTimeHourOnCall = claimDaySeeds[i].StartHourOnCall;
+                                scheduleRow.StartTimeMinuteOnCall = claimDaySeeds[i].StartMinuteOnCall;
+                                scheduleRow.StopTimeHourOnCall = claimDaySeeds[i].StopHourOnCall;
+                                scheduleRow.StopTimeMinuteOnCall = claimDaySeeds[i].StopMinuteOnCall;  //End demo seed
+
                                 rowList.Add(scheduleRow);
                             }
                         }
@@ -543,6 +576,16 @@ namespace Sjuklöner.Controllers
             ClaimAmountVM claimAmountVM = new ClaimAmountVM();
 
             claimAmountVM.ClaimNumber = scheduleVM.ReferenceNumber;
+
+            //Seed for demo only
+            var numberOfSickDays = scheduleVM.ScheduleRowList.Count();
+            claimAmountVM.SickPay = (decimal)867.23 * (numberOfSickDays - 1);
+            claimAmountVM.PensionAndInsurance = (decimal)0.06 * (decimal)867.23 * numberOfSickDays;
+            claimAmountVM.SocialFees = (decimal)0.3142 * (decimal)867.23 * numberOfSickDays;
+            claimAmountVM.HolidayPay = (decimal)0.12 * (claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees);
+
+            claimAmountVM.ClaimSum = claimAmountVM.HolidayPay + claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees;
+
 
             return View("ClaimAmount", claimAmountVM);
 
@@ -793,7 +836,7 @@ namespace Sjuklöner.Controllers
                 //SO FAR ONLY DAY 2 TO 14 HAVE BEEN TAKEN INTO ACCOUNT. THE QUALYFYING WILL NEED TO BE ADDED.
                 existingClaim.ModelSum = existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14 + existingClaim.PayrollTaxDay2To14 + existingClaim.PensionAndInsurance;
 
-                existingClaim.ClaimStatusId = 3;
+                existingClaim.ClaimStatusId = 5;
                 existingClaim.StatusDate = DateTime.Now;
                 db.Entry(existingClaim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -805,14 +848,18 @@ namespace Sjuklöner.Controllers
         {
             var claim = db.Claims.Where(rn => rn.ReferenceNumber == claimAmountVM.ClaimNumber).FirstOrDefault();
 
-            MailMessage message = new MailMessage();
-            message.From = new MailAddress("ourrobotdemo@gmail.com");
-            message.To.Add(new MailAddress(claim.Email));
-            //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-            message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
-            message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
+            if (!string.IsNullOrWhiteSpace(claim.Email))
+            {
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress("ourrobotdemo@gmail.com");
+                
+                message.To.Add(new MailAddress(claim.Email));
+                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                message.Subject = "Ny ansökan skapad: " + claimAmountVM.ClaimNumber;
+                message.Body = "Hej, ansökan med referensnummer " + claimAmountVM.ClaimNumber + " har blivit skapad, förvänta dig besked inom 1 - 3 dagar.";
 
-            SendEmail(message);
+                SendEmail(message);
+            }
 
             string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
@@ -847,6 +894,49 @@ namespace Sjuklöner.Controllers
             {
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.ReferenceNumber).ToList();
+
+                //These check results are hardcoded for the demo. Need to be changed for the real solution.
+                decisionVM.CompleteCheck = false;
+                decisionVM.ProxyCheck = true;
+                if (!decisionVM.CompleteCheck)
+                {
+                    decisionVM.CompleteCheckMsg = "Bilaga saknas";
+                }
+                else
+                {
+                    decisionVM.CompleteCheckMsg = "Alla bilagor är med";
+                }
+                if (!decisionVM.ProxyCheck)
+                {
+                    decisionVM.ProxyCheckMsg = "Ombudet saknar giltig fullmakt";
+                }
+                else
+                {
+                    decisionVM.ProxyCheckMsg = "Ombudet har giltig fullmakt";
+                }
+
+                decisionVM.AssistanceCheck = false;
+                decisionVM.IvoCheck = false;
+
+                decisionVM.AssistanceCheck = claim.ProCapitaCheck;
+                decisionVM.IvoCheck = claim.IVOCheck;
+                if (!decisionVM.AssistanceCheck)
+                {
+                    decisionVM.AssistanceCheckMsg = "Beslut om assistans saknas";
+                }
+                else
+                {
+                    decisionVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
+                }
+
+                if (!decisionVM.IvoCheck)
+                {
+                    decisionVM.IvoCheckMsg = "Verksamheten saknas i IVO";
+                }
+                else
+                {
+                    decisionVM.IvoCheckMsg = "Verksamheten finns i IVO";
+                }
 
                 decisionVM.ClaimNumber = claim.ReferenceNumber;
                 decisionVM.ModelSum = claim.ModelSum;
@@ -961,14 +1051,32 @@ namespace Sjuklöner.Controllers
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress("ourrobotdemo@gmail.com");
-                message.To.Add(new MailAddress(claim.Email));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-                message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
-                message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
+                if (!string.IsNullOrWhiteSpace(claim.Email))
+                {
+                    MailMessage message = new MailMessage();
+                    message.From = new MailAddress("ourrobotdemo@gmail.com");
 
-                SendEmail(message);
+                    message.To.Add(new MailAddress(claim.Email));
+                    //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
+                    message.Subject = "Godkänd ansökan: " + claim.ReferenceNumber;
+                    message.Body = "Hej, ansökan med referensnummer " + claim.ReferenceNumber + " har blivit godkänd. Ha en bra dag.";
+
+                    SendEmail(message);
+                }
+
+                string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
+
+                Directory.CreateDirectory(appdataPath);
+                using (var writer = XmlWriter.Create(appdataPath + "\\decided.xml"))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("SSN", claim.CustomerSSN);
+                    writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                    writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                }
             }
             return RedirectToAction("IndexPageAdmOff");
         }

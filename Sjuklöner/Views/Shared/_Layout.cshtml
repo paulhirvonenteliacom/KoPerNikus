@@ -9,97 +9,98 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <img class="helsingborg-logo" src="~/Content/Images/helsingborg.svg" /><img class="bitoreq-logo" src="~/Content/Images/Big_blue_black.png" />
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
-            </div>
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @if (User.IsInRole("Ombud"))
-                    {
-                        <li>@Html.ActionLink("Ansökningar", "Create", "Claims")</li>
-                        <li>@Html.ActionLink("Assistenter", "Create", "Claims")</li>
-                        <li>@Html.ActionLink("Anordnarens profil", "Create", "Claims")</li>
-                    }
-                </ul>*@
-            @*@Html.Partial("_LoginPartial")*@
-            @*</div>*@
-        </div>
-        @*<div class="navbar navbar-inverse2 navbar-fixed-top2">
+    @if (User.IsInRole("AdministrativeOfficial"))
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
+                    <img class="helsingborg-logo" src="~/Content/Images/helsingborg.svg" /><img class="bitoreq-logo" src="~/Content/Images/Big_blue_black.png" />
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
-        @*</div>
-                    <div class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            @if (User.IsInRole("Ombud"))
-                            {
-                                <li>@Html.ActionLink("Ansökningar", "Create", "Claims")</li>
-                                <li>@Html.ActionLink("Assistenter", "Create", "Claims")</li>
-                                <li>@Html.ActionLink("Anordnarens profil", "Create", "Claims")</li>
-                            }
-                        </ul>
-                        @Html.Partial("_LoginPartial")
-                    </div>
+                    @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
                 </div>
-            </div>*@
-
-        <div class="red-bar">
-            @*<div class="navbar-collapse collapse">*@
-            @*@if (User.IsInRole("Ombud"))
-                {
-                    <div class="col col-md-offset-2 col-md-2 navbar-actionlink">
-                        @Html.ActionLink("Ansökningar", "Create", "Claims", new { @class = "navbar-actionlink" })
-                    </div>
-                    <div class="col col-md-2">
-                        @Html.ActionLink("Assistenter", "Create", "Claims", new { @class = "navbar-actionlink" })
-                    </div>
-                    <div class="col col-md-2">
-                        @Html.ActionLink("Anordnarens profil", "Create", "Claims", new { @class = "navbar-actionlink" })
-                    </div>
-                }*@
-            <div class="red-bar-filler">
-
             </div>
-            @if (User.IsInRole("Ombud"))
-            {
+            <div class="red-bar">
+                <div class="red-bar-filler">
+                </div>
                 <ul>
                     <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>
                     <li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
                     <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>
                 </ul>
-            }
-            else
-            {
-                <ul>
-                    <li class="navbar-actionlink"></li>
-                    <li class="navbar-actionlink"></li>
-                    <li class="navbar-actionlink"></li>
-                </ul>
-            }
-            @Html.Partial("_LoginPartial")
-            @*</div>*@
+                @Html.Partial("_LoginPartial")
+                @*</div>*@
 
+            </div>
         </div>
-    </div>
+    }
+    else if (User.IsInRole("Ombud"))
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <img class="helsingborg-logo" src="~/Content/Images/helsingborg.svg" /><img class="bitoreq-logo" src="~/Content/Images/Big_blue_black.png" />
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                </div>
+            </div>
+            <div class="blue-bar">
+                <div class="blue-bar-filler">
+                </div>
+                <ul>
+                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>
+                    @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
+                    <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+                </ul>
+                @Html.Partial("_LoginPartial")
+                @*</div>*@
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container no-padding-left">
+                <div class="navbar-header">
+                    <img class="helsingborg-logo" src="~/Content/Images/helsingborg.svg" /><img class="bitoreq-logo" src="~/Content/Images/Big_blue_black.png" />
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                </div>
+            </div>
+            <div class="blue-bar">
+                <div class="blue-bar-filler">
+                </div>
+                <ul>
+                    @*<li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>*@
+                    @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
+                        <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+                </ul>
+                @*@Html.Partial("_LoginPartial")*@
+                @*</div>*@
+
+            </div>
+        </div>
+    }
+
+
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
             <div class="row">
-                <div class="col col-md-offset-2 col-md-9 small-font padding-left-no-claim">
+                <div class="col col-md-11 small-font padding-left-no-claim">
                     <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
                 </div>
                 <div class="col col-md-1 small-font">

@@ -149,11 +149,35 @@ namespace Sjuklöner.Migrations
                 new ClaimStatus { Id = 1, Name = "Avslagen" },
                 new ClaimStatus { Id = 2, Name = "Utkast" },
                 new ClaimStatus { Id = 3, Name = "Under handläggning" },
-                new ClaimStatus { Id = 4, Name = "Godkänd" }
+                new ClaimStatus { Id = 4, Name = "Godkänd" },
+                new ClaimStatus { Id = 5, Name = "Inkorgen" }
             };
             foreach (var claimStatus in claimStatuses)
             {
                 context.ClaimStatuses.AddOrUpdate(c => c.Id, claimStatus);
+            }
+
+            var claimDaySeeds = new List<ClaimDaySeed>
+            {
+                new ClaimDaySeed { Id = 1, StartHour = "7", StartMinute = "20", StopHour = "16", StopMinute = "45", StartHourOnCall = "21", StartMinuteOnCall = "45", StopHourOnCall = "23", StopMinuteOnCall = "45" },
+                new ClaimDaySeed { Id = 2, StartHour = "13", StartMinute = "00", StopHour = "19", StopMinute = "30", StartHourOnCall = "5", StartMinuteOnCall = "15", StopHourOnCall = "9", StopMinuteOnCall = "00" },
+                new ClaimDaySeed { Id = 3, StartHour = "6", StartMinute = "45", StopHour = "12", StopMinute = "30" },
+                new ClaimDaySeed { Id = 4, StartHourOnCall = "12", StartMinuteOnCall = "15", StopHourOnCall = "16", StopMinuteOnCall = "20" },
+                new ClaimDaySeed { Id = 5 },
+                new ClaimDaySeed { Id = 6, StartHour = "15", StartMinute = "00", StopHour = "21", StopMinute = "10", StartHourOnCall = "5", StartMinuteOnCall = "15", StopHourOnCall = "9", StopMinuteOnCall = "00" },
+                new ClaimDaySeed { Id = 7, StartHour = "6", StartMinute = "45", StopHour = "10", StopMinute = "30" },
+                new ClaimDaySeed { Id = 8, StartHour = "7", StartMinute = "20", StopHour = "16", StopMinute = "45", StartHourOnCall = "21", StartMinuteOnCall = "45", StopHourOnCall = "23", StopMinuteOnCall = "45" },
+                new ClaimDaySeed { Id = 9, StartHour = "13", StartMinute = "00", StopHour = "19", StopMinute = "30", StartHourOnCall = "5", StartMinuteOnCall = "15", StopHourOnCall = "9", StopMinuteOnCall = "00" },
+                new ClaimDaySeed { Id = 10, StartHour = "6", StartMinute = "45", StopHour = "12", StopMinute = "30" },
+                new ClaimDaySeed { Id = 11, StartHourOnCall = "12", StartMinuteOnCall = "15", StopHourOnCall = "16", StopMinuteOnCall = "20" },
+                new ClaimDaySeed { Id = 12 },
+                new ClaimDaySeed { Id = 13, StartHour = "15", StartMinute = "00", StopHour = "21", StopMinute = "10", StartHourOnCall = "5", StartMinuteOnCall = "15", StopHourOnCall = "9", StopMinuteOnCall = "00" },
+                new ClaimDaySeed { Id = 14, StartHour = "6", StartMinute = "45", StopHour = "10", StopMinute = "30" }
+
+            };
+            foreach (var claimDaySeed in claimDaySeeds)
+            {
+                context.ClaimDaySeeds.AddOrUpdate(c => c.Id, claimDaySeed);
             }
 
             context.ClaimReferenceNumbers.AddOrUpdate(c => c.Id, new ClaimReferenceNumber

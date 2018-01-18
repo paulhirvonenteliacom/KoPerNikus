@@ -10,7 +10,7 @@ namespace Sjuklöner.Viewmodels
     {
         public List<Claim> RejectedClaims  { get; set; }  //Avslagna
 
-        //public List<Claim> DraftClaims { get; set; }  //Ej inskickade, utkast
+        public List<Claim> InInboxClaims { get; set; }  //I inkorgen
 
         public List<Claim> UnderReviewClaims { get; set; }  //Inskickade, under handläggning
 

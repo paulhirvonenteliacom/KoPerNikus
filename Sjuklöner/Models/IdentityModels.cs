@@ -30,6 +30,7 @@ namespace Sjuklöner.Models
         public int? CareCompanyId { get; set; }
 
         public virtual List<Document> Documents { get; set; }
+        public virtual List<Message> Message { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -45,6 +46,10 @@ namespace Sjuklöner.Models
         public DbSet<ClaimStatus> ClaimStatuses { get; set; }
         public DbSet<CollectiveAgreement> CollectiveAgreements { get; set; }
         public DbSet<CareCompany> CareCompanies { get; set; }
+
+        //Only needed for demo
+        public DbSet<ClaimDaySeed> ClaimDaySeeds { get; set; }
+
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

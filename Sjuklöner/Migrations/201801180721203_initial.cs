@@ -68,6 +68,48 @@ namespace Sjuklöner.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
+                "dbo.ClaimDaySeeds",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ReferenceNumber = c.String(),
+                        ClaimDayDate = c.DateTime(),
+                        DateString = c.String(),
+                        SickDayNumber = c.Int(nullable: false),
+                        StartHour = c.String(),
+                        StartMinute = c.String(),
+                        StopHour = c.String(),
+                        StopMinute = c.String(),
+                        NumberOfHours = c.Single(nullable: false),
+                        NumberOfUnsocialHours = c.Single(nullable: false),
+                        NumberOfUnsocialHoursNight = c.Single(nullable: false),
+                        NumberOfUnsocialHoursEvening = c.Single(nullable: false),
+                        StartHourOnCall = c.String(),
+                        StartMinuteOnCall = c.String(),
+                        StopHourOnCall = c.String(),
+                        StopMinuteOnCall = c.String(),
+                        NumberOfOnCallHours = c.Single(nullable: false),
+                        NumberOfOnCallHoursNight = c.Single(nullable: false),
+                        NumberOfOnCallHoursEvening = c.Single(nullable: false),
+                        StartHourSI = c.String(),
+                        StartMinuteSI = c.String(),
+                        StopHourSI = c.String(),
+                        StopMinuteSI = c.String(),
+                        NumberOfHoursSI = c.Single(nullable: false),
+                        NumberOfUnsocialHoursSI = c.Single(nullable: false),
+                        NumberOfUnsocialHoursNightSI = c.Single(nullable: false),
+                        NumberOfUnsocialHoursEveningSI = c.Single(nullable: false),
+                        StartHourOnCallSI = c.String(),
+                        StartMinuteOnCallSI = c.String(),
+                        StopHourOnCallSI = c.String(),
+                        StopMinuteOnCallSI = c.String(),
+                        NumberOfOnCallHoursSI = c.Single(nullable: false),
+                        NumberOfOnCallHoursNightSI = c.Single(nullable: false),
+                        NumberOfOnCallHoursEveningSI = c.Single(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "dbo.ClaimReferenceNumbers",
                 c => new
                     {
@@ -85,6 +127,8 @@ namespace Sjuklöner.Migrations
                         OwnerId = c.String(),
                         ClaimStatusId = c.Int(nullable: false),
                         CareCompanyId = c.Int(nullable: false),
+                        IVOCheck = c.Boolean(nullable: false),
+                        ProCapitaCheck = c.Boolean(nullable: false),
                         ReferenceNumber = c.String(),
                         StatusDate = c.DateTime(),
                         DeadlineDate = c.DateTime(),
@@ -366,6 +410,7 @@ namespace Sjuklöner.Migrations
             DropTable("dbo.ClaimStatus");
             DropTable("dbo.Claims");
             DropTable("dbo.ClaimReferenceNumbers");
+            DropTable("dbo.ClaimDaySeeds");
             DropTable("dbo.ClaimDays");
             DropTable("dbo.CareCompanies");
         }
