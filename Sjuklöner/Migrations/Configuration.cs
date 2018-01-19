@@ -136,8 +136,8 @@ namespace Sjuklöner.Migrations
 
             var careCompanies = new List<CareCompany>
             {
-                new CareCompany{CompanyName = "Frösunda Omsorg AB"},
-                new CareCompany{CompanyName = "MaxAssistans AB"}
+                new CareCompany{CompanyName = "Smart Assistans"},
+                new CareCompany{CompanyName = "Assistans Direkt AB"}
             };
             foreach (var careCompany in careCompanies)
             {
@@ -146,10 +146,10 @@ namespace Sjuklöner.Migrations
 
             var claimStatuses = new List<ClaimStatus>
             {
-                new ClaimStatus { Id = 1, Name = "Avslagen" },
+                new ClaimStatus { Id = 1, Name = "Beslutad" }, //Old "Avslagen
                 new ClaimStatus { Id = 2, Name = "Utkast" },
                 new ClaimStatus { Id = 3, Name = "Under handläggning" },
-                new ClaimStatus { Id = 4, Name = "Godkänd" },
+                new ClaimStatus { Id = 4, Name = "Godkänd" }, //Not used
                 new ClaimStatus { Id = 5, Name = "Inkorgen" }
             };
             foreach (var claimStatus in claimStatuses)

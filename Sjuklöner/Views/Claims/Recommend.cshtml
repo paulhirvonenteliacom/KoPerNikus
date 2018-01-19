@@ -1,14 +1,20 @@
-﻿@model Sjuklöner.Viewmodels.DecisionVM
+﻿@model Sjuklöner.Viewmodels.RecommendationVM
+@using Newtonsoft.Json
 
 @{
     ViewBag.Title = "View";
 }
 
-@using (Html.BeginForm("ApproveClaim", "Claims", FormMethod.Post))
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     @Html.HiddenFor(model => model.ClaimNumber)
+    @Html.HiddenFor(model => model.ClaimSum)
+    @Html.HiddenFor(model => model.CompleteCheck)
+    @Html.HiddenFor(model => model.IvoCheck)
+    @Html.HiddenFor(model => model.AssistanceCheck)
+    @Html.HiddenFor(model => model.ProxyCheck)
 
     @*<body class="assistant-claim">*@
 
@@ -16,7 +22,7 @@
         <div class="form-horizontal">
             <div class="form-group col line-height-10">
                 @Html.LabelFor(model => model.ClaimNumber, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="claimsum">
+                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="referencenumber">
                     @Html.DisplayFor(model => Model.ClaimNumber, null)
                     @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })*@
                 </div>
@@ -111,14 +117,14 @@
                         @*<hr class="claim-divider col-md-offset-2 col-md-8" />*@
                     </div>
                     <div class="row">
-                        <p class="col col-md-6 second-page-header-large">Belopp</p>
+                        <p class="col col-md-6 second-page-header-large">Ersättningsbedömning</p>
                     </div>
                     <div class="row">
                         <div class="form-horizontal">
                             <div class="form-group col line-height-06">
                                 @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
                                 <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="claimsum">
-                                    @Html.DisplayFor(model => Model.ClaimSum, null)
+                                    @Html.DisplayFor(model => Model.ClaimSum)
                                     @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })*@
                                 </div>
                             </div>
@@ -136,15 +142,34 @@
                     <div class="row">
                         <div class="form-horizontal">
                             <div class="form-group col line-height-10">
-                                @Html.LabelFor(model => model.DecidedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                                @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-green" })
 
                                 <div class="col col-md-1">
-                                    @Html.EditorFor(model => model.DecidedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small" } })
-                                    @Html.ValidationMessageFor(model => model.DecidedSum, "", new { @class = "text-danger" })
+                                    @*@Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small", id = "approvedsum", onblur = "calculateSum(1)" } })*@
+                                    @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-green", id = "approvedsum" } })
+                                    @Html.ValidationMessageFor(model => model.ApprovedSum, null, new { @class = "text-danger" }, null)
                                 </div>
-                                <div class="col col-md-1">
+                                @*<div class="col col-md-1">
                                     @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
+                                </div>*@
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-horizontal">
+                            <div class="form-group col line-height-10">
+                                @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-red" })
+
+                                <div class="col col-md-1">
+                                    @*@Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small", id = "rejectedsum", onblur = "calculateSum(2)" } })*@
+                                    @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-red", id = "rejectedsum" } })
+                                    @Html.ValidationMessageFor(model => model.RejectedSum, null, new { @class = "text-danger" }, null)
                                 </div>
+                                @*<div class="col col-md-1">
+                                    @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
+                                </div>*@
                             </div>
 
                         </div>
@@ -153,11 +178,12 @@
 
                     <div class="row line-height-10">
                         <div class="col col-md-offset-6 col-md-1">
-                            <input class="btn btn-success" type="submit" value="Godkänn" />
-                            @*@Html.ActionLink("Godkänn", "IndexPageAdmOff", "Claims", new { referenceNumber = Model.ClaimNumber, approvedSum = Model.DecidedSum, action = 1 }, new { @class = "btn btn-success" })*@
+                            <input class="btn btn-success" type="submit" value="Nästa steg" />
+                            @*@Html.ActionLink("Nästa steg", "ShowRecommendationReceipt", "Claims", new { referenceNumber = Model.ClaimNumber, approvedSum = Model.ApprovedSum, rejectedSum = Model.RejectedSum }, new { @class = "btn btn-success" })*@
+                            @*@Html.ActionLink("Godkänn", "IndexPageAdmOff", "Claims", new { referenceNumber = Model.ClaimNumber, action = 1 }, new { @class = "btn btn-success" })*@
                         </div>
                         <div class="col col-md-1">
-                            @Html.ActionLink("Avslå", "IndexPageAdmOff", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-danger" })
+                            @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
                         </div>
                     </div>
 
@@ -352,6 +378,23 @@
 @*<div>
     @Html.ActionLink("Back to List", "Index")
     </div>*@
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type='text/javascript'>
+    function calculateSum(id) {
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        var claimSum = document.getElementById("claimsum");
+        var approvedSum = document.getElementById("approvedsum");
+        var rejectedSum = document.getElementById("rejectedsum");
+
+        if (id === 1) {
+            rejectedSum.value = (parseFloat(claimSum.innerHTML.trim()) - parseFloat(approvedSum.value)).toFixed(2);
+        }
+
+        if (id === 2) {
+            approvedSum.value = (parseFloat(claimSum.innerHTML.trim()) - parseFloat(rejectedSum.value)).toFixed(2);
+        }
+    }
+</script>

@@ -128,6 +128,14 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal DecidedSum { get; set; }
 
+        [Display(Name = "Godkänt belopp (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public decimal ApprovedSum { get; set; }
+
+        [Display(Name = "Avslaget belopp (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public decimal RejectedSum { get; set; }
+
         [Display(Name = "Antal timmar som skulle arbetats karensdagen")]
         public decimal HoursQualifyingDay { get; set; }
 
