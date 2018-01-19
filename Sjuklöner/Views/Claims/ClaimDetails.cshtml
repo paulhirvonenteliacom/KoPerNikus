@@ -29,8 +29,31 @@
         <div class="form-horizontal">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="row">
+                <div class="col col-md-10 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Kommentarer
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-2">
+                            <label>Datum</label>
+                        </div>
+                        <div class="col col-md-2">
+                            <label>Användare</label>
+                        </div>
+                        <div class="col col-md-8">
+                            <label>Kommentar</label>
+                        </div>
+                    </div>
+
+                    @foreach (var item in Model.messages)
+                    {
+                        @Html.Action("_Message", new { message = item })
+                    }
+                </div>
+            </div>
+            <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Kommun
@@ -61,7 +84,7 @@
             </div>
             <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Assistansberättigad
@@ -112,7 +135,7 @@
             </div>
             <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Ombud/uppgiftslämnare
@@ -143,7 +166,7 @@
             </div>
             <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Assistansanordnare
@@ -217,7 +240,7 @@
 
             <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Insjuknad ordinarie assistent
@@ -361,15 +384,15 @@
                             </div>
                         </div>
                         @*<div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.AssistantSSN)
+                                    </div>
                                 </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.AssistantSSN)
-                                </div>
-                            </div>
-                        </div>*@
+                            </div>*@
                     </div>
                 </div>
             </div>
@@ -422,56 +445,56 @@
                                     </div>
                                 </div>
                             </div>*@
-                    @*</div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.NameOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+            @*</div>
+                        <div class="row">
+                            <div class="col col-md-3">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.NameOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.NameOfOmbud)
+                                    </div>
                                 </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.NameOfOmbud)
+                            </div>
+                            <div class="col col-md-3">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.PhonenUmberOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.PhonenUmberOfOmbud)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-3">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.CustomerSSN)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-3">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(modelItem => Model.AssistantSSN)
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PhonenUmberOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PhonenUmberOfOmbud)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CustomerSSN)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.AssistantSSN)
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
-                    
-                </div>
-            </div>*@
+                </div>*@
 
             <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Underlag lönekostnader
@@ -609,7 +632,7 @@
 
             <div class="row">
                 @*<div class="col col-md-2">
-            </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
                         Bilagor
@@ -788,7 +811,7 @@
 
             <div class="row">
                 @*<div class="col col-md-2">
-                </div>*@
+                    </div>*@
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row">
                         <div class="col col-md-4 form-group-heading">
@@ -930,9 +953,9 @@
     </div>*@
 <script type='text/javascript'>
 
-    //$(document).ready(function () {
-    //    $("#show-hours-btn").click(function () {
-    //        alert("Hello");
-    //    });
-    //});
+                            //$(document).ready(function () {
+                            //    $("#show-hours-btn").click(function () {
+                            //        alert("Hello");
+                            //    });
+                            //});
 </script>

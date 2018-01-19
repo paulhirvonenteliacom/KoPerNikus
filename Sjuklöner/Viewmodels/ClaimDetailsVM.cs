@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sjuklöner.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -290,5 +291,8 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Total kostnad för sjuklöneperioden dag 1 - 14 (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal CostDay1To14 { get; set; }
+
+        [Display(Name = "Kommentarer")]
+        public List<Message> messages { get; set; }
     }
 }

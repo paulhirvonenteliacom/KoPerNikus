@@ -199,13 +199,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801180721203_initial.cs" />
-    <Compile Include="Migrations\201801180721203_initial.Designer.cs">
-      <DependentUpon>201801180721203_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801181556519_messages_change.cs" />
-    <Compile Include="Migrations\201801181556519_messages_change.Designer.cs">
-      <DependentUpon>201801181556519_messages_change.cs</DependentUpon>
+    <Compile Include="Migrations\201801181952091_init.cs" />
+    <Compile Include="Migrations\201801181952091_init.Designer.cs">
+      <DependentUpon>201801181952091_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -233,6 +229,7 @@
     <Compile Include="Viewmodels\ClaimAmountVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
+    <Compile Include="Viewmodels\MessageVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
     <Compile Include="Viewmodels\IndexPageAdmOffVM.cs" />
     <Compile Include="Viewmodels\IndexPageOmbudVM.cs" />
@@ -250,6 +247,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -319,6 +317,7 @@
     <Content Include="Views\Claims\Receipt.cshtml" />
     <Content Include="Views\Claims\IndexPageAdmOff.cshtml" />
     <Content Include="Views\Claims\ClaimDetails.cshtml" />
+    <Content Include="Views\Claims\_Message.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -337,11 +336,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801180721203_initial.resx">
-      <DependentUpon>201801180721203_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801181556519_messages_change.resx">
-      <DependentUpon>201801181556519_messages_change.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801181952091_init.resx">
+      <DependentUpon>201801181952091_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

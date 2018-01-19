@@ -871,7 +871,9 @@ namespace Sjuklöner.Controllers
                         writer.WriteElementString("SSN", claim.CustomerSSN);
                         writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                         writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
-                    writer.WriteEndElement();
+                        writer.WriteElementString("ClaimId", claim.Id.ToString());
+                        writer.WriteElementString("UserId", claim.OwnerId);
+                writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
 
@@ -949,6 +951,16 @@ namespace Sjuklöner.Controllers
                 return View();
             }
         }
+
+        public ActionResult _Message(Message message)
+        {
+            ApplicationUser user = db.Users.Where(u => u.Id == message.ApplicationUser_Id).FirstOrDefault();
+            string userName = $"{user.FirstName} {user.LastName}";
+            MessageVM messageVM = new MessageVM(message.CommentDate, message.Comment, userName);
+
+            return PartialView("_Message", messageVM);
+        }
+
 
         public ActionResult ShowClaimDetails(string referenceNumber)
         {
@@ -1030,6 +1042,8 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.PensionAndInsuranceRate = (decimal)6.00;
             claimDetailsVM.SickPayRate = (decimal)80.00;
             //claimDetailsVM.QualifyingDayDate = scheduleVM.ScheduleRowList.First().ScheduleRowDate;
+
+            claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).Where(u => u.ApplicationUser_Id == claim.OwnerId).ToList();
 
             return View("ClaimDetails", claimDetailsVM);
         }
