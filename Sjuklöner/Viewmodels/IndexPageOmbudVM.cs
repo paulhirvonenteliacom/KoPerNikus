@@ -8,12 +8,12 @@ namespace Sjuklöner.Viewmodels
 {
     public class IndexPageOmbudVM
     {
-        public List<Claim> RejectedClaims  { get; set; }  //Avslagna
+        public List<Claim> DecidedClaims  { get; set; }  //Avslagna
 
         public List<Claim> DraftClaims { get; set; }  //Ej inskickade, utkast
 
         public List<Claim> UnderReviewClaims { get; set; }  //Inskickade, under handläggning
 
-        public List<Claim> ApprovedClaims { get; set; } //Godkända
+        //public List<Claim> ApprovedClaims { get; set; } //Godkända
     }
 }

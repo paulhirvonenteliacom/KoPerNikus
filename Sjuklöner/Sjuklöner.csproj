@@ -199,9 +199,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801180721203_initial.cs" />
-    <Compile Include="Migrations\201801180721203_initial.Designer.cs">
-      <DependentUpon>201801180721203_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201801181957316_initial.cs" />
+    <Compile Include="Migrations\201801181957316_initial.Designer.cs">
+      <DependentUpon>201801181957316_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -230,8 +230,10 @@
     <Compile Include="Viewmodels\ClaimDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
+    <Compile Include="Viewmodels\RecommendationVM.cs" />
     <Compile Include="Viewmodels\IndexPageAdmOffVM.cs" />
     <Compile Include="Viewmodels\IndexPageOmbudVM.cs" />
+    <Compile Include="Viewmodels\StodSystemLoginVM.cs" />
     <Compile Include="Viewmodels\ScheduleVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -300,7 +302,7 @@
     <Content Include="Views\Claims\Hours.cshtml" />
     <Content Include="Views\Claims\ClaimForm.cshtml" />
     <Content Include="Views\Claims\ClaimAmount.cshtml" />
-    <Content Include="Views\Claims\Decision.cshtml" />
+    <Content Include="Views\Claims\Recommend.cshtml" />
     <Content Include="Views\CollectiveAgreements\Create.cshtml" />
     <Content Include="Views\CollectiveAgreements\Delete.cshtml" />
     <Content Include="Views\CollectiveAgreements\Details.cshtml" />
@@ -315,6 +317,9 @@
     <Content Include="Views\Claims\Receipt.cshtml" />
     <Content Include="Views\Claims\IndexPageAdmOff.cshtml" />
     <Content Include="Views\Claims\ClaimDetails.cshtml" />
+    <Content Include="Views\Claims\RecommendationReceipt.cshtml" />
+    <Content Include="Views\Claims\StodSystemLogin.cshtml" />
+    <Content Include="Views\Claims\Decide.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -333,8 +338,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801180721203_initial.resx">
-      <DependentUpon>201801180721203_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801181957316_initial.resx">
+      <DependentUpon>201801181957316_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

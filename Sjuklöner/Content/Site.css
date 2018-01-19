@@ -239,6 +239,20 @@ li a {
     border: none;
 }
 
+.page-header4 {
+    font-size: 50px;
+    /*line-height: 34px;*/
+    padding: 0 15px 0 18px;
+    margin-top: 70px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
 .page-header-no-padding-left {
     font-size: 50px;
     /*line-height: 34px;*/
@@ -441,6 +455,19 @@ li a {
 }
 
 .btn-danger-small {
+    margin-left: 0;
+    font-size: 14px;
+    width: 90px;
+    padding: 6px 6px;
+}
+
+.btn-warning {
+    margin-left: 58px;
+    font-size: 22px;
+    width: 130px;
+}
+
+.btn-warning-small {
     margin-left: 0;
     font-size: 14px;
     width: 90px;
@@ -1004,4 +1031,53 @@ a:hover, a:focus {
     color: #47a447;
     /*background-color: #47a447;*/
     /*margin-left: 4px;*/
+}
+
+.highlight-green-bold {
+    color: #47a447;
+    font-weight: bold;
+}
+
+.highlight-red-bold {
+    color: #d2322d;
+    font-weight: bold;
+}
+
+.highlight-green {
+    color: #47a447;
+}
+
+.highlight-red {
+    color: #d2322d;
+}
+
+.frame-procapita-login {
+    height: 200px;
+    width: 550px;
+    border-color: #e7e7e8;
+    border: 1px solid;
+    border-radius: 4px;
+    margin-left: 18px;
+}
+
+.grey-filler {
+    height: 35px;
+    width: 547px;
+    background-color: #f5f5f5;
+    margin-bottom: 20px;
+    border-radius: 4px 0;
+    /*text-align: center;*/
+    vertical-align: middle;
+    padding-top: 7px;
+    padding-left: 180px;
+}
+
+.do-not-show {
+    visibility: hidden;
+}
+
+.decide-display-for {
+    background-color: #790860;
+    color: #ffffff;
+    border-radius: 3px;
 }

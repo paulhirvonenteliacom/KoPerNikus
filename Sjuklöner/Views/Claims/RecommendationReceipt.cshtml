@@ -1,0 +1,43 @@
+﻿@model Sjuklöner.Viewmodels.RecommendationVM
+
+@{
+    ViewBag.Title = "RecommendationReceipt";
+}
+
+@*<div class="row margin-breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font breadcrumb-padding">Ersättningsbedömning</li>
+            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Bekräftelse</li>
+        </ol>
+    </nav>
+</div>*@
+
+@*@using (Html.BeginForm("AddHours", "Claims", FormMethod.Get))*@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ClaimNumber)
+    
+    @*<body class="assistant-claim">*@
+    <div class="row">
+        @*<p class="col col-md-2"></p>*@
+        <p class="page-header4 col col-md-10">Informationen förs nu över till Stödsystem, VoO</p>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p class="bold-14 left-margin-18">Referensnummer: @Model.ClaimNumber</p>
+            <p class="bold-14 left-margin-18">Yrkat belopp (kr): @Model.ClaimSum</p>
+        </div>
+    </div>
+}
+
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

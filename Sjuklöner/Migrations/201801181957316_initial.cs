@@ -156,6 +156,8 @@ namespace Sjuklöner.Migrations
                         ClaimSum = c.Decimal(nullable: false, precision: 18, scale: 2),
                         ModelSum = c.Decimal(nullable: false, precision: 18, scale: 2),
                         DecidedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ApprovedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        RejectedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
                         HoursQualifyingDay = c.Decimal(nullable: false, precision: 18, scale: 2),
                         HolidayPayQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
                         PayrollTaxQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
