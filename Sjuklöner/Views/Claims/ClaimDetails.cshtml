@@ -4,11 +4,8 @@
     ViewBag.Title = "Details";
 }
 
-@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post))
-{
-    @*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
 
-    @Html.AntiForgeryToken()
+    @*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
 
     <body>
         <div class="row no-breadcrumb-top">
@@ -27,7 +24,6 @@
         @*Grunduppgifter*@
 
         <div class="form-horizontal">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="row">
                 <div class="col col-md-10 form-group-div-frame">
                     <div class="row form-group-heading">
@@ -46,9 +42,10 @@
                     </div>
 
                     @foreach (var item in Model.messages)
-                    {
-                        @Html.Action("_Message", new { message = item })
-                    }
+        {
+            @Html.Action("_Message", new { message = item })
+}
+                    @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
                 </div>
             </div>
             <div class="row">
@@ -943,7 +940,7 @@
             @Html.ActionLink("Back to List", "Index")*@
         @*</p>*@
     </body>
-}
+
 @*<div class="row">
         <div class="col-md-offset-2 col-md-10">
             <button id="show-hours-btn" class="btn btn-default">Visa timmar script</button>

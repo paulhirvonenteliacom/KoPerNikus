@@ -229,6 +229,7 @@
     <Compile Include="Viewmodels\ClaimAmountVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
+    <Compile Include="Viewmodels\SendMessageVM.cs" />
     <Compile Include="Viewmodels\MessageVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
     <Compile Include="Viewmodels\IndexPageAdmOffVM.cs" />
@@ -318,6 +319,7 @@
     <Content Include="Views\Claims\IndexPageAdmOff.cshtml" />
     <Content Include="Views\Claims\ClaimDetails.cshtml" />
     <Content Include="Views\Claims\_Message.cshtml" />
+    <Content Include="Views\Claims\_SendMessage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

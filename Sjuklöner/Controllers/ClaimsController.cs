@@ -961,6 +961,29 @@ namespace Sjuklöner.Controllers
             return PartialView("_Message", messageVM);
         }
 
+        // GET: Claims/_SendMessage
+        public ActionResult _SendMessage(string claimRefNr)
+        {
+            SendMessageVM sendMessageVM = new SendMessageVM();
+            sendMessageVM.ClaimId = db.Claims.Where(r => r.ReferenceNumber == claimRefNr).FirstOrDefault().Id;
+            var user = db.Users.Where(u => u.Id == db.Claims.Where(c => c.ReferenceNumber == claimRefNr).FirstOrDefault().OwnerId).FirstOrDefault();
+            sendMessageVM.Name = $"{user.FirstName} {user.LastName}";
+            return PartialView("_SendMessage", sendMessageVM);
+        }
+        // POST: Claims/_SendMessage
+        [HttpPost]
+        public ActionResult _SendMessage(SendMessageVM sendMessage)
+        {
+            Message message = new Message();
+            message.ClaimId = sendMessage.ClaimId;
+            message.Comment = sendMessage.Comment;
+            message.CommentDate = DateTime.Now;
+            message.ApplicationUser_Id = User.Identity.GetUserId();
+            db.Messages.Add(message);
+            db.SaveChanges();
+            return PartialView("_SendMessage");
+        }
+
 
         public ActionResult ShowClaimDetails(string referenceNumber)
         {
