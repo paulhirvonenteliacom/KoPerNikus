@@ -962,7 +962,7 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ModelSum = claim.ModelSum;
                 recommendationVM.ClaimSum = claim.ClaimSum;
                 recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
-                recommendationVM.RejectedSum = "0,00";
+                recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
 
                 return View("Recommend", recommendationVM);
             }
