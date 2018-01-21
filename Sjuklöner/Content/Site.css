@@ -7,6 +7,8 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    width:75%;
+    max-width: none;
 }
 
 .line-height-08 {
@@ -128,7 +130,6 @@ li a {
 
 .container {
     padding-left: 0;
-    padding-right: 0;
 }
 
 .navbar-header {
@@ -1024,7 +1025,7 @@ a:hover, a:focus {
 }
 
 .small-col-ombud {
-    width: 70px;
+    width: 10%;
 }
 
 .medium-col {
@@ -1117,7 +1118,9 @@ a:hover, a:focus {
     border-color: #e7e7e8;
     border: 1px solid;
     border-radius: 4px;
-    margin-left: 18px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
 }
 
 .grey-filler {
@@ -1136,4 +1139,8 @@ a:hover, a:focus {
     background-color: #790860;
     color: #ffffff;
     border-radius: 3px;
+    padding: 5px;
+    margin-left: 15px;
+    margin-top: 7px;
+    float: left;
 }
