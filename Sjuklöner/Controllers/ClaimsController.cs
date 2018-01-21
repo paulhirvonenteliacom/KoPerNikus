@@ -1212,15 +1212,15 @@ namespace Sjuklöner.Controllers
         [HttpPost]
         public ActionResult StodSystemLogin(StodSystemLoginVM stodSystemLoginVM)
         {
-            return RedirectToAction("Decide", stodSystemLoginVM.ReferenceNumber);
+            return RedirectToAction("Decide", stodSystemLoginVM);
         }
 
         // GET: Claims/Decide
         [OverrideAuthorization]
         [HttpGet]
-        public ActionResult Decide(string referenceNumber)
+        public ActionResult Decide(StodSystemLoginVM stodSystemLoginVM)
         {
-            var claim = db.Claims.Where(c => c.ReferenceNumber == referenceNumber).FirstOrDefault();
+            var claim = db.Claims.Where(c => c.ReferenceNumber == stodSystemLoginVM.ReferenceNumber).FirstOrDefault();
 
             DecisionVM decisionVM = new DecisionVM();
 
@@ -1253,6 +1253,17 @@ namespace Sjuklöner.Controllers
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
+
+            if (!string.IsNullOrWhiteSpace(decisionVM.Comment))
+            {
+                Message comment = new Message();
+                comment.ClaimId = claim.Id;
+                comment.ApplicationUser_Id = claim.OwnerId;
+                comment.CommentDate = DateTime.Now;
+                comment.Comment = decisionVM.Comment;
+                db.Messages.Add(comment);
+                db.SaveChanges();
+            }
 
             if (!string.IsNullOrWhiteSpace(claim.Email))
             {

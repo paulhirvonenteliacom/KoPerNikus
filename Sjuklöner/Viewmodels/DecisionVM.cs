@@ -36,6 +36,6 @@ namespace Sjuklöner.Viewmodels
         public decimal RejectedSum { get; set; }
 
         [Display(Name = "Kommentar")]
-        public DateTime Comment { get; set; }
+        public string Comment { get; set; }
     }
 }
