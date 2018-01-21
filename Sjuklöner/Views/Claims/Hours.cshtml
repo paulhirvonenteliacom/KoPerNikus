@@ -57,7 +57,7 @@
                                 @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
-                            @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
                 </div>
                 <div class="col col-md-9 div-assistant-frame div-padding">
@@ -235,11 +235,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                    @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
                             }
 
                         </div>
@@ -257,7 +257,7 @@
                                 @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
-                            @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
                 </div>
                 <div class="col col-md-9 div-assistant-frame div-padding">
@@ -432,11 +432,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                    @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
-                                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
                             }
                         </div>
                     </div>
@@ -463,524 +463,298 @@
         </div>
 
 
+        @*ONLY HOURS*@
 
-
-
-
-
-
-        @*<div class="row line-height-08">
-            <div class="col col-md-2">
-                <div class="row height-38">
-
-                </div>
-                <div class="row height-38">
-
-                </div>
-                <div class="row height-28">
-
-                </div>
-
-                @foreach (var row in Model.ScheduleRowList)
-                {
-                    <div class="row height-28">
-                        <div class="col col-md-12 col-padding-40">
-                            @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
-                        </div>
-                    </div>
-                }
-
-            </div>
-
-            <div1 class="col col-md-5 div-frame">
-                <div2 class="row height-38 role-padding">
-                    Ordinarie assistent
-                </div2>
-
-                <div3 class="row">
-                    <div4 class="col col-md-6 div-frame">
-                        <div5 class="row height-38 role-padding">
-                            Ordinarie arbetstid
-                        </div5>
-                        <div6 class="row height-28">
-                            <div class="col col-md-3 bold-14 left-col-padding">
-                                Start
-                            </div>
-                            <div class="col col-md-3 bold-14 col-padding">
-                                Slut
-                            </div>
-                            <div class="col col-md-3 bold-14 col-padding">
-                                Timmar
-                            </div>
-                            <div class="col col-md-2 bold-14 col-padding">
-                                OB
-                            </div>
-                        </div6>
-                        @foreach (var row in Model.ScheduleRowList)
-                        {
-                            <div class="row height-28">
-                                <div class="col col-md-3 left-col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col col-md-3 col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col col-md-3 col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col col-md-2 col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        }
-                    </div4>
-
-                    <div4 class="col col-md-1">
-                    </div4>
-
-                    <div4 class="col col-md-5 div-frame">
-                        <div5 class="row height-38 role-padding">
-                            Jourtid
-                        </div5>
-                        <div6 class="row height-28">
-                            <div class="col col-md-4 bold-14 left-col-padding">
-                                Start
-                            </div>
-                            <div class="col col-md-4 bold-14 col-padding">
-                                Slut
-                            </div>
-                            <div class="col col-md-2 bold-14 col-padding">
-                                Jour
-                            </div>
-                        </div6>
-                        @foreach (var row in Model.ScheduleRowList)
-                        {
-                            <div class="row height-28">
-                                <div class="col col-md-4 col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col col-md-4 col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col col-md-2 col-padding">
-                                    @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
-                                    @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        }
-                    </div4>
-                </div3>
-            </div1>*@
-
-
-        @*<div class="col col-md-6">
-                <div class="row height-28">
-                    <div class="col col-md-3 bold-14 left-col-padding">
-                        Start
-                    </div>
-                    <div class="col col-md-3 bold-14 col-padding">
-                        Slut
-                    </div>
-                    <div class="col col-md-3 bold-14 col-padding">
-                        Timmar
-                    </div>
-                    <div class="col col-md-2 bold-14 col-padding">
-                        OB
-                    </div>
-                </div>
-            </div>*@
-        @*</div>
-
-
-            <div class="row line-height-08">
-                <div class="col col-md-2">
-                    <div class="row height-38">
-
-                    </div>
-                    <div class="row height-38">
-
-                    </div>
-                    <div class="row height-28">
-
-                    </div>
-
-                    @foreach (var row in Model.ScheduleRowList)
+        <div class="row">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col col-md-2 date-padding date-margin">
+                    @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
                     {
-                        <div class="row height-28">
-                            <div class="col col-md-12 col-padding-40">
+                        <div class="row row-height-42 line-height-06">
+                            <div class="col col-md-12 col-padding-40 schedule-date">
                                 @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                     }
-
                 </div>
-
-                <div1 class="col col-md-5 div-frame">
-                    <div2 class="row height-38 role-padding">
-                        Ordinarie assistent
+                <div class="col col-md-9 div-assistant-frame div-padding">
+                    <div2 class="row row-height">
+                        <div class="col col-md-5 assistant-heading">
+                            Ordinarie assistent
+                        </div>
+                        <div class="col col-md-3">
+                            <button type="button" onclick="copyHoursToStandin()" class="btn btn-secondary btn-secondary-small-wide btn-copy-to-si">Kopiera till vikarie</button>
+                        </div>
                     </div2>
-
-                    <div3 class="row">
-                        <div4 class="col col-md-6 div-frame">
-                            <div5 class="row height-38 role-padding">
-                                Ordinarie arbetstid
+                    <div class="row negative-padding-top">
+                        <div class="col col-md-8 div-frame line-height-08 div-margin-left">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Arbetstid
                             </div5>
-                            <div6 class="row height-28">
-                                <div class="col col-md-3 bold-14 left-col-padding">
-                                    Start
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    Antal
                                 </div>
-                                <div class="col col-md-3 bold-14 col-padding">
-                                    Slut
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
                                 </div>
-                                <div class="col col-md-3 bold-14 col-padding">
-                                    Timmar
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
                                 </div>
-                                <div class="col col-md-2 bold-14 col-padding">
-                                    OB
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
                                 </div>
                             </div6>
-                            @foreach (var row in Model.ScheduleRowList)
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    timmar
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-kväll
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-natt
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-helg
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-storhelg
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
                             {
-                                <div class="row height-28">
-                                    <div class="col col-md-1 left-col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control low-form-control col-left-margin border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, "", new { @class = "text-danger" })
+                                <div class="row row-height-42 small-row-margin3 line-height-06">
+                                    @*<div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                                        <div class="row small-row-margin2 small-row-fixed-width">*@
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].Hours, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 hours" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].Hours, null, new { @class = "text-danger" })
                                     </div>
-                                    <div class="col col-md-1 col-padding bold-colon">
-                                        :
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialEvening, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-evening" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialEvening, null, new { @class = "text-danger" })
                                     </div>
-                                    <div class="col col-md-1 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control low-form-control col-left-margin special-left-margin border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, "", new { @class = "text-danger" })
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialNight, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-night" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialNight, null, new { @class = "text-danger" })
                                     </div>
-                                    <div class="col col-md-1 left-col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, new { htmlAttributes = new { placeholder = "hh", @class = "form-control small-form-control low-form-control col-left-margin border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, "", new { @class = "text-danger" })
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekend, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-weekend" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekend, null, new { @class = "text-danger" })
                                     </div>
-                                    <div class="col col-md-1 col-padding bold-colon">
-                                        :
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekend, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-grandweekend" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekend, null, new { @class = "text-danger" })
                                     </div>
-                                    <div class="col col-md-1 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, new { htmlAttributes = new { placeholder = "mm", @class = "form-control small-form-control low-form-control col-left-margin special-left-margin border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, "", new { @class = "text-danger" })
+                                    <div class="col-md-nopadding col col-md-2">
+
                                     </div>
-                                    <div class="col col-md-3 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col col-md-2 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
-                                    </div>
+                                    @*</div>
+                                        </div>*@
                                 </div>
                             }
-                        </div4>
+                        </div>
 
-                        <div4 class="col col-md-1">
-                        </div4>
-
-                        <div4 class="col col-md-5 div-frame">
-                            <div5 class="row height-38 role-padding">
-                                Jourtid
+                        <div class="col col-md-3 div-frame line-height-08 div-oncall-hours">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Jourtid, antal timmar
                             </div5>
-                            <div6 class="row height-28">
-                                <div class="col col-md-4 bold-14 left-col-padding">
-                                    Start
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-5 bold-14 col-md-nopadding">
+                                    Jour
                                 </div>
-                                <div class="col col-md-4 bold-14 col-padding">
-                                    Slut
-                                </div>
-                                <div class="col col-md-2 bold-14 col-padding">
+                                <div class="col col-md-5 bold-14 oncall-margin col-md-nopadding">
                                     Jour
                                 </div>
                             </div6>
-                            @foreach (var row in Model.ScheduleRowList)
-                            {
-                                <div class="row height-28">
-                                    <div class="col col-md-4 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col col-md-4 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control col-left-margin border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col col-md-2 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
-                                    </div>
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-5 bold-14 col-md-nopadding">
+                                    dag
                                 </div>
-                            }
-                        </div4>
-                    </div3>
-                </div1>
-
-
-                @*<div class="col col-md-6">
-                        <div class="row height-28">
-                            <div class="col col-md-3 bold-14 left-col-padding">
-                                Start
-                            </div>
-                            <div class="col col-md-3 bold-14 col-padding">
-                                Slut
-                            </div>
-                            <div class="col col-md-3 bold-14 col-padding">
-                                Timmar
-                            </div>
-                            <div class="col col-md-2 bold-14 col-padding">
-                                OB
-                            </div>
-                        </div>
-                    </div>*@
-        @*</div>*@
-
-
-        @*TEST1*@
-
-        @*<div class="row">
-                <div class="col col-md-2">
-
-                </div>
-                <div class="col col-md-5">
-                    <div class="row">
-                        <div class="col col-md-6">
-
-                            @foreach (var row in Model.ScheduleRowList)
+                                <div class="col col-md-5 bold-14 oncall-margin col-md-nopadding">
+                                    kväll/helg
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
                             {
-                                <div class="row height-28 div-frame">
-                                    <div class="col-md-nopadding col col-md-4 col-md-4-fw">
-                                        <div class="row small-row-margin small-row-fw">
-                                            <div class="col-md-nopadding col col-md-4">
-                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, new { htmlAttributes = new { placeholder = "tim", @class = "form-control small-form-control-time low-form-control border-radius-1" } })
-                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeHour, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-2 bold-colon2">
-                                                :
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-4">
-                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, new { htmlAttributes = new { placeholder = "min", @class = "form-control small-form-control-time low-form-control special-left-margin border-radius-1" } })
-                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTimeMinute, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-2">
-
-                                            </div>
-                                        </div>
+                                <div class="row row-height-42 small-row-margin3 line-height-06">
+                                    @*<div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                                        <div class="row small-row-margin2 small-row-fixed-width">*@
+                                    <div class="col-md-nopadding col col-md-5">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallDay, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 oncall-day" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallDay, "", new { @class = "text-danger" })
                                     </div>
-
-                                    <div class="col-md-nopadding col col-md-4 col-md-4-fw col-margin-left">
-                                        <div class="row small-row-margin small-row-fw">
-                                            <div class="col-md-nopadding col col-md-4 col-margin-left-stoptime">
-                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, new { htmlAttributes = new { placeholder = "tim", @class = "form-control small-form-control-time low-form-control border-radius-1" } })
-                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeHour, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-2 bold-colon2">
-                                                :
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-4">
-                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, new { htmlAttributes = new { placeholder = "min", @class = "form-control small-form-control-time low-form-control special-left-margin border-radius-1" } })
-                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTimeMinute, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-2">
-
-                                            </div>
-                                        </div>
+                                    <div class="col-md-nopadding oncall-margin col col-md-5">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallNight, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 oncall-night" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallNight, "", new { @class = "text-danger" })
                                     </div>
-
                                     <div class="col-md-nopadding col col-md-2">
-                                        <div class="row small-row-margin">
-                                            <div class="col-md-nopadding col col-md-4">
-                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control small-form-control low-form-control border-radius-1" } })
-                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="col-md-nopadding col col-md-4">
-                                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control small-form-control low-form-control form-control-width border-radius-1" } })
-                                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
+
                                     </div>
-
-
+                                    @*</div>
+                                        </div>*@
                                 </div>
                             }
 
                         </div>
-
-                    </div>
-                </div>
-            </div>*@
-
-
-        @*<div class="col col-md-1">
-                <div class="row height-28">
-                </div>
-            </div>
-
-            <div class="row div-frame">
-                <div class="row height-38 role-padding">
-                    Jourtid
-                </div>
-
-
-                <div class="col col-md-5">
-                    <div class="row height-28">
-                        <div class="col col-md-4 bold-14 col-padding">
-                            Start
-                        </div>
-                        <div class="col col-md-4 bold-14 col-padding">
-                            Slut
-                        </div>
-                        <div class="col col-md-2 bold-14 col-padding">
-                            Jour
-                        </div>
                     </div>
                 </div>
 
-                @foreach (var row in Model.ScheduleRowList)
-                        {
-                    <div class="col col-md-6">
-                        <div class="row height-28">
-                            <div class="col col-md-3 left-col-padding">
-                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
-                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col col-md-3 col-padding">
-                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
-                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col col-md-3 col-padding">
-                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control border-radius-1" } })
-                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col col-md-2 col-padding">
-                                @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
-                                @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col col-md-1">
-                        <div class="row height-28">
-                        </div>
-                    </div>
-                            <div class="col col-md-5">
-                                <div class="row height-28">
-                                    <div class="col col-md-4 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col col-md-4 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col col-md-2 col-padding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width border-radius-1" } })
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                }
-            </div>
-                </div1>
-
-            <div class="col col-md-5 col-left-margin div-frame">
-                <div class="row height-38 role-padding">
-                    Vikarierande assistent
-                </div>
-                <div class="row height-28">
-                    @*<div class="col col-md-3 col-padding bold-14">
-                            Datum
-                        </div>
-                        <div class="col col-md-1 bold-14">
-                            Dag
-                        </div>*@
-        @*<div class="col col-md-3 col-padding bold-14">
-                </div>
-                <div class="col col-md-1 bold-14">
-                </div>
-                <div class="col col-md-2 bold-14 col-padding">
-                    Starttid
-                </div>
-                <div class="col col-md-2 bold-14">
-                    Sluttid
-                </div>
-                <div class="col col-md-2 bold-14">
-                    Timmar
-                </div>
-                <div class="col col-md-1 bold-14">
-                    OB
-                </div>
-                <div class="col col-md-2 bold-14">
-                    Starttid
-                </div>
-                <div class="col col-md-2 bold-14">
-                    Sluttid
-                </div>
-                <div class="col col-md-1 bold-14">
-                    Jour
-                </div>
-            </div>
-            @foreach (var row in Model.ScheduleRowList)
+                @*Stand-in assistant*@
+                <div class="col col-md-2 date-padding date-margin2">
+                    @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
                     {
-                <div class="row height-28">*@
-        @*<div class="col col-md-3 col-padding">
-                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDate)
-            </div>
-            <div class="col col-md-1">
-                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowWeekDay)
-            </div>*@
-        @*<div class="col col-md-3 col-padding">
+                        <div class="row row-height-42 line-height-06">
+                            <div class="col col-md-12 col-padding-40 schedule-date">
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                            </div>
                         </div>
-                        <div class="col col-md-1">
+                        @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                    }
+                </div>
+                <div class="col col-md-9 div-assistant-frame div-padding">
+                    <div2 class="row row-height">
+                        <div class="col col-md-5 assistant-heading">
+                            Vikarierande assistent
                         </div>
-                        <div class="col col-md-2 col-padding">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
+                    </div2>
+                    <div class="row negative-padding-top">
+                        <div class="col col-md-8 div-frame line-height-08 div-margin-left">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Arbetstid
+                            </div5>
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    Antal
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    varav
+                                </div>
+                            </div6>
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    timmar
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-kväll
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-natt
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-helg
+                                </div>
+                                <div class="col col-md-2 bold-14 col-md-nopadding">
+                                    OB-storhelg
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                            {
+                                <div class="row row-height-42 small-row-margin3 line-height-06">
+                                    @*<div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                            <div class="row small-row-margin2 small-row-fixed-width">*@
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].HoursSI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 hours-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].HoursSI, null, new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialEveningSI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-evening-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialEveningSI, null, new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialNightSI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-night-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialNightSI, null, new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekendSI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-weekend-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekendSI, null, new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding col col-md-2">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekendSI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 unsocial-grandweekend-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekendSI, null, new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding col col-md-2">
+
+                                    </div>
+                                    @*</div>
+                            </div>*@
+                                </div>
+                            }
                         </div>
-                        <div class="col col-md-2">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="col col-md-2">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, new { htmlAttributes = new { @class = "form-control low-form-control" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfHours, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="col col-md-1">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfUnsocialHours, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="col col-md-2">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StartTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StartTime, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="col col-md-2">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].StopTime, new { htmlAttributes = new { placeholder = "--:--", @class = "form-control low-form-control" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].StopTime, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="col col-md-1">
-                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, new { htmlAttributes = new { @class = "form-control low-form-control form-control-width" } })
-                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours, "", new { @class = "text-danger" })
+
+                        <div class="col col-md-3 div-frame line-height-08 div-oncall-hours">
+                            <div5 class="row height-18 role-padding line-height-08">
+                                Jourtid, antal timmar
+                            </div5>
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-5 bold-14 col-md-nopadding">
+                                    Jour
+                                </div>
+                                <div class="col col-md-5 bold-14 oncall-margin col-md-nopadding">
+                                    Jour
+                                </div>
+                            </div6>
+                            <div6 class="row height-14 line-height-04">
+                                <div class="col col-md-5 bold-14 col-md-nopadding">
+                                    dag
+                                </div>
+                                <div class="col col-md-5 bold-14 oncall-margin col-md-nopadding">
+                                    kväll/helg
+                                </div>
+                            </div6>
+                            @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+                            {
+                                <div class="row row-height-42 small-row-margin3 line-height-06">
+                                    @*<div class="col-md-nopadding col col-md-4 col-md-4-fixed-width">
+                            <div class="row small-row-margin2 small-row-fixed-width">*@
+                                    <div class="col-md-nopadding col col-md-5">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallDaySI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 oncall-day-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallDaySI, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding oncall-margin col col-md-5">
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallNightSI, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 border-radius-1 oncall-night-si" } })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallNightSI, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-nopadding col col-md-2">
+
+                                    </div>
+                                    @*</div>
+                            </div>*@
+                                </div>
+                            }
+
                         </div>
                     </div>
-                }
+                </div>
+                
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input class="btn btn-primary btn-primary-small" type="submit" value="Till steg 3" />
+                    </div>
+                </div>
             </div>
-            <div class="row">
 
-            </div>
+            @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                </div>
             </div>*@
-
-        @*<br />
-            <br />
-            <br />
-            <p>*@
-        @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-            @Html.ActionLink("Back to List", "Index")*@
-        @*</p>*@
+        </div>
     </body>
 }
 <div class="row">
@@ -1465,6 +1239,86 @@
         //        numberOfOnCallHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
         //    }
         //}
+    }
+
+    function copyHoursToStandin() {
+
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+
+        var numberOfHours = document.getElementsByClassName("hours");
+        var unsocialEvening = document.getElementsByClassName("unsocial-evening");
+        var unsocialNight = document.getElementsByClassName("unsocial-night");
+        var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
+        var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
+        var oncallDay = document.getElementsByClassName("oncall-day");
+        var oncallNight = document.getElementsByClassName("oncall-night");
+
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
+        var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
+        var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
+        var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
+        var oncallDaySI = document.getElementsByClassName("oncall-day-si");
+        var oncallNightSI = document.getElementsByClassName("oncall-night-si");
+        
+
+        for (var i = 0; i < data.ScheduleRowList.length; i++) {
+            if (numberOfHours[i].value != null) {
+                numberOfHoursSI[i].value = numberOfHours[i].value;
+            }
+            else {
+                numberOfHours[i].value = "0,00";
+                numberOfHoursSI[i].value = "0,00";
+            }
+
+            if (unsocialEvening[i].value != null) {
+                unsocialEveningSI[i].value = unsocialEvening[i].value;
+            }
+            else {
+                unsocialEvening[i].value = "0,00";
+                unsocialEveningSI[i].value = "0,00";
+            }
+
+            if (unsocialNight[i].value != null) {
+                unsocialNightSI[i].value = unsocialNight[i].value;
+            }
+            else {
+                unsocialNight[i].value = "0,00";
+                unsocialNightSI[i].value = "0,00";
+            }
+
+            if (unsocialWeekend[i].value != null) {
+                unsocialWeekendSI[i].value = unsocialWeekend[i].value;
+            }
+            else {
+                unsocialWeekend[i].value = "0,00";
+                unsocialWeekendSI[i].value = "0,00";
+            }
+
+            if (unsocialGrandWeekend[i].value != null) {
+                unsocialGrandWeekendSI[i].value = unsocialGrandWeekend[i].value;
+            }
+            else {
+                unsocialGrandWeekend[i].value = "0,00";
+                unsocialGrandWeekendSI[i].value = "0,00";
+            }
+
+            if (oncallDay[i].value != null) {
+                oncallDaySI[i].value = oncallDay[i].value;
+            }
+            else {
+                oncallDay[i].value = "0,00";
+                oncallDaySI[i].value = "0,00";
+            }
+
+            if (oncallNight[i].value != null) {
+                oncallNightSI[i].value = oncallNight[i].value;
+            }
+            else {
+                oncallNight[i].value = "0,00";
+                oncallNightSI[i].value = "0,00";
+            }
+        }
     }
 
     //$(document).ready(function () {

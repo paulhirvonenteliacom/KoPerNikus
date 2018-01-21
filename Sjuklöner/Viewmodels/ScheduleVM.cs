@@ -46,6 +46,12 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:F2}")]
         public float NumberOfUnsocialHoursEvening { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public float NumberOfUnsocialHoursWeekend { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public float NumberOfUnsocialHoursGrandWeekend { get; set; }
+
         public string StartTimeHourOnCall { get; set; }
 
         public string StartTimeMinuteOnCall { get; set; }
@@ -56,6 +62,9 @@ namespace Sjuklöner.Viewmodels
 
         [DisplayFormat(DataFormatString = "{0:F2}")]
         public float NumberOfOnCallHours { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public float NumberOfOnCallHoursDay { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:F2}")]
         public float NumberOfOnCallHoursNight { get; set; }
@@ -98,6 +107,45 @@ namespace Sjuklöner.Viewmodels
         public float NumberOfOnCallHoursNightSI { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:F2}")]
+        public float NumberOfOnCallHoursDaySI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:F2}")]
         public float NumberOfOnCallHoursEveningSI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public float NumberOfUnsocialHoursWeekendSI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public float NumberOfUnsocialHoursGrandWeekendSI { get; set; }
+
+
+        //The properties below are used if only number of hours shall be given as input 
+        public string Hours { get; set; }
+
+        public string UnsocialEvening { get; set; }
+
+        public string UnsocialNight { get; set; }
+
+        public string UnsocialWeekend { get; set; }
+
+        public string UnsocialGrandWeekend { get; set; }
+
+        public string OnCallDay { get; set; }
+
+        public string OnCallNight { get; set; }
+
+        public string HoursSI { get; set; }
+
+        public string UnsocialEveningSI { get; set; }
+
+        public string UnsocialNightSI { get; set; }
+
+        public string UnsocialWeekendSI { get; set; }
+
+        public string UnsocialGrandWeekendSI { get; set; }
+
+        public string OnCallDaySI { get; set; }
+
+        public string OnCallNightSI { get; set; }
     }
 }

@@ -25,7 +25,7 @@
 
         <div class="form-horizontal">
             <div class="row">
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Kommentarer
                     </div>
@@ -51,7 +51,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Kommun
                     </div>
@@ -82,7 +82,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Assistansberättigad
                     </div>
@@ -133,7 +133,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Ombud/uppgiftslämnare
                     </div>
@@ -164,7 +164,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Assistansanordnare
                     </div>
@@ -238,7 +238,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Insjuknad ordinarie assistent
                     </div>
@@ -492,7 +492,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Underlag lönekostnader
                     </div>
@@ -630,7 +630,7 @@
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
                         Bilagor
                     </div>
@@ -807,9 +807,641 @@
                 </div>*@
 
             <div class="row">
+                <div class="col col-md-12 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Beräkning av rekommenderat belopp
+                    </div>
+                    <div class="row form-group-subheading">
+                        Karensdag, @Model.QualifyingDayDate
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Semesterersättning:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.HolidayPayCalcQD)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.HolidayPayQD) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Lagstadgad arbetsgivaravgift:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.SocialFeesCalcQD)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.SocialFeesQD) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Avtalade pensioner och försäkringar:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcQD)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQD) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <hr class="hr-low-margin" />
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                    Summa karensdag:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.CostCalcQD)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 bold-18 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.CostQD) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                        <div class="row form-group-subheading">
+                            Dag 2 - Dag 14
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Sjuklön:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.SickPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Semesterersättning:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.HolidayPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    OB-ersättning, kväll:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.UnsocialEveningPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.UnsocialEveningPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    OB-ersättning, natt:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.UnsocialNightPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.UnsocialNightPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    OB-ersättning, helg:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    OB-ersättning, storhelg:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Summa OB-ersättning:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.UnsocialSumPayCalcD2T14) Kr
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.UnsocialSumPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Jour-ersättning, dag:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.OnCallDayPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.OnCallDayPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Jour-ersättning, natt/helg:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.OnCallNightPayCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.OnCallNightPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Summa Jour-ersättning:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.OnCallSumPayCalcD2T14) Kr
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.OnCallSumPayD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Lagstadgad arbetsgivaravgift:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.SocialFeesCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Avtalade pensioner och försäkringar:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Summa, dag 2 till dag 14:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.CostCalcD2T14)
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.CostD2T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding">
+                                    Summa sjukperioden:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-11">
+                                    @Html.DisplayFor(modelItem => Model.TotalCostCalcD1T14) Kr
+                                </div>
+                                <div class="col col-md-12">
+                                    =
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="row">
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            <div class="row">
+                                                <div class="col col-md-11 text-right">
+                                                    @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
-                <div class="col col-md-10 form-group-div-frame">
+                <div class="col col-md-12 form-group-div-frame">
                     <div class="row">
                         <div class="col col-md-4 form-group-heading">
                             Dag 1, karensdag

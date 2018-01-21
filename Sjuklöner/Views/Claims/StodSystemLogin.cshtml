@@ -7,7 +7,9 @@
 
 <div class="row">
     <section id="loginForm">
-        @using (Html.BeginForm("StodSystemLogin", "Claims", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        @*@using (Html.BeginForm("StodSystemLogin", "Claims", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))*@
+
+        @using (Html.BeginForm())
             {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -37,20 +39,20 @@
                         </div>
                     </div>
                 </div>
+                <div>
+                    @Html.TextBoxFor(m => m.ReferenceNumber, new { id = "referencenumber" })
+                </div>
                 <div class="form-group">
                     <div class="col-md-offset-4 col-md-7">
-                        @*@Html.ActionLink("Logga in", "ShowProCapita", "Claims", new { referenceNumber = Model.ReferenceNumber }, new { @class = "btn btn-primary" })*@
+                        @Html.ActionLink("Logga in", "Decide", "Claims", new { referenceNumber = Model.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
 
 
-                        <input type="submit" value="Logga in" class="btn btn-secondary btn-secondary-small" id="login" />
+                        @*<input type="submit" value="Logga in" class="btn btn-secondary btn-secondary-small" id="login" />*@
                     </div>
                 </div>
             </div>
-                    <br>
-                    <br>
-            <div class="do-not-show">
-                @Html.TextBoxFor(m => m.ReferenceNumber, new { id = "referencenumber" })
-            </div>
+            <br>
+            <br>
         }
     </section>
 </div>

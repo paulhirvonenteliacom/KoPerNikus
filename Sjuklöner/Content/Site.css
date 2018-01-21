@@ -243,7 +243,7 @@ li a {
     font-size: 50px;
     /*line-height: 34px;*/
     padding: 0 15px 0 18px;
-    margin-top: 70px;
+    margin-top: 151px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
     /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
@@ -487,6 +487,13 @@ li a {
     padding: 6px 6px;
 }
 
+.btn-secondary-small-wide {
+    margin-left: 78px;
+    font-size: 14px;
+    width: 150px;
+    padding: 6px 6px;
+}
+
 .btn-left-margin-5 {
     margin-left: 5px;
 }
@@ -504,6 +511,18 @@ li a {
     font-size: 14px;
     font-weight: bold;
 }
+
+.bold-18 {
+    font-size: 18px;
+    font-weight: bold;
+    padding-right: 9px;
+}
+
+.hr-low-margin {
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
 
 .bold-colon {
     font-size: 14px;
@@ -658,6 +677,10 @@ special-left-margin {
     width: 51px;
 }
 
+.small-form-control-time3 {
+    width: 75px;
+}
+
 .bold-colon3 {
     font-size: 24px;
     font-weight: bold;
@@ -712,6 +735,16 @@ special-left-margin {
     margin-right: -3px;
 }
 
+.small-row-margin3 {
+    margin-left: 0;
+    margin-right: -3px;
+}
+
+.oncall-margin {
+    margin-left: 9px;
+}
+
+
 .height-24 {
     height: 24px;
     font-size: 18px;
@@ -729,6 +762,10 @@ special-left-margin {
 
 .line-height-06 {
     line-height: 0.6;
+}
+
+.line-height-04 {
+    line-height: 0.4;
 }
 
 .small-row-fixed-width2 {
@@ -762,6 +799,11 @@ special-left-margin {
     line-height: 1;
 }
 
+.row-heigt-20 {
+    height: 1px;
+    line-height: 0.4;
+}
+
 .row height-30 {
     height: 30px;
 }
@@ -780,6 +822,14 @@ special-left-margin {
 
 .date-padding {
     padding-top: 123px;
+}
+
+.date-margin {
+    margin-top: 10px;
+}
+
+.date-margin2 {
+    margin-top: 46px;
 }
 
 .display-hours {
@@ -1070,10 +1120,6 @@ a:hover, a:focus {
     vertical-align: middle;
     padding-top: 7px;
     padding-left: 180px;
-}
-
-.do-not-show {
-    visibility: hidden;
 }
 
 .decide-display-for {
