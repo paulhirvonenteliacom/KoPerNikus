@@ -40,14 +40,14 @@
                     </div>
                 </div>
                 <div>
-                    @Html.TextBoxFor(m => m.ReferenceNumber, new { id = "referencenumber" })
+                    @Html.HiddenFor(m => m.ReferenceNumber, new { id = "referencenumber" })
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-4 col-md-7">
-                        @Html.ActionLink("Logga in", "Decide", "Claims", new { referenceNumber = Model.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                        @*Html.ActionLink("Logga in", "Decide", "Claims", new { referenceNumber = Model.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })*@
 
 
-                        @*<input type="submit" value="Logga in" class="btn btn-secondary btn-secondary-small" id="login" />*@
+                        <input type="submit" value="Logga in" class="btn btn-secondary btn-secondary-small" id="login" />
                     </div>
                 </div>
             </div>
