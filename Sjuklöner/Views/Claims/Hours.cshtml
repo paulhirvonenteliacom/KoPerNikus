@@ -45,7 +45,7 @@
 
         @*TEST2*@
 
-        <div class="row">
+       @* <div class="row">
             <div class="form-horizontal">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="col col-md-2 date-padding">
@@ -235,11 +235,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
                                     @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
                                     @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
                                     @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)
                             }
 
                         </div>
@@ -247,7 +247,7 @@
                 </div>
 
 
-                @*Stand-in assistant*@
+                @*Stand-in assistant
                 <div class="col col-md-2 date-padding">
 
                     @for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
@@ -432,11 +432,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                @*@Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
+                                @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeHourOnCall)
                                     @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StartTimeMinuteOnCall)
                                     @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeHourOnCall)
                                     @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].StopTimeMinuteOnCall)
-                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)*@
+                                    @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].NumberOfOnCallHours)
                             }
                         </div>
                     </div>
@@ -451,17 +451,17 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    @*<div>@Html.ActionLink("Visa timmar", "AddHours", "Claims", new { modelString = Sjuklöner.Viewmodels.ScheduleVM.Serialize(Model) }, new { @class = "btn btn-default" })</div>*@
-                    @*<div>@Html.ActionLink("Lägg till vikarie", "AddHours", "Claims", new { scheduleVM = Model }, new { @class = "btn btn-default" })</div>*@
-                    @*<div>@Html.ActionLink("Visa timmar", "AddHours", "Claims", new { startTimeHourString = Json.Encode(startTimeHour) }, new { @class = "btn btn-default" })</div>*@
-                    @*<div>@Html.ActionLink("Visa timmar", "AddhOurs", "Claims", new { scheduleRows = Json.Encode(Model) }, FormMethod.Post, new { @class = "btn btn-default" })</div>*@
-                    @*<div>@AjaxExtensions.ActionLink("Visa timmar", "AddhOurs", "Claims", new { scheduleRows = Json.Encode(Model) }, FormMethod.Post, new { @class = "btn btn-default" })</div>*@
+                    @*<div>@Html.ActionLink("Visa timmar", "AddHours", "Claims", new { modelString = Sjuklöner.Viewmodels.ScheduleVM.Serialize(Model) }, new { @class = "btn btn-default" })</div>
+                    @*<div>@Html.ActionLink("Lägg till vikarie", "AddHours", "Claims", new { scheduleVM = Model }, new { @class = "btn btn-default" })</div>
+                    @*<div>@Html.ActionLink("Visa timmar", "AddHours", "Claims", new { startTimeHourString = Json.Encode(startTimeHour) }, new { @class = "btn btn-default" })</div>
+                    @*<div>@Html.ActionLink("Visa timmar", "AddhOurs", "Claims", new { scheduleRows = Json.Encode(Model) }, FormMethod.Post, new { @class = "btn btn-default" })</div>
+                    @*<div>@AjaxExtensions.ActionLink("Visa timmar", "AddhOurs", "Claims", new { scheduleRows = Json.Encode(Model) }, FormMethod.Post, new { @class = "btn btn-default" })</div>
                     @*<input class="btn btn-default" type="submit" value="Visa timmar" />
-                        <input class="btn btn-default" type="submit" value="Lägg till vikarie" id="add-stand-in-btn" />*@
+                        <input class="btn btn-default" type="submit" value="Lägg till vikarie" id="add-stand-in-btn" />
                 </div>
             </div>
         </div>
-
+        *@
 
         @*ONLY HOURS*@
 
