@@ -65,7 +65,7 @@
             </div>
         </div>
     }
-    else
+    else if(Url.Action().ToString().Length < 15 || Url.Action().ToString() != "/claims/StodsystemLogin" && Url.Action().ToString().Remove(14) != "/claims/Decide" & Url.Action().ToString() != "/claims/StodsystemLogout")
     {
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container no-padding-left">
@@ -83,9 +83,10 @@
                 <div class="blue-bar-filler">
                 </div>
                 <ul>
+
                     @*<li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>*@
                     @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                        <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+        <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
                 </ul>
                 @*@Html.Partial("_LoginPartial")*@
                 @*</div>*@
@@ -95,21 +96,24 @@
     }
 
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <div class="row">
-                <div class="col col-md-11 small-font padding-left-no-claim">
-                    <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
-                </div>
-                <div class="col col-md-1 small-font">
-                    &copy; Bitoreq AB
-                </div>
+        <div class="container body-content">
+            @RenderBody()
+            @if(Url.Action().ToString().Length < 15 || Url.Action().ToString() != "/claims/StodsystemLogin" && Url.Action().ToString().Remove(14) != "/claims/Decide" & Url.Action().ToString() != "/claims/StodsystemLogout")
+            {
+            <hr />
+            <footer>
+                <div class="row">
+                    <div class="col col-md-11 small-font padding-left-no-claim">
+                        <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
+                    </div>
+                    <div class="col col-md-1 small-font">
+                        &copy; Bitoreq AB
+                    </div>
 
-            </div>
-        </footer>
-    </div>
+                </div>
+            </footer>
+            }
+        </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
