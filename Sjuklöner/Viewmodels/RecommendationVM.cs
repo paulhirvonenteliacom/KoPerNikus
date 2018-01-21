@@ -61,12 +61,12 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "Rekommenderat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string ApprovedSum { get; set; }
 
         [Display(Name = "Rekommenderat avslag (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string RejectedSum { get; set; }
 
         //public List<CheckBox> OfficialsCheck { get; set; }
