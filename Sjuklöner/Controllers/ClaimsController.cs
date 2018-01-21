@@ -1209,7 +1209,7 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.TotalCostD1T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.CostQD) + Convert.ToDecimal(claimDetailsVM.CostD2T14)));
             claimDetailsVM.TotalCostCalcD1T14 = claimDetailsVM.CostQD + " Kr + " + claimDetailsVM.CostD2T14;
 
-            claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).Where(u => u.ApplicationUser_Id == claim.OwnerId).ToList();
+            claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
 
             return View("ClaimDetails", claimDetailsVM);
         }
@@ -1398,7 +1398,7 @@ namespace Sjuklöner.Controllers
             {
                 Message comment = new Message();
                 comment.ClaimId = claim.Id;
-                comment.ApplicationUser_Id = claim.OwnerId;
+                comment.ApplicationUser_Id = "17899c7e-8dd1-4950-9cd4-beeab81f5cf3";
                 comment.CommentDate = DateTime.Now;
                 comment.Comment = decisionVM.Comment;
                 db.Messages.Add(comment);
@@ -1472,7 +1472,14 @@ namespace Sjuklöner.Controllers
             //    writer.WriteEndDocument();
             //}
             //}
-            return RedirectToAction("ShowRecommendationReceipt");
+            return RedirectToAction("StodsystemLogout");
+        }
+
+        // GET: Claims/StodsystemLogout
+        [OverrideAuthorization]
+        public ActionResult StodsystemLogout()
+        {
+            return View();
         }
 
         // GET: Claims/Edit/5
