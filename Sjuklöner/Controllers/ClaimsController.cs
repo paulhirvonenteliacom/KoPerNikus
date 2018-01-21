@@ -1187,8 +1187,6 @@ namespace Sjuklöner.Controllers
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("claiminformation");
-                writer.WriteElementString("SSN", claim.CustomerSSN);
-                writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
