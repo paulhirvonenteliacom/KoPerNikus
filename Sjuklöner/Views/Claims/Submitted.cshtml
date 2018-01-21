@@ -3,8 +3,16 @@
 @{
     ViewBag.Title = "Submitted";
 }
-
-<body class="assistant-claim">
+@section RobinRevealed 
+    {
+        <script>
+            $(function ()
+            {
+                divRobin.style.top = "30px";
+            });
+        </script>
+    }
+<body class="assistant-claim" style="overflow:hidden;">
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="page-header col col-md-10">Tack för din ansökan!</p>
@@ -43,5 +51,7 @@
         <p class="col col-md-2"></p>
         <p class="col col-md-10">@Html.ActionLink("Min profil", "Edit", "Profiles")</p>
     </div>
-
+    <div id="divRobin">
+        <img src="~/Content/Robin_color.png" width="250" height="185"/>
+    </div>
 </body>

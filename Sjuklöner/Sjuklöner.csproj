@@ -199,13 +199,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801181957316_initial.cs" />
-    <Compile Include="Migrations\201801181957316_initial.Designer.cs">
-      <DependentUpon>201801181957316_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801181556519_messages_change.cs" />
-    <Compile Include="Migrations\201801181556519_messages_change.Designer.cs">
-      <DependentUpon>201801181556519_messages_change.cs</DependentUpon>
+    <Compile Include="Migrations\201801212122510_booga.cs" />
+    <Compile Include="Migrations\201801212122510_booga.Designer.cs">
+      <DependentUpon>201801212122510_booga.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -243,6 +239,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Robin_color.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -342,11 +339,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801181957316_initial.resx">
-      <DependentUpon>201801181957316_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801181556519_messages_change.resx">
-      <DependentUpon>201801181556519_messages_change.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801212122510_booga.resx">
+      <DependentUpon>201801212122510_booga.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -3,7 +3,7 @@ namespace Sjuklöner.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class initial : DbMigration
+    public partial class booga : DbMigration
     {
         public override void Up()
         {
@@ -304,6 +304,22 @@ namespace Sjuklöner.Migrations
                 .Index(t => t.UserId);
             
             CreateTable(
+                "dbo.Messages",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ClaimId = c.Int(nullable: false),
+                        CommentDate = c.DateTime(nullable: false),
+                        Comment = c.String(nullable: false),
+                        ApplicationUser_Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id)
+                .ForeignKey("dbo.Claims", t => t.ClaimId, cascadeDelete: true)
+                .Index(t => t.ClaimId)
+                .Index(t => t.ApplicationUser_Id);
+            
+            CreateTable(
                 "dbo.AspNetUserRoles",
                 c => new
                     {
@@ -324,20 +340,6 @@ namespace Sjuklöner.Migrations
                         Name = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Messages",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ClaimId = c.Int(nullable: false),
-                        AuthorId = c.String(),
-                        CommentDate = c.DateTime(nullable: false),
-                        Comment = c.String(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Claims", t => t.ClaimId, cascadeDelete: true)
-                .Index(t => t.ClaimId);
             
             CreateTable(
                 "dbo.CollectiveAgreements",
@@ -377,6 +379,7 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Documents", "Claim_Id", "dbo.Claims");
             DropForeignKey("dbo.Documents", "PurposeId", "dbo.Purposes");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Messages", "ApplicationUser_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Documents", "OwnerId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
@@ -385,9 +388,10 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Claims", "ClaimStatusId", "dbo.ClaimStatus");
             DropForeignKey("dbo.Claims", "CareCompanyId", "dbo.CareCompanies");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
-            DropIndex("dbo.Messages", new[] { "ClaimId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
+            DropIndex("dbo.Messages", new[] { "ApplicationUser_Id" });
+            DropIndex("dbo.Messages", new[] { "ClaimId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
@@ -400,9 +404,9 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.Claims", new[] { "ClaimStatusId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.CollectiveAgreements");
-            DropTable("dbo.Messages");
             DropTable("dbo.Purposes");
             DropTable("dbo.AspNetUserRoles");
+            DropTable("dbo.Messages");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
