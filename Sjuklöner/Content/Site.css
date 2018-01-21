@@ -68,6 +68,9 @@ li a {
     padding: 0 36px 0 24px;
     /*text-decoration: none;*/
 }
+.li-a-no-padding-left {
+    padding: 0px 36px 0px 0px;
+}
 
 .nav > li > a:hover, .nav > li > a:focus {
     color: #ffffff;
@@ -126,7 +129,6 @@ li a {
 .container {
     padding-left: 0;
     padding-right: 0;
-    width: 75%;
 }
 
 .navbar-header {
@@ -1069,6 +1071,8 @@ a:hover, a:focus {
 
 .no-padding-left {
     padding-left: 0;
+    width: 75%;
+    max-width: none;
 }
 
 .table-button-cell {

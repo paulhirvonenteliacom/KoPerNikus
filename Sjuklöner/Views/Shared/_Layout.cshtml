@@ -24,14 +24,14 @@
                 </div>
             </div>
             <div class="red-bar">
-                <div class="red-bar-filler">
-                </div>
-                <ul>
-                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>
-                    <li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                    <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>
+                <div class="red-bar-filler" style="width:75%; margin-left: auto; margin-right: auto; float: none;">
+                <ul style="padding-left: 4px;">
+                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                    @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
+        <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")
+                </div>
                 @*</div>*@
 
             </div>
