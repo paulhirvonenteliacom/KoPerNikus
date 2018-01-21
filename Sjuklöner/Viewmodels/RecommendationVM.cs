@@ -50,14 +50,24 @@ namespace Sjuklöner.Viewmodels
         //[Display(Name = "Beslutat belopp (Kr)")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]
         //public decimal DecidedSum { get; set; }
+        
+        //[Display(Name = "Rekommenderat belopp (Kr)")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal ApprovedSum { get; set; }
+
+        //[Display(Name = "Rekommenderat avslag (Kr)")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal RejectedSum { get; set; }
 
         [Display(Name = "Rekommenderat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal ApprovedSum { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$")]
+        public string ApprovedSum { get; set; }
 
         [Display(Name = "Rekommenderat avslag (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal RejectedSum { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$")]
+        public string RejectedSum { get; set; }
 
         //public List<CheckBox> OfficialsCheck { get; set; }
 
