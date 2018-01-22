@@ -3,7 +3,7 @@ namespace Sjuklöner.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class calculateRecommendedAmount : DbMigration
+    public partial class yopheydi : DbMigration
     {
         public override void Up()
         {

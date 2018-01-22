@@ -7,13 +7,13 @@ namespace Sjuklöner.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class calculateRecommendedAmount : IMigrationMetadata
+    public sealed partial class yopheydi : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(calculateRecommendedAmount));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(yopheydi));
         
         string IMigrationMetadata.Id
         {
-            get { return "201801202243021_calculateRecommendedAmount"; }
+            get { return "201801221034236_yopheydi"; }
         }
         
         string IMigrationMetadata.Source
