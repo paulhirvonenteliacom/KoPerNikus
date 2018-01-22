@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sjuklöner.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Sjuklöner.Viewmodels
         public string CustomerName { get; set; }
 
         [Display(Name = "Personnummer:")]
-        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
+        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
         public string CustomerSSN { get; set; }
 
         [Display(Name = "Adress:")]
@@ -70,7 +71,7 @@ namespace Sjuklöner.Viewmodels
         public string AssistantName { get; set; }
 
         [Display(Name = "Personnummer:")]
-        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
+        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
         public string AssistantSSN { get; set; }
 
         [Display(Name = "Karensdag, datum:")]
@@ -551,5 +552,8 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kostnad för sjukperioden (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string TotalCostCalcD1T14 { get; set; }
+
+        [Display(Name = "Kommentarer")]
+        public List<Message> messages { get; set; }
     }
 }

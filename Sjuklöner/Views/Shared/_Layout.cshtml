@@ -15,7 +15,7 @@
     @if (User.IsInRole("AdministrativeOfficial"))
     {
         <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
+            <div class="container no-padding-left">
                 <div class="navbar-header">
                     <img class="helsingborg-logo" src="~/Content/Images/helsingborg.svg" /><img class="bitoreq-logo" src="~/Content/Images/Big_blue_black.png" />
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -27,14 +27,14 @@
                 </div>
             </div>
             <div class="red-bar">
-                <div class="red-bar-filler">
+                <div class="red-bar-filler" style="width:75%; margin-left: auto; margin-right: auto; float: none;">
+                    <ul style="padding-left: 4px;">
+                        <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
+                            <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+                    </ul>
+                    @Html.Partial("_LoginPartial")
                 </div>
-                <ul>
-                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>
-                    <li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                    <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
                 @*</div>*@
 
             </div>
@@ -43,7 +43,7 @@
     else if (User.IsInRole("Ombud"))
     {
         <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
+            <div class="container no-padding-left">
                 <div class="navbar-header">
                     <img class="helsingborg-logo" src="~/Content/Images/helsingborg.svg" /><img class="bitoreq-logo" src="~/Content/Images/Big_blue_black.png" />
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -55,20 +55,20 @@
                 </div>
             </div>
             <div class="blue-bar">
-                <div class="blue-bar-filler">
+                <div class="blue-bar-filler" style="width:75%; margin-left: auto; margin-right: auto; float: none;">
+                    <ul style="padding-left:4px;">
+                        <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
+                            <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                    @*</div>*@
                 </div>
-                <ul>
-                    <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>
-                    @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                    <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
-                </ul>
-                @Html.Partial("_LoginPartial")
-                @*</div>*@
 
             </div>
         </div>
     }
-    else
+    else if (Url.Action().ToString().Length < 15 || Url.Action().ToString().ToLower() != "/claims/stodsystemlogin" && Url.Action().ToString().ToLower().Remove(14) != "/claims/decide" & Url.Action().ToLower().ToString() != "/claims/stodsystemlogout")
     {
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container no-padding-left">
@@ -86,6 +86,7 @@
                 <div class="blue-bar-filler">
                 </div>
                 <ul>
+
                     @*<li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-less-padding-left" })</li>*@
                     @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
                         <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
@@ -100,18 +101,21 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <div class="row">
-                <div class="col col-md-11 small-font padding-left-no-claim">
-                    <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
-                </div>
-                <div class="col col-md-1 small-font">
-                    &copy; Bitoreq AB
-                </div>
+        @if (Url.Action().ToString().Length < 15 || Url.Action().ToString().ToLower() != "/claims/stodsystemlogin" && Url.Action().ToString().ToLower().Remove(14) != "/claims/decide" & Url.Action().ToString().ToLower() != "/claims/stodsystemlogout")
+        {
+            <hr />
+            <footer>
+                <div class="row">
+                    <div class="col col-md-11 small-font padding-left-no-claim">
+                        <p>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
+                    </div>
+                    <div class="col col-md-1 small-font">
+                        &copy; Bitoreq AB
+                    </div>
 
-            </div>
-        </footer>
+                </div>
+            </footer>
+        }
     </div>
 
     @Scripts.Render("~/bundles/jquery")

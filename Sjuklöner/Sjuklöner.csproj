@@ -229,6 +229,8 @@
     <Compile Include="Viewmodels\ClaimAmountVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
+    <Compile Include="Viewmodels\SendMessageVM.cs" />
+    <Compile Include="Viewmodels\MessageVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
     <Compile Include="Viewmodels\RecommendationVM.cs" />
     <Compile Include="Viewmodels\IndexPageAdmOffVM.cs" />
@@ -249,6 +251,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -318,9 +321,12 @@
     <Content Include="Views\Claims\Receipt.cshtml" />
     <Content Include="Views\Claims\IndexPageAdmOff.cshtml" />
     <Content Include="Views\Claims\ClaimDetails.cshtml" />
+    <Content Include="Views\Claims\_Message.cshtml" />
+    <Content Include="Views\Claims\_SendMessage.cshtml" />
     <Content Include="Views\Claims\RecommendationReceipt.cshtml" />
     <Content Include="Views\Claims\StodSystemLogin.cshtml" />
     <Content Include="Views\Claims\Decide.cshtml" />
+    <Content Include="Views\Claims\StodsystemLogout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

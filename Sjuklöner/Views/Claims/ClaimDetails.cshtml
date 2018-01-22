@@ -4,11 +4,8 @@
     ViewBag.Title = "Details";
 }
 
-@using (Html.BeginForm("AddHours", "Claims", FormMethod.Post))
-{
-    @*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
 
-    @Html.AntiForgeryToken()
+    @*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
 
     <body>
         <div class="row no-breadcrumb-top">
@@ -27,7 +24,30 @@
         @*Grunduppgifter*@
 
         <div class="form-horizontal">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col col-md-12 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Kommentarer
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-2">
+                            <label>Datum</label>
+                        </div>
+                        <div class="col col-md-2">
+                            <label>Användare</label>
+                        </div>
+                        <div class="col col-md-8">
+                            <label>Kommentar</label>
+                        </div>
+                    </div>
+
+                    @foreach (var item in Model.messages)
+        {
+            @Html.Action("_Message", new { message = item })
+}
+                    @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
+                </div>
+            </div>
             <div class="row">
                 @*<div class="col col-md-2">
                     </div>*@
@@ -820,7 +840,7 @@
                             Karensdag, @Model.QualifyingDayDate
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Semesterersättning:
@@ -842,7 +862,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Lagstadgad arbetsgivaravgift:
@@ -864,7 +884,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Avtalade pensioner och försäkringar:
@@ -887,7 +907,7 @@
                         </div>
                         <div class="row">
                             <hr class="hr-low-margin" />
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding bold-18">
                                         Summa karensdag:
@@ -907,7 +927,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3 text-right bold-18">
+                            <div class="col col-md-2 text-right bold-18">
                                 @Html.DisplayFor(modelItem => Model.CostQD) Kr
                             </div>
                         </div>
@@ -918,7 +938,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Lön, 80% på ordinarie timlön:
@@ -940,7 +960,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         OB-ersättning, kväll:
@@ -962,7 +982,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         OB-ersättning, natt:
@@ -984,7 +1004,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         OB-ersättning, helg:
@@ -1006,7 +1026,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         OB-ersättning, storhelg:
@@ -1029,7 +1049,7 @@
                         </div>
                         <div class="row">
                             <hr class="hr-low-margin" />
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Summa OB-ersättning:
@@ -1051,7 +1071,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Jour-ersättning, dag:
@@ -1073,7 +1093,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Jour-ersättning, natt/helg:
@@ -1096,7 +1116,7 @@
                         </div>
                         <div class="row">
                             <hr class="hr-low-margin" />
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Summa Jour-ersättning:
@@ -1119,7 +1139,7 @@
                         </div>
                         <div class="row">
                             <hr class="hr-low-margin" />
-                            <div class="col col-md-3">
+                            <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
                                         Summa sjuklön:
@@ -1139,11 +1159,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3 text-right bold-18">
+                            <div class="col col-md-2 text-right bold-18">
                                 @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
                             </div>
-                            <div class="row">
-                                <div class="col col-md-3">
+                                <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding">
                                             Semesterersättning:
@@ -1163,12 +1182,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col col-md-3 text-right bold-18">
+                                <div class="col col-md-2 text-right bold-18">
                                     @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col col-md-3">
+                            
+                                <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding">
                                             Lagstadgad arbetsgivaravgift:
@@ -1188,12 +1206,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col col-md-3 text-right bold-18">
+                                <div class="col col-md-2 text-right bold-18">
                                     @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col col-md-3">
+
+                                <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding">
                                             Avtalade pensioner och försäkringar:
@@ -1213,12 +1230,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col col-md-3 text-right bold-18">
+                                <div class="col col-md-2 text-right bold-18">
                                     @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col col-md-3">
+
+                                <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding bold-18">
                                             Summa, dag 2 till dag 14:
@@ -1238,9 +1254,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col col-md-3">
+                                <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding bold-18">
                                             Summa sjukperioden:
@@ -1260,13 +1274,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col col-md-3 text-right bold-18">
+                                <div class="col col-md-2 text-right bold-18">
                                     @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
             }
         </div>
 
@@ -1278,9 +1291,19 @@
             @Html.ActionLink("Back to List", "Index")*@
         @*</p>*@
     </body>
-}
 
+@*<div class="row">
+        <div class="col-md-offset-2 col-md-10">
+            <button id="show-hours-btn" class="btn btn-default">Visa timmar script</button>
+            <button onclick="calculateHours()" class="btn btn-default">Visa timmar</button>
+            <button onclick="copyToStandin()" class="btn btn-default">Kopiera till vikarie</button>
+        </div>
+    </div>*@
 <script type='text/javascript'>
 
-
+                            //$(document).ready(function () {
+                            //    $("#show-hours-btn").click(function () {
+                            //        alert("Hello");
+                            //    });
+                            //});
 </script>

@@ -215,6 +215,7 @@ namespace Sjuklöner.Controllers
 
             AssistantClaimVM claimVM = new AssistantClaimVM();
 
+            claimVM.OrganisationNumber = "556881-2118";
             claimVM.AssistantSSN = "930701-4168";
             claimVM.CustomerSSN = "391025-7246";
             claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
@@ -440,15 +441,14 @@ namespace Sjuklöner.Controllers
                                 //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
 
                                 //For seeding demo only
-                                //scheduleRow.StartTimeHour = claimDaySeeds[i].StartHour;
-                                //scheduleRow.StartTimeMinute = claimDaySeeds[i].StartMinute;
-                                //scheduleRow.StopTimeHour = claimDaySeeds[i].StopHour;
-                                //scheduleRow.StopTimeMinute = claimDaySeeds[i].StopMinute;
+                                scheduleRow.Hours = claimDaySeeds[i].Hours;
+                                scheduleRow.UnsocialEvening = claimDaySeeds[i].UnsocialEvening;
+                                scheduleRow.UnsocialWeekend = claimDaySeeds[i].UnsocialWeekend;
+                                scheduleRow.UnsocialGrandWeekend = claimDaySeeds[i].UnsocialGrandWeekend;
 
-                                //scheduleRow.StartTimeHourOnCall = claimDaySeeds[i].StartHourOnCall;
-                                //scheduleRow.StartTimeMinuteOnCall = claimDaySeeds[i].StartMinuteOnCall;
-                                //scheduleRow.StopTimeHourOnCall = claimDaySeeds[i].StopHourOnCall;
-                                //scheduleRow.StopTimeMinuteOnCall = claimDaySeeds[i].StopMinuteOnCall;  //End demo seed
+                                scheduleRow.OnCallDay = claimDaySeeds[i].OnCallDay;
+                                scheduleRow.OnCallNight = claimDaySeeds[i].OnCallNight;
+                                //End demo seed
 
                                 rowList.Add(scheduleRow);
                             }
@@ -935,10 +935,12 @@ namespace Sjuklöner.Controllers
             using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
             {
                 writer.WriteStartDocument();
-                writer.WriteStartElement("claiminformation");
-                writer.WriteElementString("SSN", claim.CustomerSSN);
-                writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
-                writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                    writer.WriteStartElement("claiminformation");
+                        writer.WriteElementString("SSN", claim.CustomerSSN);
+                        writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                        writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                        writer.WriteElementString("ClaimId", claim.Id.ToString());
+                        writer.WriteElementString("UserId", claim.OwnerId);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
@@ -1026,6 +1028,39 @@ namespace Sjuklöner.Controllers
                 return View();
             }
         }
+
+        public ActionResult _Message(Message message)
+        {
+            ApplicationUser user = db.Users.Where(u => u.Id == message.ApplicationUser_Id).FirstOrDefault();
+            string userName = $"{user.FirstName} {user.LastName}";
+            MessageVM messageVM = new MessageVM(message.CommentDate, message.Comment, userName);
+
+            return PartialView("_Message", messageVM);
+        }
+
+        // GET: Claims/_SendMessage
+        public ActionResult _SendMessage(string claimRefNr)
+        {
+            SendMessageVM sendMessageVM = new SendMessageVM();
+            sendMessageVM.ClaimId = db.Claims.Where(r => r.ReferenceNumber == claimRefNr).FirstOrDefault().Id;
+            var user = db.Users.Where(u => u.Id == db.Claims.Where(c => c.ReferenceNumber == claimRefNr).FirstOrDefault().OwnerId).FirstOrDefault();
+            sendMessageVM.Name = $"{user.FirstName} {user.LastName}";
+            return PartialView("_SendMessage", sendMessageVM);
+        }
+        // POST: Claims/_SendMessage
+        [HttpPost]
+        public ActionResult _SendMessage(SendMessageVM sendMessage)
+        {
+            Message message = new Message();
+            message.ClaimId = sendMessage.ClaimId;
+            message.Comment = sendMessage.Comment;
+            message.CommentDate = DateTime.Now;
+            message.ApplicationUser_Id = User.Identity.GetUserId();
+            db.Messages.Add(message);
+            db.SaveChanges();
+            return PartialView("_SendMessage");
+        }
+
 
         public ActionResult ShowClaimDetails(string referenceNumber)
         {
@@ -1244,6 +1279,8 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.TotalCostD1T14 = claim.TotalCostD1T14;
             claimDetailsVM.TotalCostCalcD1T14 = claim.TotalCostCalcD1T14;
 
+            claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
+
             return View("ClaimDetails", claimDetailsVM);
         }
 
@@ -1362,8 +1399,6 @@ namespace Sjuklöner.Controllers
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("claiminformation");
-                writer.WriteElementString("SSN", claim.CustomerSSN);
-                writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
@@ -1387,16 +1422,15 @@ namespace Sjuklöner.Controllers
         [HttpPost]
         public ActionResult StodSystemLogin(StodSystemLoginVM stodSystemLoginVM)
         {
-            var referenceNumber = stodSystemLoginVM.ReferenceNumber;
-            return RedirectToAction("Decide", "Claims", referenceNumber);
+            return RedirectToAction("Decide", stodSystemLoginVM);
         }
 
         // GET: Claims/Decide
         [OverrideAuthorization]
         [HttpGet]
-        public ActionResult Decide(string referenceNumber)
+        public ActionResult Decide(StodSystemLoginVM stodSystemLoginVM)
         {
-            var claim = db.Claims.Where(c => c.ReferenceNumber == referenceNumber).FirstOrDefault();
+            var claim = db.Claims.Where(c => c.ReferenceNumber == stodSystemLoginVM.ReferenceNumber).FirstOrDefault();
 
             DecisionVM decisionVM = new DecisionVM();
 
@@ -1429,6 +1463,17 @@ namespace Sjuklöner.Controllers
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
+
+            if (!string.IsNullOrWhiteSpace(decisionVM.Comment))
+            {
+                Message comment = new Message();
+                comment.ClaimId = claim.Id;
+                comment.ApplicationUser_Id = "17899c7e-8dd1-4950-9cd4-beeab81f5cf3";
+                comment.CommentDate = DateTime.Now;
+                comment.Comment = decisionVM.Comment;
+                db.Messages.Add(comment);
+                db.SaveChanges();
+            }
 
             if (!string.IsNullOrWhiteSpace(claim.Email))
             {
@@ -1497,7 +1542,14 @@ namespace Sjuklöner.Controllers
             //    writer.WriteEndDocument();
             //}
             //}
-            return RedirectToAction("ShowRecommendationReceipt");
+            return RedirectToAction("StodsystemLogout");
+        }
+
+        // GET: Claims/StodsystemLogout
+        [OverrideAuthorization]
+        public ActionResult StodsystemLogout()
+        {
+            return View();
         }
 
         // GET: Claims/Edit/5

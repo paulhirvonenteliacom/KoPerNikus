@@ -12,6 +12,8 @@ namespace Sjuklöner.Models
 
         public int ClaimId { get; set; }
         
+        public string ApplicationUser_Id { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Datum")]
