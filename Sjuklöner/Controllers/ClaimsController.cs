@@ -1003,7 +1003,7 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.OmbudPhoneNumber = ombud.PhoneNumber;
 
             //Assistansanordnare
-            claimDetailsVM.CompanyName = "Tolvan Omsorg AB";
+            claimDetailsVM.CompanyName = "Smart Assistans";
             claimDetailsVM.OrganisationNumber = claim.OrganisationNumber;
             claimDetailsVM.GiroNumber = "4321-9876";
             claimDetailsVM.CompanyAddress = "Omsorgsgatan 117, 987 00 Omsorgköping";
@@ -1035,6 +1035,8 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
 
             claimDetailsVM.ClaimSum = claim.ClaimSum;
+            claimDetailsVM.ApprovedSum = claim.ApprovedSum;
+            claimDetailsVM.RejectedSum = claim.RejectedSum;
 
             //Underlag lönekostnader
             claimDetailsVM.PerHourUnsocialEvening = (decimal)21.08;
@@ -1076,15 +1078,15 @@ namespace Sjuklöner.Controllers
 
             //Holiday pay for qualifying day
             claimDetailsVM.HolidayPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.HolidayPayRateAsString) * Convert.ToDecimal(claimDetailsVM.HoursQD) * Convert.ToDecimal(claimDetailsVM.HourlySalaryAsString) / 100));
-            claimDetailsVM.HolidayPayCalcQD = claimDetailsVM.HolidayPayRateAsString + " % X " + claimDetailsVM.HoursQD + " timmar X " + claimDetailsVM.HourlySalaryAsString + " Kr";
+            claimDetailsVM.HolidayPayCalcQD = claimDetailsVM.HolidayPayRateAsString + " % x " + claimDetailsVM.HoursQD + " timmar x " + claimDetailsVM.HourlySalaryAsString + " Kr";
 
             //Social fees for qualifying day
             claimDetailsVM.SocialFeesQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SocialFeeRateAsString) * Convert.ToDecimal(claimDetailsVM.HolidayPayQD) / 100));
-            claimDetailsVM.SocialFeesCalcQD = claimDetailsVM.SocialFeeRateAsString + " % X " + claimDetailsVM.HolidayPayQD + " Kr";
+            claimDetailsVM.SocialFeesCalcQD = claimDetailsVM.SocialFeeRateAsString + " % x " + claimDetailsVM.HolidayPayQD + " Kr";
 
             //Pension and insurance for qualifying day
             claimDetailsVM.PensionAndInsuranceQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.PensionAndInsuranceRateAsString) * Convert.ToDecimal(claimDetailsVM.HolidayPayQD) / 100));
-            claimDetailsVM.PensionAndInsuranceCalcQD = claimDetailsVM.PensionAndInsuranceRateAsString + " % X " + claimDetailsVM.HolidayPayQD + " Kr";
+            claimDetailsVM.PensionAndInsuranceCalcQD = claimDetailsVM.PensionAndInsuranceRateAsString + " % x " + claimDetailsVM.HolidayPayQD + " Kr";
 
             //Sum for qualifying day (sum of the three previous items)
             claimDetailsVM.CostQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.HolidayPayQD) + Convert.ToDecimal(claimDetailsVM.SocialFeesQD) + Convert.ToDecimal(claimDetailsVM.PensionAndInsuranceQD)));
@@ -1119,28 +1121,28 @@ namespace Sjuklöner.Controllers
 
             //Calculate the money by category for day 2 to day 14
             //Sickpay for day 2 to day 14
-            claimDetailsVM.SickPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.HoursD2T14) * Convert.ToDecimal(claimDetailsVM.HourlySalaryAsString) / 100));
-            claimDetailsVM.SickPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.HoursD2T14 + " timmar X " + claimDetailsVM.HourlySalaryAsString + " Kr";
+            claimDetailsVM.SalaryD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.HoursD2T14) * Convert.ToDecimal(claimDetailsVM.HourlySalaryAsString) / 100));
+            claimDetailsVM.SalaryCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.HoursD2T14 + " timmar x " + claimDetailsVM.HourlySalaryAsString + " Kr";
 
             //Holiday pay for day 2 to day 14
-            claimDetailsVM.HolidayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.HolidayPayRateAsString) * Convert.ToDecimal(claimDetailsVM.SickPayD2T14) / 100));
-            claimDetailsVM.HolidayPayCalcD2T14 = claimDetailsVM.HolidayPayRateAsString + " % X " + claimDetailsVM.SickPayD2T14 + " Kr";
+            claimDetailsVM.HolidayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.HolidayPayRateAsString) * Convert.ToDecimal(claimDetailsVM.SalaryD2T14) / 100));
+            claimDetailsVM.HolidayPayCalcD2T14 = claimDetailsVM.HolidayPayRateAsString + " % x " + claimDetailsVM.SalaryD2T14 + " Kr";
 
             //Unsocial evening pay for day 2 to day 14
             claimDetailsVM.UnsocialEveningPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.UnsocialEveningD2T14) * Convert.ToDecimal(claimDetailsVM.PerHourUnsocialEveningAsString) / 100));
-            claimDetailsVM.UnsocialEveningPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.UnsocialEveningD2T14 + " timmar X " + claimDetailsVM.PerHourUnsocialEveningAsString + " Kr";
+            claimDetailsVM.UnsocialEveningPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.UnsocialEveningD2T14 + " timmar x " + claimDetailsVM.PerHourUnsocialEveningAsString + " Kr";
 
             //Unsocial night pay for day 2 to day 14
             claimDetailsVM.UnsocialNightPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.UnsocialNightD2T14) * Convert.ToDecimal(claimDetailsVM.PerHourUnsocialNightAsString) / 100));
-            claimDetailsVM.UnsocialNightPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.UnsocialNightD2T14 + " timmar X " + claimDetailsVM.PerHourUnsocialNightAsString + " Kr";
+            claimDetailsVM.UnsocialNightPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.UnsocialNightD2T14 + " timmar x " + claimDetailsVM.PerHourUnsocialNightAsString + " Kr";
 
             //Unsocial weekend pay for day 2 to day 14
             claimDetailsVM.UnsocialWeekendPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.UnsocialWeekendD2T14) * Convert.ToDecimal(claimDetailsVM.PerHourUnsocialWeekendAsString) / 100));
-            claimDetailsVM.UnsocialWeekendPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.UnsocialWeekendD2T14 + " timmar X " + claimDetailsVM.PerHourUnsocialWeekendAsString + " Kr";
+            claimDetailsVM.UnsocialWeekendPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.UnsocialWeekendD2T14 + " timmar x " + claimDetailsVM.PerHourUnsocialWeekendAsString + " Kr";
 
             //Unsocial grand weekend pay for day 2 to day 14
             claimDetailsVM.UnsocialGrandWeekendPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.UnsocialGrandWeekendD2T14) * Convert.ToDecimal(claimDetailsVM.PerHourUnsocialHolidayAsString) / 100));
-            claimDetailsVM.UnsocialGrandWeekendPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.UnsocialGrandWeekendD2T14 + " timmar X " + claimDetailsVM.PerHourUnsocialHolidayAsString + " Kr";
+            claimDetailsVM.UnsocialGrandWeekendPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.UnsocialGrandWeekendD2T14 + " timmar x " + claimDetailsVM.PerHourUnsocialHolidayAsString + " Kr";
 
             //Unsocial sum pay for day 2 to day 14
             claimDetailsVM.UnsocialSumPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.UnsocialEveningPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialNightPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialWeekendPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialGrandWeekendPayD2T14)));
@@ -1148,27 +1150,31 @@ namespace Sjuklöner.Controllers
 
             //On call day pay for day 2 to day 14
             claimDetailsVM.OnCallDayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.OnCallDayD2T14) * Convert.ToDecimal(claimDetailsVM.PerHourOnCallDayAsString) / 100));
-            claimDetailsVM.OnCallDayPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.OnCallDayD2T14 + " timmar X " + claimDetailsVM.PerHourOnCallDayAsString + " Kr";
+            claimDetailsVM.OnCallDayPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.OnCallDayD2T14 + " timmar x " + claimDetailsVM.PerHourOnCallDayAsString + " Kr";
 
             //On call night pay for day 2 to day 14
             claimDetailsVM.OnCallNightPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayRateAsString) * Convert.ToDecimal(claimDetailsVM.OnCallNightD2T14) * Convert.ToDecimal(claimDetailsVM.PerHourOnCallNightAsString) / 100));
-            claimDetailsVM.OnCallNightPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % X " + claimDetailsVM.OnCallNightD2T14 + " timmar X " + claimDetailsVM.PerHourOnCallNightAsString + " Kr";
+            claimDetailsVM.OnCallNightPayCalcD2T14 = claimDetailsVM.SickPayRateAsString + " % x " + claimDetailsVM.OnCallNightD2T14 + " timmar x " + claimDetailsVM.PerHourOnCallNightAsString + " Kr";
 
             //On call sum pay for day 2 to day 14
             claimDetailsVM.OnCallSumPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.OnCallDayPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallNightPayD2T14)));
             claimDetailsVM.OnCallSumPayCalcD2T14 = claimDetailsVM.OnCallDayPayD2T14 + " Kr + " + claimDetailsVM.OnCallNightPayD2T14;
 
+            //Sick pay for day 2 to day 14
+            claimDetailsVM.SickPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SalaryD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14)));
+            claimDetailsVM.SickPayCalcD2T14 = claimDetailsVM.SalaryD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr";
+
             //Social fees for day 2 to day 14
-            claimDetailsVM.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SocialFeeRateAsString) * (Convert.ToDecimal(claimDetailsVM.SickPayD2T14) + Convert.ToDecimal(claimDetailsVM.HolidayPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14)) / 100));
-            claimDetailsVM.SocialFeesCalcD2T14 = claimDetailsVM.SocialFeeRateAsString + " % X (" + claimDetailsVM.SickPayD2T14 + " Kr + " + claimDetailsVM.HolidayPayD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr)";
+            claimDetailsVM.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SocialFeeRateAsString) * (Convert.ToDecimal(claimDetailsVM.SalaryD2T14) + Convert.ToDecimal(claimDetailsVM.HolidayPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14)) / 100));
+            claimDetailsVM.SocialFeesCalcD2T14 = claimDetailsVM.SocialFeeRateAsString + " % x (" + claimDetailsVM.SalaryD2T14 + " Kr + " + claimDetailsVM.HolidayPayD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr)";
 
             //Pensions and insurances for day 2 to day 14
-            claimDetailsVM.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimDetailsVM.SickPayD2T14) + Convert.ToDecimal(claimDetailsVM.HolidayPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14)) / 100));
-            claimDetailsVM.PensionAndInsuranceCalcD2T14 = claimDetailsVM.PensionAndInsuranceRateAsString + " % X (" + claimDetailsVM.SickPayD2T14 + " Kr + " + claimDetailsVM.HolidayPayD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr)";
+            claimDetailsVM.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimDetailsVM.SalaryD2T14) + Convert.ToDecimal(claimDetailsVM.HolidayPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14)) / 100));
+            claimDetailsVM.PensionAndInsuranceCalcD2T14 = claimDetailsVM.PensionAndInsuranceRateAsString + " % x (" + claimDetailsVM.SalaryD2T14 + " Kr + " + claimDetailsVM.HolidayPayD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr)";
 
             //Sum for day 2 to day 14
-            claimDetailsVM.CostD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SickPayD2T14) + Convert.ToDecimal(claimDetailsVM.HolidayPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.SocialFeesD2T14) + Convert.ToDecimal(claimDetailsVM.PensionAndInsuranceD2T14)));
-            claimDetailsVM.CostCalcD2T14 = claimDetailsVM.SickPayD2T14 + " Kr + " + claimDetailsVM.HolidayPayD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr + " + claimDetailsVM.SocialFeesD2T14 + " Kr + " + claimDetailsVM.PensionAndInsuranceD2T14 + " Kr";
+            claimDetailsVM.CostD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.SalaryD2T14) + Convert.ToDecimal(claimDetailsVM.HolidayPayD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallSumPayD2T14) + Convert.ToDecimal(claimDetailsVM.SocialFeesD2T14) + Convert.ToDecimal(claimDetailsVM.PensionAndInsuranceD2T14)));
+            claimDetailsVM.CostCalcD2T14 = claimDetailsVM.SalaryD2T14 + " Kr + " + claimDetailsVM.HolidayPayD2T14 + " Kr + " + claimDetailsVM.UnsocialSumPayD2T14 + " Kr + " + claimDetailsVM.OnCallSumPayD2T14 + " Kr + " + claimDetailsVM.SocialFeesD2T14 + " Kr + " + claimDetailsVM.PensionAndInsuranceD2T14 + " Kr";
 
             //Total sum for day 1 to day 14
             claimDetailsVM.TotalCostD1T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.CostQD) + Convert.ToDecimal(claimDetailsVM.CostD2T14)));
