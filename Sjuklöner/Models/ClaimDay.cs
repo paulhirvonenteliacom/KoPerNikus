@@ -80,5 +80,33 @@ namespace Sjuklöner.Models
         public float NumberOfOnCallHoursNightSI { get; set; }
 
         public float NumberOfOnCallHoursEveningSI { get; set; }
+
+        public string Hours { get; set; }
+
+        public string UnsocialEvening { get; set; }
+
+        public string UnsocialNight { get; set; }
+
+        public string UnsocialWeekend { get; set; }
+
+        public string UnsocialGrandWeekend { get; set; }
+
+        public string OnCallDay { get; set; }
+
+        public string OnCallNight { get; set; }
+
+        public string HoursSI { get; set; }
+
+        public string UnsocialEveningSI { get; set; }
+
+        public string UnsocialNightSI { get; set; }
+
+        public string UnsocialWeekendSI { get; set; }
+
+        public string UnsocialGrandWeekendSI { get; set; }
+
+        public string OnCallDaySI { get; set; }
+
+        public string OnCallNightSI { get; set; }
     }
 }
