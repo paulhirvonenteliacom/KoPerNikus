@@ -360,6 +360,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12 display-large-font">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.ApprovedSum)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="form-group line-height-12 display-large-font">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.RejectedSum)
+                                </div>
+                            </div>
+                        </div>
                         @*<div class="col col-md-3">
                                 <div class="form-group line-height-12">
                                     <div class="row label-padding">
@@ -831,12 +851,12 @@
                                     <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.SocialFeesCalcQD)
                                     </div>
-                                </div>
-                                <div class="col col-md-1">
-                                    =
-                                </div>
-                                <div class="col col-md-3 text-right">
-                                    @Html.DisplayFor(modelItem => Model.SocialFeesQD) Kr
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.SocialFeesQD) Kr
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -848,30 +868,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcQD)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQD) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQD) Kr
                                     </div>
                                 </div>
                             </div>
@@ -885,32 +891,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.CostCalcQD)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 bold-18 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.CostQD) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 bold-18 text-right">
+                                        @Html.DisplayFor(modelItem => Model.CostQD) Kr
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col col-md-3 text-right bold-18">
+                                @Html.DisplayFor(modelItem => Model.CostQD) Kr
                             </div>
                         </div>
                         <br />
@@ -927,66 +922,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
-                                        @Html.DisplayFor(modelItem => Model.SickPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.SalaryCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Semesterersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12">
-                                        @Html.DisplayFor(modelItem => Model.HolidayPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.SalaryD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -999,30 +944,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.UnsocialEveningPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.UnsocialEveningPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.UnsocialEveningPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1035,30 +966,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.UnsocialNightPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.UnsocialNightPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.UnsocialNightPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1071,30 +988,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1107,35 +1010,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
+                            <hr class="hr-low-margin" />
                             <div class="col col-md-3">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
@@ -1143,30 +1033,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.UnsocialSumPayCalcD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.UnsocialSumPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.UnsocialSumPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1179,30 +1055,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.OnCallDayPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.OnCallDayPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.OnCallDayPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1215,35 +1077,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.OnCallNightPayCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.OnCallNightPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.OnCallNightPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
+                            <hr class="hr-low-margin" />
                             <div class="col col-md-3">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
@@ -1251,190 +1100,180 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
+                                    <div class="col col-md-8">
                                         @Html.DisplayFor(modelItem => Model.OnCallSumPayCalcD2T14) Kr
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
-                                    </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.OnCallSumPayD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.OnCallSumPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
+                            <hr class="hr-low-margin" />
                             <div class="col col-md-3">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
-                                        Lagstadgad arbetsgivaravgift:
+                                        Summa sjuklön:
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-3">
+                            <div class="col col-md-6">
                                 <div class="row">
-                                    <div class="col col-md-12">
-                                        @Html.DisplayFor(modelItem => Model.SocialFeesCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.SickPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-3 text-right bold-24">
+                                @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
+                            </div>
+                            <div class="row">
+                                <div class="col col-md-3">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding">
+                                            Semesterersättning:
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.HolidayPayCalcD2T14)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right">
+                                            @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-3 text-right bold-18">
+                                    @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-md-3">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding">
+                                            Lagstadgad arbetsgivaravgift:
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.SocialFeesCalcD2T14)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right">
+                                            @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-3 text-right bold-18">
+                                    @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-md-3">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding">
+                                            Avtalade pensioner och försäkringar:
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcD2T14)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right">
+                                            @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-3 text-right bold-18">
+                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-md-3">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                            Summa, dag 2 till dag 14:
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.CostCalcD2T14)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right bold-18">
+                                            @Html.DisplayFor(modelItem => Model.CostD2T14) Kr
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Avtalade pensioner och försäkringar:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12">
-                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right">
-                                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <div class="row">
+                                <div class="col col-md-3">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                            Summa sjukperioden:
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                        Summa, dag 2 till dag 14:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12">
-                                        @Html.DisplayFor(modelItem => Model.CostCalcD2T14)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right bold-18">
-                                                        @Html.DisplayFor(modelItem => Model.CostD2T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.TotalCostCalcD1T14) Kr
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right bold-18">
+                                            @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding bold-24">
-                                        Summa sjukperioden:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-12">
-                                        @Html.DisplayFor(modelItem => Model.TotalCostCalcD1T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="row">
-                                    <div class="col col-md-1">
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-9">
-                                        <div class="row">
-                                            <div class="col col-md-12">
-                                                <div class="row">
-                                                    <div class="col col-md-11 text-right bold-24">
-                                                        @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="col col-md-3 text-right bold-18">
+                                    @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             }
-        </div>
 
-        @*<br />
-            <br />
-            <br />
-            <p>*@
-        @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-            @Html.ActionLink("Back to List", "Index")*@
-        @*</p>*@
+
+            @*<br />
+                <br />
+                <br />
+                <p>*@
+            @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                @Html.ActionLink("Back to List", "Index")*@
+            @*</p>*@
     </body>
 }
 
