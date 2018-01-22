@@ -156,6 +156,8 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal RejectedSum { get; set; }
 
+        public bool DecisionMade { get; set; }
+
         [Display(Name = "Arbetsställe:")]
         public string Workplace { get; set; }
 

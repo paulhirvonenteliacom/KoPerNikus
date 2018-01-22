@@ -35,7 +35,7 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal ClaimSum { get; set; }
 
-        [Display(Name = "Modellbelopp (Kr)")]
+        [Display(Name = "Beräknat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal ModelSum { get; set; }
 
