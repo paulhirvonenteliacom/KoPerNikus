@@ -159,10 +159,10 @@ namespace Sjuklöner.Migrations
 
             var claimDaySeeds = new List<ClaimDaySeed>
             {
-                new ClaimDaySeed { Id = 1, Hours = "8", UnsocialEvening = "1,50", OnCallNight = "2"},
-                new ClaimDaySeed { Id = 2, Hours = "6,50", OnCallNight = "3" },
-                new ClaimDaySeed { Id = 3, Hours = "5,75"},
-                new ClaimDaySeed { Id = 4, Hours = "4" },
+                new ClaimDaySeed { Id = 1, Hours = "8,00", OnCallNight = "2,00"},
+                new ClaimDaySeed { Id = 2, Hours = "6,50", UnsocialWeekend = "6,50", OnCallNight = "3,00" },
+                new ClaimDaySeed { Id = 3, Hours = "5,75", UnsocialWeekend = "5,75"},
+                new ClaimDaySeed { Id = 4, Hours = "4,00", UnsocialEvening = "4,00" },
                 new ClaimDaySeed { Id = 5 },
                 new ClaimDaySeed { Id = 6, Hours = "6", OnCallDay = "4"},
                 new ClaimDaySeed { Id = 7, Hours = "3,75" },
