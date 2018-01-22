@@ -440,15 +440,14 @@ namespace Sjuklöner.Controllers
                                 //scheduleRow.ScheduleRowWeekDay = dateInSchedule.DayOfWeek.ToString();
 
                                 //For seeding demo only
-                                scheduleRow.StartTimeHour = claimDaySeeds[i].StartHour;
-                                scheduleRow.StartTimeMinute = claimDaySeeds[i].StartMinute;
-                                scheduleRow.StopTimeHour = claimDaySeeds[i].StopHour;
-                                scheduleRow.StopTimeMinute = claimDaySeeds[i].StopMinute;
+                                scheduleRow.Hours = claimDaySeeds[i].Hours;
+                                scheduleRow.UnsocialEvening = claimDaySeeds[i].UnsocialEvening;
+                                scheduleRow.UnsocialWeekend = claimDaySeeds[i].UnsocialWeekend;
+                                scheduleRow.UnsocialGrandWeekend = claimDaySeeds[i].UnsocialGrandWeekend;
 
-                                scheduleRow.StartTimeHourOnCall = claimDaySeeds[i].StartHourOnCall;
-                                scheduleRow.StartTimeMinuteOnCall = claimDaySeeds[i].StartMinuteOnCall;
-                                scheduleRow.StopTimeHourOnCall = claimDaySeeds[i].StopHourOnCall;
-                                scheduleRow.StopTimeMinuteOnCall = claimDaySeeds[i].StopMinuteOnCall;  //End demo seed
+                                scheduleRow.OnCallDay = claimDaySeeds[i].OnCallDay;
+                                scheduleRow.OnCallNight = claimDaySeeds[i].OnCallNight;
+                                //End demo seed
 
                                 rowList.Add(scheduleRow);
                             }
