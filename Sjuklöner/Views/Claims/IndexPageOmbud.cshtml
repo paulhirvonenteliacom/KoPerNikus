@@ -73,7 +73,7 @@
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td class="highlight-green-bold">
                                 @Html.DisplayFor(modelItem => item.ApprovedSum)
@@ -157,7 +157,7 @@
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td>
                                 @Html.ActionLink("Uppdatera", "Create", new { refNumber = item.ReferenceNumber, id = 1 }, new { @class = "btn btn-success btn-success-small" })
@@ -236,7 +236,7 @@
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td>
                                 @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
