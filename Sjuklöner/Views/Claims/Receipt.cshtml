@@ -3,6 +3,20 @@
 @{
     ViewBag.Title = "Amount";
 }
+@section RobinRevealed
+    {
+    <script>
+        window.onload = function (){
+                document.getElementById("divRobin").style.top = "170px";
+            };
+    </script>
+    <style type="text/css">
+        body {
+            overflow:hidden;
+        }
+    </style>   
+}
+
 
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
@@ -39,7 +53,9 @@
             <p class="left-margin-18">Med vänliga hälsningar,<br class="left-margin-18"/>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
         </div>
     </div>
-
+    <div id="divRobin">
+        <img src="~/Content/Robin_color.png" width="250" height="185" />
+    </div>
 
     @*<div class="row">
         <div class="form-horizontal">

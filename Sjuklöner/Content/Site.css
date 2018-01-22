@@ -1139,3 +1139,18 @@ a:hover, a:focus {
     color: #ffffff;
     border-radius: 3px;
 }
+
+#divRobin {
+   position:absolute;
+   left:850px;
+   top:1200px; /*Outta sight*/
+   width:250px;
+   height:185px;
+   z-index:100;
+   transition-delay:3s;
+   transition-timing-function:ease-out;
+   transition: top 4s;
+   -webkit-transition:top 4s;
+   float:right;
+
+}
