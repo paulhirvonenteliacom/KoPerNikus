@@ -3,7 +3,7 @@ namespace Sjuklöner.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class initial : DbMigration
+    public partial class init : DbMigration
     {
         public override void Up()
         {
@@ -90,36 +90,20 @@ namespace Sjuklöner.Migrations
                         ClaimDayDate = c.DateTime(),
                         DateString = c.String(),
                         SickDayNumber = c.Int(nullable: false),
-                        StartHour = c.String(),
-                        StartMinute = c.String(),
-                        StopHour = c.String(),
-                        StopMinute = c.String(),
-                        NumberOfHours = c.Single(nullable: false),
-                        NumberOfUnsocialHours = c.Single(nullable: false),
-                        NumberOfUnsocialHoursNight = c.Single(nullable: false),
-                        NumberOfUnsocialHoursEvening = c.Single(nullable: false),
-                        StartHourOnCall = c.String(),
-                        StartMinuteOnCall = c.String(),
-                        StopHourOnCall = c.String(),
-                        StopMinuteOnCall = c.String(),
-                        NumberOfOnCallHours = c.Single(nullable: false),
-                        NumberOfOnCallHoursNight = c.Single(nullable: false),
-                        NumberOfOnCallHoursEvening = c.Single(nullable: false),
-                        StartHourSI = c.String(),
-                        StartMinuteSI = c.String(),
-                        StopHourSI = c.String(),
-                        StopMinuteSI = c.String(),
-                        NumberOfHoursSI = c.Single(nullable: false),
-                        NumberOfUnsocialHoursSI = c.Single(nullable: false),
-                        NumberOfUnsocialHoursNightSI = c.Single(nullable: false),
-                        NumberOfUnsocialHoursEveningSI = c.Single(nullable: false),
-                        StartHourOnCallSI = c.String(),
-                        StartMinuteOnCallSI = c.String(),
-                        StopHourOnCallSI = c.String(),
-                        StopMinuteOnCallSI = c.String(),
-                        NumberOfOnCallHoursSI = c.Single(nullable: false),
-                        NumberOfOnCallHoursNightSI = c.Single(nullable: false),
-                        NumberOfOnCallHoursEveningSI = c.Single(nullable: false),
+                        Hours = c.String(),
+                        UnsocialEvening = c.String(),
+                        UnsocialNight = c.String(),
+                        UnsocialWeekend = c.String(),
+                        UnsocialGrandWeekend = c.String(),
+                        OnCallDay = c.String(),
+                        OnCallNight = c.String(),
+                        HoursSI = c.String(),
+                        UnsocialEveningSI = c.String(),
+                        UnsocialNightSI = c.String(),
+                        UnsocialWeekendSI = c.String(),
+                        UnsocialGrandWeekendSI = c.String(),
+                        OnCallDaySI = c.String(),
+                        OnCallNightSI = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -393,15 +377,16 @@ namespace Sjuklöner.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ClaimId = c.Int(nullable: false),
+                        ApplicationUser_Id = c.String(),
                         CommentDate = c.DateTime(nullable: false),
                         Comment = c.String(nullable: false),
-                        ApplicationUser_Id = c.String(maxLength: 128),
+                        ApplicationUser_Id1 = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id1)
                 .ForeignKey("dbo.Claims", t => t.ClaimId, cascadeDelete: true)
                 .Index(t => t.ClaimId)
-                .Index(t => t.ApplicationUser_Id);
+                .Index(t => t.ApplicationUser_Id1);
             
             CreateTable(
                 "dbo.AspNetUserRoles",
@@ -463,7 +448,7 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Documents", "Claim_Id", "dbo.Claims");
             DropForeignKey("dbo.Documents", "PurposeId", "dbo.Purposes");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Messages", "ApplicationUser_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Messages", "ApplicationUser_Id1", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Documents", "OwnerId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
@@ -474,7 +459,7 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
-            DropIndex("dbo.Messages", new[] { "ApplicationUser_Id" });
+            DropIndex("dbo.Messages", new[] { "ApplicationUser_Id1" });
             DropIndex("dbo.Messages", new[] { "ClaimId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });

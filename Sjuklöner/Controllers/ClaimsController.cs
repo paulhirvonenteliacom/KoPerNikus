@@ -777,7 +777,7 @@ namespace Sjuklöner.Controllers
             //Calculate pay for oncall hours
             //Calculate pay for oncall hours for qualifying day.
             //Enligt KFO görs avdrag med max 8 timmar för karensdag.
-            double payOnCallHoursQualifyingDay = 0;
+            //double payOnCallHoursQualifyingDay = 0;
             int gapHours = 0;
             int gapMinutes = 0;
             float gapHoursOnCall = 0;
@@ -1440,8 +1440,8 @@ namespace Sjuklöner.Controllers
             decisionVM.QualifyingDate = claim.QualifyingDate;
             decisionVM.LastDayOfSickness = claim.LastDayOfSicknessDate;
             decisionVM.ClaimSum = claim.ClaimedSum;
-            decisionVM.ApprovedSum = claim.ApprovedSum;
-            decisionVM.RejectedSum = claim.RejectedSum;
+            decisionVM.ApprovedSum = claim.ApprovedSum.ToString();
+            decisionVM.RejectedSum = claim.RejectedSum.ToString();
 
             return View("Decide", decisionVM);
         }
@@ -1458,8 +1458,8 @@ namespace Sjuklöner.Controllers
             var claim = db.Claims.Where(c => c.ReferenceNumber == decisionVM.ClaimNumber).FirstOrDefault();
             claim.ClaimStatusId = 1;
 
-            claim.ApprovedSum = decisionVM.ApprovedSum;
-            claim.RejectedSum = decisionVM.RejectedSum;
+            claim.ApprovedSum = Convert.ToDecimal(decisionVM.ApprovedSum);
+            claim.RejectedSum = Convert.ToDecimal(decisionVM.RejectedSum);
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
