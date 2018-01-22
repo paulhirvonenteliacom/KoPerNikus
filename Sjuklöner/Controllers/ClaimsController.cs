@@ -215,6 +215,7 @@ namespace Sjuklöner.Controllers
 
             AssistantClaimVM claimVM = new AssistantClaimVM();
 
+            claimVM.OrganisationNumber = "556881-2118";
             claimVM.AssistantSSN = "930701-4168";
             claimVM.CustomerSSN = "391025-7246";
             claimVM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
