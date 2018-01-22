@@ -64,6 +64,20 @@ namespace Sjuklöner.Migrations
                         NumberOfOnCallHoursSI = c.Single(nullable: false),
                         NumberOfOnCallHoursNightSI = c.Single(nullable: false),
                         NumberOfOnCallHoursEveningSI = c.Single(nullable: false),
+                        Hours = c.String(),
+                        UnsocialEvening = c.String(),
+                        UnsocialNight = c.String(),
+                        UnsocialWeekend = c.String(),
+                        UnsocialGrandWeekend = c.String(),
+                        OnCallDay = c.String(),
+                        OnCallNight = c.String(),
+                        HoursSI = c.String(),
+                        UnsocialEveningSI = c.String(),
+                        UnsocialNightSI = c.String(),
+                        UnsocialWeekendSI = c.String(),
+                        UnsocialGrandWeekendSI = c.String(),
+                        OnCallDaySI = c.String(),
+                        OnCallNightSI = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             

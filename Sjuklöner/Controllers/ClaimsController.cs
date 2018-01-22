@@ -598,10 +598,43 @@ namespace Sjuklöner.Controllers
 
             //Seed for demo only
             var numberOfSickDays = scheduleVM.ScheduleRowList.Count();
-            claimAmountVM.SickPay = (decimal)867.23 * (numberOfSickDays - 1);
-            claimAmountVM.PensionAndInsurance = (decimal)0.06 * (decimal)867.23 * numberOfSickDays;
-            claimAmountVM.SocialFees = (decimal)0.3142 * (decimal)867.23 * numberOfSickDays;
-            claimAmountVM.HolidayPay = (decimal)0.12 * (claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees);
+            var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == scheduleVM.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+            decimal hours = 0;
+            decimal unsocialEvening = 0;
+            decimal unsocialNight = 0;
+            decimal unsocialWeekend = 0;
+            decimal unsocialGrandWeekend = 0;
+            decimal unsocialSum = 0;
+            decimal oncallDay = 0;
+            decimal oncallNight = 0;
+            decimal oncallSum = 0;
+
+            for (int i = 0; i < claimDays.Count(); i++)
+            {
+                //To be continued
+                hours = hours + Convert.ToDecimal(claimDays[i].Hours);
+                unsocialEvening = unsocialEvening + Convert.ToDecimal(claimDays[i].UnsocialEvening);
+                unsocialNight = unsocialNight + Convert.ToDecimal(claimDays[i].UnsocialNight);
+                unsocialWeekend = unsocialWeekend + Convert.ToDecimal(claimDays[i].UnsocialWeekend);
+                unsocialGrandWeekend = unsocialGrandWeekend + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend);
+                oncallDay = oncallDay + Convert.ToDecimal(claimDays[i].OnCallDay);
+                oncallNight = oncallNight + Convert.ToDecimal(claimDays[i].OnCallNight);
+
+                claimAmountVM.PensionAndInsurance = (decimal)0.06 * (decimal)867.23 * numberOfSickDays;
+                claimAmountVM.SocialFees = (decimal)0.3142 * (decimal)867.23 * numberOfSickDays;
+                claimAmountVM.HolidayPay = (decimal)0.12 * (claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees);
+            }
+            unsocialSum = unsocialEvening + unsocialNight + unsocialWeekend + unsocialGrandWeekend;
+            oncallSum = oncallDay + oncallNight;
+            claimAmountVM.SickPay = (decimal)0.8 * ((120 * hours) + ((decimal)65.5 * unsocialSum) + ((decimal)43.2 * oncallSum)) - (decimal)0.8 * ((120 * Convert.ToDecimal(claimDays[0].Hours)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialEvening)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialNight)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialWeekend)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].OnCallDay)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].OnCallNight)));
+            claimAmountVM.HolidayPay = (decimal)0.12 * (decimal)0.8 * ((120 * hours) + ((decimal)65.5 * unsocialSum) + ((decimal)43.2 * oncallSum));
+            claimAmountVM.SocialFees = (decimal)0.3142 * (claimAmountVM.SickPay + claimAmountVM.HolidayPay);
+            claimAmountVM.PensionAndInsurance = (decimal)0.06 * (claimAmountVM.SickPay + claimAmountVM.HolidayPay);
+
+            //claimAmountVM.SickPay = (decimal)867 * (numberOfSickDays - 1);
+            //claimAmountVM.PensionAndInsurance = (decimal)0.06 * (decimal)867.23 * numberOfSickDays;
+            //claimAmountVM.SocialFees = (decimal)0.3142 * (decimal)867.23 * numberOfSickDays;
+            //claimAmountVM.HolidayPay = (decimal)0.12 * (claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees);
 
             claimAmountVM.ClaimSum = claimAmountVM.HolidayPay + claimAmountVM.SickPay + claimAmountVM.PensionAndInsurance + claimAmountVM.SocialFees;
 
@@ -832,7 +865,18 @@ namespace Sjuklöner.Controllers
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claimAmountVM.ClaimNumber).OrderBy(c => c.ReferenceNumber).ToList();
 
-                //ADD CALCULATIONS FOR QUALIFYING DAY LATER, FOR NOW ONLY DAY 2 TO DAY 14 ARE TAKEN INTO ACCOUNT
+                //Hours for qualifying day
+                existingClaim.HoursQualifyingDay = Convert.ToDecimal(claimDays[0].Hours);
+
+                //Holiday pay for qualifying day
+                existingClaim.HolidayPayQualDay = (decimal)0.12 * (Convert.ToDecimal(existingClaim.HoursQualifyingDay) * 120);
+
+                //Social fees for qualifying day
+                existingClaim.PayrollTaxQualDay = (decimal)0.3142 * existingClaim.HolidayPayQualDay;
+
+                //Pension and insurance for qualifying day
+                existingClaim.PensionQualDay = (decimal)0.06 * existingClaim.HolidayPayQualDay;
+
 
                 //Calculate lost pay for unsocial hours for day 2 to 14, for now with hardcoded amounts according to Vårdföretagarna, for now excluding "storhelger"
                 existingClaim.UnsocialHoursPayDay2To14 = CalculateUnsocialHoursPayDay2To14(existingClaim, claimDays);
@@ -853,7 +897,7 @@ namespace Sjuklöner.Controllers
                 existingClaim.PensionAndInsurance = 6.00m * (existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14) / 100;
 
                 //SO FAR ONLY DAY 2 TO 14 HAVE BEEN TAKEN INTO ACCOUNT. THE QUALYFYING WILL NEED TO BE ADDED.
-                existingClaim.ModelSum = existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14 + existingClaim.PayrollTaxDay2To14 + existingClaim.PensionAndInsurance;
+                existingClaim.ModelSum = existingClaim.SickPayDay2To14 + existingClaim.HolidayPayDay2To14 + existingClaim.PayrollTaxDay2To14 + existingClaim.PensionAndInsurance + existingClaim.HolidayPayQualDay + existingClaim.PayrollTaxQualDay + existingClaim.PensionQualDay;
 
                 existingClaim.ClaimStatusId = 5;
                 existingClaim.StatusDate = DateTime.Now;
@@ -962,7 +1006,14 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ModelSum = claim.ModelSum;
                 recommendationVM.ClaimSum = claim.ClaimSum;
                 recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
-                recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
+                {
+                    recommendationVM.RejectedSum = "0,00";
+                }
+                else
+                {
+                    recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                }
 
                 return View("Recommend", recommendationVM);
             }
@@ -1035,8 +1086,14 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
 
             claimDetailsVM.ClaimSum = claim.ClaimSum;
-            claimDetailsVM.ApprovedSum = claim.ApprovedSum;
-            claimDetailsVM.RejectedSum = claim.RejectedSum;
+
+            claimDetailsVM.DecisionMade = false;
+            if (claim.ClaimStatus.Name == "Beslutad")
+            {
+                claimDetailsVM.ApprovedSum = claim.ApprovedSum;
+                claimDetailsVM.RejectedSum = claim.RejectedSum;
+                claimDetailsVM.DecisionMade = true;
+            }
 
             //Underlag lönekostnader
             claimDetailsVM.PerHourUnsocialEvening = (decimal)21.08;
@@ -1118,6 +1175,12 @@ namespace Sjuklöner.Controllers
             }
             claimDetailsVM.UnsocialSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.UnsocialEveningD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialNightD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialWeekendD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialGrandWeekendD2T14)));
             claimDetailsVM.OnCallSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimDetailsVM.OnCallDayD2T14) + Convert.ToDecimal(claimDetailsVM.OnCallNightD2T14)));
+
+            //These numbers go to the assistant's part of the view
+            claimDetailsVM.NumberOfAbsenceHours = Convert.ToDecimal(claimDetailsVM.HoursQD) + Convert.ToDecimal(claimDetailsVM.HoursD2T14) + Convert.ToDecimal(claimDays[0].OnCallDay) + Convert.ToDecimal(claimDetailsVM.OnCallDayD2T14) + Convert.ToDecimal(claimDays[0].OnCallNight) + Convert.ToDecimal(claimDetailsVM.OnCallNightD2T14);
+            claimDetailsVM.NumberOfOrdinaryHours = Convert.ToDecimal(claimDetailsVM.HoursQD) + Convert.ToDecimal(claimDetailsVM.HoursD2T14);
+            claimDetailsVM.NumberOfUnsocialHours = Convert.ToDecimal(claimDetailsVM.UnsocialEveningD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialNightD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialWeekendD2T14) + Convert.ToDecimal(claimDetailsVM.UnsocialGrandWeekendD2T14) + Convert.ToDecimal(claimDays[0].UnsocialEvening) + Convert.ToDecimal(claimDays[0].UnsocialNight) + Convert.ToDecimal(claimDays[0].UnsocialWeekend) + Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend);
+            claimDetailsVM.NumberOfOnCallHours = Convert.ToDecimal(claimDays[0].OnCallDay) + Convert.ToDecimal(claimDetailsVM.OnCallDayD2T14) + Convert.ToDecimal(claimDays[0].OnCallNight) + Convert.ToDecimal(claimDetailsVM.OnCallNightD2T14);
 
             //Calculate the money by category for day 2 to day 14
             //Sickpay for day 2 to day 14

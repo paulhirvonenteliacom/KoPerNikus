@@ -106,7 +106,7 @@
     </div>
     <hr class="claim-divider" />
 
-    <div class="row">
+    @*<div class="row">
         <div class="col">
             <div class="second-page-header">
                 Utkast
@@ -167,10 +167,10 @@
                             </td>
                             <td>
                                 @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })
-                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
                                     @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
                                     @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
-                            </td>
+                            @*</td>
                         </tr>
                     }
 
@@ -185,7 +185,7 @@
             }
         </div>
     </div>
-    <hr class="claim-divider" />
+    <hr class="claim-divider" />*@
 
     <div class="row">
         <div class="col">
