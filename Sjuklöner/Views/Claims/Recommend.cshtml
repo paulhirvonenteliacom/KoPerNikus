@@ -39,83 +39,83 @@
         <p class="col col-md-6 second-page-header-large">Automatiserade kontroller</p>
     </div>
 
-                    <div class="row">
-                        <div class="form-horizontal">
+    <div class="row">
+        <div class="form-horizontal">
 
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            @*<div class="form-group">
-                                    @Html.LabelFor(model => model.ivoCheck, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.HiddenFor(m => model.ivoCheck.Text)
-                                        @Html.CheckBoxFor(m => model.ivoCheck.Checked, new { id = "YourId" })
-                                    </div>
-                                </div>*@
-
-                            <div class="form-group col line-height-06">
-                                @Html.LabelFor(model => model.CompleteCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                                @if (!Model.CompleteCheck)
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.CompleteCheckMsg)
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.CompleteCheckMsg)
-                                    </div>
-                                }
-                            </div>
-                            <div class="form-group col line-height-06">
-                                @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                                @if (!Model.IvoCheck)
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.IvoCheckMsg)
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.IvoCheckMsg)
-                                    </div>
-                                }
-                            </div>
-
-                            <div class="form-group col line-height-06">
-                                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                                @if (!Model.AssistanceCheck)
-                                {
-                                <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
-                                    <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
-                                </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
-                                    </div>
-                                }
-                            </div>
-                            <div class="form-group col line-height-06">
-                                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                                @if (!Model.ProxyCheck)
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
-                                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        @*<hr class="claim-divider col-md-offset-2 col-md-8" />*@
+            @*<div class="form-group">
+                    @Html.LabelFor(model => model.ivoCheck, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.HiddenFor(m => model.ivoCheck.Text)
+                        @Html.CheckBoxFor(m => model.ivoCheck.Checked, new { id = "YourId" })
                     </div>
+                </div>*@
+
+            <div class="form-group col line-height-06">
+                @Html.LabelFor(model => model.CompleteCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                @if (!Model.CompleteCheck)
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.CompleteCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.CompleteCheckMsg)
+                    </div>
+                }
+            </div>
+            <div class="form-group col line-height-06">
+                @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                @if (!Model.IvoCheck)
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group col line-height-06">
+                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                @if (!Model.AssistanceCheck)
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
+                    </div>
+                }
+            </div>
+            <div class="form-group col line-height-06">
+                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                @if (!Model.ProxyCheck)
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
+                    </div>
+                }
+            </div>
+        </div>
+        @*<hr class="claim-divider col-md-offset-2 col-md-8" />*@
+    </div>
                     <div class="row">
                         <p class="col col-md-6 second-page-header-large">Ersättningsbedömning</p>
                     </div>
@@ -150,8 +150,8 @@
                                     @Html.ValidationMessageFor(model => model.ApprovedSum, null, new { @class = "text-danger" }, null)
                                 </div>
                                 @*<div class="col col-md-1">
-                                    @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                                </div>*@
+                                        @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
+                                    </div>*@
                             </div>
 
                         </div>
@@ -168,8 +168,8 @@
                                     @Html.ValidationMessageFor(model => model.RejectedSum, null, new { @class = "text-danger" }, null)
                                 </div>
                                 @*<div class="col col-md-1">
-                                    @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                                </div>*@
+                                        @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
+                                    </div>*@
                             </div>
 
                         </div>
@@ -424,13 +424,38 @@
                 approvedSumDec = parseInt(approvedSumString.substring(n + 1));
             }
 
-            rejectedSumInt = claimSumInt - approvedSumInt;
-            rejectedSumDec = claimSumDec - approvedSumDec;
-            if (rejectedSumDec < 0) {
-                rejectedSumInt = rejectedSumInt - 1;
-                rejectedSumDec = 100 - approvedSumDec + claimSumDec;
+            if (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)) {
+                rejectedSum.value = "0,00";
             }
-            rejectedSum.value = rejectedSumInt.toString() + "," + rejectedSumDec.toString();
+            else {
+                rejectedSumInt = claimSumInt - approvedSumInt;
+                rejectedSumDec = claimSumDec - approvedSumDec;
+                if (rejectedSumDec < 0) {
+                    rejectedSumInt = rejectedSumInt - 1;
+                    rejectedSumDec = 100 - approvedSumDec + claimSumDec;
+                }
+                if (rejectedSumInt < 0) {
+                    rejectedSum.value = "0,00";
+                }
+                else {
+                    if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                        rejectedSum.value = claimSumString;
+                    }
+                    else {
+                        rejectedSum.value = rejectedSumInt.toString() + "," + rejectedSumDec.toString();
+                    }
+                }
+            }
+        }
+
+        var p = approvedSumString.search(",");
+        if (p === -1 || p === approvedSumString.length) {
+            //No comma char in the string or if the comma is the last char
+            approvedSumInt = parseInt(approvedSumString);
+        }
+        else {
+            approvedSumInt = parseInt(approvedSumString.substring(0, p));
+            approvedSumDec = parseInt(approvedSumString.substring(p + 1));
         }
 
         if (id === 2) {
@@ -444,13 +469,23 @@
                 rejectedSumInt = parseInt(rejectedSumString.substring(0, n));
                 rejectedSumDec = parseInt(rejectedSumString.substring(n + 1));
             }
-
-            approvedSumInt = claimSumInt - rejectedSumInt;
-            approvedSumDec = claimSumDec - rejectedSumDec;
-            if (approvedSumDec < 0) {
-                approvedSumInt = approvedSumInt - 1;
-                approvedSumDec = 100 - rejectedSumDec + claimSumDec;
+            if (!(rejectedSum.value === "0,00" && (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)))) {
+                approvedSumInt = claimSumInt - rejectedSumInt;
+                approvedSumDec = claimSumDec - rejectedSumDec;
+                if (approvedSumDec < 0) {
+                    approvedSumInt = approvedSumInt - 1;
+                    approvedSumDec = 100 - rejectedSumDec + claimSumDec;
+                }
+                if (approvedSumInt < 0) {
+                    approvedSum.value = "0,00";
+                }
+                else {
+                    approvedSum.value = approvedSumInt.toString() + "," + approvedSumDec.toString();
+                }
             }
-            approvedSum.value = approvedSumInt.toString() + "," + approvedSumDec.toString();        }
+            if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                rejectedSum.value = claimSumString;
+            }
+        }
     }
 </script>

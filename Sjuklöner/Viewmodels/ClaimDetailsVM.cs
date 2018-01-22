@@ -148,6 +148,14 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal ClaimSum { get; set; }
 
+        [Display(Name = "Godkänt belopp (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public decimal ApprovedSum { get; set; }
+
+        [Display(Name = "Avslaget belopp (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public decimal RejectedSum { get; set; }
+
         [Display(Name = "Arbetsställe:")]
         public string Workplace { get; set; }
 
@@ -389,6 +397,14 @@ namespace Sjuklöner.Viewmodels
         //[Display(Name = "Antal timmar:")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]
         //public string HoursPayCalcD2T14 { get; set; }
+
+        [Display(Name = "Lön, 80% på ordinarie timlön:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryD2T14 { get; set; }
+
+        [Display(Name = "Lön, 80% på ordinarie timlön:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryCalcD2T14 { get; set; }
 
         [Display(Name = "Sjuklön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

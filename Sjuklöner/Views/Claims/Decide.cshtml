@@ -59,29 +59,28 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="decide-display-for">
-                    @Html.DisplayFor(model => Model.ClaimSum, null)
-                    @Html.HiddenFor(model => Model.ClaimSum)
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 decide-display-for" id="claimsum">
+                @Html.DisplayFor(model => Model.ClaimSum, null)
             </div>
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ApprovedSum, "", new { @class = "text-danger" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control" }, id = "approvedsum", onblur = "calculateSum(1)" })
+                @Html.ValidationMessageFor(model => model.ApprovedSum, "", new { @class = "text-danger" })
             </div>
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.RejectedSum, "", new { @class = "text-danger" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control" }, id = "rejectedsum", onblur = "calculateSum(2)" })
+                @Html.ValidationMessageFor(model => model.RejectedSum, "", new { @class = "text-danger" })
             </div>
+        </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -92,10 +91,119 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col col-md-offset-2">
-                <input class="btn btn-primary" type="submit" value="Besluta" />
-            </div>
+    <div class="row">
+        <div class="col col-md-offset-2">
+            <input class="btn btn-primary" type="submit" value="Besluta" />
         </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type='text/javascript'>
+    function calculateSum(id) {
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        var claimSum = document.getElementById("claimsum");
+        var approvedSum = document.getElementById("approvedsum");
+        var rejectedSum = document.getElementById("rejectedsum");
+
+        var claimSumString = claimSum.innerHTML.trim();
+        var approvedSumString = approvedSum.value;
+        var rejectedSumString = rejectedSum.value;
+
+        var approvedSumInt = 0;
+        var approvedSumDec = 0;
+
+        var rejectedSumInt = 0;
+        var rejectedSumDec = 0;
+
+        var pos = claimSumString.search(",");
+        var claimSumInt = 0;
+        var claimSumDec = 0;
+
+        if (pos === -1 || pos === claimSumString.length) {
+            //No comma char in the string or if the comma is the last char
+            claimSumInt = parseInt(claimSumString);
+        }
+        else {
+            claimSumInt = parseInt(claimSumString.substring(0, pos));
+            claimSumDec = parseInt(claimSumString.substring(pos + 1));
+        }
+
+        if (id === 1) {
+            //Find out where the decimal comma is
+            var n = approvedSumString.search(",");
+            if (n === -1 || n === approvedSumString.length) {
+                //No comma char in the string or if the comma is the last char
+                approvedSumInt = parseInt(approvedSumString);
+            }
+            else {
+                approvedSumInt = parseInt(approvedSumString.substring(0, n));
+                approvedSumDec = parseInt(approvedSumString.substring(n + 1));
+            }
+
+            if (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)) {
+                rejectedSum.value = "0,00";
+            }
+            else {
+                rejectedSumInt = claimSumInt - approvedSumInt;
+                rejectedSumDec = claimSumDec - approvedSumDec;
+                if (rejectedSumDec < 0) {
+                    rejectedSumInt = rejectedSumInt - 1;
+                    rejectedSumDec = 100 - approvedSumDec + claimSumDec;
+                }
+                if (rejectedSumInt < 0) {
+                    rejectedSum.value = "0,00";
+                }
+                else {
+                    if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                        rejectedSum.value = claimSumString;
+                    }
+                    else {
+                        rejectedSum.value = rejectedSumInt.toString() + "," + rejectedSumDec.toString();
+                    }
+                }
+            }
+        }
+
+        var p = approvedSumString.search(",");
+        if (p === -1 || p === approvedSumString.length) {
+            //No comma char in the string or if the comma is the last char
+            approvedSumInt = parseInt(approvedSumString);
+        }
+        else {
+            approvedSumInt = parseInt(approvedSumString.substring(0, p));
+            approvedSumDec = parseInt(approvedSumString.substring(p + 1));
+        }
+
+        if (id === 2) {
+            //Find out where the decimal comma is
+            var n = rejectedSumString.search(",");
+            if (n === -1 || n === rejectedSumString.length) {
+                //No comma char in the string or if the comma is the last char
+                rejectedSumInt = parseInt(rejectedSumString);
+            }
+            else {
+                rejectedSumInt = parseInt(rejectedSumString.substring(0, n));
+                rejectedSumDec = parseInt(rejectedSumString.substring(n + 1));
+            }
+            if (!(rejectedSum.value === "0,00" && (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)))) {
+                approvedSumInt = claimSumInt - rejectedSumInt;
+                approvedSumDec = claimSumDec - rejectedSumDec;
+                if (approvedSumDec < 0) {
+                    approvedSumInt = approvedSumInt - 1;
+                    approvedSumDec = 100 - rejectedSumDec + claimSumDec;
+                }
+                if (approvedSumInt < 0) {
+                    approvedSum.value = "0,00";
+                }
+                else {
+                    approvedSum.value = approvedSumInt.toString() + "," + approvedSumDec.toString();
+                }
+            }
+            if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                rejectedSum.value = claimSumString;
+            }
+        }
     }
-</div>
+</script>
