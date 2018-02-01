@@ -931,6 +931,8 @@ namespace Sjuklöner.Controllers
 
             string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
 
+            var UserId = db.Users.Where(u => u.FirstName == "Henrik").FirstOrDefault().Id;
+
             Directory.CreateDirectory(appdataPath);
             using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
             {
@@ -940,7 +942,7 @@ namespace Sjuklöner.Controllers
                         writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                         writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                         writer.WriteElementString("ClaimId", claim.Id.ToString());
-                        writer.WriteElementString("UserId", claim.OwnerId);
+                        writer.WriteElementString("UserId", UserId);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
@@ -1031,7 +1033,7 @@ namespace Sjuklöner.Controllers
 
         public ActionResult _Message(Message message)
         {
-            ApplicationUser user = db.Users.Where(u => u.Id == message.ApplicationUser_Id).FirstOrDefault();
+            ApplicationUser user = db.Users.Where(u => u.Id == message.applicationUser.Id).FirstOrDefault();
             string userName = $"{user.FirstName} {user.LastName}";
             MessageVM messageVM = new MessageVM(message.CommentDate, message.Comment, userName);
 
@@ -1055,7 +1057,8 @@ namespace Sjuklöner.Controllers
             message.ClaimId = sendMessage.ClaimId;
             message.Comment = sendMessage.Comment;
             message.CommentDate = DateTime.Now;
-            message.ApplicationUser_Id = User.Identity.GetUserId();
+            string uid = User.Identity.GetUserId();
+            message.applicationUser = db.Users.Where(u => u.Id == uid).FirstOrDefault();
             db.Messages.Add(message);
             db.SaveChanges();
             return PartialView("_SendMessage");
@@ -1468,7 +1471,7 @@ namespace Sjuklöner.Controllers
             {
                 Message comment = new Message();
                 comment.ClaimId = claim.Id;
-                comment.ApplicationUser_Id = "17899c7e-8dd1-4950-9cd4-beeab81f5cf3";
+                comment.applicationUser = db.Users.Where(u => u.FirstName == "Henrik").FirstOrDefault();
                 comment.CommentDate = DateTime.Now;
                 comment.Comment = decisionVM.Comment;
                 db.Messages.Add(comment);
