@@ -377,16 +377,15 @@ namespace Sjuklöner.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ClaimId = c.Int(nullable: false),
-                        ApplicationUser_Id = c.String(),
                         CommentDate = c.DateTime(nullable: false),
                         Comment = c.String(nullable: false),
-                        ApplicationUser_Id1 = c.String(maxLength: 128),
+                        applicationUser_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id1)
+                .ForeignKey("dbo.AspNetUsers", t => t.applicationUser_Id)
                 .ForeignKey("dbo.Claims", t => t.ClaimId, cascadeDelete: true)
                 .Index(t => t.ClaimId)
-                .Index(t => t.ApplicationUser_Id1);
+                .Index(t => t.applicationUser_Id);
             
             CreateTable(
                 "dbo.AspNetUserRoles",
@@ -448,7 +447,7 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Documents", "Claim_Id", "dbo.Claims");
             DropForeignKey("dbo.Documents", "PurposeId", "dbo.Purposes");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Messages", "ApplicationUser_Id1", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Messages", "applicationUser_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Documents", "OwnerId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
@@ -459,7 +458,7 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
-            DropIndex("dbo.Messages", new[] { "ApplicationUser_Id1" });
+            DropIndex("dbo.Messages", new[] { "applicationUser_Id" });
             DropIndex("dbo.Messages", new[] { "ClaimId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
