@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Sjuklöner.Models;
+using Sjuklöner.BankIDService;
 
 namespace Sjuklöner.Controllers
 {
@@ -22,7 +23,7 @@ namespace Sjuklöner.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +35,9 @@ namespace Sjuklöner.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -120,7 +121,7 @@ namespace Sjuklöner.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -155,8 +156,8 @@ namespace Sjuklöner.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -269,6 +270,93 @@ namespace Sjuklöner.Controllers
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
+        }
+
+        //
+        // POST: /Account/BankIDLogin
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult BankIDLogin(string ssn, string ReturnUrl, string type)
+        {
+
+            return RedirectToAction("BankIDWaitScreen", new { SSN = ssn, returnUrl = ReturnUrl, Type = type });
+        }
+
+        // GET: /Account/BankIDWaitScreen
+        [AllowAnonymous]
+        public ActionResult BankIDWaitScreen(string SSN, string returnUrl, string Type)
+        {
+            IDLoginVM VM = new IDLoginVM();
+            VM.ssn = SSN;
+            VM.type = Type;
+            VM.ReturnUrl = returnUrl;
+
+            return View("BankIDWaitScreen", VM);
+        }
+
+        //
+        // POST: /Account/BankIDWaitScreen
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> BankIDWaitScreen(IDLoginVM model)
+        {
+            if (UserManager.Users.Where(u => u.SSN == model.ssn).Any())
+            {
+                System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+
+
+                using (var client = new RpServicePortTypeClient())
+                {
+                    var authRequest = new AuthenticateRequestType();
+                    authRequest.personalNumber = model.ssn;
+                    if(model.type == "Mobilt")
+                    {
+                        RequirementType conditions = new RequirementType
+                        {
+                            condition = new[]
+                            {
+                                new ConditionType()
+                                {
+                                    key = "certificatePolicies",
+                                    value = new[] {"1.2.3.4.25"}
+                                }
+                            }
+                        };
+                    authRequest.requirementAlternatives = new[] { conditions };
+                    }
+
+
+                    OrderResponseType response = client.Authenticate(authRequest);
+
+                    CollectResponseType result;
+
+                    do
+                    {
+                        try
+                        {
+                            result = client.Collect(response.orderRef);
+                        }
+                        catch
+                        {
+                            return View("Login");
+                        }
+                        System.Threading.Thread.Sleep(1000);
+                    } while (result.progressStatus != ProgressStatusType.COMPLETE);
+
+                }
+
+                var user = UserManager.Users.Where(u => u.SSN == model.ssn).FirstOrDefault();
+
+                await SignInManager.SignInAsync(user, true, true);
+
+                if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                    return Redirect(model.ReturnUrl);
+
+                return RedirectToAction("Index", "Claims");
+            }
+            return View("BankIDWaitScreen");
         }
 
         //

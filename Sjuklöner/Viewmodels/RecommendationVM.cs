@@ -16,7 +16,7 @@ namespace Sjuklöner.Viewmodels
 
         public string CompleteCheckMsg { get; set; }
 
-        [Display(Name = "Kontroll av fullmakt i Stödsystem, VOF")]
+        [Display(Name = "Kontroll av fullmakt i Stödsystem")]
         public bool ProxyCheck { get; set; }
 
         public string ProxyCheckMsg { get; set; }
@@ -26,7 +26,7 @@ namespace Sjuklöner.Viewmodels
 
         public string IvoCheckMsg { get; set; }
 
-        [Display(Name = "Beslut om assistans i Stödsystem, VOF")]
+        [Display(Name = "Beslut om assistans i Stödsystem")]
         public bool AssistanceCheck { get; set; }
 
         public string AssistanceCheckMsg { get; set; }

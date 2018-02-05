@@ -1,0 +1,23 @@
+﻿@model Sjuklöner.Models.IDLoginVM
+@{
+    ViewBag.Title = "BankIDWaitScreen";
+}
+
+@using (Html.BeginForm("BankIDWaitScreen", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "hiddenForm", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ssn)
+    @Html.HiddenFor(m => m.type)
+    @Html.HiddenFor(m => m.ReturnUrl)
+}
+
+<div class="row page-header1">
+    <div class="col-sm-6 col-sm-offset-3">
+        <h1>Vänligen starta BankID och verifiera dig...</h1>
+    </div>
+</div>
+
+
+<script>
+    $('h1').ready(function(){document.getElementById('hiddenForm').submit();});
+</script>

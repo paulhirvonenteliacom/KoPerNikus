@@ -41,11 +41,14 @@
                     </div>
                 </div>
 
-                @foreach (var item in Model.messages)
+                @if(Model.messages.Count > 0)
                 {
-                    @Html.Action("_Message", new { message = item })
+                    foreach (var item in Model.messages)
+                    {
+                        @Html.Action("_Message", new { message = item })
+                    }
+                    @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
                 }
-                @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
             </div>
         </div>
         <div class="row">
@@ -1315,9 +1318,9 @@
     </div>*@
 <script type='text/javascript'>
 
-                            //$(document).ready(function () {
-                            //    $("#show-hours-btn").click(function () {
-                            //        alert("Hello");
-                            //    });
-                            //});
+                                //$(document).ready(function () {
+                                //    $("#show-hours-btn").click(function () {
+                                //        alert("Hello");
+                                //    });
+                                //});
 </script>
