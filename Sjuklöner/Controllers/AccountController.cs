@@ -302,7 +302,7 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> BankIDWaitScreen(IDLoginVM model)
         {
-            if (model.ssn == "196705078134")
+            if (UserManager.Users.Where(u => u.SSN == model.ssn).Any())
             {
                 System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
 
