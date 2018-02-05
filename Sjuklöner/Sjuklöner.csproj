@@ -205,13 +205,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201802011603423_new.cs" />
-    <Compile Include="Migrations\201802011603423_new.Designer.cs">
-      <DependentUpon>201802011603423_new.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802021340406_SSN_ToUser.cs" />
-    <Compile Include="Migrations\201802021340406_SSN_ToUser.Designer.cs">
-      <DependentUpon>201802021340406_SSN_ToUser.cs</DependentUpon>
+    <Compile Include="Migrations\201802051558420_init.cs" />
+    <Compile Include="Migrations\201802051558420_init.Designer.cs">
+      <DependentUpon>201802051558420_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -393,11 +389,8 @@
     <WCFMetadataStorage Include="Connected Services\BankIDService\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802011603423_new.resx">
-      <DependentUpon>201802011603423_new.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802021340406_SSN_ToUser.resx">
-      <DependentUpon>201802021340406_SSN_ToUser.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802051558420_init.resx">
+      <DependentUpon>201802051558420_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
