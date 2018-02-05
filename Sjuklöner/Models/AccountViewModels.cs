@@ -109,4 +109,11 @@ namespace Sjuklöner.Models
         [Display(Name = "E-post")]
         public string Email { get; set; }
     }
+
+    public class IDLoginVM
+    {
+        public string ssn { get; set; }
+        public string type { get; set; }
+        public string ReturnUrl { get; set; }
+    }
 }

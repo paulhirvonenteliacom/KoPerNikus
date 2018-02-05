@@ -29,6 +29,8 @@ namespace Sjuklöner.Models
         [Display(Name = "Assistansbolag")]
         public int? CareCompanyId { get; set; }
 
+        public string SSN { get; set; }
+
         public virtual List<Document> Documents { get; set; }
         public virtual List<Message> Message { get; set; }
     }
