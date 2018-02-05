@@ -199,20 +199,38 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801221729112_initial.cs" />
-    <Compile Include="Migrations\201801221729112_initial.Designer.cs">
-      <DependentUpon>201801221729112_initial.cs</DependentUpon>
+    <Compile Include="Migrations\201802042051362_initial.cs" />
+    <Compile Include="Migrations\201802042051362_initial.Designer.cs">
+      <DependentUpon>201802042051362_initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802050823025_removeUnnecessaryClasses.cs" />
+    <Compile Include="Migrations\201802050823025_removeUnnecessaryClasses.Designer.cs">
+      <DependentUpon>201802050823025_removeUnnecessaryClasses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802051032437_addAssistant.cs" />
+    <Compile Include="Migrations\201802051032437_addAssistant.Designer.cs">
+      <DependentUpon>201802051032437_addAssistant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802051321336_modifyAssistant.cs" />
+    <Compile Include="Migrations\201802051321336_modifyAssistant.Designer.cs">
+      <DependentUpon>201802051321336_modifyAssistant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802051553126_modifyAssistant3.cs" />
+    <Compile Include="Migrations\201802051553126_modifyAssistant3.Designer.cs">
+      <DependentUpon>201802051553126_modifyAssistant3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdministrativeOfficial.cs" />
     <Compile Include="Models\Assistant.cs" />
+    <Compile Include="Models\ClaimCalculation.cs" />
     <Compile Include="Models\Claim.cs" />
     <Compile Include="Models\ClaimDaySeed.cs" />
     <Compile Include="Models\ClaimDay.cs" />
     <Compile Include="Models\ClaimReferenceNumber.cs" />
-    <Compile Include="Models\CollectiveAgreement.cs" />
+    <Compile Include="Models\CollectiveAgreementInfo.cs" />
+    <Compile Include="Models\CollectiveAgreementHeader.cs" />
     <Compile Include="Models\ClaimStatus.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -225,10 +243,18 @@
     <Compile Include="Models\DocStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Viewmodels\AssistantIndexVM.cs" />
+    <Compile Include="Viewmodels\CollectiveAgreementEditVM.cs" />
+    <Compile Include="Viewmodels\CollectiveAgreementDeleteVM.cs" />
+    <Compile Include="Viewmodels\CollectiveAgreementCreateVM.cs" />
+    <Compile Include="Viewmodels\Create3VM.cs" />
+    <Compile Include="Viewmodels\Create1VM.cs" />
     <Compile Include="Viewmodels\AssistantClaimVM.cs" />
     <Compile Include="Viewmodels\ClaimAmountVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
+    <Compile Include="Viewmodels\Create2VM.cs" />
+    <Compile Include="Viewmodels\CollectiveAgreementIndexVM.cs" />
     <Compile Include="Viewmodels\SendMessageVM.cs" />
     <Compile Include="Viewmodels\MessageVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
@@ -297,26 +323,12 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Claims\Create.cshtml" />
     <Content Include="Views\Claims\Delete.cshtml" />
     <Content Include="Views\Claims\Details.cshtml" />
     <Content Include="Views\Claims\Edit.cshtml" />
     <Content Include="Views\Claims\Index.cshtml" />
     <Content Include="Views\Claims\Submitted.cshtml" />
-    <Content Include="Views\Claims\Hours.cshtml" />
-    <Content Include="Views\Claims\ClaimForm.cshtml" />
-    <Content Include="Views\Claims\ClaimAmount.cshtml" />
     <Content Include="Views\Claims\Recommend.cshtml" />
-    <Content Include="Views\CollectiveAgreements\Create.cshtml" />
-    <Content Include="Views\CollectiveAgreements\Delete.cshtml" />
-    <Content Include="Views\CollectiveAgreements\Details.cshtml" />
-    <Content Include="Views\CollectiveAgreements\Edit.cshtml" />
-    <Content Include="Views\CollectiveAgreements\Index.cshtml" />
-    <Content Include="Views\Assistants\Create.cshtml" />
-    <Content Include="Views\Assistants\Delete.cshtml" />
-    <Content Include="Views\Assistants\Details.cshtml" />
-    <Content Include="Views\Assistants\Edit.cshtml" />
-    <Content Include="Views\Assistants\Index.cshtml" />
     <Content Include="Views\Claims\IndexPageOmbud.cshtml" />
     <Content Include="Views\Claims\Receipt.cshtml" />
     <Content Include="Views\Claims\IndexPageAdmOff.cshtml" />
@@ -327,6 +339,18 @@
     <Content Include="Views\Claims\StodSystemLogin.cshtml" />
     <Content Include="Views\Claims\Decide.cshtml" />
     <Content Include="Views\Claims\StodsystemLogout.cshtml" />
+    <Content Include="Views\Claims\Create1.cshtml" />
+    <Content Include="Views\Claims\Create2.cshtml" />
+    <Content Include="Views\Claims\Create3.cshtml" />
+    <Content Include="Views\CollectiveAgreements\Create.cshtml" />
+    <Content Include="Views\CollectiveAgreements\Delete.cshtml" />
+    <Content Include="Views\CollectiveAgreements\Edit.cshtml" />
+    <Content Include="Views\CollectiveAgreements\Index.cshtml" />
+    <Content Include="Views\Assistants\Create.cshtml" />
+    <Content Include="Views\Assistants\Delete.cshtml" />
+    <Content Include="Views\Assistants\Details.cshtml" />
+    <Content Include="Views\Assistants\Edit.cshtml" />
+    <Content Include="Views\Assistants\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -345,8 +369,20 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801221729112_initial.resx">
-      <DependentUpon>201801221729112_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802042051362_initial.resx">
+      <DependentUpon>201802042051362_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802050823025_removeUnnecessaryClasses.resx">
+      <DependentUpon>201802050823025_removeUnnecessaryClasses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802051032437_addAssistant.resx">
+      <DependentUpon>201802051032437_addAssistant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802051321336_modifyAssistant.resx">
+      <DependentUpon>201802051321336_modifyAssistant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802051553126_modifyAssistant3.resx">
+      <DependentUpon>201802051553126_modifyAssistant3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

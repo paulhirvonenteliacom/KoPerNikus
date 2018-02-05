@@ -7,58 +7,42 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sjuklöner.Models;
+using Sjuklöner.Viewmodels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace Sjuklöner.Controllers
 {
     public class AssistantsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        private UserManager<ApplicationUser> _userManager;
-        private RoleStore<IdentityRole> _roleStore;
-        private RoleManager<IdentityRole> _roleManager;
-
-        public RoleStore<IdentityRole> RoleStore
-        {
-            get { return _roleStore; }
-        }
-        public RoleManager<IdentityRole> RoleManager => _roleManager;
-        public UserManager<ApplicationUser> UserManager
-        {
-            get
-            {
-
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-        }
-        public AssistantsController()
-        {
-            _roleStore = new RoleStore<IdentityRole>(db);
-            _roleManager = new RoleManager<IdentityRole>(_roleStore);
-        }
 
         // GET: Assistants
+        [Authorize(Roles = "Ombud")]
         public ActionResult Index()
         {
-            var assistantRole = RoleManager.FindByName("Assistant");
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            var assistants = db.Users
-                .Where(u => u.Roles.FirstOrDefault().RoleId == assistantRole.Id)
-                .ToList();
+            var companyId = currentUser.CareCompanyId;
 
-            return View(assistants);
+            var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+
+            AssistantIndexVM assistantIndexVM = new AssistantIndexVM();
+            assistantIndexVM.CareCompanyName = "Smart Assistans"; //Hardcoded for now
+            assistantIndexVM.AssistantList = assistants;
+
+            return View(assistantIndexVM);
         }
 
-        // GET: Assistants/Details/5
+        // GET: Assistants1/Details/5
         public ActionResult Details(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistant assistant = db.Users.Find(id) as Assistant;
+            Assistant assistant = db.Assistants.Find(id);
             if (assistant == null)
             {
                 return HttpNotFound();
@@ -66,22 +50,22 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants/Create
+        // GET: Assistants1/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Assistants/Create
+        // POST: Assistants1/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,LastLogon,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,CompanyName,StreetAddress,Postcode,City,ClearingNumber,AccountNumber,StorageApproval")] Assistant assistant)
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,UserId,Approved,CompanyName,StreetAddress,Postcode,City,ClearingNumber,AccountNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,StorageApproval")] Assistant assistant)
         {
             if (ModelState.IsValid)
             {
-                db.Users.Add(assistant);
+                db.Assistants.Add(assistant);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -89,14 +73,14 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants/Edit/5
+        // GET: Assistants1/Edit/5
         public ActionResult Edit(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistant assistant = db.Users.Find(id) as Assistant;
+            Assistant assistant = db.Assistants.Find(id);
             if (assistant == null)
             {
                 return HttpNotFound();
@@ -104,12 +88,12 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // POST: Assistants/Edit/5
+        // POST: Assistants1/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,LastLogon,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,CompanyName,StreetAddress,Postcode,City,ClearingNumber,AccountNumber,StorageApproval")] Assistant assistant)
+        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,UserId,Approved,CompanyName,StreetAddress,Postcode,City,ClearingNumber,AccountNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,StorageApproval")] Assistant assistant)
         {
             if (ModelState.IsValid)
             {
@@ -120,14 +104,14 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants/Delete/5
+        // GET: Assistants1/Delete/5
         public ActionResult Delete(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistant assistant = db.Users.Find(id) as Assistant;
+            Assistant assistant = db.Assistants.Find(id);
             if (assistant == null)
             {
                 return HttpNotFound();
@@ -135,13 +119,13 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // POST: Assistants/Delete/5
+        // POST: Assistants1/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            Assistant assistant = db.Users.Find(id) as Assistant;
-            db.Users.Remove(assistant);
+            Assistant assistant = db.Assistants.Find(id);
+            db.Assistants.Remove(assistant);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -10,12 +10,12 @@ namespace Sjuklöner.Viewmodels
 {
     public class ScheduleVM
     {
-        public List<ScheduleRow> ScheduleRowList { get; set; }
+        public List<ScheduleRow2> ScheduleRowList { get; set; }
 
         public string ReferenceNumber { get; set; }
     }
 
-    public class ScheduleRow
+    public class ScheduleRow2
     {
         public string ScheduleRowDate { get; set; }
 

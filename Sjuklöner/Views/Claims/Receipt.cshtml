@@ -1,4 +1,4 @@
-﻿@model Sjuklöner.Viewmodels.ClaimAmountVM
+﻿@model Sjuklöner.Viewmodels.Create3VM
 
 @{
     ViewBag.Title = "Amount";
@@ -35,11 +35,11 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ClaimNumber)
-    
+
     @*<body class="assistant-claim">*@
     <div class="row">
         @*<p class="col col-md-2"></p>*@
-        <p class="page-header4 col col-md-10">Tack för din ansökan!</p>
+        <p class="page-header5 col col-md-10">Tack för din ansökan!</p>
     </div>
 
     <div class="row">
@@ -56,85 +56,7 @@
     <div id="divRobin">
         <img src="~/Content/Robin_color.png" width="250" height="185" />
     </div>
-
-    @*<div class="row">
-        <div class="form-horizontal">
-
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.SickPay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.SickPay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.SickPay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.HolidayPay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.HolidayPay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.SocialFees, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.SocialFees, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.PensionAndInsurance, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.PensionAndInsurance, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ClaimSum, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
-
-
-
-            @*@if (Model.Rejected)
-                {
-                    <div class="row">
-                        <p class="col col-md-2"></p>
-                        <p class="col col-md-10">@Model.RejectReason</p>
-                    </div>
-                }*@
-
-            @*<div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input class="btn btn-default" type="submit" value="Skicka in" id="assistance-claim-btn" />
-                </div>
-            </div>*@
-            @*<div>
-                @Html.ActionLink("Spara", "SaveAmounts", "Claims", new { sickPay = parSickPay, parHolidayPay = Model.HolidayPay,
-                                parSocialFees = Model.SocialFees, parPensionAndInsurance = Model.PensionAndInsurance, parClaimSum = Model.ClaimSum,
-                                parClaimReference = Model.ReferenceNumber }, new { @class = "btn btn-default" })
-            </div>*@
-
-            @*<br>
-            <br>
-            <br>
-
-        </div>
-    </div>*@
-    @*</body>*@
 }
-
-@*<div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>*@
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

@@ -23,20 +23,16 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
                 </div>
             </div>
             <div class="red-bar">
                 <div class="red-bar-filler" style="width:75%; margin-left: auto; margin-right: auto; float: none;">
                     <ul style="padding-left: 4px;">
-                        <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
-                        @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                            <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+                        <li>@Html.ActionLink("Ansökningar", "Index", "Claims", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        <li>@Html.ActionLink("Kollektivavtal", "Index", "CollectiveAgreements", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
                     </ul>
                     @Html.Partial("_LoginPartial")
                 </div>
-                @*</div>*@
-
             </div>
         </div>
     }
@@ -51,18 +47,16 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
                 </div>
             </div>
             <div class="blue-bar">
                 <div class="blue-bar-filler" style="width:75%; margin-left: auto; margin-right: auto; float: none;">
                     <ul style="padding-left:4px;">
-                        <li>@Html.ActionLink("Ansökningar", "Index", "Claims", new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
-                        @*<li>@Html.ActionLink("Assistenter", "Index", "Assistants", new { @class = "navbar-actionlink" })</li>
-                            <li>@Html.ActionLink("Assistansbolag", "Edit", "OmbudProfiles", new { @class = "navbar-actionlink" })</li>*@
+                        <li>@Html.ActionLink("Ansökningar", "Index", "Claims", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        <li>@Html.ActionLink("Bolagsuppgifter", "Index", "Claims", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        <li>@Html.ActionLink("Assistenter", "Index", "Assistants", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
                     </ul>
                     @Html.Partial("_LoginPartial")
-                    @*</div>*@
                 </div>
 
             </div>

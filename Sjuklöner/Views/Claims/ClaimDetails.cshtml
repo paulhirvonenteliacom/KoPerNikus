@@ -5,255 +5,405 @@
 }
 
 
-    @*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
+@*@Html.HiddenFor(modelItem => Model.ClaimReferenceNumber)*@
 
-    <body>
-        <div class="row no-breadcrumb-top">
-            <p class="col col-md-10 page-header">Ansökan, detaljerad vy</p>
-            <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Referensnummer: @Model.ReferenceNumber</p>
-            @if ((User.IsInRole("Ombud") && @Model.StatusName == "Inkorgen") || (User.IsInRole("Ombud") && @Model.StatusName == "Under handläggning"))
+<body>
+    <div class="row no-breadcrumb-top">
+        <p class="col col-md-10 page-header">Ansökan, detaljerad vy</p>
+        <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Referensnummer: @Model.ReferenceNumber</p>
+        @if ((User.IsInRole("Ombud") && @Model.StatusName == "Inkorgen") || (User.IsInRole("Ombud") && @Model.StatusName == "Under handläggning"))
             {
-                <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Status: Inskickad</p>
-            }
-            else
-            {
-                <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Status: @Model.StatusName</p>
-            }
+            <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Status: Inskickad</p>
+        }
+        else
+        {
+            <p class="col col-md-10 bold-14 col-small-left-padding left-margin-12">Status: @Model.StatusName</p>
+        }
+    </div>
+
+    @*Grunduppgifter*@
+
+    <div class="form-horizontal">
+        <div class="row">
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Kommentarer
+                </div>
+                <div class="row form-group">
+                    <div class="col col-md-2">
+                        <label>Datum</label>
+                    </div>
+                    <div class="col col-md-2">
+                        <label>Användare</label>
+                    </div>
+                    <div class="col col-md-8">
+                        <label>Kommentar</label>
+                    </div>
+                </div>
+
+                @foreach (var item in Model.messages)
+                {
+                    @Html.Action("_Message", new { message = item })
+                }
+                @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
+            </div>
+        </div>
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Kommun
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.Council, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.Council)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.Administration, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.Administration)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Assistansberättigad
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CustomerName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CustomerSSN)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CustomerAddress)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CustomerPhoneNumber)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Ombud/uppgiftslämnare
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.OmbudName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.OmbudName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.OmbudPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.OmbudPhoneNumber)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Assistansanordnare
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CompanyName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.OrganisationNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.OrganisationNumber)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CompanyAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CompanyAddress)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CompanyPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CompanyPhoneNumber)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.GiroNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.GiroNumber)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.CollectiveAgreement, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.CollectiveAgreement)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        @*Grunduppgifter*@
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Insjuknad ordinarie assistent
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.AssistantName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.AssistantName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.AssistantSSN)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.QualifyingDayDate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.LastDayOfSicknessDate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.LastDayOfSicknessDate)
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="form-horizontal">
-            <div class="row">
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Kommentarer
-                    </div>
-                    <div class="row form-group">
-                        <div class="col col-md-2">
-                            <label>Datum</label>
-                        </div>
-                        <div class="col col-md-2">
-                            <label>Användare</label>
-                        </div>
-                        <div class="col col-md-8">
-                            <label>Kommentar</label>
-                        </div>
-                    </div>
-
-                    @foreach (var item in Model.messages)
-        {
-            @Html.Action("_Message", new { message = item })
-}
-                    @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
-                </div>
-            </div>
-            <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Kommun
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.Council, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.Council)
-                                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.Salary)
                             </div>
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.Administration, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.Administration)
-                                </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.Sickpay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.Sickpay)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.HolidayPay)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.SocialFees)
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Assistansberättigad
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.PensionAndInsurance)
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CustomerName)
-                                </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.NumberOfAbsenceHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.NumberOfAbsenceHours)
                             </div>
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CustomerSSN)
-                                </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.NumberOfUnsocialHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.NumberOfUnsocialHours)
                             </div>
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CustomerAddress)
-                                </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.NumberOfOnCallHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CustomerPhoneNumber)
-                                </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.NumberOfOnCallHours)
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Ombud/uppgiftslämnare
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.OmbudName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.OmbudName)
-                                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12 display-large-font">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
                             </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.OmbudPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.OmbudPhoneNumber)
-                                </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.ClaimSum)
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Assistansanordnare
-                    </div>
-                    <div class="row">
+                    @if (Model.DecisionMade == true)
+                    {
                         <div class="col col-md-3">
-                            <div class="form-group line-height-12">
+                            <div class="form-group line-height-12 display-large-font">
                                 <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
                                 </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CompanyName)
+                                    @Html.DisplayFor(modelItem => Model.ApprovedSum)
                                 </div>
                             </div>
                         </div>
                         <div class="col col-md-3">
-                            <div class="form-group line-height-12">
+                            <div class="form-group line-height-12 display-large-font">
                                 <div class="row label-padding">
-                                    @Html.LabelFor(model => model.OrganisationNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
                                 </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.OrganisationNumber)
+                                    @Html.DisplayFor(modelItem => Model.RejectedSum)
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CompanyAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CompanyAddress)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CompanyPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CompanyPhoneNumber)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.GiroNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.GiroNumber)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CollectiveAgreement, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CollectiveAgreement)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Insjuknad ordinarie assistent
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.AssistantName, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.AssistantName)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
+                    }
+                    @*<div class="col col-md-3">
                             <div class="form-group line-height-12">
                                 <div class="row label-padding">
                                     @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
@@ -262,601 +412,393 @@
                                     @Html.DisplayFor(modelItem => Model.AssistantSSN)
                                 </div>
                             </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.QualifyingDayDate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.LastDayOfSicknessDate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.LastDayOfSicknessDate)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
 
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.Salary)
-                                </div>
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Underlag lönekostnader
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.HourlySalary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.Sickpay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.Sickpay)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.HolidayPay)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.SocialFees)
-                                </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.HourlySalary)
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PensionAndInsurance)
-                                </div>
+                    <div class="col col-md-3">
+                    </div>
+                    <div class="col col-md-3">
+                    </div>
+                    <div class="col col-md-3">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.HolidayPayRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.NumberOfAbsenceHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.NumberOfAbsenceHours)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.NumberOfUnsocialHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.NumberOfUnsocialHours)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.NumberOfOnCallHours, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.NumberOfOnCallHours)
-                                </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.HolidayPayRate)
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12 display-large-font">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.ClaimSum)
-                                </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.SocialFeeRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.SocialFeeRate)
                             </div>
                         </div>
-                        @if (Model.DecisionMade == true)
-                        {
-                            <div class="col col-md-3">
-                                <div class="form-group line-height-12 display-large-font">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.ApprovedSum)
-                                    </div>
-                                </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.PensionAndInsuranceRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
-                            <div class="col col-md-3">
-                                <div class="form-group line-height-12 display-large-font">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.RejectedSum)
-                                    </div>
-                                </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.PensionAndInsuranceRate)
                             </div>
-                        }
-                        @*<div class="col col-md-3">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.AssistantSSN)
-                                    </div>
-                                </div>
-                            </div>*@
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.SickPayRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(modelItem => Model.SickPayRate)
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            @*<div class="row">
+        <div class="row">
+            @*<div class="col col-md-2">
+                </div>*@
+            <div class="col col-md-12 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Bilagor
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="form-group line-height-12">
+                            <div class="row label-attachment">
+                                Lönespecifikation, ordinarie
+                            </div>
+                            <div class="row display-padding">
+                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                    lönespecifikation_ordinarie.pdf
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="row label-padding control-label-left-medium-padding">
+                            Lönespecifikation, vikarie
+                        </div>
+                        <div class="row display-padding4">
+                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                lönespecifikation_vikarie.pdf
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="row label-padding control-label-left-medium-padding">
+                            Sjukfrånvaroanmälan
+                        </div>
+                        <div class="row display-padding4">
+                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                sjukfrånvaroanmälan.pdf
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="row label-padding control-label-left-medium-padding">
+                            Läkarintyg
+                        </div>
+                        <div class="row display-padding4">
+                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                läkarintyg.pdf
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="row label-attachment2">
+                            Tidsredovisning, Försäkringskassan, ordinarie assistent
+                        </div>
+                        <div class="row display-padding3">
+                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                tidsredovisning_ordinarie.pdf
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <div class="row label-padding control-label-left-medium-padding">
+                            Tidsredovisning, Försäkringskassan, vikarierande assistent
+                        </div>
+                        <div class="row display-padding4">
+                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                tidsredovisning_vikarie.pdf
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="row">
                 <div class="col col-md-2">
                 </div>
                 <div class="col col-md-10 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Grunduppgifter
-                    </div>
                     <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.OrganisationNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.OrganisationNumber)
-                                </div>
-                            </div>
+                        <div class="col col-md-4 form-group-heading">
+                            Dag 1, karensdag
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.Workplace, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.Workplace)
-                                </div>
-                            </div>
+                        <div class="col col-md-4 label-padding">
+                            Datum:
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.CollectiveAgreement, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.CollectiveAgreement)
-                                </div>
-                            </div>
+                        <div class="col col-md-4">
+                            @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
                         </div>
-                        @*<div class="col col-md-3">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.HourlySalary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.HourlySalary)
-                                    </div>
-                                </div>
-                            </div>*@
-            @*</div>
-                        <div class="row">
-                            <div class="col col-md-3">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.NameOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.NameOfOmbud)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.PhonenUmberOfOmbud, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.PhonenUmberOfOmbud)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.CustomerSSN)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-3">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.AssistantSSN)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-                </div>*@
-
-            <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
-                <div class="col col-md-12 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Underlag lönekostnader
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.HourlySalary, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.HourlySalary)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PerHourOnCallWeekday, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PerHourOnCallWeekday)
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PerHourOnCallWeekend, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PerHourOnCallWeekend)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            @*<div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.PensionAndInsuranceRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceRate)
-                                    </div>
-                                </div>*@
+                    <div class="row form-group-subheading">
+                        <div class="col col-md-4 subheading-padding">
+                            Grundlön
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col col-md-3">
+                        <div class="col col-md-4">
                             <div class="form-group line-height-12">
                                 <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PerHourUnsocialEvening, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    @Html.LabelFor(model => model.NumberOfHoursQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                                 </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialEvening)
+                                    @Html.DisplayFor(modelItem => Model.NumberOfHoursQualifyingDay)
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-3">
+                        <div class="col col-md-4">
                             <div class="form-group line-height-12">
                                 <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PerHourUnsocialNight, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    @Html.LabelFor(model => model.SalaryQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                                 </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialNight)
+                                    @Html.DisplayFor(modelItem => Model.SalaryQualifyingDay)
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col col-md-3">
+                        <div class="col col-md-4">
+                        </div>
+                    </div>
+                    <div class="row form-group-subheading">
+                        <div class="col col-md-4 subheading-padding">
+                            Tillägg och avgifter
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-4">
                             <div class="form-group line-height-12">
                                 <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PerHourUnsocialWeekend, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    @Html.LabelFor(model => model.HolidayPayQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                                 </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialWeekend)
+                                    @Html.DisplayFor(modelItem => Model.HolidayPayQualifyingDay)
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-3">
+                        <div class="col col-md-4">
                             <div class="form-group line-height-12">
                                 <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PerHourUnsocialHoliday, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    @Html.LabelFor(model => model.SocialFeesQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                                 </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PerHourUnsocialHoliday)
+                                    @Html.DisplayFor(modelItem => Model.SocialFeesQualifyingDay)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-4">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.PensionAndInsuranceQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQualifyingDay)
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="row form-group-subheading">
+                        <div class="col col-md-8 subheading-padding">
+                            Lönekostnad karensdag (Kr)
+                        </div>
+                    </div>
                     <div class="row">
-                        <div class="col col-md-3">
+                        <div class="col col-md-8">
                             <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.HolidayPayRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
+                                @*<div class="row label-padding">
+                                        @Html.LabelFor(model => model.CostQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
                                 <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.HolidayPayRate)
+                                    @Html.DisplayFor(modelItem => Model.CostQualifyingDay)
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.SocialFeeRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.SocialFeeRate)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.PensionAndInsuranceRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceRate)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.SickPayRate, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(modelItem => Model.SickPayRate)
-                                </div>
-                            </div>
+                        <div class="col col-md-4">
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>*@
 
+        @if (User.IsInRole("AdministrativeOfficial"))
+            {
             <div class="row">
-                @*<div class="col col-md-2">
-                    </div>*@
                 <div class="col col-md-12 form-group-div-frame">
                     <div class="row form-group-heading">
-                        Bilagor
+                        Beräkning av ersättningsbelopp
                     </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="form-group line-height-12 extra-padding-attachment">
-                                <div class="row label-padding control-label-left-align">
-                                    Lönespecifikation, ordinarie
-                                </div>
-                                <div class="row display-padding2">
-                                    <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
-                                        lönespecifikation_ordinarie.pdf
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="row label-padding control-label-left-align">
-                                Lönespecifikation, vikarie
-                            </div>
-                            <div class="row display-padding2">
-                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
-                                    lönespecifikation_vikarie.pdf
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="row label-padding control-label-left-align">
-                                Sjukfrånvaroanmälan
-                            </div>
-                            <div class="row display-padding2">
-                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
-                                    sjukfrånvaroanmälan.pdf
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="row label-padding control-label-left-align">
-                                Läkarintyg
-                            </div>
-                            <div class="row display-padding2">
-                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
-                                    läkarintyg.pdf
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-3">
-                            <div class="row label-padding control-label-left-align">
-                                Tidsredovisning, Försäkringskassan, ordinarie assistent
-                            </div>
-                            <div class="row display-padding2">
-                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
-                                    tidsredovisning_ordinarie.pdf
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col col-md-3">
-                            <div class="row label-padding control-label-left-align">
-                                Tidsredovisning, Försäkringskassan, vikarierande assistent
-                            </div>
-                            <div class="row display-padding2">
-                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
-                                    tidsredovisning_vikarie.pdf
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    @for (int i = 0; i < Model.ClaimCalculations.Count(); i++)
+                    {
+                        if (i == 0)
+                        {
 
-            @*<div class="row">
-                    <div class="col col-md-2">
-                    </div>
-                    <div class="col col-md-10 form-group-div-frame">
-                        <div class="row">
-                            <div class="col col-md-4 form-group-heading">
-                                Dag 1, karensdag
+                            <div class="row form-group-subheading">
+                                Karensdag, @Model.ClaimCalculations[0].StartDate.ToShortDateString()
                             </div>
-                            <div class="col col-md-4 label-padding">
-                                Datum:
-                            </div>
-                            <div class="col col-md-4">
-                                @Html.DisplayFor(modelItem => Model.QualifyingDayDate)
-                            </div>
-                        </div>
-                        <div class="row form-group-subheading">
-                            <div class="col col-md-4 subheading-padding">
-                                Grundlön
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.NumberOfHoursQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            <div class="row">
+                                <div class="col col-md-4">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding">
+                                            Semesterersättning:
+                                        </div>
                                     </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.NumberOfHoursQualifyingDay)
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].HolidayPayCalcQD)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].HolidayPayQD) Kr
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.SalaryQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            <div class="row">
+                                <div class="col col-md-4">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding">
+                                            Lagstadgad arbetsgivaravgift:
+                                        </div>
                                     </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.SalaryQualifyingDay)
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SocialFeesCalcQD)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SocialFeesQD) Kr
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
-                            </div>
-                        </div>
-                        <div class="row form-group-subheading">
-                            <div class="col col-md-4 subheading-padding">
-                                Tillägg och avgifter
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.HolidayPayQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            <div class="row">
+                                <div class="col col-md-4">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding">
+                                            Avtalade pensioner och försäkringar:
+                                        </div>
                                     </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.HolidayPayQualifyingDay)
+                                </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PensionAndInsuranceCalcQD)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 text-right">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PensionAndInsuranceQD) Kr
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-4">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.SocialFeesQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.SocialFeesQualifyingDay)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-4">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.PensionAndInsuranceQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQualifyingDay)
+                            <div class="row">
+                                <hr class="hr-low-margin" />
+                                <div class="col col-md-4">
+                                    <div class="row">
+                                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                            Summa karensdag:
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col col-md-6">
+                                    <div class="row">
+                                        <div class="col col-md-8">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].CostCalcQD)
+                                        </div>
+                                        <div class="col col-md-1">
+                                            =
+                                        </div>
+                                        <div class="col col-md-3 bold-18 text-right">
+                                            @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].CostQD) Kr
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-md-2 text-right bold-18">
+                                    @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].CostQD) Kr
+                                </div>
                             </div>
-                        </div>
-                        <div class="row form-group-subheading">
-                            <div class="col col-md-8 subheading-padding">
-                                Lönekostnad karensdag (Kr)
+                            <br />
+                            <div>
+                                <div class="row form-group-subheading">
+                                    Dag 2 - Dag 14
+                                </div>
                             </div>
+                        }
+                        <div>
+                            @if (i == 0)
+                            {
+                                <div class="row form-group-subheading">
+                                    @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row form-group-subheading">
+                                    @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                </div>
+                            }
                         </div>
                         <div class="row">
                             <div class="col col-md-8">
-                                <div class="form-group line-height-12">
-                                    @*<div class="row label-padding">
-                                            @Html.LabelFor(model => model.CostQualifyingDay, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                        </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(modelItem => Model.CostQualifyingDay)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-4">
-                            </div>
-                        </div>
-                    </div>
-                </div>*@
-
-            @if (User.IsInRole("AdministrativeOfficial"))
-            {
-                <div class="row">
-                    <div class="col col-md-12 form-group-div-frame">
-                        <div class="row form-group-heading">
-                            Beräkning av ersättningsbelopp
-                        </div>
-                        <div class="row form-group-subheading">
-                            Karensdag, @Model.QualifyingDayDate
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
                                 <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Semesterersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.HolidayPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.HolidayPayQD) Kr
+                                    <div class="col col-md-12 col-small-left-padding2 bold-16">
+                                        OB- och jour-ersättningar enligt kollektivavtal
                                     </div>
                                 </div>
                             </div>
@@ -864,21 +806,15 @@
                         <div class="row">
                             <div class="col col-md-4">
                                 <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Lagstadgad arbetsgivaravgift:
+                                    <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                        OB-ersättning, kväll, per timme
                                     </div>
                                 </div>
                             </div>
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.SocialFeesCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.SocialFeesQD) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PerHourUnsocialEvening) Kr
                                     </div>
                                 </div>
                             </div>
@@ -886,57 +822,84 @@
                         <div class="row">
                             <div class="col col-md-4">
                                 <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Avtalade pensioner och försäkringar:
+                                    <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                        OB-ersättning, natt, per timme
                                     </div>
                                 </div>
                             </div>
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.PensionAndInsuranceQD) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PerHourUnsocialNight) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <hr class="hr-low-margin" />
                             <div class="col col-md-4">
                                 <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                        Summa karensdag:
+                                    <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                        OB-ersättning, helg, per timme
                                     </div>
                                 </div>
                             </div>
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.CostCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 bold-18 text-right">
-                                        @Html.DisplayFor(modelItem => Model.CostQD) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PerHourUnsocialWeekend) Kr
                                     </div>
                                 </div>
                             </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(modelItem => Model.CostQD) Kr
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                        OB-ersättning, storhelg, per timme
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PerHourUnsocialHoliday) Kr
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                        Jour-ersättning, dag, per timme
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PerHourOnCallWeekday) Kr
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                        Jour-ersättning, natt/helg, per timme
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PerHourOnCallWeekend) Kr
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <br />
-                        <div>
-                            <div class="row form-group-subheading">
-                                Dag 2 - Dag 14
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col col-md-4">
                                 <div class="row">
@@ -948,17 +911,18 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.SalaryCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SalaryCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.SalaryD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SalaryD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <br />
                         <div class="row">
                             <div class="col col-md-4">
                                 <div class="row">
@@ -970,13 +934,13 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialEveningPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialEveningPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialEveningPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialEveningPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -992,13 +956,13 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialNightPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialNightPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialNightPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialNightPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1014,13 +978,13 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialWeekendPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialWeekendPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialWeekendPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1036,13 +1000,13 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialGrandWeekendPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialGrandWeekendPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialGrandWeekendPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1059,17 +1023,18 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialSumPayCalcD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialSumPayCalcD2T14) Kr
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.UnsocialSumPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].UnsocialSumPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <br />
                         <div class="row">
                             <div class="col col-md-4">
                                 <div class="row">
@@ -1081,13 +1046,13 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.OnCallDayPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].OnCallDayPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.OnCallDayPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].OnCallDayPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1103,13 +1068,13 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.OnCallNightPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].OnCallNightPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.OnCallNightPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].OnCallNightPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
@@ -1126,17 +1091,18 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.OnCallSumPayCalcD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].OnCallSumPayCalcD2T14) Kr
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.OnCallSumPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].OnCallSumPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <br />
                         <div class="row">
                             <hr class="hr-low-margin" />
                             <div class="col col-md-4">
@@ -1149,91 +1115,92 @@
                             <div class="col col-md-6">
                                 <div class="row">
                                     <div class="col col-md-8">
-                                        @Html.DisplayFor(modelItem => Model.SickPayCalcD2T14)
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SickPayCalcD2T14)
                                     </div>
                                     <div class="col col-md-1">
                                         =
                                     </div>
                                     <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SickPayD2T14) Kr
                                     </div>
                                 </div>
                             </div>
                             <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(modelItem => Model.SickPayD2T14) Kr
+                                @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SickPayD2T14) Kr
                             </div>
-                                <div class="col col-md-4">
-                                    <div class="row">
-                                        <div class="col col-md-12 control-label-left-small-padding">
-                                            Semesterersättning:
-                                        </div>
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
+                                        Semesterersättning:
                                     </div>
                                 </div>
-                                <div class="col col-md-6">
-                                    <div class="row">
-                                        <div class="col col-md-8">
-                                            @Html.DisplayFor(modelItem => Model.HolidayPayCalcD2T14)
-                                        </div>
-                                        <div class="col col-md-1">
-                                            =
-                                        </div>
-                                        <div class="col col-md-3 text-right">
-                                            @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
-                                        </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].HolidayPayCalcD2T14)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].HolidayPayD2T14) Kr
                                     </div>
                                 </div>
-                                <div class="col col-md-2 text-right bold-18">
-                                    @Html.DisplayFor(modelItem => Model.HolidayPayD2T14) Kr
-                                </div>
-                            
-                                <div class="col col-md-4">
-                                    <div class="row">
-                                        <div class="col col-md-12 control-label-left-small-padding">
-                                            Lagstadgad arbetsgivaravgift:
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col col-md-6">
-                                    <div class="row">
-                                        <div class="col col-md-8">
-                                            @Html.DisplayFor(modelItem => Model.SocialFeesCalcD2T14)
-                                        </div>
-                                        <div class="col col-md-1">
-                                            =
-                                        </div>
-                                        <div class="col col-md-3 text-right">
-                                            @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col col-md-2 text-right bold-18">
-                                    @Html.DisplayFor(modelItem => Model.SocialFeesD2T14) Kr
-                                </div>
+                            </div>
+                            <div class="col col-md-2 text-right bold-18">
+                                @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].HolidayPayD2T14) Kr
+                            </div>
 
-                                <div class="col col-md-4">
-                                    <div class="row">
-                                        <div class="col col-md-12 control-label-left-small-padding">
-                                            Avtalade pensioner och försäkringar:
-                                        </div>
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
+                                        Lagstadgad arbetsgivaravgift:
                                     </div>
                                 </div>
-                                <div class="col col-md-6">
-                                    <div class="row">
-                                        <div class="col col-md-8">
-                                            @Html.DisplayFor(modelItem => Model.PensionAndInsuranceCalcD2T14)
-                                        </div>
-                                        <div class="col col-md-1">
-                                            =
-                                        </div>
-                                        <div class="col col-md-3 text-right">
-                                            @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
-                                        </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SocialFeesCalcD2T14)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SocialFeesD2T14) Kr
                                     </div>
                                 </div>
-                                <div class="col col-md-2 text-right bold-18">
-                                    @Html.DisplayFor(modelItem => Model.PensionAndInsuranceD2T14) Kr
-                                </div>
+                            </div>
+                            <div class="col col-md-2 text-right bold-18">
+                                @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].SocialFeesD2T14) Kr
+                            </div>
 
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
+                                        Avtalade pensioner och försäkringar:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PensionAndInsuranceCalcD2T14)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PensionAndInsuranceD2T14) Kr
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-2 text-right bold-18">
+                                @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].PensionAndInsuranceD2T14) Kr
+                            </div>
+                            @if (Model.ClaimCalculations.Count() == 1)
+                            {
                                 <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding bold-18">
@@ -1241,56 +1208,103 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col col-md-6">
-                                    <div class="row">
-                                        <div class="col col-md-8">
-                                            @Html.DisplayFor(modelItem => Model.CostCalcD2T14)
-                                        </div>
-                                        <div class="col col-md-1">
-                                            =
-                                        </div>
-                                        <div class="col col-md-3 text-right bold-18">
-                                            @Html.DisplayFor(modelItem => Model.CostD2T14) Kr
-                                        </div>
-                                    </div>
-                                </div>
+                            }
+                            else
+                            {
+                                if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays == 1)
+                                {
                                 <div class="col col-md-4">
                                     <div class="row">
                                         <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                            Summa sjukperioden:
+                                            Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() 
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col col-md-6">
-                                    <div class="row">
-                                        <div class="col col-md-8">
-                                            @Html.DisplayFor(modelItem => Model.TotalCostCalcD1T14) Kr
-                                        </div>
-                                        <div class="col col-md-1">
-                                            =
-                                        </div>
-                                        <div class="col col-md-3 text-right bold-18">
-                                            @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
+                                }
+                                else if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays > 1)
+                                {
+                                    <div class="col col-md-4">
+                                        <div class="row">
+                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                                Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                            </div>
                                         </div>
                                     </div>
+                                }
+                                else if (Model.ClaimCalculations[i].NumberOfSickDays == 1)
+                                {
+                                    <div class="col col-md-4">
+                                        <div class="row">
+                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                                Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString()
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col col-md-4">
+                                        <div class="row">
+                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                                Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].CostCalcD2T14)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right bold-18">
+                                        @Html.DisplayFor(modelItem => Model.ClaimCalculations[i].CostD2T14) Kr
+                                    </div>
                                 </div>
-                                <div class="col col-md-2 text-right bold-18">
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <div class="row">
+                                <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                    Summa sjukperioden:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-6">
+                            <div class="row">
+                                <div class="col col-md-8">
+                                    @Html.DisplayFor(modelItem => Model.TotalCostCalcD1T14) Kr
+                                </div>
+                                <div class="col col-md-1">
+                                    =
+                                </div>
+                                <div class="col col-md-3 text-right bold-18">
                                     @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
                                 </div>
                             </div>
                         </div>
+                        <div class="col col-md-2 text-right bold-18">
+                            @Html.DisplayFor(modelItem => Model.TotalCostD1T14) Kr
+                        </div>
                     </div>
-            }
-        </div>
+                </div>
+            </div>
+        }
+    </div>
 
-        @*<br />
-            <br />
-            <br />
-            <p>*@
-        @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-            @Html.ActionLink("Back to List", "Index")*@
-        @*</p>*@
-    </body>
+    @*<br />
+        <br />
+        <br />
+        <p>*@
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")*@
+    @*</p>*@
+</body>
 
 @*<div class="row">
         <div class="col-md-offset-2 col-md-10">

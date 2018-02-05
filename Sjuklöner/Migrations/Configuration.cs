@@ -52,26 +52,26 @@ namespace Sjuklöner.Migrations
                 result = roleManager.Create(adminRole);
             }
 
-            var assistants = new List<Assistant>
-            {
-                new Assistant{FirstName = "Isabella", LastName = "Gulldén",Email = "isabella.gullden@assistans.se",UserName = "isabella.gullden@assistans.se", LastLogon=DateTime.Now.AddDays(-2)},
-                new Assistant{FirstName = "Nathalie",LastName = "Hagman",Email = "nathalie.hagman@assistans.se",UserName = "nathalie.hagman@assistans.se", LastLogon=DateTime.Now.AddDays(-2)}
-            };
+            //var assistants = new List<Assistant>
+            //{
+            //    new Assistant{FirstName = "Isabella", LastName = "Gulldén",Email = "isabella.gullden@assistans.se",UserName = "isabella.gullden@assistans.se", LastLogon=DateTime.Now.AddDays(-2)},
+            //    new Assistant{FirstName = "Nathalie",LastName = "Hagman",Email = "nathalie.hagman@assistans.se",UserName = "nathalie.hagman@assistans.se", LastLogon=DateTime.Now.AddDays(-2)}
+            //};
 
-            foreach (var assistant in assistants)
-            {
-                user = userManager.FindByEmail(assistant.Email);
-                if (user == null)
-                {
-                    user = assistant;
-                    result = userManager.Create(user, "sjukLÖN123!");
-                }
-                if (user.Roles.Count == 0)
-                {
-                    result = userManager.AddToRole(user.Id, "Assistant");
-                }
-                userId = assistant.Id;
-            }
+            //foreach (var assistant in assistants)
+            //{
+            //    user = userManager.FindByEmail(assistant.Email);
+            //    if (user == null)
+            //    {
+            //        user = assistant;
+            //        result = userManager.Create(user, "sjukLÖN123!");
+            //    }
+            //    if (user.Roles.Count == 0)
+            //    {
+            //        result = userManager.AddToRole(user.Id, "Assistant");
+            //    }
+            //    userId = assistant.Id;
+            //}
 
             var ombuds = new List<Ombud>
             {

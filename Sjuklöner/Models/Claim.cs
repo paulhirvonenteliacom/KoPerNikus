@@ -24,6 +24,8 @@ namespace Sjuklöner.Models
         [Display(Name = "Referensnummer")]
         public string ReferenceNumber { get; set; }
 
+        public int? CompletionStage { get; set; }
+
         [Display(Name = "Senaste statusändring")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -56,9 +58,9 @@ namespace Sjuklöner.Models
         public string AssistantSSN { get; set; }
 
         //[Required]
-        //[Display(Name = "Vikarierande assistents personnummer")]
-        //[RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
-        //public string StandInSSN { get; set; }
+        [Display(Name = "Vikarierande assistents personnummer")]
+        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
+        public string StandInSSN { get; set; }
 
         [Display(Name = "Första sjukdag")]
         [DataType(DataType.DateTime)]
@@ -136,80 +138,6 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal RejectedSum { get; set; }
 
-        [Display(Name = "Antal timmar som skulle arbetats karensdagen")]
-        public decimal HoursQualifyingDay { get; set; }
-
-        [Display(Name = "Semesterersättning för karensdag")]
-        public decimal HolidayPayQualDay { get; set; }
-
-        [Display(Name = "Arbetsgivaravgift för karensdag")]
-        public decimal PayrollTaxQualDay { get; set; }
-
-        [Display(Name = "Avtalsförsäkring för karensdag")]
-        public decimal InsuranceQualDay { get; set; }
-
-        [Display(Name = "Kollektivavtalad pension för karensdag")]
-        public decimal PensionQualDay { get; set; }
-
-        [Display(Name = "Ersättningsanspråk för karensdag")]
-        public decimal ClaimQualDay { get; set; }
-
-        [Display(Name = "Antal timmar dag 2 - dag 14, inkl. jour/beredskap")]
-        public decimal HoursDay2To14 { get; set; }
-
-        [Display(Name = "Sjuklön per timme (80% av ordinarie timlön)")]
-        public decimal HourlySickPay { get; set; }
-
-        [Display(Name = "Sjuklön dag 2 - dag 14")]
-        public decimal SickPayDay2To14 { get; set; }
-
-        [Display(Name = "Semesterersättning dag 2 - dag 14")]
-        public decimal HolidayPayDay2To14 { get; set; }
-
-        [Display(Name = "OB-ersättning dag 2 - dag 14")]
-        public decimal UnsocialHoursPayDay2To14 { get; set; }
-
-        [Display(Name = "Jour/beredskap dag 2 - dag 14")]
-        public decimal OnCallHoursPayDay2To14 { get; set; }
-
-        [Display(Name = "Arbetsgivaravgift dag 2 - dag 14")]
-        public decimal PayrollTaxDay2To14 { get; set; }
-
-        [Display(Name = "Avtalsförsäkring dag 2 - dag 14")]
-        public decimal InsuranceDay2To14 { get; set; }
-
-        [Display(Name = "Kollektivavtalad pension dag 2 - dag 14")]
-        public decimal PensionDay2To14 { get; set; }
-
-        [Display(Name = "Ersättningsanspråk dag 2 - dag 14")]
-        public decimal ClaimDay2To14 { get; set; }
-
-        //public bool Step1Saved { get; set; }
-        //public bool Step1Complete { get; set; }
-
-        //public bool Step2Saved { get; set; }
-        //public bool Step2Complete { get; set; }
-
-        //public bool Step3Saved { get; set; }
-        //public bool Step3Complete { get; set; }
-
-        //[Display(Name = "Yrkat belopp")]
-        //public decimal ClaimSum { get; set; }
-
-        //public List<string> StartHour { get; set; }
-        //public List<string> StartMinute { get; set; }
-        //public List<string> StopHour { get; set; }
-        //public List<string> StopMinute { get; set; }
-        //public List<string> CalculatedHours { get; set; }
-        //public List<string> CalculatedUnsocialHours { get; set; }
-
-        //public List<string> StartHourOnCall { get; set; }
-        //public List<string> StartMinuteOnCall { get; set; }
-        //public List<string> StopHourOnCall { get; set; }
-        //public List<string> StopMinuteOnCall { get; set; }
-        //public List<string> CalculatedHoursOnCall { get; set; }
-
-
         //These properties were added for the case when hours only (not working time) are given as input by the ombud.
         [Display(Name = "Sjuklön (%):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
@@ -276,224 +204,216 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string PensionAndInsuranceRateAsString { get; set; }
 
-        [Display(Name = "OB-ersättning, kväll (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PerHourUnsocialEveningAsString { get; set; }
+        //[Display(Name = "OB-ersättning, kväll (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PerHourUnsocialEveningAsString { get; set; }
 
-        [Display(Name = "OB-ersättning, natt (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PerHourUnsocialNightAsString { get; set; }
+        //[Display(Name = "OB-ersättning, natt (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PerHourUnsocialNightAsString { get; set; }
 
-        [Display(Name = "OB-ersättning, helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PerHourUnsocialWeekendAsString { get; set; }
+        //[Display(Name = "OB-ersättning, helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PerHourUnsocialWeekendAsString { get; set; }
 
-        [Display(Name = "OB-ersättning, storhelg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PerHourUnsocialHolidayAsString { get; set; }
+        //[Display(Name = "OB-ersättning, storhelg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PerHourUnsocialHolidayAsString { get; set; }
 
-        [Display(Name = "Jour-ersättning, dag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PerHourOnCallDayAsString { get; set; }
+        //[Display(Name = "Jour-ersättning, dag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PerHourOnCallDayAsString { get; set; }
 
-        [Display(Name = "Jour-ersättning, natt (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PerHourOnCallNightAsString { get; set; }
+        //[Display(Name = "Jour-ersättning, natt (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PerHourOnCallNightAsString { get; set; }
 
-        //Qualifying day, if hours only given as input by the ombud
-        [Display(Name = "Antal timmar:")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HoursQD { get; set; }
-
-        [Display(Name = "Semesterersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HolidayPayQD { get; set; }
-
-        [Display(Name = "Semesterersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HolidayPayCalcQD { get; set; }
-
-        [Display(Name = "Sociala avgifter enligt lag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SocialFeesQD { get; set; }
-
-        [Display(Name = "Sociala avgifter enligt lag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SocialFeesCalcQD { get; set; }
-
-        [Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PensionAndInsuranceQD { get; set; }
-
-        [Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PensionAndInsuranceCalcQD { get; set; }
-
-        [Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string CostQD { get; set; }
-
-        [Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string CostCalcQD { get; set; }
-
-        //Day 2 to day 14, if hours only given as input by the ombud
-        [Display(Name = "Antal timmar:")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HoursD2T14 { get; set; }
-
+        ////Qualifying day, if hours only given as input by the ombud
         //[Display(Name = "Antal timmar:")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]
-        //public string HoursPayD2T14 { get; set; }
+        //public string HoursQD { get; set; }
 
+        //[Display(Name = "Semesterersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string HolidayPayQD { get; set; }
+
+        //[Display(Name = "Semesterersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string HolidayPayCalcQD { get; set; }
+
+        //[Display(Name = "Sociala avgifter enligt lag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SocialFeesQD { get; set; }
+
+        //[Display(Name = "Sociala avgifter enligt lag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SocialFeesCalcQD { get; set; }
+
+        //[Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PensionAndInsuranceQD { get; set; }
+
+        //[Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PensionAndInsuranceCalcQD { get; set; }
+
+        //[Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string CostQD { get; set; }
+
+        //[Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string CostCalcQD { get; set; }
+
+        ////Day 2 to day 14, if hours only given as input by the ombud
         //[Display(Name = "Antal timmar:")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]
-        //public string HoursPayCalcD2T14 { get; set; }
+        //public string HoursD2T14 { get; set; }
 
-        [Display(Name = "Lön, 80% på ordinarie timlön:")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SalaryD2T14 { get; set; }
+        //[Display(Name = "Lön, 80% av ordinarie timlön:")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SalaryD2T14 { get; set; }
 
-        [Display(Name = "Lön, 80% på ordinarie timlön:")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SalaryCalcD2T14 { get; set; }
+        //[Display(Name = "Lön, 80% av ordinarie timlön:")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SalaryCalcD2T14 { get; set; }
 
-        [Display(Name = "Sjuklön (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SickPayD2T14 { get; set; }
+        //[Display(Name = "Sjuklön (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SickPayD2T14 { get; set; }
 
-        [Display(Name = "Sjuklön (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SickPayCalcD2T14 { get; set; }
+        //[Display(Name = "Sjuklön (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SickPayCalcD2T14 { get; set; }
 
-        [Display(Name = "Semesterersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HolidayPayD2T14 { get; set; }
+        //[Display(Name = "Semesterersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string HolidayPayD2T14 { get; set; }
 
-        [Display(Name = "Semesterersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HolidayPayCalcD2T14 { get; set; }
+        //[Display(Name = "Semesterersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string HolidayPayCalcD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, kväll (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialEveningD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, kväll (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialEveningD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, kväll (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialEveningPayD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, kväll (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialEveningPayD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, kväll (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialEveningPayCalcD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, kväll (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialEveningPayCalcD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, natt (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialNightD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, natt (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialNightD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, natt (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialNightPayD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, natt (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialNightPayD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, natt (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialNightPayCalcD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, natt (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialNightPayCalcD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialWeekendD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialWeekendD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialWeekendPayD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialWeekendPayD2T14 { get; set; }
 
 
-        [Display(Name = "OB-ersättning, helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialWeekendPayCalcD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialWeekendPayCalcD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, storhelg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialGrandWeekendD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, storhelg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialGrandWeekendD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, storhelg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialGrandWeekendPayD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, storhelg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialGrandWeekendPayD2T14 { get; set; }
 
-        [Display(Name = "OB-ersättning, storhelg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialGrandWeekendPayCalcD2T14 { get; set; }
+        //[Display(Name = "OB-ersättning, storhelg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialGrandWeekendPayCalcD2T14 { get; set; }
 
-        [Display(Name = "Summa OB-ersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialSumD2T14 { get; set; }
+        //[Display(Name = "Summa OB-ersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialSumD2T14 { get; set; }
 
-        [Display(Name = "Summa OB-ersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialSumPayD2T14 { get; set; }
+        //[Display(Name = "Summa OB-ersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialSumPayD2T14 { get; set; }
 
-        [Display(Name = "Summa OB-ersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string UnsocialSumPayCalcD2T14 { get; set; }
+        //[Display(Name = "Summa OB-ersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string UnsocialSumPayCalcD2T14 { get; set; }
 
-        [Display(Name = "Jour-ersättning, dag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallDayD2T14 { get; set; }
+        //[Display(Name = "Jour-ersättning, dag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallDayD2T14 { get; set; }
 
-        [Display(Name = "Jour-ersättning, dag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallDayPayD2T14 { get; set; }
+        //[Display(Name = "Jour-ersättning, dag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallDayPayD2T14 { get; set; }
 
-        [Display(Name = "Jour-ersättning, dag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallDayPayCalcD2T14 { get; set; }
+        //[Display(Name = "Jour-ersättning, dag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallDayPayCalcD2T14 { get; set; }
 
-        [Display(Name = "Jour-ersättning, natt/helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallNightD2T14 { get; set; }
+        //[Display(Name = "Jour-ersättning, natt/helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallNightD2T14 { get; set; }
 
-        [Display(Name = "Jour-ersättning, natt/helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallNightPayD2T14 { get; set; }
+        //[Display(Name = "Jour-ersättning, natt/helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallNightPayD2T14 { get; set; }
 
-        [Display(Name = "Jour-ersättning, natt/helg (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallNightPayCalcD2T14 { get; set; }
+        //[Display(Name = "Jour-ersättning, natt/helg (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallNightPayCalcD2T14 { get; set; }
 
-        [Display(Name = "Summa Jour-ersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallSumD2T14 { get; set; }
+        //[Display(Name = "Summa Jour-ersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallSumD2T14 { get; set; }
 
-        [Display(Name = "Summa Jour-ersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallSumPayD2T14 { get; set; }
+        //[Display(Name = "Summa Jour-ersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallSumPayD2T14 { get; set; }
 
-        [Display(Name = "Summa Jour-ersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string OnCallSumPayCalcD2T14 { get; set; }
+        //[Display(Name = "Summa Jour-ersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string OnCallSumPayCalcD2T14 { get; set; }
 
-        [Display(Name = "Sociala avgifter enligt lag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SocialFeesD2T14 { get; set; }
+        //[Display(Name = "Sociala avgifter enligt lag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SocialFeesD2T14 { get; set; }
 
-        [Display(Name = "Sociala avgifter enligt lag (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SocialFeesCalcD2T14 { get; set; }
+        //[Display(Name = "Sociala avgifter enligt lag (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string SocialFeesCalcD2T14 { get; set; }
 
-        [Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PensionAndInsuranceD2T14 { get; set; }
+        //[Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PensionAndInsuranceD2T14 { get; set; }
 
-        [Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PensionAndInsuranceCalcD2T14 { get; set; }
+        //[Display(Name = "Pensioner och försäkringar enligt kollektivavtal (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string PensionAndInsuranceCalcD2T14 { get; set; }
 
-        [Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string CostD2T14 { get; set; }
+        //[Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string CostD2T14 { get; set; }
 
-        [Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string CostCalcD2T14 { get; set; }
+        //[Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public string CostCalcD2T14 { get; set; }
 
         [Display(Name = "Kostnad för sjukperioden (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

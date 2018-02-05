@@ -1,26 +1,25 @@
-﻿@model Sjuklöner.Viewmodels.ClaimAmountVM
+﻿@model Sjuklöner.Viewmodels.Create3VM
 @using Newtonsoft.Json
 
 @{
-    ViewBag.Title = "Amount";
+    ViewBag.Title = "Create3";
 }
 
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Organisationsnummer", "Create", new { refNumber = Model.ClaimNumber, id = 1 }, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Arbetstid", "Create", new { refNumber = Model.ClaimNumber, id = 2 }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Sjukperiod", "Create1", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Timmar", "Create2", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Belopp</li>
         </ol>
     </nav>
 </div>
 
-@*@using (Html.BeginForm("AddHours", "Claims", FormMethod.Get))*@
-@using (Html.BeginForm("SaveAmounts", "Claims", FormMethod.Post))
+@using (Html.BeginForm("Create3", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.ClaimNumber)
+    @Html.HiddenFor(model => model.ClaimNumber)
 
     @*<body class="assistant-claim">*@
     <div class="row">
@@ -37,7 +36,6 @@
 
     <div class="row">
         <div class="form-horizontal">
-
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
                 @Html.LabelFor(model => model.SickPay, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -89,21 +87,26 @@
                     </div>
                 }*@
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input class="btn btn-primary btn-primary-small" type="submit" value="Skicka in" id="assistance-claim-btn" />
-                </div>
-            </div>
+
             @*<div>
                     @Html.ActionLink("Spara", "SaveAmounts", "Claims", new { sickPay = parSickPay, parHolidayPay = Model.HolidayPay,
                                     parSocialFees = Model.SocialFees, parPensionAndInsurance = Model.PensionAndInsurance, parClaimSum = Model.ClaimSum,
                                     parClaimReference = Model.ReferenceNumber }, new { @class = "btn btn-default" })
                 </div>*@
-
-            <br>
-            <br>
-            <br>
-
+            <div class="row">
+                <div class="form-group">
+                    <div class="col col-md-offset-2 col-md-1">
+                        @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
+                        <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
+                    </div>
+                    <div class="col col-md-1">
+                        <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+                    </div>
+                    <div class="col col-md-1">
+                        <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     @*</body>*@
@@ -114,8 +117,8 @@
     </div>*@
 
 @*@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}*@
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@
 <script type='text/javascript'>
     function calculateSum() {
 

@@ -71,7 +71,7 @@ li a {
     /*text-decoration: none;*/
 }
 .li-a-no-padding-left {
-    padding: 0px 36px 0px 0px;
+    padding: 0 36px 0 0;
 }
 
 .nav > li > a:hover, .nav > li > a:focus {
@@ -262,6 +262,48 @@ li a {
     border: none;
 }
 
+.page-header5 {
+    font-size: 50px;
+    line-height: 1.0;
+    padding: 0 15px 0 18px;
+    margin-top: 151px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
+.page-header6 {
+    font-size: 36px;
+    line-height: 1.0;
+    padding: 0 15px 0 15px;
+    margin-top: 151px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
+.page-header7 {
+    font-size: 50px;
+    line-height: 1.0;
+    padding: 0 15px 0 13px;
+    margin-top: 80px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
 .page-header-no-padding-left {
     font-size: 50px;
     /*line-height: 34px;*/
@@ -401,7 +443,7 @@ li a {
     margin-left: 10px;
 }
 
-.btn-blue:hover, .btn-blue:focus, .btn-blue:active, .btn-blue.active, .open .dropdown-toggle.btn-blue {
+/*.btn-blue:hover, .btn-blue:focus, .btn-blue:active, .btn-blue.active, .open .dropdown-toggle.btn-blue {
     color: #0d06af;
     background-color: #a8c0e7;
     border-color: #646fc7;
@@ -417,12 +459,28 @@ li a {
     color: #ae0b05;
     background-color: #ea9e99;
     border-color: #cf4f5c;
-}
+}*/
+
+/*.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary.active, .open .dropdown-toggle.btn-secondary {
+    color: #ffffff;
+    background-color: #8b8585;
+    border-color: #775454;
+}*/
+
+/*.btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}*/
 
 .btn-primary {
     margin-left: 58px;
     font-size: 22px;
     width: 130px;
+}
+
+.btn-primary2 {
+    margin-left: 5px;
 }
 
 .btn-primary-small {
@@ -436,6 +494,12 @@ li a {
     margin-left: 18px;
     font-size: 22px;
     width: 220px;
+}
+
+.btn-primary-extra-wide {
+    margin-left: 18px;
+    font-size: 22px;
+    width: 270px;
 }
 
 .btn-success {
@@ -507,6 +571,14 @@ li a {
     margin-left: 5px;
 }
 
+.btn-left-margin-10 {
+    margin-left: 10px;
+}
+
+.btn-left-margin-22 {
+    margin-left: 22px;
+}
+
 .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
     vertical-align: middle;
 }
@@ -521,6 +593,11 @@ li a {
     font-weight: bold;
 }
 
+.bold-16 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
 .bold-18 {
     font-size: 18px;
     font-weight: bold;
@@ -531,6 +608,12 @@ li a {
     font-size: 24px;
     font-weight: bold;
     padding-right: 5px;
+}
+
+.bold-36 {
+    font-size: 36px;
+    font-weight: bold;
+    padding-left: 24px;
 }
 
 .hr-low-margin {
@@ -608,8 +691,20 @@ li a {
     padding-left: 10px;
 }
 
+.col-padding-17 {
+    padding-left: 17px;
+}
+
 .col-left-margin {
     margin-left: 15px;
+}
+
+.col-left-margin-6 {
+    margin-left: 6px;
+}
+
+.col-left-margin-18 {
+    margin-left: 18px;
 }
 
 special-left-margin {
@@ -759,6 +854,13 @@ special-left-margin {
     margin-left: 9px;
 }
 
+.row-padding {
+    padding: 10px 0 10px 0;
+}
+
+.row-padding2 {
+    padding: 5px 0 5px 0;
+}
 
 .height-24 {
     height: 24px;
@@ -814,9 +916,17 @@ special-left-margin {
     line-height: 1;
 }
 
+.row-height-50 {
+    height: 50px;
+}
+
 .row-heigt-20 {
     height: 1px;
     line-height: 0.4;
+}
+
+.row-height-36 {
+    height: 36px;
 }
 
 .row height-30 {
@@ -889,12 +999,30 @@ special-left-margin {
     padding-left: 10px;
 }
 
+.label-attachment2 {
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+.label-attachment {
+    padding-left: 25px;
+    font-weight: bold;
+}
+
 .display-padding {
     padding-left: 25px;
 }
 
 .display-padding2 {
     padding-left: 15px;
+}
+
+.display-padding3 {
+    padding-left: 10px;
+}
+
+.display-padding4  {
+    padding-left: 12px;
 }
 
 .display-padding-large {
@@ -919,6 +1047,13 @@ special-left-margin {
     padding-left: 7px;
 }
 
+.control-label-left-medium-padding {
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 0;
+    padding-left: 11px;
+}
+
 .control-label-left-no-padding {
     font-weight: bold;
     text-align: left;
@@ -932,6 +1067,10 @@ special-left-margin {
 
 .col-small-left-padding {
     padding-left: 5px;
+}
+
+.col-small-left-padding2 {
+    padding-left: 7px;
 }
 
 .line-height-10 {
@@ -948,6 +1087,21 @@ special-left-margin {
 
 .display-right-align {
     text-align: right;
+}
+
+.display-right-align2 {
+    text-align: right;
+    margin-top: 7px;
+}
+
+.display-right-align3 {
+    text-align: right;
+    padding-top: 6px;
+}
+
+.subheading {
+    font-size: 24px;
+    margin-left: 10px;
 }
 
 .no-col-padding {
@@ -1086,6 +1240,18 @@ a:hover, a:focus {
     width: 114px;
 }
 
+.table-large-font {
+    font-size: 30px;
+}
+
+.table-wide-column {
+    width: 480px;
+}
+
+.table-no-margin-bottom {
+    margin-bottom: 0;
+}
+
 .negative-result {
     /*color: #ffffff;*/
     color: #d2322d;
@@ -1152,17 +1318,22 @@ a:hover, a:focus {
 
 }
 
-#divRobin {
-   position:absolute;
-   left:75%;
-   top:1200px; /*Outta sight*/
-   width:250px;
-   height:185px;
-   z-index:100;
-   transition-delay:3s;
-   transition-timing-function:ease-out;
-   transition: top 4s;
-   -webkit-transition:top 4s;
-   float:right;
+.collective-agreement-header  {
+    font-size: 30px;
+    font-weight: bold;
+    padding-left: 5px;
+}
 
+#divRobin {
+    position: absolute;
+    left: 75%;
+    top: 1200px; /*Outta sight*/
+    width: 250px;
+    height: 185px;
+    z-index: 100;
+    transition-delay: 3s;
+    transition-timing-function: ease-out;
+    transition: top 4s;
+    -webkit-transition: top 4s;
+    float: right;
 }

@@ -16,26 +16,18 @@
     @Html.HiddenFor(model => model.AssistanceCheck)
     @Html.HiddenFor(model => model.ProxyCheck)
 
-    @*<body class="assistant-claim">*@
-
     <div class="row no-breadcrumb-top">
         <div class="form-horizontal">
             <div class="form-group col line-height-10">
                 @Html.LabelFor(model => model.ClaimNumber, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
                 <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="referencenumber">
                     @Html.DisplayFor(model => Model.ClaimNumber, null)
-                    @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })*@
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row">
-        @*<p class="col col-md-2"></p>
-            <p class="page-header col col-md-10 no-breadcrumb-top">Ansökan om sjuklöneersättning</p>
-            <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
-            <br>*@
-        @*<p class="col col-md-offset-2 col-md-10 second-page-header-large">Robins kontroller</p>*@
         <p class="col col-md-6 second-page-header-large">Automatiserade kontroller</p>
     </div>
 
@@ -43,14 +35,6 @@
         <div class="form-horizontal">
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-            @*<div class="form-group">
-                    @Html.LabelFor(model => model.ivoCheck, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.HiddenFor(m => model.ivoCheck.Text)
-                        @Html.CheckBoxFor(m => model.ivoCheck.Checked, new { id = "YourId" })
-                    </div>
-                </div>*@
 
             <div class="form-group col line-height-06">
                 @Html.LabelFor(model => model.CompleteCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
@@ -114,271 +98,61 @@
                 }
             </div>
         </div>
-        @*<hr class="claim-divider col-md-offset-2 col-md-8" />*@
     </div>
-                    <div class="row">
-                        <p class="col col-md-6 second-page-header-large">Ersättningsbedömning</p>
-                    </div>
-                    <div class="row">
-                        <div class="form-horizontal">
-                            <div class="form-group col line-height-06">
-                                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="claimsum">
-                                    @Html.DisplayFor(model => Model.ClaimSum)
-                                    @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })*@
-                                </div>
-                            </div>
+    <div class="row">
+        <p class="col col-md-6 second-page-header-large">Ersättningsbedömning</p>
+    </div>
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group col line-height-06">
+                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="claimsum">
+                    @Html.DisplayFor(model => Model.ClaimSum)
+                </div>
+            </div>
 
-                            <div class="form-group col line-height-06">
-                                @Html.LabelFor(model => model.ModelSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="modelsum">
-                                    @Html.DisplayFor(model => Model.ModelSum)
-                                    @*@Html.ValidationMessageFor(model => model.ModelSum, "", new { @class = "text-danger" })*@
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="form-group col line-height-06">
+                @Html.LabelFor(model => model.ModelSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="modelsum">
+                    @Html.DisplayFor(model => Model.ModelSum)
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="row">
-                        <div class="form-horizontal">
-                            <div class="form-group col line-height-10">
-                                @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-green" })
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group col line-height-10">
+                @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-green" })
+                <div class="col col-md-1">
+                    @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-green", id = "approvedsum", onblur = "calculateSum(1)" } })
+                    @Html.ValidationMessageFor(model => model.ApprovedSum, null, new { @class = "text-danger" }, null)
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                <div class="col col-md-1">
-                                    @*@Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small", id = "approvedsum", onblur = "calculateSum(1)" } })*@
-                                    @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-green", id = "approvedsum", onblur = "calculateSum(1)" } })
-                                    @Html.ValidationMessageFor(model => model.ApprovedSum, null, new { @class = "text-danger" }, null)
-                                </div>
-                                @*<div class="col col-md-1">
-                                        @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                                    </div>*@
-                            </div>
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group col line-height-10">
+                @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-red" })
+                <div class="col col-md-1">
+                    @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-red", id = "rejectedsum", onblur = "calculateSum(2)" } })
+                    @Html.ValidationMessageFor(model => model.RejectedSum, null, new { @class = "text-danger" }, null)
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-horizontal">
-                            <div class="form-group col line-height-10">
-                                @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-red" })
-
-                                <div class="col col-md-1">
-                                    @*@Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small", id = "rejectedsum", onblur = "calculateSum(2)" } })*@
-                                    @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-red", id = "rejectedsum", onblur = "calculateSum(2)" } })
-                                    @Html.ValidationMessageFor(model => model.RejectedSum, null, new { @class = "text-danger" }, null)
-                                </div>
-                                @*<div class="col col-md-1">
-                                        @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                                    </div>*@
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    <div class="row line-height-10">
-                        <div class="col col-md-offset-6 col-md-1">
-                            <input class="btn btn-success" type="submit" value="Nästa steg" />
-                            @*@Html.ActionLink("Nästa steg", "ShowRecommendationReceipt", "Claims", new { referenceNumber = Model.ClaimNumber, approvedSum = Model.ApprovedSum, rejectedSum = Model.RejectedSum }, new { @class = "btn btn-success" })*@
-                            @*@Html.ActionLink("Godkänn", "IndexPageAdmOff", "Claims", new { referenceNumber = Model.ClaimNumber, action = 1 }, new { @class = "btn btn-success" })*@
-                        </div>
-                        <div class="col col-md-1">
-                            @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                        </div>
-                    </div>
-
-
-
-                    @*@if (Model.Rejected)
-                        {
-                            <div class="row">
-                                <p class="col col-md-2"></p>
-                                <p class="col col-md-10">@Model.RejectReason</p>
-                            </div>
-                        }*@
-                    @*<div class="row">
-                            <div class="form-group">
-                                <div class="col col-md-offset-2 col-md-1">
-                                    <input class="btn btn-default btn-blue" type="submit" value="Detaljer" />
-                                </div>
-                                <div class="col col-md-1">
-                                    <input class="btn btn-default btn-green" type="submit" value="Godkänn" />
-                                </div>
-                                <div class="col col-md-1">
-                                    <input class="btn btn-default btn-red" type="submit" value="Avslå" />
-                                </div>
-                            </div>
-                        </div>*@
-
-                    @*<div class="row">
-                            <div class="form-group">
-                                <div class="col col-md-offset-6 col-md-6">
-                                    <div class="row">
-                                        <div class="col col-md-3">
-                                            @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                                        </div>
-                                        <div class="col col-md-3">
-                                            @Html.ActionLink("Godkänn", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-success" })
-                                        </div>
-                                        <div class="col col-md-3">
-                                            @Html.ActionLink("Avslå", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>*@
-
-                    @*<div class="row">
-                        <div class="form-group">
-                            <div class="col col-md-offset-6 col-md-1">
-                                @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
-                                @*<input class="btn btn-primary" type="submit" value="Detaljer" />*@
-                    @*</div>
-                                <div class="col col-md-1 col-small-left-padding">
-                                    <input class="btn btn-success" type="submit" value="Godkänn" />
-                                </div>
-                                <div class="col col-md-1 col-small-left-padding">
-                                    <input class="btn btn-danger" type="submit" value="Avslå" />
-                                </div>
-                            </div>
-                        </div>*@
-
-
-
-
-
-
-
-                    @*//Test
-                        <div class="row">
-                            <p class="col col-md-2"></p>
-                            <p class="page-header col col-md-10 no-breadcrumb-top">Ansökan om sjuklöneersättning</p>
-                            <nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>
-                            <br>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-2">
-                            </div>
-                            <div class="col col-md-3 second-page-header">
-                                Kontroller
-                            </div>
-                            <div class="col col-md-2">
-                            </div>
-                            <div class="col col-md-3 second-page-header">
-                                Godkännande/Avslag
-                            </div>
-                        </div>
-
-                            <div class="row">
-                                <div class="form-horizontal">
-
-                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                    <div class="row">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-3 align-bottom3" id="ivocheck">
-                                                @Html.DisplayFor(model => Model.IvoCheck)
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-3 align-bottom3" id="claimsum">
-                                                @Html.DisplayFor(model => Model.ClaimSum)
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        <div class="col-md-3 align-bottom3" id="assistancecheck">
-                                            @Html.DisplayFor(model => Model.AssistanceCheck)
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.ModelSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        <div class="col-md-3 align-bottom3" id="modelsum">
-                                            @Html.DisplayFor(model => Model.ModelSum)
-                                            @Html.ValidationMessageFor(model => model.ModelSum, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>*@
-
-                    @*<div class="col col-md-2">
-                        </div>
-                        <div class="col col-md-3">
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.DecidedSum, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-3">
-                                @Html.EditorFor(model => model.DecidedSum, new { htmlAttributes = new { @class = "form-control control-width" } })
-                                @Html.ValidationMessageFor(model => model.DecidedSum, "", new { @class = "text-danger" })
-                            </div>
-                        </div>*@
-
-
-                    @*@if (Model.Rejected)
-                        {
-                            <div class="row">
-                                <p class="col col-md-2"></p>
-                                <p class="col col-md-10">@Model.RejectReason</p>
-                            </div>
-                        }*@
-                    @*<div class="row">
-                                    <div class="form-group">
-                                        <div class="col col-md-2">
-                                        </div>
-                                        <div class="col col-md-3">
-                                        </div>
-                                        <div class="col col-md-2">
-                                        </div>
-                                        <div class="col col-md-1">
-                                            <input class="btn btn-default btn-blue" type="submit" value="Detaljer" />
-                                        </div>
-                                        <div class="col col-md-1">
-                                            <input class="btn btn-default btn-green" type="submit" value="Godkänn" />
-                                        </div>
-                                        <div class="col col-md-1">
-                                            <input class="btn btn-default btn-red" type="submit" value="Avslå" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group">
-                                        <div class="col col-md-2">
-                                        </div>
-                                        <div class="col col-md-3">
-                                        </div>
-                                        <div class="col col-md-2">
-                                        </div>
-                                        <div class="col col-md-1">
-                                            <input class="btn btn-primary" type="submit" value="Detaljer" />
-                                        </div>
-                                        <div class="col col-md-1">
-                                            <input class="btn btn-success" type="submit" value="Godkänn" />
-                                        </div>
-                                        <div class="col col-md-1">
-                                            <input class="btn btn-danger" type="submit" value="Avslå" />
-                                        </div>
-                                        <div>
-                                            @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber, @class = "btn btn-primary" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <br>
-                                <br>
-                            </div>
-                        </div>*@
+    <div class="row line-height-10">
+        <div class="col col-md-offset-6 col-md-1">
+            <input class="btn btn-success" type="submit" value="Nästa steg" />
+        </div>
+        <div class="col col-md-1">
+            @Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })
+        </div>
+    </div>
 }
-@*</body>*@
-
-@*<div>
-    @Html.ActionLink("Back to List", "Index")
-    </div>*@
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

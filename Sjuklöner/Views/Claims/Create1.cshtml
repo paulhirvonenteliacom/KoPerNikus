@@ -1,31 +1,28 @@
-﻿@model Sjuklöner.Viewmodels.AssistantClaimVM
+﻿@model Sjuklöner.Viewmodels.Create1VM
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create1";
 }
 
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Organisationsnummer</li>
+            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Sjukperiod</li>
         </ol>
     </nav>
 </div>
 
-@using (Html.BeginForm("Create", "Claims", new { claimNumber = Model.ClaimReference }))
+@using (Html.BeginForm("Create1", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.ClaimReference)
+    @Html.HiddenFor(model => model.ReferenceNumber)
 
 
-    @*<body>*@
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
-        @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
         <br>
-        @*<p class="col col-md-offset-2 col-md-10 second-page-header">Steg 1: Ange organisationsnummer och sjukperiod</p>*@
     </div>
     <div class="row">
         <p class="col col-md-2"></p>
@@ -119,12 +116,12 @@
             </div>
 
             @*<div class="form-group">
-                @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10 align-bottom2">
-                    @Html.EditorFor(model => model.AssistantSSN, new { htmlAttributes = new { placeholder = "", @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.AssistantSSN, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
+                    @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 align-bottom2">
+                        @Html.EditorFor(model => model.AssistantSSN, new { htmlAttributes = new { placeholder = "", @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.AssistantSSN, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
 
             @*<div class="form-group">
                 @Html.LabelFor(model => model.StandInSSN, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -352,53 +349,24 @@
             }
 
             <div class="row">
-
-            <div class="form-group">
-                <div class="col col-md-offset-2 col-md-1">
-                    <input class="btn btn-primary btn-primary-small" type="submit" name="answer" value="Till steg 2" id="proceed" />
+                <div class="form-group">
+                    <div class="col col-md-offset-2 col-md-1">
+                        <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
+                    </div>
+                    <div class="col col-md-1">
+                        <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+                    </div>
+                    <div class="col col-md-1">
+                        <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+                    </div>
                 </div>
-                @*<div class="col col-md-1">
-                    <input class="btn btn-secondary btn-secondary-small" type="submit" name="answer" value="Spara" id="save" />
-                </div>
-                <div class="col col-md-1">
-                    <input class="btn btn-secondary btn-secondary-small" type="submit" name="answer" value="Avbryt" id="cancel" />
-                </div>*@
             </div>
-            </div>
-           
-
             <br>
             <br>
             <br>
-
-            @*<div class="row">
-                <p class="col col-md-2"></p>
-                <p class="col col-md-10">@Html.ActionLink("Mina ansökningar", "Index", "Claims")</p>
-                </div>
-
-                <div class="row">
-                <p class="col col-md-2"></p>
-                <p class="col col-md-10">@Html.ActionLink("Ordinarie assistents profil", "Edit", "Profiles")</p>
-                </div>
-
-                <div class="row">
-                <p class="col col-md-2"></p>
-                <p class="col col-md-10">@Html.ActionLink("Vikarierande assistents profil", "Edit", "Profiles")</p>
-                </div>
-
-                <div class="row">
-                <p class="col col-md-2"></p>
-                <p class="col col-md-10">@Html.ActionLink("Assistansanordnarens profil", "Edit", "OmbudProfiles")</p>
-                </div>*@
-
         </div>
     </div>
-    @*</body>*@
 }
-
-@*<div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>*@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

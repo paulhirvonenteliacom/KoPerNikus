@@ -13,7 +13,5 @@ namespace Sjuklöner.Viewmodels
         public List<Claim> InInboxClaims { get; set; }  //I inkorgen
 
         public List<Claim> UnderReviewClaims { get; set; }  //Inskickade, under handläggning
-
-        //public List<Claim> ApprovedClaims { get; set; } //Godkända
     }
 }

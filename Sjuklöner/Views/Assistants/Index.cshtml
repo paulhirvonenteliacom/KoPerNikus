@@ -1,195 +1,130 @@
-﻿@model IEnumerable<Sjuklöner.Models.Assistant>
+﻿@model Sjuklöner.Viewmodels.AssistantIndexVM
 
 @{
     ViewBag.Title = "Index";
 }
-
-<h2>Index</h2>
-
+<div class="row">
+    <p class="page-header5 col col-md-12">Assistentlista</p>
+</div>
+<div class="row">
+    <div class="form-group">
+        <div class="col-md-6 bold-36">
+            @Html.DisplayFor(model => model.CareCompanyName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="col col-md-6">
+    </div>
+</div>
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Ny assistent", "Create")
 </p>
+<hr class="claim-divider" />
+<br />
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.AssistantList[0].FirstName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.DisplayNameFor(model => model.AssistantList[0].LastName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastLogon)
+            @Html.DisplayNameFor(model => model.AssistantList[0].AssistantSSN)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.AssistantList[0].Email)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
+            @Html.DisplayNameFor(model => model.AssistantList[0].PhoneNumber)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SecurityStamp)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LockoutEnabled)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Approved)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.StreetAddress)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Postcode)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.City)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClearingNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AccountNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HourlySalary)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HolidayPayRate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PayrollTaxRate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.InsuranceRate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PensionRate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.StorageApproval)
-        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StreetAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Postcode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>*@
+        @*<th>
+                @Html.DisplayNameFor(model => model.HourlySalary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HolidayPayRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PayrollTaxRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InsuranceRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PensionRate)
+            </th>*@
+        @*<th>
+                @Html.DisplayNameFor(model => model.StorageApproval)
+            </th>*@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastLogon)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EmailConfirmed)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PasswordHash)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SecurityStamp)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PhoneNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LockoutEndDateUtc)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LockoutEnabled)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AccessFailedCount)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Approved)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CompanyName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StreetAddress)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Postcode)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClearingNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AccountNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HourlySalary)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HolidayPayRate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PayrollTaxRate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.InsuranceRate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PensionRate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StorageApproval)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model.AssistantList)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssistantSSN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StreetAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Postcode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>*@
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.HourlySalary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HolidayPayRate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PayrollTaxRate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InsuranceRate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PensionRate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StorageApproval)
+                </td>*@
+            <td>
+                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>

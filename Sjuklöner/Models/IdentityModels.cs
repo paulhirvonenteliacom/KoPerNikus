@@ -19,10 +19,13 @@ namespace Sjuklöner.Models
             return userIdentity;
         }
 
+        [Display(Name = "Förnamn")]
         public string FirstName { get; set; }
+
+        [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
-        [Display(Name = "Last Logon")]
+        [Display(Name = "Senaste inloggning")]
         [DataType(DataType.DateTime)]
         public System.DateTime LastLogon { get; set; }
 
@@ -44,8 +47,11 @@ namespace Sjuklöner.Models
         public DbSet<DocStatus> DocStatuses { get; set; }
         public DbSet<ClaimReferenceNumber> ClaimReferenceNumbers { get; set; }
         public DbSet<ClaimStatus> ClaimStatuses { get; set; }
-        public DbSet<CollectiveAgreement> CollectiveAgreements { get; set; }
+        public DbSet<CollectiveAgreementHeader> CollectiveAgreementHeaders { get; set; }
+        public DbSet<CollectiveAgreementInfo> CollectiveAgreementInfos { get; set; }
         public DbSet<CareCompany> CareCompanies { get; set; }
+        public DbSet<ClaimCalculation> ClaimCalculations { get; set; }
+        public DbSet<Assistant> Assistants { get; set; }
 
         //Only needed for demo
         public DbSet<ClaimDaySeed> ClaimDaySeeds { get; set; }

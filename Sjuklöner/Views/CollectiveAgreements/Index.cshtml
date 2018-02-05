@@ -1,93 +1,121 @@
-﻿@model IEnumerable<Sjuklöner.Models.CollectiveAgreement>
+﻿@model Sjuklöner.Viewmodels.CollectiveAgreementIndexVM
 
 @{
     ViewBag.Title = "Index";
+    int infoIdx = 0;
 }
 
-<h2>Index</h2>
+<div class="row index-page-margin">
+    <p class="page-header col col-md-10">Kollektivavtal</p>
+</div>
+<div class="row">
+    <div class="col col-md-1">
+        @Html.ActionLink("Nytt avtal", "Create", null, new { @class = "btn btn-primary btn-primary2 btn-primary-medium" })
+    </div>
+</div>
+<br />
+@for (int i = 0; i < Model.NumberOfCollectiveAgreements; i++)
+{
+    <hr class="claim-divider" />
+    <p class="collective-agreement-header">@Model.CollectiveAgreementHeader[i].Name</p>
+    <div class="row">
+        <div class="col col-md-1">
+            @Html.ActionLink("Ny period", "Create", new { id = Model.CollectiveAgreementHeader[i].Id }, new { @class = "btn btn-primary btn-primary-small" })
+        </div>
+        <div class="col col-md-1">
+            @Html.ActionLink("Uppdatera", "Edit", new { type = "header", headerId = Model.CollectiveAgreementHeader[i].Id }, new { @class = "btn btn-secondary btn-secondary-small" })
+        </div>
+        <div class="col col col-md-1">
+            @Html.ActionLink("Ta bort", "Delete", new { type = "header", headerId = Model.CollectiveAgreementHeader[i].Id }, new { @class = "btn btn-danger btn-danger-small" })
+        </div>
+    </div>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].PerHourUnsocialEvening)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].PerHourUnsocialNight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].PerHourUnsocialWeekend)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].PerHourUnsocialHoliday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].PerHourOnCallWeekday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CollectiveAgreementInfo[0].PerHourOnCallWeekend)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.PerHourPreparedWeekday)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PerHourPreparedWeekend)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OvertimeFactor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExtraHOurFactor)
+                </th>*@
+            <th></th>
+        </tr>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourUnsocialEvening)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourUnsocialNight)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourUnsocialWeekend)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourUnsocialHoliday)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourOnCallWeekday)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourOnCallWeekend)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourPreparedWeekday)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerHourPreparedWeekend)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OvertimeFactor)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ExtraHOurFactor)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourUnsocialEvening)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourUnsocialNight)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourUnsocialWeekend)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourUnsocialHoliday)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourOnCallWeekday)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourOnCallWeekend)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourPreparedWeekday)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerHourPreparedWeekend)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OvertimeFactor)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ExtraHOurFactor)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+        @for (int j = 0; j < Model.CollectiveAgreementHeader[i].Counter; j++)
+        {
+            <tr>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].StartDate
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].EndDate
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].PerHourUnsocialEvening
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].PerHourUnsocialNight
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].PerHourUnsocialWeekend
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].PerHourUnsocialHoliday
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].PerHourOnCallWeekday
+                </td>
+                <td>
+                    @Model.CollectiveAgreementInfo[infoIdx + j].PerHourOnCallWeekend
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.PerHourPreparedWeekday)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PerHourPreparedWeekend)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OvertimeFactor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExtraHOurFactor)
+                    </td>*@
+                <td>
+                    @Html.ActionLink("Uppdatera", "Edit", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-primary btn-primary-small" })
+                    @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |*@
+                    @Html.ActionLink("Ta bort", "Delete", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-danger btn-danger-small" })
+                </td>
+            </tr>
+        }
+    </table>
+    infoIdx = infoIdx + Model.CollectiveAgreementHeader[i].Counter;
 }
-
-</table>

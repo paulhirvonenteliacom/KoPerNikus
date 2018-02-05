@@ -1,115 +1,136 @@
-﻿@model Sjuklöner.Models.CollectiveAgreement
+﻿@model Sjuklöner.Viewmodels.CollectiveAgreementCreateVM
 
 @{
     ViewBag.Title = "Create";
 }
-
-<h2>Create</h2>
-
-@using (Html.BeginForm()) 
+@if (Model.NewAgreement)
 {
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="page-header6 col col-md-10">Lägg till kollektivavtal och ersättningsbelopp</p>
+        <br>
+    </div>
+}
+else
+{
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="page-header6 col col-md-10">Lägg till ersättningsbelopp</p>
+        <br>
+    </div>
+}
+<div class="row">
+    <p class="col col-md-2"></p>
+    <p class="col col-md-10 col-padding-17">Uppgifterna används vid beräkning av kontrollbelopp</p>
+</div>
+<br />
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.NewAgreement)
+    @Html.HiddenFor(model => model.HeaderId)
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>CollectiveAgreement</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    if (Model.NewAgreement)
+    {
+        <div class="row row-height-50">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col col-md-5">
             </div>
         </div>
-
+    }
+    else
+    {
+        <div class="row row-height-50">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+                <div class="col-md-4">
+                    @Html.DisplayFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="col col-md-5">
+            </div>
+        </div>
+    }
+    <div class="row">
         <div class="form-group">
-            @Html.LabelFor(model => model.PerHourUnsocialEvening, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourUnsocialEvening, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PerHourUnsocialEvening, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.PerHourUnsocialEvening, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
                 @Html.ValidationMessageFor(model => model.PerHourUnsocialEvening, "", new { @class = "text-danger" })
             </div>
         </div>
-
+    </div>
+    <div class="row">
         <div class="form-group">
-            @Html.LabelFor(model => model.PerHourUnsocialNight, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourUnsocialNight, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PerHourUnsocialNight, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.PerHourUnsocialNight, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
                 @Html.ValidationMessageFor(model => model.PerHourUnsocialNight, "", new { @class = "text-danger" })
             </div>
         </div>
-
+    </div>
+    <div class="row">
         <div class="form-group">
-            @Html.LabelFor(model => model.PerHourUnsocialWeekend, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourUnsocialWeekend, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PerHourUnsocialWeekend, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PerHourUnsocialHoliday, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourUnsocialHoliday, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PerHourUnsocialHoliday, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PerHourOnCallWeekday, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourOnCallWeekday, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.LabelFor(model => model.PerHourOnCallWeekday, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.PerHourOnCallWeekday, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
                 @Html.ValidationMessageFor(model => model.PerHourOnCallWeekday, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group">
-            @Html.LabelFor(model => model.PerHourOnCallWeekend, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourOnCallWeekend, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.LabelFor(model => model.PerHourUnsocialWeekend, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.PerHourUnsocialWeekend, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
+                @Html.ValidationMessageFor(model => model.PerHourUnsocialWeekend, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PerHourOnCallWeekend, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.PerHourOnCallWeekend, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
                 @Html.ValidationMessageFor(model => model.PerHourOnCallWeekend, "", new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group">
-            @Html.LabelFor(model => model.PerHourPreparedWeekday, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourPreparedWeekday, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PerHourPreparedWeekday, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.PerHourUnsocialHoliday, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.PerHourUnsocialHoliday, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
+                @Html.ValidationMessageFor(model => model.PerHourUnsocialHoliday, "", new { @class = "text-danger" })
             </div>
         </div>
+    </div>
 
+    <div class="row">
         <div class="form-group">
-            @Html.LabelFor(model => model.PerHourPreparedWeekend, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PerHourPreparedWeekend, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PerHourPreparedWeekend, "", new { @class = "text-danger" })
+            <div class="col col-md-offset-2 col-md-1">
+                <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Spara" id="proceed" />
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.OvertimeFactor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.OvertimeFactor, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.OvertimeFactor, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ExtraHOurFactor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ExtraHOurFactor, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ExtraHOurFactor, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
