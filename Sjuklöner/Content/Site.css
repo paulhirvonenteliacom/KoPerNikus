@@ -1154,7 +1154,7 @@ a:hover, a:focus {
 
 #divRobin {
    position:absolute;
-   left:850px;
+   left: 75% !important;
    top:1200px; /*Outta sight*/
    width:250px;
    height:185px;

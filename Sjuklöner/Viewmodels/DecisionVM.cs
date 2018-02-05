@@ -29,11 +29,11 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "Godkänt belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal ApprovedSum { get; set; }
+        public string ApprovedSum { get; set; }
 
         [Display(Name = "Avslaget belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal RejectedSum { get; set; }
+        public string RejectedSum { get; set; }
 
         [Display(Name = "Kommentar")]
         public string Comment { get; set; }

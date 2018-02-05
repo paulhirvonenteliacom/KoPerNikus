@@ -31,7 +31,7 @@
                             Referensnummer
                         </th>
                         <th class="small-col-ombud">
-                            Avslagen datum
+                            Beslutsdatum
                         </th>
                         <th class="small-col-ombud">
                             Kundens personnummer
@@ -73,7 +73,7 @@
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td class="highlight-green-bold">
                                 @Html.DisplayFor(modelItem => item.ApprovedSum)
@@ -83,11 +83,11 @@
                             </td>
                             <td>
                                 @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success-small" }) |*@
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
-                                @if (item.RejectedSum > 1)
-                                {
-                                    @Html.ActionLink("Överklaga", "Create", null, new { @class = "btn btn-warning btn-warning-small" })
-                                }
+                                @*@Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })*@
+                                @*@if (item.RejectedSum > 1)
+        {
+            @Html.ActionLink("Överklaga", "Create", null, new { @class = "btn btn-warning btn-warning-small" })
+        }*@
                                 @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary-small" })*@
                             </td>
                         </tr>
@@ -157,7 +157,7 @@
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td>
                                 @Html.ActionLink("Uppdatera", "Create", new { refNumber = item.ReferenceNumber, id = 1 }, new { @class = "btn btn-success btn-success-small" })
@@ -236,7 +236,7 @@
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ClaimSum)
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td>
                                 @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
