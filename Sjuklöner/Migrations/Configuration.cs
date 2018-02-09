@@ -24,15 +24,9 @@ namespace Sjuklöner.Migrations
             var roleManager = new RoleManager<IdentityRole>(roleStore);
 
             ApplicationUser user;
-            IdentityRole assistantRole, ombudRole, administrativeOfficialRole, adminRole;
+            IdentityRole ombudRole, administrativeOfficialRole, adminRole;
             IdentityResult result;
             string userId;
-
-            if (roleManager.FindByName("Assistant") == null)
-            {
-                assistantRole = new IdentityRole("Assistant");
-                result = roleManager.Create(assistantRole);
-            }
 
             if (roleManager.FindByName("Ombud") == null)
             {
@@ -75,8 +69,8 @@ namespace Sjuklöner.Migrations
 
             var ombuds = new List<Ombud>
             {
-                new Ombud{FirstName = "Ombud",LastName = "Ombudsson",Email = "ombud.ombudsson@assistans.se",UserName = "ombud.ombudsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 1, SSN = "197503266251"},
-                new Ombud{FirstName = "Olle",LastName = "Nilsson",Email = "olle.nilsson@assistans.se",UserName = "olle.nilsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 2}
+                new Ombud{FirstName = "Ombud",LastName = "Ombudsson",Email = "ombud.ombudsson@assistans.se",UserName = "ombud.ombudsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 1, SSN = "197503266251", PhoneNumber = "034-453 7685"},
+                new Ombud{FirstName = "Olle",LastName = "Nilsson",Email = "olle.nilsson@assistans.se",UserName = "olle.nilsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 2, PhoneNumber = "032-987 1290"}
             };
 
             foreach (var ombud in ombuds)
@@ -136,12 +130,22 @@ namespace Sjuklöner.Migrations
 
             var careCompanies = new List<CareCompany>
             {
-                new CareCompany{CompanyName = "Smart Assistans"},
-                new CareCompany{CompanyName = "Assistans Direkt AB"}
+                new CareCompany{ Id = 1, CompanyName = "Smart Assistans", OrganisationNumber = "556881-2118", StreetAddress = "Assistansvägen 55", Postcode = "155 55", City = "Assistansköping", AccountNumber = "1234-1234", CompanyPhoneNumber = "024-323 2356", SelectedCollectiveAgreementId = 1, CollectiveAgreementSpecName = "Branch G" },
+                new CareCompany{ Id = 2, CompanyName = "Assistans Direkt AB", OrganisationNumber = "556833-2198", StreetAddress = "Assistansgatan 33", Postcode = "133 33", City = "Assistansborg", AccountNumber = "6543-9876", CompanyPhoneNumber = "024-987 2356", SelectedCollectiveAgreementId = 1, CollectiveAgreementSpecName = "Branch G" }
             };
             foreach (var careCompany in careCompanies)
             {
                 context.CareCompanies.AddOrUpdate(c => c.Id, careCompany);
+            }
+
+            var assistants = new List<Assistant>
+            {
+                new Assistant{ Id = 1, CareCompanyId = 1, FirstName = "Astrid", LastName = "Assistentsson", AssistantSSN = "19730423-5076", Email = "astrid.assistentsson@smartassistans.se", PhoneNumber = "034-232 5678", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", InsuranceRate = "5,00", PensionRate = "1,00"},
+                new Assistant{ Id = 2, CareCompanyId = 1, FirstName = "Björn", LastName = "Björnsson", AssistantSSN = "19830423-5076", Email = "bjorn.bjornsson@smartassistans.se", PhoneNumber = "034-131 4578", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", InsuranceRate = "5,00", PensionRate = "1,00"},
+            };
+            foreach (var assistant in assistants)
+            {
+                context.Assistants.AddOrUpdate(c => c.Id, assistant);
             }
 
             var claimStatuses = new List<ClaimStatus>

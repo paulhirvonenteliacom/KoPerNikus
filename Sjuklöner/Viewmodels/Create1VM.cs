@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Sjuklöner.Viewmodels
 {
@@ -25,10 +26,10 @@ namespace Sjuklöner.Viewmodels
         [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
         public string CustomerSSN { get; set; }
 
-        //[Required]
-        [Display(Name = "Assistentens personnummer")]
-        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
-        public string AssistantSSN { get; set; }
+        ////[Required]
+        //[Display(Name = "Assistentens personnummer")]
+        //[RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
+        //public string AssistantSSN { get; set; }
 
         //[Required]
         [Display(Name = "Vikarie")]
@@ -47,11 +48,23 @@ namespace Sjuklöner.Viewmodels
         [DataType(DataType.DateTime)]
         public DateTime LastDayOfSicknessDate { get; set; }
 
-        [Display(Name = "Ordinarie assistents förnamn")]
-        public string AssistantFirstName { get; set; }
+        //[Display(Name = "Ordinarie assistents förnamn")]
+        //public string AssistantFirstName { get; set; }
 
-        [Display(Name = "Ordinarie assistents efternamn")]
-        public string AssistantLastNameFirstLetter { get; set; }
+        //[Display(Name = "Ordinarie assistents efternamn")]
+        //public string AssistantLastNameFirstLetter { get; set; }
+
+        public int? SelectedRegAssistantId { get; set; }
+
+        [Display(Name = "Ordinarie assistent")]
+        public IEnumerable<SelectListItem> RegularAssistants { get; set; }
+
+        public int? SelectedSubAssistantId { get; set; }
+
+        [Display(Name = "Vikarierande assistent")]
+        public IEnumerable<SelectListItem> SubstituteAssistants { get; set; }
+
+        public List<int> AssistantIds { get; set; } //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
 
         public bool Rejected { get; set; }
 

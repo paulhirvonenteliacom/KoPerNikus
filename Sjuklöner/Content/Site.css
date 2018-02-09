@@ -294,7 +294,7 @@ li a {
     font-size: 50px;
     line-height: 1.0;
     padding: 0 15px 0 13px;
-    margin-top: 80px;
+    margin-top: 151px;
     margin-bottom: 0;
     /*margin-bottom: 40px;*/
     /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
@@ -483,6 +483,11 @@ li a {
     margin-left: 5px;
 }
 
+.btn-primary3 {
+    margin-left: 5px;
+    width: 150px;
+}
+
 .btn-primary-small {
     margin-left: 0;
     font-size: 14px;
@@ -613,7 +618,7 @@ li a {
 .bold-36 {
     font-size: 36px;
     font-weight: bold;
-    padding-left: 24px;
+    padding-left: 18px;
 }
 
 .hr-low-margin {

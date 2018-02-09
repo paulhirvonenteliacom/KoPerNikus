@@ -8,170 +8,52 @@ namespace Sjuklöner.Migrations
         public override void Up()
         {
             CreateTable(
+                "dbo.Assistants",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        CareCompanyId = c.Int(nullable: false),
+                        FirstName = c.String(),
+                        LastName = c.String(),
+                        AssistantSSN = c.String(),
+                        Email = c.String(),
+                        PhoneNumber = c.String(),
+                        HourlySalary = c.String(),
+                        HolidayPayRate = c.String(),
+                        PayrollTaxRate = c.String(),
+                        InsuranceRate = c.String(),
+                        PensionRate = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "dbo.CareCompanies",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        CompanyName = c.String(),
-                        CompanyOrganisationNumber = c.String(),
-                        StreetAddress = c.String(),
-                        Postcode = c.String(),
-                        City = c.String(),
-                        AccountNumber = c.String(),
-                        PhoneNumber = c.String(),
-                        CollectiveAgreement = c.String(),
-                        ReferenceCode = c.String(),
-                        StorageApproval = c.Boolean(nullable: false),
+                        CompanyName = c.String(nullable: false),
+                        OrganisationNumber = c.String(nullable: false),
+                        StreetAddress = c.String(nullable: false),
+                        Postcode = c.String(nullable: false),
+                        City = c.String(nullable: false),
+                        AccountNumber = c.String(nullable: false),
+                        CompanyPhoneNumber = c.String(nullable: false),
+                        SelectedCollectiveAgreementId = c.Int(nullable: false),
+                        CollectiveAgreementName = c.String(),
+                        CollectiveAgreementSpecName = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.ClaimDays",
+                "dbo.ClaimCalculations",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
                         ReferenceNumber = c.String(),
-                        ClaimDayDate = c.DateTime(),
-                        DateString = c.String(),
-                        SickDayNumber = c.Int(nullable: false),
-                        StartHour = c.String(),
-                        StartMinute = c.String(),
-                        StopHour = c.String(),
-                        StopMinute = c.String(),
-                        NumberOfHours = c.Single(nullable: false),
-                        NumberOfUnsocialHours = c.Single(nullable: false),
-                        NumberOfUnsocialHoursNight = c.Single(nullable: false),
-                        NumberOfUnsocialHoursEvening = c.Single(nullable: false),
-                        StartHourOnCall = c.String(),
-                        StartMinuteOnCall = c.String(),
-                        StopHourOnCall = c.String(),
-                        StopMinuteOnCall = c.String(),
-                        NumberOfOnCallHours = c.Single(nullable: false),
-                        NumberOfOnCallHoursNight = c.Single(nullable: false),
-                        NumberOfOnCallHoursEvening = c.Single(nullable: false),
-                        StartHourSI = c.String(),
-                        StartMinuteSI = c.String(),
-                        StopHourSI = c.String(),
-                        StopMinuteSI = c.String(),
-                        NumberOfHoursSI = c.Single(nullable: false),
-                        NumberOfUnsocialHoursSI = c.Single(nullable: false),
-                        NumberOfUnsocialHoursNightSI = c.Single(nullable: false),
-                        NumberOfUnsocialHoursEveningSI = c.Single(nullable: false),
-                        StartHourOnCallSI = c.String(),
-                        StartMinuteOnCallSI = c.String(),
-                        StopHourOnCallSI = c.String(),
-                        StopMinuteOnCallSI = c.String(),
-                        NumberOfOnCallHoursSI = c.Single(nullable: false),
-                        NumberOfOnCallHoursNightSI = c.Single(nullable: false),
-                        NumberOfOnCallHoursEveningSI = c.Single(nullable: false),
-                        Hours = c.String(),
-                        UnsocialEvening = c.String(),
-                        UnsocialNight = c.String(),
-                        UnsocialWeekend = c.String(),
-                        UnsocialGrandWeekend = c.String(),
-                        OnCallDay = c.String(),
-                        OnCallNight = c.String(),
-                        HoursSI = c.String(),
-                        UnsocialEveningSI = c.String(),
-                        UnsocialNightSI = c.String(),
-                        UnsocialWeekendSI = c.String(),
-                        UnsocialGrandWeekendSI = c.String(),
-                        OnCallDaySI = c.String(),
-                        OnCallNightSI = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.ClaimDaySeeds",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ReferenceNumber = c.String(),
-                        ClaimDayDate = c.DateTime(),
-                        DateString = c.String(),
-                        SickDayNumber = c.Int(nullable: false),
-                        Hours = c.String(),
-                        UnsocialEvening = c.String(),
-                        UnsocialNight = c.String(),
-                        UnsocialWeekend = c.String(),
-                        UnsocialGrandWeekend = c.String(),
-                        OnCallDay = c.String(),
-                        OnCallNight = c.String(),
-                        HoursSI = c.String(),
-                        UnsocialEveningSI = c.String(),
-                        UnsocialNightSI = c.String(),
-                        UnsocialWeekendSI = c.String(),
-                        UnsocialGrandWeekendSI = c.String(),
-                        OnCallDaySI = c.String(),
-                        OnCallNightSI = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.ClaimReferenceNumbers",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        LatestYear = c.Int(nullable: false),
-                        LatestReferenceNumber = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Claims",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        OwnerId = c.String(),
-                        ClaimStatusId = c.Int(nullable: false),
-                        CareCompanyId = c.Int(nullable: false),
-                        IVOCheck = c.Boolean(nullable: false),
-                        ProCapitaCheck = c.Boolean(nullable: false),
-                        ReferenceNumber = c.String(),
-                        StatusDate = c.DateTime(),
-                        DeadlineDate = c.DateTime(),
-                        CustomerFirstName = c.String(),
-                        CustomerLastName = c.String(),
-                        OrganisationNumber = c.String(),
-                        CustomerSSN = c.String(nullable: false),
-                        AssistantSSN = c.String(),
-                        QualifyingDate = c.DateTime(nullable: false),
-                        LastDayOfSicknessDate = c.DateTime(nullable: false),
-                        Email = c.String(),
+                        StartDate = c.DateTime(nullable: false),
+                        EndDate = c.DateTime(nullable: false),
                         NumberOfSickDays = c.Int(nullable: false),
-                        NumberOfAbsenceHours = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfOrdinaryHours = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfUnsocialHours = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfOnCallHours = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfHoursWithSI = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfOrdinaryHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfUnsocialHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        NumberOfOnCallHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimedSickPay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimedHolidayPay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimedSocialFees = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimedPensionAndInsurance = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
                         ModelSum = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        DecidedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ApprovedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        RejectedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        HoursQualifyingDay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        HolidayPayQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        PayrollTaxQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        InsuranceQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        PensionQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimQualDay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        HoursDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        HourlySickPay = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        SickPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        HolidayPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        UnsocialHoursPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        OnCallHoursPayDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        PayrollTaxDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        InsuranceDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        PensionDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ClaimDay2To14 = c.Decimal(nullable: false, precision: 18, scale: 2),
                         SickPayRate = c.Decimal(nullable: false, precision: 18, scale: 2),
                         HolidayPayRate = c.Decimal(nullable: false, precision: 18, scale: 2),
                         SocialFeeRate = c.Decimal(nullable: false, precision: 18, scale: 2),
@@ -184,10 +66,6 @@ namespace Sjuklöner.Migrations
                         PerHourOnCallWeekday = c.Decimal(nullable: false, precision: 18, scale: 2),
                         PerHourOnCallWeekend = c.Decimal(nullable: false, precision: 18, scale: 2),
                         HourlySalaryAsString = c.String(),
-                        SickPayRateAsString = c.String(),
-                        HolidayPayRateAsString = c.String(),
-                        SocialFeeRateAsString = c.String(),
-                        PensionAndInsuranceRateAsString = c.String(),
                         PerHourUnsocialEveningAsString = c.String(),
                         PerHourUnsocialNightAsString = c.String(),
                         PerHourUnsocialWeekendAsString = c.String(),
@@ -242,12 +120,11 @@ namespace Sjuklöner.Migrations
                         CostCalcD2T14 = c.String(),
                         TotalCostD1T14 = c.String(),
                         TotalCostCalcD1T14 = c.String(),
+                        ClaimStatus_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.CareCompanies", t => t.CareCompanyId, cascadeDelete: true)
-                .ForeignKey("dbo.ClaimStatus", t => t.ClaimStatusId, cascadeDelete: true)
-                .Index(t => t.ClaimStatusId)
-                .Index(t => t.CareCompanyId);
+                .ForeignKey("dbo.ClaimStatus", t => t.ClaimStatus_Id)
+                .Index(t => t.ClaimStatus_Id);
             
             CreateTable(
                 "dbo.ClaimStatus",
@@ -257,6 +134,148 @@ namespace Sjuklöner.Migrations
                         Name = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.ClaimDays",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ReferenceNumber = c.String(),
+                        Date = c.DateTime(nullable: false),
+                        ClaimDayDate = c.DateTime(),
+                        DateString = c.String(),
+                        CollectiveAgreementInfoId = c.Int(nullable: false),
+                        SickDayNumber = c.Int(nullable: false),
+                        Hours = c.String(),
+                        UnsocialEvening = c.String(),
+                        UnsocialNight = c.String(),
+                        UnsocialWeekend = c.String(),
+                        UnsocialGrandWeekend = c.String(),
+                        OnCallDay = c.String(),
+                        OnCallNight = c.String(),
+                        HoursSI = c.String(),
+                        UnsocialEveningSI = c.String(),
+                        UnsocialNightSI = c.String(),
+                        UnsocialWeekendSI = c.String(),
+                        UnsocialGrandWeekendSI = c.String(),
+                        OnCallDaySI = c.String(),
+                        OnCallNightSI = c.String(),
+                        PerHourUnsocialEvening = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialNight = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialWeekend = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialHoliday = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourOnCallWeekday = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourOnCallWeekend = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialEveningAsString = c.String(),
+                        PerHourUnsocialNightAsString = c.String(),
+                        PerHourUnsocialWeekendAsString = c.String(),
+                        PerHourUnsocialHolidayAsString = c.String(),
+                        PerHourOnCallDayAsString = c.String(),
+                        PerHourOnCallNightAsString = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.ClaimDaySeeds",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ReferenceNumber = c.String(),
+                        ClaimDayDate = c.DateTime(),
+                        DateString = c.String(),
+                        SickDayNumber = c.Int(nullable: false),
+                        Hours = c.String(),
+                        UnsocialEvening = c.String(),
+                        UnsocialNight = c.String(),
+                        UnsocialWeekend = c.String(),
+                        UnsocialGrandWeekend = c.String(),
+                        OnCallDay = c.String(),
+                        OnCallNight = c.String(),
+                        HoursSI = c.String(),
+                        UnsocialEveningSI = c.String(),
+                        UnsocialNightSI = c.String(),
+                        UnsocialWeekendSI = c.String(),
+                        UnsocialGrandWeekendSI = c.String(),
+                        OnCallDaySI = c.String(),
+                        OnCallNightSI = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.ClaimReferenceNumbers",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        LatestYear = c.Int(nullable: false),
+                        LatestReferenceNumber = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Claims",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        OwnerId = c.String(),
+                        ClaimStatusId = c.Int(nullable: false),
+                        CareCompanyId = c.Int(nullable: false),
+                        IVOCheck = c.Boolean(nullable: false),
+                        ProCapitaCheck = c.Boolean(nullable: false),
+                        ReferenceNumber = c.String(),
+                        CompletionStage = c.Int(),
+                        StatusDate = c.DateTime(),
+                        DeadlineDate = c.DateTime(),
+                        CustomerFirstName = c.String(),
+                        CustomerLastName = c.String(),
+                        OrganisationNumber = c.String(),
+                        CustomerSSN = c.String(nullable: false),
+                        AssistantSSN = c.String(),
+                        StandInSSN = c.String(),
+                        QualifyingDate = c.DateTime(nullable: false),
+                        LastDayOfSicknessDate = c.DateTime(nullable: false),
+                        Email = c.String(),
+                        NumberOfSickDays = c.Int(nullable: false),
+                        NumberOfAbsenceHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOrdinaryHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfUnsocialHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOnCallHours = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfHoursWithSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOrdinaryHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfUnsocialHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        NumberOfOnCallHoursSI = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimedSickPay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimedHolidayPay = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimedSocialFees = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimedPensionAndInsurance = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ClaimedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ModelSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        DecidedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ApprovedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        RejectedSum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SickPayRate = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HolidayPayRate = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        SocialFeeRate = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PensionAndInsuranceRate = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HourlySalary = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialEvening = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialNight = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialWeekend = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourUnsocialHoliday = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourOnCallWeekday = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PerHourOnCallWeekend = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        HourlySalaryAsString = c.String(),
+                        SickPayRateAsString = c.String(),
+                        HolidayPayRateAsString = c.String(),
+                        SocialFeeRateAsString = c.String(),
+                        PensionAndInsuranceRateAsString = c.String(),
+                        TotalCostD1T14 = c.String(),
+                        TotalCostCalcD1T14 = c.String(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.CareCompanies", t => t.CareCompanyId, cascadeDelete: true)
+                .ForeignKey("dbo.ClaimStatus", t => t.ClaimStatusId, cascadeDelete: true)
+                .Index(t => t.ClaimStatusId)
+                .Index(t => t.CareCompanyId);
             
             CreateTable(
                 "dbo.Documents",
@@ -328,20 +347,6 @@ namespace Sjuklöner.Migrations
                         LockoutEnabled = c.Boolean(nullable: false),
                         AccessFailedCount = c.Int(nullable: false),
                         UserName = c.String(nullable: false, maxLength: 256),
-                        UserId = c.String(),
-                        Approved = c.Boolean(),
-                        CompanyName = c.String(),
-                        StreetAddress = c.String(),
-                        Postcode = c.String(),
-                        City = c.String(),
-                        ClearingNumber = c.String(),
-                        AccountNumber = c.String(),
-                        HourlySalary = c.Decimal(precision: 18, scale: 2),
-                        HolidayPayRate = c.Decimal(precision: 18, scale: 2),
-                        PayrollTaxRate = c.Decimal(precision: 18, scale: 2),
-                        InsuranceRate = c.Decimal(precision: 18, scale: 2),
-                        PensionRate = c.Decimal(precision: 18, scale: 2),
-                        StorageApproval = c.Boolean(),
                         Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
@@ -411,21 +416,29 @@ namespace Sjuklöner.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.CollectiveAgreements",
+                "dbo.CollectiveAgreementHeaders",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                        PerHourUnsocialEvening = c.Double(nullable: false),
-                        PerHourUnsocialNight = c.Double(nullable: false),
-                        PerHourUnsocialWeekend = c.Double(nullable: false),
-                        PerHourUnsocialHoliday = c.Double(nullable: false),
-                        PerHourOnCallWeekday = c.Double(nullable: false),
-                        PerHourOnCallWeekend = c.Double(nullable: false),
-                        PerHourPreparedWeekday = c.Double(nullable: false),
-                        PerHourPreparedWeekend = c.Double(nullable: false),
-                        OvertimeFactor = c.Double(nullable: false),
-                        ExtraHOurFactor = c.Double(nullable: false),
+                        Name = c.String(nullable: false),
+                        Counter = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.CollectiveAgreementInfoes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        CollectiveAgreementHeaderId = c.Int(nullable: false),
+                        StartDate = c.DateTime(nullable: false),
+                        EndDate = c.DateTime(nullable: false),
+                        PerHourUnsocialEvening = c.String(nullable: false),
+                        PerHourUnsocialNight = c.String(nullable: false),
+                        PerHourUnsocialWeekend = c.String(nullable: false),
+                        PerHourUnsocialHoliday = c.String(nullable: false),
+                        PerHourOnCallWeekday = c.String(nullable: false),
+                        PerHourOnCallWeekend = c.String(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -456,6 +469,7 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Documents", "DocStatusId", "dbo.DocStatus");
             DropForeignKey("dbo.Claims", "ClaimStatusId", "dbo.ClaimStatus");
             DropForeignKey("dbo.Claims", "CareCompanyId", "dbo.CareCompanies");
+            DropForeignKey("dbo.ClaimCalculations", "ClaimStatus_Id", "dbo.ClaimStatus");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
@@ -471,8 +485,10 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.Documents", new[] { "MimeTypeId" });
             DropIndex("dbo.Claims", new[] { "CareCompanyId" });
             DropIndex("dbo.Claims", new[] { "ClaimStatusId" });
+            DropIndex("dbo.ClaimCalculations", new[] { "ClaimStatus_Id" });
             DropTable("dbo.AspNetRoles");
-            DropTable("dbo.CollectiveAgreements");
+            DropTable("dbo.CollectiveAgreementInfoes");
+            DropTable("dbo.CollectiveAgreementHeaders");
             DropTable("dbo.Purposes");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.Messages");
@@ -482,12 +498,14 @@ namespace Sjuklöner.Migrations
             DropTable("dbo.MimeTypes");
             DropTable("dbo.DocStatus");
             DropTable("dbo.Documents");
-            DropTable("dbo.ClaimStatus");
             DropTable("dbo.Claims");
             DropTable("dbo.ClaimReferenceNumbers");
             DropTable("dbo.ClaimDaySeeds");
             DropTable("dbo.ClaimDays");
+            DropTable("dbo.ClaimStatus");
+            DropTable("dbo.ClaimCalculations");
             DropTable("dbo.CareCompanies");
+            DropTable("dbo.Assistants");
         }
     }
 }

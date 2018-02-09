@@ -69,6 +69,6 @@ namespace Sjuklöner.Models
             return new ApplicationDbContext();
         }
 
-        //public System.Data.Entity.DbSet<Sjuklöner.Models.Assistant> ApplicationUsers { get; set; }
+        //public System.Data.Entity.DbSet<Sjuklöner.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }

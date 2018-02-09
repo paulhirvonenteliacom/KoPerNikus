@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Sjuklöner.Models
 {
@@ -10,33 +11,52 @@ namespace Sjuklöner.Models
     {
         public int Id { get; set; }
 
-        public int OmbudId { get; set; }
+        //public string OmbudId { get; set; }
 
-        [Display(Name = "Företagets namn")]
+        //[Display(Name = "Ombudets förnamn")]
+        //public string FirstName { get; set; }
+
+        //[Display(Name = "Ombudets Efternamn")]
+        //public string LastName { get; set; }
+
+        //[Display(Name = "Ombudets telefonnummer (inkl. riktnr)")]
+        //public string OmbudPhoneNumber { get; set; }
+
+        [Required]
+        [Display(Name = "Bolagets namn")]
         public string CompanyName { get; set; }
 
-        [Display(Name = "Företagets organisationsnummer")]
-        public string CompanyOrganisationNumber { get; set; }
+        [Required]
+        [Display(Name = "Organisationsnummer")]
+        public string OrganisationNumber { get; set; }
 
+        [Required]
         [Display(Name = "Gatuadress")]
         public string StreetAddress { get; set; }
 
+        [Required]
         [Display(Name = "Postnummer")]
         public string Postcode { get; set; }
 
+        [Required]
         [Display(Name = "Ort")]
         public string City { get; set; }
 
+        [Required]
         [Display(Name = "Bank-/Postgironummer")]
         public string AccountNumber { get; set; }
 
-        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
-        public string PhoneNumber { get; set; }
+        [Required]
+        [Display(Name = "Tel.nummer (inkl. riktnr.)")]
+        public string CompanyPhoneNumber { get; set; }
+
+        [Required]
+        public int? SelectedCollectiveAgreementId { get; set; }
 
         [Display(Name = "Kollektivavtal")]
-        public string CollectiveAgreement { get; set; }
+        public string CollectiveAgreementName { get; set; }
 
-        [Display(Name = "Medgivande om lagring av uppgifter")]
-        public bool StorageApproval { get; set; }
+        [Display(Name = "Kollektivavtalets branschbeteckning")]
+        public string CollectiveAgreementSpecName { get; set; }
     }
 }

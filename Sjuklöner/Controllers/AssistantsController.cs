@@ -7,9 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Sjuklöner.Models;
-using Sjuklöner.Viewmodels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Sjuklöner.Viewmodels;
 
 namespace Sjuklöner.Controllers
 {
@@ -35,8 +34,8 @@ namespace Sjuklöner.Controllers
             return View(assistantIndexVM);
         }
 
-        // GET: Assistants1/Details/5
-        public ActionResult Details(string id)
+        // GET: Assistants/Details/5
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -50,19 +49,25 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants1/Create
+        // GET: Assistants/Create
         public ActionResult Create()
         {
-            return View();
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+
+            Assistant assistant = new Assistant();
+            assistant.CareCompanyId = (int)currentUser.CareCompanyId;
+            return View(assistant);
         }
 
-        // POST: Assistants1/Create
+        // POST: Assistants/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,UserId,Approved,CompanyName,StreetAddress,Postcode,City,ClearingNumber,AccountNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,StorageApproval")] Assistant assistant)
+        public ActionResult Create([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate")] Assistant assistant)
         {
+            ModelState.Remove(nameof(Assistant.Id));
             if (ModelState.IsValid)
             {
                 db.Assistants.Add(assistant);
@@ -73,8 +78,8 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants1/Edit/5
-        public ActionResult Edit(string id)
+        // GET: Assistants/Edit/5
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -88,12 +93,12 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // POST: Assistants1/Edit/5
+        // POST: Assistants/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,UserId,Approved,CompanyName,StreetAddress,Postcode,City,ClearingNumber,AccountNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate,StorageApproval")] Assistant assistant)
+        public ActionResult Edit([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate")] Assistant assistant)
         {
             if (ModelState.IsValid)
             {
@@ -104,8 +109,8 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants1/Delete/5
-        public ActionResult Delete(string id)
+        // GET: Assistants/Delete/5
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -119,10 +124,10 @@ namespace Sjuklöner.Controllers
             return View(assistant);
         }
 
-        // POST: Assistants1/Delete/5
+        // POST: Assistants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public ActionResult DeleteConfirmed(int id)
         {
             Assistant assistant = db.Assistants.Find(id);
             db.Assistants.Remove(assistant);

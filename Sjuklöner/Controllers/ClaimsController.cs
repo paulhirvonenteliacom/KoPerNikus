@@ -103,14 +103,30 @@ namespace Sjuklöner.Controllers
 
             if (!demoMode && refNumber == null)  //new claim
             {
+                var currentId = User.Identity.GetUserId();
+                ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+                var companyId = currentUser.CareCompanyId;
+                create1VM.OrganisationNumber = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().OrganisationNumber;
+
+                var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+                List<int> assistantIds = new List<int>(); //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
+                var assistantDdlString = new List<SelectListItem>();
+                for (int i = 0; i < assistants.Count(); i++)
+                {
+                    assistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                    assistantIds.Add(assistants[i].Id);
+                }
+                create1VM.RegularAssistants = assistantDdlString;
+                create1VM.SubstituteAssistants = assistantDdlString;
+                create1VM.AssistantIds = assistantIds;
+
                 create1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
                 create1VM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
                 return View("Create1", create1VM);
             }
             else if (refNumber != null) //This is an existing claim (either demo or no demo)
             {
-                create1VM = LoadExistingValuesCreate1(refNumber);
-                return View("Create1", create1VM);
+                return View("Create1", LoadExistingValuesCreate1(refNumber));
             }
             else if (demoMode && refNumber == null) //Demo and new claim
             {
@@ -125,7 +141,35 @@ namespace Sjuklöner.Controllers
             var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
 
             Create1VM create1VM = new Create1VM();
-            create1VM.AssistantSSN = claim.AssistantSSN;
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+            var companyId = currentUser.CareCompanyId;
+
+            var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+            List<int> assistantIds = new List<int>(); //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
+            var regAssistantDdlString = new List<SelectListItem>();
+            var subAssistantDdlString = new List<SelectListItem>();
+            create1VM.SelectedRegAssistantId = 1;
+            create1VM.SelectedSubAssistantId = 1;
+
+            for (int i = 0; i < assistants.Count(); i++)
+            {
+                regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                if (assistants[i].Id == claim.SelectedRegAssistantId)
+                {
+                    create1VM.SelectedRegAssistantId = claim.SelectedRegAssistantId;
+                }
+                subAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                if (assistants[i].Id == claim.SelectedSubAssistantId)
+                {
+                    create1VM.SelectedSubAssistantId = claim.SelectedSubAssistantId;
+                }
+                assistantIds.Add(assistants[i].Id);
+            }
+            create1VM.RegularAssistants = regAssistantDdlString;
+            create1VM.SubstituteAssistants = subAssistantDdlString;
+            create1VM.AssistantIds = assistantIds;
+
             create1VM.CustomerSSN = claim.CustomerSSN;
             create1VM.FirstDayOfSicknessDate = claim.QualifyingDate;
             create1VM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
@@ -140,7 +184,20 @@ namespace Sjuklöner.Controllers
             Create1VM defaultValuesCreate1VM = new Create1VM();
 
             defaultValuesCreate1VM.OrganisationNumber = "556881-2118";
-            defaultValuesCreate1VM.AssistantSSN = "930701-4168";
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+            var companyId = currentUser.CareCompanyId;
+            defaultValuesCreate1VM.OrganisationNumber = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().OrganisationNumber;
+
+            var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+            var assistantDdlString = new List<SelectListItem>();
+            for (int i = 0; i < assistants.Count(); i++)
+            {
+                assistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+            }
+            defaultValuesCreate1VM.RegularAssistants = assistantDdlString;
+            defaultValuesCreate1VM.SubstituteAssistants = assistantDdlString;
+
             defaultValuesCreate1VM.CustomerSSN = "391025-7246";
             defaultValuesCreate1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
             defaultValuesCreate1VM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
@@ -177,9 +234,29 @@ namespace Sjuklöner.Controllers
             {
                 return RedirectToAction("IndexPageOmbud");
             }
+            else if (submitButton == "Spara")
+            {
+                var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                var currentId = User.Identity.GetUserId();
+                ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+                var companyId = currentUser.CareCompanyId;
+                var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+                var regAssistantDdlString = new List<SelectListItem>();
+                var subAssistantDdlString = new List<SelectListItem>();
+
+                for (int i = 0; i < assistants.Count(); i++)
+                {
+                    regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                    subAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                }
+                create1VM.RegularAssistants = regAssistantDdlString;
+                create1VM.SubstituteAssistants = subAssistantDdlString;
+
+                return View(create1VM);
+            }
             else
             {
-                return View(create1VM);
+                return RedirectToAction("IndexPageOmbud");
             }
         }
 
@@ -340,8 +417,29 @@ namespace Sjuklöner.Controllers
             claim.CompletionStage = 1;
             claim.OrganisationNumber = create1VM.OrganisationNumber;
             claim.CustomerSSN = create1VM.CustomerSSN;
-            claim.AssistantSSN = create1VM.AssistantSSN;
-            claim.StandInSSN = create1VM.StandInSSN;
+
+            //Assign the SSN to the AssistantSSN property
+            if (create1VM.SelectedRegAssistantId != null)
+            {
+                claim.AssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
+            }
+            else
+            {
+                claim.AssistantSSN = null;
+            }
+            claim.SelectedRegAssistantId = create1VM.SelectedRegAssistantId;
+
+            //Assign the SSN to the StandInSSN property
+            if (create1VM.SelectedSubAssistantId != null)
+            {
+                claim.StandInSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault().AssistantSSN;
+            }
+            else
+            {
+                claim.StandInSSN = null;
+            }
+            claim.SelectedSubAssistantId = create1VM.SelectedSubAssistantId;
+
             claim.Email = create1VM.Email;
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
@@ -361,8 +459,32 @@ namespace Sjuklöner.Controllers
             var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ReferenceNumber).FirstOrDefault();
             claim.OrganisationNumber = create1VM.OrganisationNumber;
             claim.CustomerSSN = create1VM.CustomerSSN;
-            claim.AssistantSSN = create1VM.AssistantSSN;
-            claim.StandInSSN = create1VM.StandInSSN;
+
+            int? assistantId = null;
+            //Assign the SSN to the AssistantSSN property
+            if (create1VM.SelectedRegAssistantId != null)
+            {
+                claim.AssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
+                claim.SelectedRegAssistantId = create1VM.SelectedRegAssistantId;
+            }
+            else
+            {
+                claim.AssistantSSN = null;
+                claim.SelectedRegAssistantId = assistantId;
+            }
+
+            //Assign the SSN to the StandInSSN property
+            if (create1VM.SelectedSubAssistantId != null)
+            {
+                claim.StandInSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault().AssistantSSN;
+                claim.SelectedSubAssistantId = create1VM.SelectedSubAssistantId;
+            }
+            else
+            {
+                claim.StandInSSN = null;
+                claim.SelectedSubAssistantId = assistantId;
+            }
+
             claim.Email = create1VM.Email;
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
@@ -728,12 +850,12 @@ namespace Sjuklöner.Controllers
             using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
             {
                 writer.WriteStartDocument();
-                    writer.WriteStartElement("claiminformation");
-                        writer.WriteElementString("SSN", claim.CustomerSSN);
-                        writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
-                        writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
-                        writer.WriteElementString("ClaimId", claim.Id.ToString());
-                        writer.WriteElementString("UserId", UserId);
+                writer.WriteStartElement("claiminformation");
+                writer.WriteElementString("SSN", claim.CustomerSSN);
+                writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                writer.WriteElementString("ClaimId", claim.Id.ToString());
+                writer.WriteElementString("UserId", UserId);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }

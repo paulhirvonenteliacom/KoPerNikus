@@ -1,5 +1,4 @@
 ﻿@model Sjuklöner.Viewmodels.AssistantIndexVM
-
 @{
     ViewBag.Title = "Index";
 }
@@ -9,18 +8,20 @@
 <div class="row">
     <div class="form-group">
         <div class="col-md-6 bold-36">
-            @Html.DisplayFor(model => model.CareCompanyName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DisplayFor(model => model.CareCompanyName, null, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="col col-md-6">
     </div>
 </div>
-<p>
-    @Html.ActionLink("Ny assistent", "Create")
-</p>
+<div class="row">
+    <div class="col col-md-1">
+        @Html.ActionLink("Ny assistent", "Create", null, new { @class = "btn btn-primary btn-primary3" })
+    </div>
+</div>
+<br />
 <hr class="claim-divider" />
 <br />
-
 <table class="table">
     <tr>
         <th>
@@ -65,12 +66,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.PensionRate)
             </th>*@
-        @*<th>
-                @Html.DisplayNameFor(model => model.StorageApproval)
-            </th>*@
         <th></th>
     </tr>
-
     @foreach (var item in Model.AssistantList)
     {
         <tr>
@@ -91,15 +88,6 @@
             </td>
             @*<td>
                     @Html.DisplayFor(modelItem => item.CompanyName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StreetAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Postcode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
                 </td>*@
             @*<td>
                     @Html.DisplayFor(modelItem => item.HourlySalary)
@@ -115,9 +103,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PensionRate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StorageApproval)
                 </td>*@
             <td>
                 @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
@@ -126,5 +111,4 @@
             </td>
         </tr>
     }
-
 </table>

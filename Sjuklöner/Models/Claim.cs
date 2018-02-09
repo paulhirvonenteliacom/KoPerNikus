@@ -17,6 +17,10 @@ namespace Sjuklöner.Models
 
         public int CareCompanyId { get; set; }
 
+        public int? SelectedRegAssistantId { get; set; }
+
+        public int? SelectedSubAssistantId { get; set; }
+
         public bool IVOCheck { get; set; }
 
         public bool ProCapitaCheck { get; set; }
