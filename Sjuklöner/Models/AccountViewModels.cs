@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace Sjuklöner.Models
 {
@@ -70,15 +71,40 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Lösenord")]
-        public string Password { get; set; }
+        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$")]
+        [Display(Name = "Personnummer")]
+        public string SSN { get; set; }
 
-        [DataType(DataType.Password)]
-        [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
+        public string OmbudPhoneNumber { get; set; }
+
+        [Display(Name = "Företagets namn")]
+        public string CompanyName { get; set; }
+
+        [Display(Name = "Företagets organisationsnummer")]
+        public string CompanyOrganisationNumber { get; set; }
+
+        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
+        public string CompanyPhoneNumber { get; set; }
+
+        [Display(Name = "Gatuadress")]
+        public string StreetAddress { get; set; }
+
+        [Display(Name = "Postnummer")]
+        public string Postcode { get; set; }
+
+        [Display(Name = "Ort")]
+        public string City { get; set; }
+
+        [Display(Name = "Bank-/Postgironummer")]
+        public string AccountNumber { get; set; }
+
+        public int? SelectedCollectiveAgreementId { get; set; }
+
+        [Display(Name = "Kollektivavtal")]
+        public IEnumerable<SelectListItem> CollectiveAgreements { get; set; }
+
+        public string Type { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -96,7 +122,6 @@ namespace Sjuklöner.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

@@ -90,7 +90,7 @@ namespace Sjuklöner.Migrations
 
             var administrativeOfficials = new List<AdministrativeOfficial>
             {
-                new AdministrativeOfficial{FirstName = "Henrik",LastName = "Signell",Email = "henrik.signell@helsingborg.se",UserName = "henrik.signell@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "19605078134"}
+                new AdministrativeOfficial{FirstName = "Henrik",LastName = "Signell",Email = "henrik.signell@helsingborg.se",UserName = "henrik.signell@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "196705078134"}
             };
 
             foreach (var administrativeOfficial in administrativeOfficials)

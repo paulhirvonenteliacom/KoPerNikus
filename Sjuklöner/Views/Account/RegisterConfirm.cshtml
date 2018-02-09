@@ -1,0 +1,32 @@
+﻿@model Sjuklöner.Models.RegisterViewModel
+@{
+    ViewBag.Title = "RegisterConfirm";
+}
+
+@using (Html.BeginForm("Register", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", @id = "hiddenForm", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.SSN)
+    @Html.HiddenFor(m => m.Type)
+    @Html.HiddenFor(m => m.StreetAddress)
+    @Html.HiddenFor(m => m.AccountNumber)
+    @Html.HiddenFor(m => m.City)
+    @Html.HiddenFor(m => m.CompanyName)
+    @Html.HiddenFor(m => m.CompanyOrganisationNumber)
+    @Html.HiddenFor(m => m.CompanyPhoneNumber)
+    @Html.HiddenFor(m => m.Email)
+    @Html.HiddenFor(m => m.OmbudPhoneNumber)
+    @Html.HiddenFor(m => m.Postcode)
+    @Html.HiddenFor(m => m.SelectedCollectiveAgreementId)
+}
+
+<div class="row page-header1">
+    <div class="col-sm-6 col-sm-offset-3">
+        <h1>Vänligen starta BankID och verifiera dig...</h1>
+    </div>
+</div>
+
+
+<script>
+    $('h1').ready(function () { document.getElementById('hiddenForm').submit(); });
+</script>

@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Sjuklöner.Models;
 using Sjuklöner.BankIDService;
+using System.Collections.Generic;
 
 namespace Sjuklöner.Controllers
 {
@@ -140,7 +141,23 @@ namespace Sjuklöner.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            var vm = new RegisterViewModel();
+            List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
+            collectiveAgreements = new ApplicationDbContext().CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+            {
+                Value = $"{c.Id}",
+                Text = c.Name
+            });
+            vm.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
+            return View(vm);
+        }
+
+        //
+        // GET: /Account/RegisterConfirm
+        [AllowAnonymous]
+        public ActionResult RegisterConfirm(RegisterViewModel model)
+        {
+            return View(model);
         }
 
         //
@@ -152,21 +169,91 @@ namespace Sjuklöner.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (!UserManager.Users.Where(u => u.SSN == model.SSN).Any())
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    using (var client = new RpServicePortTypeClient())
+                    {
+                        var authRequest = new AuthenticateRequestType();
+                        authRequest.personalNumber = model.SSN;
+                        if (model.Type == "Mobilt")
+                        {
+                            RequirementType conditions = new RequirementType
+                            {
+                                condition = new[]
+                                {
+                                    new ConditionType()
+                                    {
+                                        key = "certificatePolicies",
+                                        value = new[] {"1.2.3.4.25"},
+                                    }
+                                }
+                            };
+                            authRequest.requirementAlternatives = new[] { conditions };
+                        }
+
+
+                        OrderResponseType response = client.Authenticate(authRequest);
+
+                        CollectResponseType registerCollectResult;
+
+                        do
+                        {
+                            try
+                            {
+                                registerCollectResult = client.Collect(response.orderRef);
+                            }
+                            catch
+                            {
+                                return View("RegisterConfirm", model);
+                            }
+                            System.Threading.Thread.Sleep(1000);
+                        } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);
+
+                        CareCompany company = new CareCompany();
+                        company.PhoneNumber = model.CompanyPhoneNumber;
+                        company.Postcode = model.Postcode;
+                        company.City = model.City;
+                        company.CompanyOrganisationNumber = model.CompanyOrganisationNumber;
+                        company.StreetAddress = model.StreetAddress;
+                        company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
+                        company.AccountNumber = model.AccountNumber;
+                        company.CompanyName = model.CompanyName;
+                        var db = new ApplicationDbContext();
+                        db.CareCompanies.Add(company);
+                        db.SaveChanges();
+
+                        var user = new ApplicationUser
+                        {
+                            UserName = registerCollectResult.userInfo.name,
+                            Email = model.Email,
+                            FirstName = registerCollectResult.userInfo.name,
+                            LastName = registerCollectResult.userInfo.surname,
+                            PhoneNumber = model.OmbudPhoneNumber,
+                            CareCompanyId = company.Id,
+                            LastLogon = DateTime.Now,
+                            SSN = model.SSN
+                        };
+                        var result = await UserManager.CreateAsync(user);
+                        UserManager.AddToRole(user.Id, "Ombud");
+                        if (result.Succeeded)
+                        {
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                            // Send an email with this link
+                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                            return RedirectToAction("Index", "Claims");
+                        }
+                        AddErrors(result);
+                    }
+
                 }
-                AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
@@ -311,7 +398,7 @@ namespace Sjuklöner.Controllers
                 {
                     var authRequest = new AuthenticateRequestType();
                     authRequest.personalNumber = model.ssn;
-                    if(model.type == "Mobilt")
+                    if (model.type == "Mobilt")
                     {
                         RequirementType conditions = new RequirementType
                         {
@@ -324,7 +411,7 @@ namespace Sjuklöner.Controllers
                                 }
                             }
                         };
-                    authRequest.requirementAlternatives = new[] { conditions };
+                        authRequest.requirementAlternatives = new[] { conditions };
                     }
 
 
@@ -345,11 +432,11 @@ namespace Sjuklöner.Controllers
                         System.Threading.Thread.Sleep(1000);
                     } while (result.progressStatus != ProgressStatusType.COMPLETE);
 
+                    var user = UserManager.Users.Where(u => u.SSN == model.ssn).FirstOrDefault();
+                    await SignInManager.SignInAsync(user, true, true);
                 }
 
-                var user = UserManager.Users.Where(u => u.SSN == model.ssn).FirstOrDefault();
 
-                await SignInManager.SignInAsync(user, true, true);
 
                 if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
                     return Redirect(model.ReturnUrl);
