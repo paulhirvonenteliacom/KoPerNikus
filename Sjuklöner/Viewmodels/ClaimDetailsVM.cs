@@ -555,6 +555,8 @@ namespace Sjuklöner.Viewmodels
 
         public List<ClaimCalculation> ClaimCalculations { get; set; }
 
+        public List<Document> Documents { get; set; }
+
         [Display(Name = "Kommentarer")]
         public List<Message> messages { get; set; }
     }

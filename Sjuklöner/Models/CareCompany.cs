@@ -10,8 +10,6 @@ namespace Sjuklöner.Models
     {
         public int Id { get; set; }
 
-        public int OmbudId { get; set; }
-
         [Display(Name = "Företagets namn")]
         public string CompanyName { get; set; }
 
@@ -33,10 +31,9 @@ namespace Sjuklöner.Models
         [Display(Name = "Telefonnummer (inkl. riktnummer)")]
         public string PhoneNumber { get; set; }
 
-        [Display(Name = "Kollektivavtal")]
-        public string CollectiveAgreement { get; set; }
-
         [Display(Name = "Medgivande om lagring av uppgifter")]
         public bool StorageApproval { get; set; }
+
+        public int? SelectedCollectiveAgreementId { get; set; }
     }
 }

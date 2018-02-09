@@ -10,11 +10,11 @@ namespace Sjuklöner.Models
     {
         public int Id { get; set; }
 
-        public int MimeTypeId { get; set; }
+        public int? MimeTypeId { get; set; }
 
-        public int DocStatusId { get; set; }
+        public int? DocStatusId { get; set; }
 
-        public int PurposeId { get; set; }
+        public int? PurposeId { get; set; }
 
         public string OwnerId { get; set; }
 

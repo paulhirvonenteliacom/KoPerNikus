@@ -504,7 +504,7 @@
                                 Lönespecifikation, ordinarie
                             </div>
                             <div class="row display-padding">
-                                <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachment").FirstOrDefault().Filename}")">
                                     lönespecifikation_ordinarie.pdf
                                 </a>
                             </div>
@@ -515,7 +515,7 @@
                             Lönespecifikation, vikarie
                         </div>
                         <div class="row display-padding4">
-                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachmentStandIn").FirstOrDefault().Filename}")">
                                 lönespecifikation_vikarie.pdf
                             </a>
                         </div>
@@ -525,7 +525,7 @@
                             Sjukfrånvaroanmälan
                         </div>
                         <div class="row display-padding4">
-                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SickLeaveNotification").FirstOrDefault().Filename}")">
                                 sjukfrånvaroanmälan.pdf
                             </a>
                         </div>
@@ -535,7 +535,7 @@
                             Läkarintyg
                         </div>
                         <div class="row display-padding4">
-                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
                                 läkarintyg.pdf
                             </a>
                         </div>
@@ -547,7 +547,7 @@
                             Tidsredovisning, Försäkringskassan, ordinarie assistent
                         </div>
                         <div class="row display-padding3">
-                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReport").FirstOrDefault().Filename}")">
                                 tidsredovisning_ordinarie.pdf
                             </a>
                         </div>
@@ -557,7 +557,7 @@
                             Tidsredovisning, Försäkringskassan, vikarierande assistent
                         </div>
                         <div class="row display-padding4">
-                            <a target="_blank" href="@Href("~/Content/Attachments/exempel.pdf")">
+                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn").FirstOrDefault().Filename}")">
                                 tidsredovisning_vikarie.pdf
                             </a>
                         </div>

@@ -45,7 +45,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Claims
-        public ActionResult IndexPageOmbud()
+        public ActionResult IndexPageOmbud(string searchString, string searchBy = "Referensnummer")
         {
             IndexPageOmbudVM indexPageOmbudVM = new IndexPageOmbudVM();
 
@@ -54,16 +54,26 @@ namespace Sjuklöner.Controllers
             var claims = db.Claims.Where(c => c.OwnerId == me.Id).ToList();
             if (claims.Count > 0)
             {
-                indexPageOmbudVM.DecidedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList(); //Old "Rejected
-                indexPageOmbudVM.DraftClaims = claims.Where(c => c.ClaimStatusId == 2).ToList();
-                indexPageOmbudVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList().Concat(claims.Where(c => c.ClaimStatusId == 5)).ToList();
+                var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
+                var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 5);
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    decidedClaims = Search(decidedClaims, searchString, searchBy);
+                    draftClaims = Search(draftClaims, searchString, searchBy);
+                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                }
+                indexPageOmbudVM.DecidedClaims = decidedClaims.ToList(); //Old "Rejected
+                indexPageOmbudVM.DraftClaims = draftClaims.ToList();
+                indexPageOmbudVM.UnderReviewClaims = underReviewClaims.ToList();
             }
 
             return View("IndexPageOmbud", indexPageOmbudVM);
         }
 
+
         // GET: Claims
-        public ActionResult IndexPageAdmOff(string referenceNumber = null)
+        public ActionResult IndexPageAdmOff(string searchString, string searchBy = "Referensnummer")
         {
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
 
@@ -72,12 +82,33 @@ namespace Sjuklöner.Controllers
             var claims = db.Claims.Include(c => c.CareCompany).ToList();
             if (claims.Count > 0)
             {
-                indexPageAdmOffVM.DecidedClaims = claims.Where(c => c.ClaimStatusId == 1).ToList();
-                indexPageAdmOffVM.InInboxClaims = claims.Where(c => c.ClaimStatusId == 5).ToList();
-                indexPageAdmOffVM.UnderReviewClaims = claims.Where(c => c.ClaimStatusId == 3).ToList();
+                var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
+                var inInobxClaims = claims.Where(c => c.ClaimStatusId == 5);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    decidedClaims = Search(decidedClaims, searchString, searchBy);
+                    inInobxClaims = Search(inInobxClaims, searchString, searchBy);
+                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                }
+                indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
+                indexPageAdmOffVM.InInboxClaims = inInobxClaims.ToList();
+                indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
             }
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
+        }
+
+        private IEnumerable<Claim> Search(IEnumerable<Claim> Claims, string searchString, string searchBy)
+        {
+            if (searchBy == "Referensnummer")
+                Claims = Claims.Where(c => c.ReferenceNumber.Contains(searchString));
+            else if (searchBy == "CSSN")
+                Claims = Claims.Where(c => c.CustomerSSN.Contains(searchString));
+            else if (searchBy == "ASSN")
+                Claims = Claims.Where(c => c.AssistantSSN.Contains(searchString));
+
+            return Claims;
         }
 
         // GET: Claims/Details/5
@@ -664,7 +695,7 @@ namespace Sjuklöner.Controllers
                 claim.StatusDate = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("ShowReceipt", create3VM);
+                return RedirectToAction("Create4", new { ClaimNumber = refNumber });
             }
             else if (submitButton == "Avbryt")
             {
@@ -702,9 +733,71 @@ namespace Sjuklöner.Controllers
             }
         }
 
-        public ActionResult ShowReceipt(Create3VM create3VM)
+        //
+        // GET: Claims/Create4
+        public ActionResult Create4(string ClaimNumber)
         {
-            var claim = db.Claims.Where(c => c.ReferenceNumber == create3VM.ClaimNumber).FirstOrDefault();
+            var VM = new Create4VM();
+            VM.ClaimNumber = ClaimNumber;
+
+            return View("Create4", VM);
+        }
+
+        //
+        // POST: Claims/Create4
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SalaryAttachmentStandIn, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (!Directory.Exists(Server.MapPath("~/Uploads")))
+                        Directory.CreateDirectory(Server.MapPath("~/Uploads"));
+                    if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
+                        Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
+
+                    string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
+
+                    var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
+
+                    NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
+                    NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
+                    NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
+                    NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
+                    NewDocument(model.TimeReport, path, "TimeReport", claim);
+                    NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR: " + ex.Message.ToString();
+                }
+                return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
+            }
+            return View("Create4", model);
+        }
+
+        private void NewDocument(HttpPostedFileBase file, string path, string title, Claim claim)
+        {
+            var document = new Document();
+            document.DateUploaded = DateTime.Now;
+            document.Filename = $"{title}_{file.FileName}";
+            document.FileSize = file.ContentLength;
+            document.FileType = file.ContentType;
+            document.OwnerId = User.Identity.GetUserId();
+            document.Title = title;
+            db.Documents.Add(document);
+            claim.Documents.Add(document);
+            db.SaveChanges();
+            file.SaveAs(Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}"));
+            return;
+        }
+
+        public ActionResult ShowReceipt(string ClaimNumber)
+        {
+            var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
 
             if (!string.IsNullOrWhiteSpace(claim.Email))
             {
@@ -713,8 +806,8 @@ namespace Sjuklöner.Controllers
 
                 message.To.Add(new MailAddress(claim.Email));
                 //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
-                message.Subject = "Ny ansökan med referensnummer: " + create3VM.ClaimNumber;
-                message.Body = "Vi har mottagit din ansökan med referensnummer " + create3VM.ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
+                message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
+                message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
                 SendEmail(message);
@@ -728,15 +821,18 @@ namespace Sjuklöner.Controllers
             using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
             {
                 writer.WriteStartDocument();
-                    writer.WriteStartElement("claiminformation");
-                        writer.WriteElementString("SSN", claim.CustomerSSN);
-                        writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
-                        writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
-                        writer.WriteElementString("ClaimId", claim.Id.ToString());
-                        writer.WriteElementString("UserId", UserId);
+                writer.WriteStartElement("claiminformation");
+                writer.WriteElementString("SSN", claim.CustomerSSN);
+                writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
+                writer.WriteElementString("ClaimId", claim.Id.ToString());
+                writer.WriteElementString("UserId", UserId);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
+            var create3VM = new Create3VM();
+            create3VM.ClaimNumber = claim.ReferenceNumber;
+            create3VM.ClaimSum = claim.ClaimedSum;
             return View("Receipt", create3VM);
         }
 
@@ -1085,6 +1181,8 @@ namespace Sjuklöner.Controllers
             //Total sum for day 1 to day 14
             claimDetailsVM.TotalCostD1T14 = claim.TotalCostD1T14;
             claimDetailsVM.TotalCostCalcD1T14 = claim.TotalCostCalcD1T14;
+
+            claimDetailsVM.Documents = claim.Documents;
 
             claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
 

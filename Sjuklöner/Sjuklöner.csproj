@@ -205,8 +205,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-
-
+    <Compile Include="Migrations\201802071051007_init.cs" />
+    <Compile Include="Migrations\201802071051007_init.Designer.cs">
+      <DependentUpon>201802071051007_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802081013490_init1.cs" />
+    <Compile Include="Migrations\201802081013490_init1.Designer.cs">
+      <DependentUpon>201802081013490_init1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -243,6 +249,7 @@
     <Compile Include="Viewmodels\ClaimFormVM.cs" />
     <Compile Include="Viewmodels\Create2VM.cs" />
     <Compile Include="Viewmodels\CollectiveAgreementIndexVM.cs" />
+    <Compile Include="Viewmodels\Create4VM.cs" />
     <Compile Include="Viewmodels\SendMessageVM.cs" />
     <Compile Include="Viewmodels\MessageVM.cs" />
     <Compile Include="Viewmodels\DecisionVM.cs" />
@@ -371,6 +378,8 @@
     <Content Include="Views\Assistants\Index.cshtml" />
     <Content Include="Views\Account\_BankIDLogin.cshtml" />
     <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
+    <Content Include="Views\Claims\Create4.cshtml" />
+    <Content Include="Views\Account\RegisterConfirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -388,7 +397,14 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
-  
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201802071051007_init.resx">
+      <DependentUpon>201802071051007_init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802081013490_init1.resx">
+      <DependentUpon>201802081013490_init1.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
