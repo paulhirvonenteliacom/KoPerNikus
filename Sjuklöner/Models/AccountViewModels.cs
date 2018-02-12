@@ -107,6 +107,28 @@ namespace Sjuklöner.Models
         public string Type { get; set; }
     }
 
+    public class NewAdmOffVM
+    {
+        [Required]
+        public string SSN { get; set; }
+
+        [Required]        
+        public string ConfirmSSN { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        public string PhoneNumber { get; set; }
+    }
+
     public class ResetPasswordViewModel
     {
         [Required]

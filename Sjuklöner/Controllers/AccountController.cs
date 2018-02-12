@@ -137,6 +137,42 @@ namespace Sjuklöner.Controllers
         }
 
         //
+        // GET: /Account/NewAdmOff
+        public ActionResult NewAdmOff()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Account/NewAdmOff
+        public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
+        {
+            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = $"{vm.FirstName} {vm.LastName}",
+                    Email = vm.Email,
+                    FirstName = vm.FirstName,
+                    LastName = vm.LastName,
+                    PhoneNumber = vm.PhoneNumber,
+                    LastLogon = DateTime.Now,
+                    SSN = vm.SSN
+                };
+                var result = await UserManager.CreateAsync(user);
+                UserManager.AddToRole(user.Id, "AdministrativeOfficial");
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    return RedirectToAction("Index", "Claims");
+                }
+                AddErrors(result);
+            }
+            return View(vm);
+        }
+
+        //
         // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
@@ -213,10 +249,10 @@ namespace Sjuklöner.Controllers
                         } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);
 
                         CareCompany company = new CareCompany();
-                        company.PhoneNumber = model.CompanyPhoneNumber;
+                        company.CompanyPhoneNumber = model.CompanyPhoneNumber;
                         company.Postcode = model.Postcode;
                         company.City = model.City;
-                        company.CompanyOrganisationNumber = model.CompanyOrganisationNumber;
+                        company.OrganisationNumber = model.CompanyOrganisationNumber;
                         company.StreetAddress = model.StreetAddress;
                         company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
                         company.AccountNumber = model.AccountNumber;
