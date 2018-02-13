@@ -206,9 +206,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201802130543445_init.cs" />
-    <Compile Include="Migrations\201802130543445_init.Designer.cs">
-      <DependentUpon>201802130543445_init.cs</DependentUpon>
+    <Compile Include="Migrations\201802121002167_init.cs" />
+    <Compile Include="Migrations\201802121002167_init.Designer.cs">
+      <DependentUpon>201802121002167_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -397,6 +397,7 @@
     <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
     <Content Include="Views\Claims\Create4.cshtml" />
     <Content Include="Views\Account\RegisterConfirm.cshtml" />
+    <Content Include="Views\Account\NewAdmOff.cshtml" />
     <Content Include="Views\CareCompanies\DeleteOmbud.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -416,8 +417,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802130543445_init.resx">
-      <DependentUpon>201802130543445_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802121002167_init.resx">
+      <DependentUpon>201802121002167_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

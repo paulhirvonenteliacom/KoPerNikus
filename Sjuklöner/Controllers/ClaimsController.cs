@@ -73,6 +73,7 @@ namespace Sjuklöner.Controllers
 
 
         // GET: Claims
+        [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult IndexPageAdmOff(string searchString, string searchBy = "Referensnummer")
         {
             IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
