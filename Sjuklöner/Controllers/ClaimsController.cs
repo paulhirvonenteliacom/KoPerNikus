@@ -106,7 +106,7 @@ namespace Sjuklöner.Controllers
             else if (searchBy == "CSSN")
                 Claims = Claims.Where(c => c.CustomerSSN.Contains(searchString));
             else if (searchBy == "ASSN")
-                Claims = Claims.Where(c => c.AssistantSSN.Contains(searchString));
+                Claims = Claims.Where(c => c.RegAssistantSSN.Contains(searchString));
 
             return Claims;
         }
@@ -445,86 +445,167 @@ namespace Sjuklöner.Controllers
         {
             Claim claim = new Claim();
             claim.ReferenceNumber = GenerateReferenceNumber();
-            claim.CompletionStage = 1;
-            claim.OrganisationNumber = create1VM.OrganisationNumber;
+            claim.CompletionStage = 1; //CompletionsStage is used for keeping track on what stage in the claim process has been completed. Used when jumping back in the process and also when updating a draft claim.
+            claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
+
+            var currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
+
+            //Save company information
+            SaveCompanyInformation(claim, currentUser);
+
+            //Save ombud information
+            SaveOmbudInformation(claim, currentUserId, currentUser);
+
+            //Save customer information
+            SaveCustomerInformation(create1VM, claim);
+
+            //Save regular assistant information
+            SaveRegAssistantInformation(create1VM, claim);
+
+            //Save substitute assistant information
+            SaveSubAssistantInformation(create1VM, claim);
+
+            claim.StatusDate = DateTime.Now;
+            claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
+            claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
+            claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+            db.Claims.Add(claim);
+            db.SaveChanges();
+            return claim.ReferenceNumber;
+        }
+
+        private static void SaveCustomerInformation(Create1VM create1VM, Claim claim)
+        {
             claim.CustomerSSN = create1VM.CustomerSSN;
+            claim.CustomerName = create1VM.CustomerName;
+            claim.CustomerAddress = create1VM.CustomerAddress;
+            claim.CustomerPhoneNumber = create1VM.CustomerPhoneNumber;
+        }
 
-            //Assign the SSN to the AssistantSSN property
-            if (create1VM.SelectedRegAssistantId != null)
-            {
-                claim.AssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
-            }
-            else
-            {
-                claim.AssistantSSN = null;
-            }
-            claim.SelectedRegAssistantId = create1VM.SelectedRegAssistantId;
-
-            //Assign the SSN to the StandInSSN property
+        private void SaveSubAssistantInformation(Create1VM create1VM, Claim claim)
+        {
             if (create1VM.SelectedSubAssistantId != null)
             {
-                claim.StandInSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault().AssistantSSN;
+                var subAssistant = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault();
+                claim.SubAssistantSSN = subAssistant.AssistantSSN;
+                claim.SubFirstName = subAssistant.FirstName;
+                claim.SubFirstName = subAssistant.LastName;
+                claim.SubPhoneNumber = subAssistant.PhoneNumber;
+                claim.SubEmail = subAssistant.Email;
             }
             else
             {
                 claim.StandInSSN = null;
             }
             claim.SelectedSubAssistantId = create1VM.SelectedSubAssistantId;
+        }
 
-            claim.Email = create1VM.Email;
-            claim.StatusDate = DateTime.Now;
-            claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
-            claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
-            claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
-            var currentUserId = User.Identity.GetUserId();
+        private void SaveRegAssistantInformation(Create1VM create1VM, Claim claim)
+        {
+            if (create1VM.SelectedRegAssistantId != null)
+            {
+                var regAssistant = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault();
+                claim.RegAssistantSSN = regAssistant.AssistantSSN;
+                claim.RegFirstName = regAssistant.FirstName;
+                claim.RegLastName = regAssistant.LastName;
+                claim.RegPhoneNumber = regAssistant.PhoneNumber;
+                claim.RegEmail = regAssistant.Email;
+                claim.HourlySalaryAsString = regAssistant.HourlySalary;
+                claim.HourlySalary = Convert.ToDecimal(claim.HourlySalaryAsString);
+                claim.HolidayPayRateAsString = regAssistant.HolidayPayRate;
+                claim.HolidayPayRate = Convert.ToDecimal(regAssistant.HolidayPayRate);
+                claim.SickPayRateAsString = "80,00";
+                claim.SickPayRate = Convert.ToDecimal("80,00");
+                claim.SocialFeeRateAsString = regAssistant.PayrollTaxRate;
+                claim.SocialFeeRate = Convert.ToDecimal(regAssistant.PayrollTaxRate);
+                claim.PensionAndInsuranceRateAsString = regAssistant.PensionAndInsuranceRate;
+                claim.PensionAndInsuranceRate = Convert.ToDecimal(regAssistant.PensionAndInsuranceRate);
+            }
+            else
+            {
+                claim.RegAssistantSSN = null;
+            }
+            claim.SelectedRegAssistantId = create1VM.SelectedRegAssistantId;
+        }
+
+        private static void SaveOmbudInformation(Claim claim, string currentUserId, ApplicationUser currentUser)
+        {
             claim.OwnerId = currentUserId;
-            claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
-            claim.CareCompanyId = (int)db.Users.Where(u => u.Id == currentUserId).First().CareCompanyId;
-            db.Claims.Add(claim);
-            db.SaveChanges();
-            return claim.ReferenceNumber;
+            claim.OmbudFirstName = currentUser.FirstName;
+            claim.OmbudLastName = currentUser.LastName;
+            claim.OmbudPhoneNumber = currentUser.PhoneNumber;
+            claim.OmbudEmail = currentUser.Email;
+        }
+
+        private void SaveCompanyInformation(Claim claim, ApplicationUser currentUser)
+        {
+            var companyId = currentUser.CareCompanyId;
+            var careCompany = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault();
+            claim.CareCompanyId = (int)companyId;
+            claim.CompanyName = careCompany.CompanyName;
+            claim.OrganisationNumber = careCompany.OrganisationNumber;
+            claim.StreetAddress = careCompany.StreetAddress;
+            claim.Postcode = careCompany.Postcode;
+            claim.City = careCompany.City;
+            claim.AccountNumber = careCompany.AccountNumber;
+            claim.CompanyPhoneNumber = careCompany.CompanyPhoneNumber;
+            claim.CollectiveAgreementName = careCompany.CollectiveAgreementName;
+            claim.CollectiveAgreementSpecName = careCompany.CollectiveAgreementSpecName;
         }
 
         private void UpdateExistingClaim(Create1VM create1VM)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ReferenceNumber).FirstOrDefault();
-            claim.OrganisationNumber = create1VM.OrganisationNumber;
-            claim.CustomerSSN = create1VM.CustomerSSN;
+            claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
 
-            int? assistantId = null;
-            //Assign the SSN to the AssistantSSN property
-            if (create1VM.SelectedRegAssistantId != null)
-            {
-                claim.AssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
-                claim.SelectedRegAssistantId = create1VM.SelectedRegAssistantId;
-            }
-            else
-            {
-                claim.AssistantSSN = null;
-                claim.SelectedRegAssistantId = assistantId;
-            }
+            var currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
 
-            //Assign the SSN to the StandInSSN property
-            if (create1VM.SelectedSubAssistantId != null)
-            {
-                claim.StandInSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault().AssistantSSN;
-                claim.SelectedSubAssistantId = create1VM.SelectedSubAssistantId;
-            }
-            else
-            {
-                claim.StandInSSN = null;
-                claim.SelectedSubAssistantId = assistantId;
-            }
+            //Save company information
+            SaveCompanyInformation(claim, currentUser);
 
-            claim.Email = create1VM.Email;
+            //Save ombud information
+            SaveOmbudInformation(claim, currentUserId, currentUser);
+
+            //Save customer information
+            SaveCustomerInformation(create1VM, claim);
+
+            //Save regular assistant information
+            SaveRegAssistantInformation(create1VM, claim);
+
+            //Save substitute assistant information
+            SaveSubAssistantInformation(create1VM, claim);
+
+            //int? assistantId = null;
+            ////Assign the SSN to the AssistantSSN property
+            //if (create1VM.SelectedRegAssistantId != null)
+            //{
+            //    claim.AssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
+            //    claim.SelectedRegAssistantId = create1VM.SelectedRegAssistantId;
+            //}
+            //else
+            //{
+            //    claim.AssistantSSN = null;
+            //    claim.SelectedRegAssistantId = assistantId;
+            //}
+
+            ////Assign the SSN to the StandInSSN property
+            //if (create1VM.SelectedSubAssistantId != null)
+            //{
+            //    claim.StandInSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault().AssistantSSN;
+            //    claim.SelectedSubAssistantId = create1VM.SelectedSubAssistantId;
+            //}
+            //else
+            //{
+            //    claim.StandInSSN = null;
+            //    claim.SelectedSubAssistantId = assistantId;
+            //}
+
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
             claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
-            var currentUserId = User.Identity.GetUserId();
-            claim.OwnerId = currentUserId;
-            claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
-            claim.CareCompanyId = (int)db.Users.Where(u => u.Id == currentUserId).First().CareCompanyId;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
         }
@@ -653,6 +734,7 @@ namespace Sjuklöner.Controllers
                 {
                     scheduleRow.Hours = claimDays[i].Hours;
                     scheduleRow.UnsocialEvening = claimDays[i].UnsocialEvening;
+                    scheduleRow.UnsocialNight = claimDays[i].UnsocialNight;
                     scheduleRow.UnsocialWeekend = claimDays[i].UnsocialWeekend;
                     scheduleRow.UnsocialGrandWeekend = claimDays[i].UnsocialGrandWeekend;
 
@@ -744,6 +826,10 @@ namespace Sjuklöner.Controllers
             {
                 create3VM = LoadClaimCreate3VM(claim);
             }
+            else if (!demoMode)
+            {
+                create3VM = LoadNewClaimCreate3VM(claim);
+            }
             else //Demo
             {
                 create3VM = LoadDemoClaimCreate3VM(refNumber);
@@ -751,18 +837,30 @@ namespace Sjuklöner.Controllers
             return View("Create3", create3VM);
         }
 
+        private Create3VM LoadNewClaimCreate3VM(Claim claim)
+        {
+            Create3VM create3VM = new Create3VM();
+            create3VM.ClaimNumber = claim.ReferenceNumber;
+            create3VM.SickPay = "00,00";
+            create3VM.HolidayPay = "00,00";
+            create3VM.SocialFees = "00,00";
+            create3VM.PensionAndInsurance = "00,00";
+            create3VM.ClaimSum = "00,00";
+            return create3VM;
+        }
+
         private Create3VM LoadClaimCreate3VM(Claim claim)
         {
             Create3VM create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
-            if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
-            {
-                create3VM.SickPay = claim.ClaimedSickPay;
-                create3VM.HolidayPay = claim.ClaimedHolidayPay;
-                create3VM.SocialFees = claim.ClaimedSocialFees;
-                create3VM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
-                create3VM.ClaimSum = claim.ClaimedSum;
-            }
+            //if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
+            //{
+                create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
+                create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
+                create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
+                create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
+                create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
+            //}
             return create3VM;
         }
 
@@ -795,11 +893,11 @@ namespace Sjuklöner.Controllers
             }
             unsocialSum = unsocialEvening + unsocialNight + unsocialWeekend + unsocialGrandWeekend;
             oncallSum = oncallDay + oncallNight;
-            create3VM.SickPay = (decimal)0.8 * ((120 * hours) + ((decimal)65.5 * unsocialSum) + ((decimal)43.2 * oncallSum)) - (decimal)0.8 * ((120 * Convert.ToDecimal(claimDays[0].Hours)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialEvening)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialNight)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialWeekend)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].OnCallDay)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].OnCallNight)));
-            create3VM.HolidayPay = (decimal)0.12 * (decimal)0.8 * ((120 * hours) + ((decimal)65.5 * unsocialSum) + ((decimal)43.2 * oncallSum));
-            create3VM.SocialFees = (decimal)0.3142 * (create3VM.SickPay + create3VM.HolidayPay);
-            create3VM.PensionAndInsurance = (decimal)0.06 * (create3VM.SickPay + create3VM.HolidayPay);
-            create3VM.ClaimSum = create3VM.HolidayPay + create3VM.SickPay + create3VM.PensionAndInsurance + create3VM.SocialFees;
+            create3VM.SickPay = String.Format("{0:0.00}", (decimal)0.8 * ((120 * hours) + ((decimal)65.5 * unsocialSum) + ((decimal)43.2 * oncallSum)) - (decimal)0.8 * ((120 * Convert.ToDecimal(claimDays[0].Hours)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialEvening)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialNight)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialWeekend)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].OnCallDay)) + ((decimal)65.5 * Convert.ToDecimal(claimDays[0].OnCallNight))));
+            create3VM.HolidayPay = String.Format("{0:0.00}", (decimal)0.12 * (decimal)0.8 * ((120 * hours) + ((decimal)65.5 * unsocialSum) + ((decimal)43.2 * oncallSum)));
+            create3VM.SocialFees = String.Format("{0:0.00}", (decimal)0.3142 * (Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay)));
+            create3VM.PensionAndInsurance = String.Format("{0:0.00}", (decimal)0.06 * (Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay)));
+            create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.PensionAndInsurance) + Convert.ToDecimal(create3VM.SocialFees));
             return create3VM;
         }
 
@@ -808,9 +906,9 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create3(Create3VM create3VM, string refNumber, string submitButton)
         {
-            if (submitButton == "Skicka in")
+            if (submitButton == "Till steg 4")
             {
-                create3VM.ClaimSum = create3VM.SickPay + create3VM.HolidayPay + create3VM.SocialFees + create3VM.PensionAndInsurance;
+                create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
                 SaveClaim3(create3VM);
                 var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
                 claim.ClaimStatusId = 5;
@@ -839,19 +937,13 @@ namespace Sjuklöner.Controllers
                 {
                     claim.CompletionStage = 3;
                 }
-                claim.ClaimedSickPay = create3VM.SickPay;
-                claim.ClaimedHolidayPay = create3VM.HolidayPay;
-                claim.ClaimedSocialFees = create3VM.SocialFees;
-                claim.ClaimedPensionAndInsurance = create3VM.PensionAndInsurance;
-                claim.ClaimedSum = create3VM.ClaimSum;
+                claim.ClaimedSickPay = Convert.ToDecimal(create3VM.SickPay);
+                claim.ClaimedHolidayPay = Convert.ToDecimal(create3VM.HolidayPay);
+                claim.ClaimedSocialFees = Convert.ToDecimal(create3VM.SocialFees);
+                claim.ClaimedPensionAndInsurance = Convert.ToDecimal(create3VM.PensionAndInsurance);
+                claim.ClaimedSum = Convert.ToDecimal(create3VM.ClaimSum);
                 db.Entry(claim).State = EntityState.Modified;
-
-                //Calculate the model sum
-                //Find ClaimDay records for the claim
-                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create3VM.ClaimNumber).OrderBy(c => c.ReferenceNumber).ToList();
-                //The id of the applicable collective agreement needs to be included in the method call. FOR NOW IT IS HARDCODED TO 1! This should be updated when the collective agreement is integrated with the assistant/carecompany class(es) and the claim process. 
-
-                CalculateModelSum(claim, claimDays, 1);
+                db.SaveChanges();
             }
         }
 
@@ -908,7 +1000,7 @@ namespace Sjuklöner.Controllers
             document.Filename = $"{title}_{file.FileName}";
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
-            document.OwnerId = User.Identity.GetUserId();
+            //document.OwnerId = User.Identity.GetUserId();
             document.Title = title;
             db.Documents.Add(document);
             claim.Documents.Add(document);
@@ -921,12 +1013,12 @@ namespace Sjuklöner.Controllers
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
 
-            if (!string.IsNullOrWhiteSpace(claim.Email))
+            if (!string.IsNullOrWhiteSpace(claim.OmbudEmail))
             {
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
 
-                message.To.Add(new MailAddress(claim.Email));
+                message.To.Add(new MailAddress(claim.OmbudEmail));
                 //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
@@ -954,7 +1046,7 @@ namespace Sjuklöner.Controllers
             }
             var create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
-            create3VM.ClaimSum = claim.ClaimedSum;
+            create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
             return View("Receipt", create3VM);
         }
 
@@ -1073,6 +1165,9 @@ namespace Sjuklöner.Controllers
             List<ClaimDay> claimDays = new List<ClaimDay>();
             claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.SickDayNumber).ToList();
 
+            //Calculate the model sum
+            CalculateModelSum(claim, claimDays);
+
             var ombudId = claim.OwnerId;
             var ombud = db.Users.Where(u => u.Id == ombudId).FirstOrDefault();
 
@@ -1081,41 +1176,42 @@ namespace Sjuklöner.Controllers
 
             claimDetailsVM.ReferenceNumber = referenceNumber;
             claimDetailsVM.StatusName = claim.ClaimStatus.Name;
+            claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
 
             //Kommun
             claimDetailsVM.Council = "Helsingborgs kommun";
             claimDetailsVM.Administration = "Vård- och omsorgsförvaltningen";
 
             //Assistansberättigad
-            claimDetailsVM.CustomerName = "Kund Kundsson";
+            claimDetailsVM.CustomerName = claim.CustomerName;
             claimDetailsVM.CustomerSSN = claim.CustomerSSN;
-            claimDetailsVM.CustomerAddress = "Tolvangatan 12, 123 45 Tolvsta";
-            claimDetailsVM.CustomerPhoneNumber = "019-124 6578";
+            claimDetailsVM.CustomerAddress = claim.CustomerAddress;
+            claimDetailsVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
             //Ombud/uppgiftslämnare
             claimDetailsVM.OmbudName = ombud.FirstName + " " + ombud.LastName;
             claimDetailsVM.OmbudPhoneNumber = ombud.PhoneNumber;
 
             //Assistansanordnare
-            claimDetailsVM.CompanyName = "Smart Assistans";
+            claimDetailsVM.CompanyName = claim.CompanyName; ;
             claimDetailsVM.OrganisationNumber = claim.OrganisationNumber;
-            claimDetailsVM.GiroNumber = "4321-9876";
-            claimDetailsVM.CompanyAddress = "Omsorgsgatan 117, 987 00 Omsorgköping";
-            claimDetailsVM.CompanyPhoneNumber = "010-986 0000";
-            claimDetailsVM.CollectiveAgreement = "Vårdföretagarna-Kommunal, Personlig assistans (Branch G)";
+            claimDetailsVM.GiroNumber = claim.AccountNumber;
+            claimDetailsVM.CompanyAddress = claim.StreetAddress;
+            claimDetailsVM.CompanyPhoneNumber = claim.CompanyPhoneNumber;
+            claimDetailsVM.CollectiveAgreement = claim.CollectiveAgreementName + ", " + claim.CollectiveAgreementSpecName;
+            claimDetailsVM.Workplace = "Björkängen, Birgittagården"; //This can probably be removed
 
             //Insjuknad ordinarie assistent
             //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
-            claimDetailsVM.AssistantName = "Sixten Assistentsson";
-            claimDetailsVM.AssistantSSN = claim.AssistantSSN;
-            if (claimDays.Count() > 0)
-            {
-                claimDetailsVM.QualifyingDayDate = claimDays[0].Date.ToShortDateString();
-                claimDetailsVM.LastDayOfSicknessDate = claimDays.Last().Date.ToShortDateString();
-            }
+            claimDetailsVM.AssistantName = claim.RegFirstName + " " + claim.RegLastName;
+            claimDetailsVM.AssistantSSN = claim.RegAssistantSSN;
+            claimDetailsVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
+            claimDetailsVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
 
-            claimDetailsVM.Salary = (decimal)120.00;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsVM.cs.
-            claimDetailsVM.HourlySalary = (decimal)120.00;    //This property is used as the hourly salary in calculations.
+            claimDetailsVM.NumberOfSickDays = claim.NumberOfSickDays;
+
+            claimDetailsVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsVM.cs.
+            claimDetailsVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
             claimDetailsVM.Sickpay = claim.ClaimedSickPay;
             claimDetailsVM.HolidayPay = claim.ClaimedHolidayPay;
             claimDetailsVM.SocialFees = claim.ClaimedSocialFees;
@@ -1141,9 +1237,6 @@ namespace Sjuklöner.Controllers
                 claimDetailsVM.DecisionMade = true;
             }
 
-            claimDetailsVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
-            claimDetailsVM.NumberOfSickDays = claim.NumberOfSickDays;
-
             //Underlag lönekostnader
             claimDetailsVM.PerHourUnsocialEvening = claim.PerHourUnsocialEvening;
             claimDetailsVM.PerHourUnsocialNight = claim.PerHourUnsocialNight;
@@ -1152,18 +1245,12 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.PerHourOnCallWeekday = claim.PerHourOnCallWeekday;
             claimDetailsVM.PerHourOnCallWeekend = claim.PerHourOnCallWeekend;
 
-            claimDetailsVM.Workplace = "Björkängen, Birgittagården";
-            claimDetailsVM.CollectiveAgreement = "Vårdföretagarna";
 
             claimDetailsVM.HolidayPayRate = claim.HolidayPayRate;
             claimDetailsVM.SocialFeeRate = claim.SocialFeeRate;
             claimDetailsVM.PensionAndInsuranceRate = claim.PensionAndInsuranceRate;
             claimDetailsVM.SickPayRate = claim.SickPayRate;
-            //claimDetailsVM.QualifyingDayDate = scheduleVM.ScheduleRowList.First().ScheduleRowDate;
 
-
-
-            //Recommended amount, using hours only as input (x lines forward)
             claimDetailsVM.SickPayRateAsString = claim.SickPayRateAsString;
             claimDetailsVM.HolidayPayRateAsString = claim.HolidayPayRateAsString;
             claimDetailsVM.SocialFeeRateAsString = claim.SocialFeeRateAsString;
@@ -1376,7 +1463,7 @@ namespace Sjuklöner.Controllers
 
             decisionVM.ClaimNumber = claim.ReferenceNumber;
             decisionVM.CareCompany = "Smart Assistans";
-            decisionVM.AssistantSSN = claim.AssistantSSN;
+            decisionVM.AssistantSSN = claim.RegAssistantSSN;
             decisionVM.QualifyingDate = claim.QualifyingDate;
             decisionVM.LastDayOfSickness = claim.LastDayOfSicknessDate;
             decisionVM.ClaimSum = claim.ClaimedSum;
@@ -1415,12 +1502,12 @@ namespace Sjuklöner.Controllers
                 db.SaveChanges();
             }
 
-            if (!string.IsNullOrWhiteSpace(claim.Email))
+            if (!string.IsNullOrWhiteSpace(claim.OmbudEmail))
             {
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
 
-                message.To.Add(new MailAddress(claim.Email));
+                message.To.Add(new MailAddress(claim.OmbudEmail));
                 //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Beslut om ansökan med referensnummer: " + claim.ReferenceNumber;
                 message.Body = "Beslut om ansökan med referensnummer " + claim.ReferenceNumber + " har fattats." + "\n" + "\n" +
@@ -1501,12 +1588,19 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(string refNumber, string submitButton)
         {
-            Claim claim = db.Claims.Find(id);
-            db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
-            db.Claims.Remove(claim);
-            db.SaveChanges();
+            if (submitButton == "Bekräfta")
+            {
+                Claim claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                if (claim.CompletionStage > 1)
+                {
+                    //Come back to this and consider what should be done with other entities (ClaimDays,ClaimCalculations, CollectiveAgreementHeader and Info). Probably depending on the CompletionStage of the claim.
+                    db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                }
+                db.Claims.Remove(claim);
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 
@@ -1541,158 +1635,242 @@ namespace Sjuklöner.Controllers
             return stream;
         }
 
-        private void CalculateModelSum(Claim claim, List<ClaimDay> claimDays, int collectiveAgreementId)
+        private void CalculateModelSum(Claim claim, List<ClaimDay> claimDays)
         {
-            claim.HolidayPayRate = (decimal)12.00;
-            claim.SocialFeeRate = (decimal)31.42;
-            claim.PensionAndInsuranceRate = (decimal)6.00;
-            claim.SickPayRate = (decimal)80.00;
-            //claim.QualifyingDayDate = scheduleVM.ScheduleRowList.First().ScheduleRowDate;
+            //Check if there are any previous ClaimCalculation records for this claim. Existing records need to be removed.
+            var prevClaimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).ToList();
+            if (prevClaimCalculations.Count() > 0)
+            {
+                db.ClaimCalculations.RemoveRange(prevClaimCalculations);
+            }
 
-            //Recommended amount, using hours only as input (x lines forward)
-            claim.SickPayRateAsString = "80,00";
-            claim.HolidayPayRateAsString = "12,00";
-            claim.SocialFeeRateAsString = "31,42";
-            claim.PensionAndInsuranceRateAsString = "6,00";
-            claim.HourlySalaryAsString = "120,00";
+            //Reset number of hours in claim record. If not reset, the same hours will be included several times.
+            claim.NumberOfAbsenceHours = (decimal)0.00;
+            claim.NumberOfOrdinaryHours = (decimal)0.00;
+            claim.NumberOfUnsocialHours = (decimal)0.00;
+            claim.NumberOfOnCallHours = (decimal)0.00;
+            db.Entry(claim).State = EntityState.Modified;
+            db.SaveChanges();
 
             //Assign a CollAgreementInfo id to each claim day. This is required in order for the correct hourly pay to be used in the calculations.
-            var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == collectiveAgreementId).OrderBy(c => c.StartDate).ToList();
-            DateTime? claimDayDate;
-            bool infoFound;
-            bool infoUsed;
-            int infoIdx;
-            int infoUsedIdx;
+            var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == claim.CareCompany.SelectedCollectiveAgreementId).OrderBy(c => c.StartDate).ToList();
             List<int> usedCollectiveAgreementInfoIds = new List<int>(); //This list is used for figuring out which collective agreement infos have been used.
-            claimDays.OrderBy(c => c.SickDayNumber);
-            foreach (var claimDay in claimDays)
+            bool useDefaultCollectiveAgreement = false;
+            claim.DefaultCollectiveAgreement = false;
+
+            if (collectiveAgreementInfos.Count() > 0) //Figure out which collectiveAgreementInfo records apply to the claim if at least one collectiveAgreementInfo has been assigned to the claim. 
             {
-                claimDayDate = claim.QualifyingDate.AddDays(claimDay.SickDayNumber - 1);
-                infoFound = false;
-                infoIdx = 0;
+                DateTime? claimDayDate;
+                bool infoFound;
+                bool infoUsed;
+                int infoIdx;
+                int infoUsedIdx;
+                int claimDayIdx = 0;
+                claimDays.OrderBy(c => c.SickDayNumber);
                 do
                 {
-                    if (claimDayDate >= collectiveAgreementInfos[infoIdx].StartDate && claimDayDate <= collectiveAgreementInfos[infoIdx].EndDate)
+                    claimDayDate = claim.QualifyingDate.AddDays(claimDays[claimDayIdx].SickDayNumber - 1);
+                    infoFound = false;
+                    infoIdx = 0;
+                    do
                     {
-                        //claimDay.PerHourUnsocialEveningAsString = collectiveAgreementInfos[infoIdx].PerHourUnsocialEvening;
-                        //claimDay.PerHourUnsocialNightAsString = collectiveAgreementInfos[infoIdx].PerHourUnsocialNight;
-                        //claimDay.PerHourUnsocialWeekendAsString = collectiveAgreementInfos[infoIdx].PerHourUnsocialWeekend;
-                        //claimDay.PerHourUnsocialHolidayAsString = collectiveAgreementInfos[infoIdx].PerHourUnsocialHoliday;
-                        //claimDay.PerHourOnCallDayAsString = collectiveAgreementInfos[infoIdx].PerHourOnCallWeekday;
-                        //claimDay.PerHourOnCallNightAsString = collectiveAgreementInfos[infoIdx].PerHourOnCallWeekend;
-
-                        //claimDay.PerHourUnsocialEvening = Convert.ToDecimal(collectiveAgreementInfos[infoIdx].PerHourUnsocialEvening);
-                        //claimDay.PerHourUnsocialNight = Convert.ToDecimal(collectiveAgreementInfos[infoIdx].PerHourUnsocialNight);
-                        //claimDay.PerHourUnsocialWeekend = Convert.ToDecimal(collectiveAgreementInfos[infoIdx].PerHourUnsocialWeekend);
-                        //claimDay.PerHourUnsocialHoliday = Convert.ToDecimal(collectiveAgreementInfos[infoIdx].PerHourUnsocialHoliday);
-                        //claimDay.PerHourOnCallWeekday = Convert.ToDecimal(collectiveAgreementInfos[infoIdx].PerHourOnCallWeekday);
-                        //claimDay.PerHourOnCallWeekend = Convert.ToDecimal(collectiveAgreementInfos[infoIdx].PerHourOnCallWeekend);
-
-                        infoFound = true;
-
-                        //The lines below are used to keep track on how many different CollectiveAgreementInfo records are used in the claim. Calculations for each different CollectiveAgreementInfo needs to be shown separately in ShowClaimDetails. 
-                        infoUsed = false;
-                        infoUsedIdx = 0;
-                        if (usedCollectiveAgreementInfoIds.Count() == 0)
+                        if (claimDayDate >= collectiveAgreementInfos[infoIdx].StartDate && claimDayDate <= collectiveAgreementInfos[infoIdx].EndDate)
                         {
-                            usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
-                        }
-                        else
-                        {
-                            do
-                            {
-                                if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
-                                {
-                                    infoUsed = true;
-                                }
-                                infoUsedIdx++;
-                            } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
-                            if (!infoUsed)
+                            infoFound = true;
+
+                            //The lines below are used to keep track on how many different CollectiveAgreementInfo records are used in the claim. Calculations for each different CollectiveAgreementInfo needs to be shown separately in ShowClaimDetails. 
+                            infoUsed = false;
+                            infoUsedIdx = 0;
+                            if (usedCollectiveAgreementInfoIds.Count() == 0)
                             {
                                 usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
                             }
+                            else
+                            {
+                                do
+                                {
+                                    if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
+                                    {
+                                        infoUsed = true;
+                                    }
+                                    infoUsedIdx++;
+                                } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
+                                if (!infoUsed)
+                                {
+                                    usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
+                                }
+                            }
                         }
-                    }
-                    infoIdx++;
-                } while (!infoFound && infoIdx < collectiveAgreementInfos.Count());
-                //Assign default values if no info found
-                if (!infoFound)
-                {
-                    //claimDay.PerHourUnsocialEveningAsString = "21,08";
-                    //claimDay.PerHourUnsocialNightAsString = "42,54";
-                    //claimDay.PerHourUnsocialWeekendAsString = "52,47";
-                    //claimDay.PerHourUnsocialHolidayAsString = "105,03";
-                    //claimDay.PerHourOnCallDayAsString = "28,13";
-                    //claimDay.PerHourOnCallNightAsString = "56,32";
-
-                    //claimDay.PerHourUnsocialEvening = (decimal)21.08;
-                    //claimDay.PerHourUnsocialNight = (decimal)42.54;
-                    //claimDay.PerHourUnsocialWeekend = (decimal)52.47;
-                    //claimDay.PerHourUnsocialHoliday = (decimal)105.03;
-                    //claimDay.PerHourOnCallWeekday = (decimal)28.13;
-                    //claimDay.PerHourOnCallWeekend = (decimal)56.32;
-                    //Id = 0 indicates that default values are used for this claim day
-                    infoUsed = false;
-                    infoUsedIdx = 0;
-                    if (usedCollectiveAgreementInfoIds.Count() == 0)
+                        infoIdx++;
+                    } while (!infoFound && infoIdx < collectiveAgreementInfos.Count());
+                    //Assign default values if no info found
+                    if (!infoFound)
                     {
-                        usedCollectiveAgreementInfoIds.Add(0);
+                        useDefaultCollectiveAgreement = true;
+                    }
+                    claimDayIdx++;
+                } while (claimDayIdx < claimDays.Count() && !useDefaultCollectiveAgreement);
+
+                //foreach (var claimDay in claimDays)
+                //{
+                //    claimDayDate = claim.QualifyingDate.AddDays(claimDay.SickDayNumber - 1);
+                //    infoFound = false;
+                //    infoIdx = 0;
+                //    do
+                //    {
+                //        if (claimDayDate >= collectiveAgreementInfos[infoIdx].StartDate && claimDayDate <= collectiveAgreementInfos[infoIdx].EndDate)
+                //        {
+                //            infoFound = true;
+
+                //            //The lines below are used to keep track on how many different CollectiveAgreementInfo records are used in the claim. Calculations for each different CollectiveAgreementInfo needs to be shown separately in ShowClaimDetails. 
+                //            infoUsed = false;
+                //            infoUsedIdx = 0;
+                //            if (usedCollectiveAgreementInfoIds.Count() == 0)
+                //            {
+                //                usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
+                //            }
+                //            else
+                //            {
+                //                do
+                //                {
+                //                    if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
+                //                    {
+                //                        infoUsed = true;
+                //                    }
+                //                    infoUsedIdx++;
+                //                } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
+                //                if (!infoUsed)
+                //                {
+                //                    usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
+                //                }
+                //            }
+                //        }
+                //        infoIdx++;
+                //    } while (!infoFound && infoIdx < collectiveAgreementInfos.Count());
+                //    //Assign default values if no info found
+                //    if (!infoFound)
+                //    {
+                //        useDefaultCollectiveAgreement = true;
+                //        //infoUsed = false;
+                //        //infoUsedIdx = 0;
+                //        //if (usedCollectiveAgreementInfoIds.Count() == 0)
+                //        //{
+                //        //    usedCollectiveAgreementInfoIds.Add(0);
+                //        //}
+                //        //else
+                //        //{
+                //        //    do
+                //        //    {
+                //        //        if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
+                //        //        {
+                //        //            infoUsed = true;
+                //        //        }
+                //        //        infoUsedIdx++;
+                //        //    } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
+                //        //    if (!infoUsed)
+                //        //    {
+                //        //        usedCollectiveAgreementInfoIds.Add(0);
+                //        //    }
+                //        //}
+                //    }
+                //}
+            }
+            else
+            {
+                useDefaultCollectiveAgreement = true;
+            }
+
+            int applicableSickDays = 0;
+            int prevSickDayIdx = 0;
+            //Check that each day in the sickleave period is covered by an applicable CollectiveAgreementInfo, i.e. that each sickleave day is within the date range for a CollectiveAgreementInfo record. 
+            if (!useDefaultCollectiveAgreement)
+            {
+                for (int idx = 0; idx < usedCollectiveAgreementInfoIds.Count(); idx++)
+                {
+                    if (collectiveAgreementInfos[idx].EndDate.Date >= claim.LastDayOfSicknessDate.Date)
+                    {
+                        applicableSickDays = 1 + (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate).Days - prevSickDayIdx;
                     }
                     else
                     {
-                        do
-                        {
-                            if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
-                            {
-                                infoUsed = true;
-                            }
-                            infoUsedIdx++;
-                        } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
-                        if (!infoUsed)
-                        {
-                            usedCollectiveAgreementInfoIds.Add(0);
-                        }
+                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - claim.QualifyingDate).Days - prevSickDayIdx;
                     }
+                    prevSickDayIdx = prevSickDayIdx + applicableSickDays;
+                }
+                if (applicableSickDays < claim.NumberOfSickDays)
+                {
+                    useDefaultCollectiveAgreement = true;
                 }
             }
+            applicableSickDays = 0;
+            prevSickDayIdx = 0;
 
             //Repeat the calculation for each CollectiveAgreementInfo that applies to the sickleave period
-            int applicableSickDays;
-            int prevSickDayIdx = 0;
             int startIdx;
             int stopIdx;
             decimal totalCostD1D14 = 0;
             string totalCostCalcD1D14 = "";
 
+            if (useDefaultCollectiveAgreement)
+            {
+                usedCollectiveAgreementInfoIds.Clear();
+                usedCollectiveAgreementInfoIds.Add(999999); //999999 used for default. Default will apply to the whole sickleave period even if some days in the period are covered by a CollectiveAgreementInfo record.
+                claim.DefaultCollectiveAgreement = true;
+            }
             for (int idx = 0; idx < usedCollectiveAgreementInfoIds.Count(); idx++)
             {
                 ClaimCalculation claimCalculation = new ClaimCalculation();
                 claimCalculation.ReferenceNumber = claim.ReferenceNumber;
-                claimCalculation.PerHourUnsocialEveningAsString = collectiveAgreementInfos[idx].PerHourUnsocialEvening;
-                claimCalculation.PerHourUnsocialNightAsString = collectiveAgreementInfos[idx].PerHourUnsocialNight;
-                claimCalculation.PerHourUnsocialWeekendAsString = collectiveAgreementInfos[idx].PerHourUnsocialWeekend;
-                claimCalculation.PerHourUnsocialHolidayAsString = collectiveAgreementInfos[idx].PerHourUnsocialHoliday;
-                claimCalculation.PerHourOnCallDayAsString = collectiveAgreementInfos[idx].PerHourOnCallWeekday;
-                claimCalculation.PerHourOnCallNightAsString = collectiveAgreementInfos[idx].PerHourOnCallWeekend;
 
-                claimCalculation.PerHourUnsocialEvening = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialEvening);
-                claimCalculation.PerHourUnsocialNight = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialNight);
-                claimCalculation.PerHourUnsocialWeekend = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialWeekend);
-                claimCalculation.PerHourUnsocialHoliday = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialHoliday);
-                claimCalculation.PerHourOnCallWeekday = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourOnCallWeekday);
-                claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourOnCallWeekend);
-
-                //Calculate how many days the CollectiveAgreementInfo applies to
-                if (collectiveAgreementInfos[idx].EndDate.Date >= claim.LastDayOfSicknessDate.Date)
+                if (!useDefaultCollectiveAgreement)
                 {
-                    applicableSickDays = 1 + (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate).Days - prevSickDayIdx;
+                    claimCalculation.PerHourUnsocialEveningAsString = collectiveAgreementInfos[idx].PerHourUnsocialEvening;
+                    claimCalculation.PerHourUnsocialNightAsString = collectiveAgreementInfos[idx].PerHourUnsocialNight;
+                    claimCalculation.PerHourUnsocialWeekendAsString = collectiveAgreementInfos[idx].PerHourUnsocialWeekend;
+                    claimCalculation.PerHourUnsocialHolidayAsString = collectiveAgreementInfos[idx].PerHourUnsocialHoliday;
+                    claimCalculation.PerHourOnCallDayAsString = collectiveAgreementInfos[idx].PerHourOnCallWeekday;
+                    claimCalculation.PerHourOnCallNightAsString = collectiveAgreementInfos[idx].PerHourOnCallWeekend;
+
+                    claimCalculation.PerHourUnsocialEvening = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialEvening);
+                    claimCalculation.PerHourUnsocialNight = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialNight);
+                    claimCalculation.PerHourUnsocialWeekend = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialWeekend);
+                    claimCalculation.PerHourUnsocialHoliday = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourUnsocialHoliday);
+                    claimCalculation.PerHourOnCallWeekday = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourOnCallWeekday);
+                    claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourOnCallWeekend);
+
+                    //Calculate how many days the CollectiveAgreementInfo applies to
+                    if (collectiveAgreementInfos[idx].EndDate.Date >= claim.LastDayOfSicknessDate.Date)
+                    {
+                        applicableSickDays = 1 + (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate).Days - prevSickDayIdx;
+                    }
+                    else
+                    {
+                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - claim.QualifyingDate).Days - prevSickDayIdx;
+                    }
+                    claimCalculation.StartDate = claim.QualifyingDate.AddDays(prevSickDayIdx);
+                    claimCalculation.EndDate = claim.QualifyingDate.AddDays(prevSickDayIdx + applicableSickDays - 1);
                 }
                 else
                 {
-                    applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - claim.QualifyingDate).Days - prevSickDayIdx;
+                    var defaultCollectiveAgreementInfos = db.DefaultCollectiveAgreementInfos.ToList(); //There is only one DefaultCollectiveAgreementInfo record.
+                    claimCalculation.PerHourUnsocialEveningAsString = defaultCollectiveAgreementInfos[0].PerHourUnsocialEvening;
+                    claimCalculation.PerHourUnsocialNightAsString = defaultCollectiveAgreementInfos[0].PerHourUnsocialNight;
+                    claimCalculation.PerHourUnsocialWeekendAsString = defaultCollectiveAgreementInfos[0].PerHourUnsocialWeekend;
+                    claimCalculation.PerHourUnsocialHolidayAsString = defaultCollectiveAgreementInfos[0].PerHourUnsocialHoliday;
+                    claimCalculation.PerHourOnCallDayAsString = defaultCollectiveAgreementInfos[0].PerHourOnCallWeekday;
+                    claimCalculation.PerHourOnCallNightAsString = defaultCollectiveAgreementInfos[0].PerHourOnCallWeekend;
+
+                    claimCalculation.PerHourUnsocialEvening = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourUnsocialEvening);
+                    claimCalculation.PerHourUnsocialNight = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourUnsocialNight);
+                    claimCalculation.PerHourUnsocialWeekend = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourUnsocialWeekend);
+                    claimCalculation.PerHourUnsocialHoliday = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourUnsocialHoliday);
+                    claimCalculation.PerHourOnCallWeekday = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourOnCallWeekday);
+                    claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourOnCallWeekend);
+
+                    claimCalculation.StartDate = claim.QualifyingDate;
+                    claimCalculation.EndDate = claim.LastDayOfSicknessDate;
+                    applicableSickDays = claim.NumberOfSickDays;
                 }
-                claimCalculation.StartDate = claim.QualifyingDate.AddDays(prevSickDayIdx);
-                claimCalculation.EndDate = claim.QualifyingDate.AddDays(prevSickDayIdx + applicableSickDays);
 
                 if (idx == 0) //Include qualifying day only in first ClaimCalculation record
                 {
@@ -1827,7 +2005,11 @@ namespace Sjuklöner.Controllers
                 prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 db.ClaimCalculations.Add(claimCalculation);
                 totalCostD1D14 = totalCostD1D14 + Convert.ToDecimal(claimCalculation.TotalCostD1T14);
-                if (idx == 0)
+                if (claim.NumberOfSickDays == 1)
+                {
+                    totalCostCalcD1D14 = claimCalculation.CostQD;
+                }
+                else if (idx == 0)
                 {
                     totalCostCalcD1D14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
                 }

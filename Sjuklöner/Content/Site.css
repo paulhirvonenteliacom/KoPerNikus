@@ -304,6 +304,20 @@ li a {
     border: none;
 }
 
+.page-header8 {
+    font-size: 50px;
+    /*line-height: 34px;*/
+    padding: 0 15px 0 0;
+    margin-top: 10px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
 .page-header-no-padding-left {
     font-size: 50px;
     /*line-height: 34px;*/
@@ -716,6 +730,10 @@ special-left-margin {
     margin-left: 0;
 }
 
+.calc-padding-top {
+    padding-top: 4px;
+}
+
 .div-frame {
     border: 1px solid;
     border-color: #ae0b05;
@@ -1030,6 +1048,10 @@ special-left-margin {
     padding-left: 12px;
 }
 
+.display-padding5 {
+    padding-left: 22px;
+}
+
 .display-padding-large {
     padding-left: 45px;
 }
@@ -1239,6 +1261,22 @@ a:hover, a:focus {
     padding-left: 0;
     width: 75%;
     max-width: none;
+}
+
+.no-padding-left2 {
+    padding-left: 0;
+}
+
+.small-padding-left {
+    padding-left: 5px;
+}
+
+.small-padding-left2 {
+    padding-left: 8px;
+}
+
+.small-padding-left3 {
+    padding-left: 6px;
 }
 
 .table-button-cell {

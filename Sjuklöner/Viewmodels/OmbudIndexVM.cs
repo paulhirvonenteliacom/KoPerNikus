@@ -9,6 +9,8 @@ namespace Sjuklöner.Viewmodels
 {
     public class OmbudIndexVM
     {
+        public string CurrentUserId { get; set; }
+
         public int CareCompanyId { get; set; }
 
         [Required]

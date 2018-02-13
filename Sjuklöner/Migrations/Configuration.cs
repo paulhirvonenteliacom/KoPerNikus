@@ -128,10 +128,64 @@ namespace Sjuklöner.Migrations
                 userId = admin.Id;
             }
 
+            //var defaultCollectiveAgreementHeaders = new List<DefaultCollectiveAgreementHeader>
+            //{
+            //    new DefaultCollectiveAgreementHeader{ Id = 1, Name = "Kommunal - Vårdföretagarna", Counter = 1 }
+            //};
+            //foreach (var defaultCollectiveAgreementHeader in defaultCollectiveAgreementHeaders)
+            //{
+            //    context.DefaultCollectiveAgreementHeaders.AddOrUpdate(c => c.Id, defaultCollectiveAgreementHeader);
+            //}
+
+            var defaultCollectiveAgreementInfos = new List<DefaultCollectiveAgreementInfo>
+            {
+                new DefaultCollectiveAgreementInfo{ Id = 1, CollectiveAgreementHeaderId = 1, StartDate = new DateTime(2000, 1, 1, 0, 0, 0), EndDate = new DateTime(2099, 12, 31, 0, 0, 0), PerHourUnsocialEvening = "21,08", PerHourUnsocialNight = "42,54", PerHourUnsocialWeekend = "52,47", PerHourUnsocialHoliday = "105,03", PerHourOnCallWeekday = "10,78", PerHourOnCallWeekend = "21,55" }
+            };
+            foreach (var defaultCollectiveAgreementInfo in defaultCollectiveAgreementInfos)
+            {
+                context.DefaultCollectiveAgreementInfos.AddOrUpdate(c => c.Id, defaultCollectiveAgreementInfo);
+            }
+
+            var collectiveAgreementHeaders = new List<CollectiveAgreementHeader>
+            {
+                new CollectiveAgreementHeader{ Id = 1, Name = "Kommunal - Vårdföretagarna", Counter = 3 },
+                new CollectiveAgreementHeader{ Id = 2, Name = "Kommunal - Arbetsgivarföreningen KFO", Counter = 3 },
+                new CollectiveAgreementHeader{ Id = 3, Name = "Kommunal - KFS", Counter = 3 }
+                //Pay for oncall hours for the agreements below is a percentage of the hourly salary. It has been left to later to include them if necessary at a later point in time. 
+                //new CollectiveAgreementHeader{ Id = 4, Name = "SKL/PACTA, HÖK 16", Counter = 3 },
+                //new CollectiveAgreementHeader{ Id = 5, Name = "SKL/PACTA, PAN 16, personlig assistent", Counter = 3 },
+                //new CollectiveAgreementHeader{ Id = 6, Name = "SKL/PACTA, PAN 16, anhörigvårdare", Counter = 3 },
+                //new CollectiveAgreementHeader{ Id = 7, Name = "AB-P", Counter = 3 },
+                //new CollectiveAgreementHeader{ Id = 8, Name = "PAN-P", Counter = 3 }
+            };
+            foreach (var collectiveAgreementHeader in collectiveAgreementHeaders)
+            {
+                context.CollectiveAgreementHeaders.AddOrUpdate(c => c.Id, collectiveAgreementHeader);
+            }
+
+            var collectiveAgreementInfos = new List<CollectiveAgreementInfo>
+            {
+                new CollectiveAgreementInfo{ Id = 1, CollectiveAgreementHeaderId = 1, StartDate = new DateTime(2017, 7, 1, 0, 0, 0), EndDate = new DateTime(2018, 9, 30, 0, 0, 0), PerHourUnsocialEvening = "21,08", PerHourUnsocialNight = "42,54", PerHourUnsocialWeekend = "52,47", PerHourUnsocialHoliday = "105,03", PerHourOnCallWeekday = "10,78", PerHourOnCallWeekend = "21,55" },
+                new CollectiveAgreementInfo{ Id = 2, CollectiveAgreementHeaderId = 1, StartDate = new DateTime(2018, 10,1, 0, 0, 0), EndDate = new DateTime(2019, 9, 30, 0, 0, 0), PerHourUnsocialEvening = "21,50", PerHourUnsocialNight = "43,39", PerHourUnsocialWeekend = "53,52", PerHourUnsocialHoliday = "107,13", PerHourOnCallWeekday = "11,00", PerHourOnCallWeekend = "21,98" },
+                new CollectiveAgreementInfo{ Id = 3, CollectiveAgreementHeaderId = 1, StartDate = new DateTime(2019, 10,1, 0, 0, 0), EndDate = new DateTime(2020, 6, 30, 0, 0, 0), PerHourUnsocialEvening = "21,91", PerHourUnsocialNight = "44,39", PerHourUnsocialWeekend = "54,75", PerHourUnsocialHoliday = "109,59", PerHourOnCallWeekday = "11,25", PerHourOnCallWeekend = "22,49" },
+                new CollectiveAgreementInfo{ Id = 4, CollectiveAgreementHeaderId = 2, StartDate = new DateTime(2017, 9, 1, 0, 0, 0), EndDate = new DateTime(2017,12, 31, 0, 0, 0), PerHourUnsocialEvening = "20,55", PerHourUnsocialNight = "41,43", PerHourUnsocialWeekend = "51,10", PerHourUnsocialHoliday = "102,35", PerHourOnCallWeekday = "15,54", PerHourOnCallWeekend = "30,66" },
+                new CollectiveAgreementInfo{ Id = 5, CollectiveAgreementHeaderId = 2, StartDate = new DateTime(2018, 1, 1, 0, 0, 0), EndDate = new DateTime(2018,12, 31, 0, 0, 0), PerHourUnsocialEvening = "20,96", PerHourUnsocialNight = "42,25", PerHourUnsocialWeekend = "52,12", PerHourUnsocialHoliday = "104,39", PerHourOnCallWeekday = "16,00", PerHourOnCallWeekend = "31,57" },
+                new CollectiveAgreementInfo{ Id = 6, CollectiveAgreementHeaderId = 2, StartDate = new DateTime(2019, 1, 1, 0, 0, 0), EndDate = new DateTime(2019,12, 31, 0, 0, 0), PerHourUnsocialEvening = "21,37", PerHourUnsocialNight = "43,09", PerHourUnsocialWeekend = "53,16", PerHourUnsocialHoliday = "106,47", PerHourOnCallWeekday = "16,22", PerHourOnCallWeekend = "32,00" },
+                new CollectiveAgreementInfo{ Id = 7, CollectiveAgreementHeaderId = 2, StartDate = new DateTime(2020, 1, 1, 0, 0, 0), EndDate = new DateTime(2020, 8, 31, 0, 0, 0), PerHourUnsocialEvening = "21,90", PerHourUnsocialNight = "44,16", PerHourUnsocialWeekend = "54,48", PerHourUnsocialHoliday = "109,13", PerHourOnCallWeekday = "16,47", PerHourOnCallWeekend = "32,51" },
+                new CollectiveAgreementInfo{ Id = 8, CollectiveAgreementHeaderId = 3, StartDate = new DateTime(2017, 11,1, 0, 0, 0), EndDate = new DateTime(2017, 12,31, 0, 0, 0), PerHourUnsocialEvening = "20,76", PerHourUnsocialNight = "41,54", PerHourUnsocialWeekend = "50,63", PerHourUnsocialHoliday = "101,21", PerHourOnCallWeekday = "15,59", PerHourOnCallWeekend = "31,17" },
+                new CollectiveAgreementInfo{ Id = 9, CollectiveAgreementHeaderId = 3, StartDate = new DateTime(2018, 1, 1, 0, 0, 0), EndDate = new DateTime(2018, 12,31, 0, 0, 0), PerHourUnsocialEvening = "21,18", PerHourUnsocialNight = "42,37", PerHourUnsocialWeekend = "51,64", PerHourUnsocialHoliday = "103,23", PerHourOnCallWeekday = "15,90", PerHourOnCallWeekend = "31,79" },
+                new CollectiveAgreementInfo{ Id =10, CollectiveAgreementHeaderId = 3, StartDate = new DateTime(2019, 1, 1, 0, 0, 0), EndDate = new DateTime(2019, 12,31, 0, 0, 0), PerHourUnsocialEvening = "21,60", PerHourUnsocialNight = "43,22", PerHourUnsocialWeekend = "52,67", PerHourUnsocialHoliday = "105,29", PerHourOnCallWeekday = "16,22", PerHourOnCallWeekend = "32,43" },
+                new CollectiveAgreementInfo{ Id =11, CollectiveAgreementHeaderId = 3, StartDate = new DateTime(2020, 1, 1, 0, 0, 0), EndDate = new DateTime(2020, 10,31, 0, 0, 0), PerHourUnsocialEvening = "22,14", PerHourUnsocialNight = "44,30", PerHourUnsocialWeekend = "53,99", PerHourUnsocialHoliday = "107,92", PerHourOnCallWeekday = "16,63", PerHourOnCallWeekend = "33,24" }
+            };
+            foreach (var collectiveAgreementInfo in collectiveAgreementInfos)
+            {
+                context.CollectiveAgreementInfos.AddOrUpdate(c => c.Id, collectiveAgreementInfo);
+            }
+
             var careCompanies = new List<CareCompany>
             {
-                new CareCompany{ Id = 1, CompanyName = "Smart Assistans", OrganisationNumber = "556881-2118", StreetAddress = "Assistansvägen 55", Postcode = "155 55", City = "Assistansköping", AccountNumber = "1234-1234", CompanyPhoneNumber = "024-323 2356", SelectedCollectiveAgreementId = 1, CollectiveAgreementSpecName = "Branch G" },
-                new CareCompany{ Id = 2, CompanyName = "Assistans Direkt AB", OrganisationNumber = "556833-2198", StreetAddress = "Assistansgatan 33", Postcode = "133 33", City = "Assistansborg", AccountNumber = "6543-9876", CompanyPhoneNumber = "024-987 2356", SelectedCollectiveAgreementId = 1, CollectiveAgreementSpecName = "Branch G" }
+                new CareCompany{ Id = 1, CompanyName = "Smart Assistans", OrganisationNumber = "556881-2118", StreetAddress = "Assistansvägen 55", Postcode = "155 55", City = "Assistansköping", AccountNumber = "1234-1234", CompanyPhoneNumber = "024-323 2356", SelectedCollectiveAgreementId = 1, CollectiveAgreementName = "Vårdföretagarna", CollectiveAgreementSpecName = "Branch G" },
+                new CareCompany{ Id = 2, CompanyName = "Assistans Direkt AB", OrganisationNumber = "556833-2198", StreetAddress = "Assistansgatan 33", Postcode = "133 33", City = "Assistansborg", AccountNumber = "6543-9876", CompanyPhoneNumber = "024-987 2356", SelectedCollectiveAgreementId = 1, CollectiveAgreementName = "Vårdföretagarna", CollectiveAgreementSpecName = "Branch G" }
             };
             foreach (var careCompany in careCompanies)
             {
@@ -140,8 +194,8 @@ namespace Sjuklöner.Migrations
 
             var assistants = new List<Assistant>
             {
-                new Assistant{ Id = 1, CareCompanyId = 1, FirstName = "Astrid", LastName = "Assistentsson", AssistantSSN = "19730423-5076", Email = "astrid.assistentsson@smartassistans.se", PhoneNumber = "034-232 5678", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", InsuranceRate = "5,00", PensionRate = "1,00"},
-                new Assistant{ Id = 2, CareCompanyId = 1, FirstName = "Björn", LastName = "Björnsson", AssistantSSN = "19830423-5076", Email = "bjorn.bjornsson@smartassistans.se", PhoneNumber = "034-131 4578", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", InsuranceRate = "5,00", PensionRate = "1,00"},
+                new Assistant{ Id = 1, CareCompanyId = 1, FirstName = "Astrid", LastName = "Assistentsson", AssistantSSN = "19730423-5076", Email = "astrid.assistentsson@smartassistans.se", PhoneNumber = "034-232 5678", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", PensionAndInsuranceRate = "6,00" },
+                new Assistant{ Id = 2, CareCompanyId = 1, FirstName = "Björn", LastName = "Björnsson", AssistantSSN = "19830423-5076", Email = "bjorn.bjornsson@smartassistans.se", PhoneNumber = "034-131 4578", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", PensionAndInsuranceRate = "6,00" }
             };
             foreach (var assistant in assistants)
             {

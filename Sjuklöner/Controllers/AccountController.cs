@@ -213,10 +213,10 @@ namespace Sjuklöner.Controllers
                         } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);
 
                         CareCompany company = new CareCompany();
-                        company.PhoneNumber = model.CompanyPhoneNumber;
+                        company.CompanyPhoneNumber = model.CompanyPhoneNumber;
                         company.Postcode = model.Postcode;
                         company.City = model.City;
-                        company.CompanyOrganisationNumber = model.CompanyOrganisationNumber;
+                        company.OrganisationNumber = model.CompanyOrganisationNumber;
                         company.StreetAddress = model.StreetAddress;
                         company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
                         company.AccountNumber = model.AccountNumber;

@@ -206,6 +206,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802130543445_init.cs" />
+    <Compile Include="Migrations\201802130543445_init.Designer.cs">
+      <DependentUpon>201802130543445_init.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -216,6 +220,8 @@
     <Compile Include="Models\ClaimDaySeed.cs" />
     <Compile Include="Models\ClaimDay.cs" />
     <Compile Include="Models\ClaimReferenceNumber.cs" />
+    <Compile Include="Models\DefaultCollectiveAgreementInfo.cs" />
+    <Compile Include="Models\DefaultCollectiveAgreementHeader.cs" />
     <Compile Include="Models\CollectiveAgreementInfo.cs" />
     <Compile Include="Models\CollectiveAgreementHeader.cs" />
     <Compile Include="Models\ClaimStatus.cs" />
@@ -391,6 +397,7 @@
     <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
     <Content Include="Views\Claims\Create4.cshtml" />
     <Content Include="Views\Account\RegisterConfirm.cshtml" />
+    <Content Include="Views\CareCompanies\DeleteOmbud.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -407,6 +414,11 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201802130543445_init.resx">
+      <DependentUpon>201802130543445_init.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

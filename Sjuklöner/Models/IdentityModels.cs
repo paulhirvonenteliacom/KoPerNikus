@@ -34,7 +34,7 @@ namespace Sjuklöner.Models
 
         public string SSN { get; set; }
 
-        public virtual List<Document> Documents { get; set; }
+        //public virtual List<Document> Documents { get; set; }
         public virtual List<Message> Message { get; set; }
     }
 
@@ -51,6 +51,8 @@ namespace Sjuklöner.Models
         public DbSet<ClaimStatus> ClaimStatuses { get; set; }
         public DbSet<CollectiveAgreementHeader> CollectiveAgreementHeaders { get; set; }
         public DbSet<CollectiveAgreementInfo> CollectiveAgreementInfos { get; set; }
+        //public DbSet<DefaultCollectiveAgreementHeader> DefaultCollectiveAgreementHeaders { get; set; }
+        public DbSet<DefaultCollectiveAgreementInfo> DefaultCollectiveAgreementInfos { get; set; }
         public DbSet<CareCompany> CareCompanies { get; set; }
         public DbSet<ClaimCalculation> ClaimCalculations { get; set; }
         public DbSet<Assistant> Assistants { get; set; }

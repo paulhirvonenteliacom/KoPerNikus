@@ -11,19 +11,7 @@ namespace Sjuklöner.Models
     {
         public int Id { get; set; }
 
-        public string OwnerId { get; set; }
-
         public int ClaimStatusId { get; set; }
-
-        public int CareCompanyId { get; set; }
-
-        public int? SelectedRegAssistantId { get; set; }
-
-        public int? SelectedSubAssistantId { get; set; }
-
-        public bool IVOCheck { get; set; }
-
-        public bool ProCapitaCheck { get; set; }
 
         [Display(Name = "Referensnummer")]
         public string ReferenceNumber { get; set; }
@@ -39,16 +27,57 @@ namespace Sjuklöner.Models
         [DataType(DataType.DateTime)]
         public DateTime? DeadlineDate { get; set; }
 
-        [Display(Name = "Kundens förnamn")]
-        public string CustomerFirstName { get; set; }
+        public bool DefaultCollectiveAgreement { get; set; }
 
-        [Display(Name = "Kundens efternamn")]
-        public string CustomerLastName { get; set; }
+        //COMPANY INFORMATION
+        public int CareCompanyId { get; set; }
 
-        //[Required]
+        [Display(Name = "Bolagets namn")]
+        public string CompanyName { get; set; }
+
         [Display(Name = "Organiationsnummer")]
-        [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
         public string OrganisationNumber { get; set; }
+
+        [Display(Name = "Gatuadress")]
+        public string StreetAddress { get; set; }
+
+        [Display(Name = "Postnummer")]
+        public string Postcode { get; set; }
+
+        [Display(Name = "Ort")]
+        public string City { get; set; }
+
+        [Display(Name = "Bank-/Postgironummer")]
+        public string AccountNumber { get; set; }
+
+        [Display(Name = "Tel.nummer (inkl. riktnr.)")]
+        public string CompanyPhoneNumber { get; set; }
+
+        [Display(Name = "Kollektivavtal")]
+        public string CollectiveAgreementName { get; set; }
+
+        [Display(Name = "Kollektivavtalets branschbeteckning")]
+        public string CollectiveAgreementSpecName { get; set; }
+
+        //OMBUD INFORMATION
+        public string OwnerId { get; set; }
+
+        [Display(Name = "Ombudets förnamn")]
+        public string OmbudFirstName { get; set; }
+
+        [Display(Name = "Ombudets efternamn")]
+        public string OmbudLastName { get; set; }
+
+        [Display(Name = "Ombudets telefonnummer")]
+        public string OmbudPhoneNumber { get; set; }
+
+        [Display(Name = "Ombudets e-postadress")]
+        public string OmbudEmail { get; set; }
+
+        //CUSTOMER INFORMATION
+        [Required]
+        [Display(Name = "Kundens förnamn")]
+        public string CustomerName { get; set; }
 
         [Required]
         [Display(Name = "Kundens personnummer")]
@@ -56,10 +85,77 @@ namespace Sjuklöner.Models
         [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string CustomerSSN { get; set; }
 
-        //[Required]
-        [Display(Name = "Ordinarie assistents personnummer")]
-        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
-        public string AssistantSSN { get; set; }
+        [Required]
+        [Display(Name = "Kundens adress")]
+        public string CustomerAddress { get; set; }
+
+        [Required]
+        [Display(Name = "Kundens telefonnummer")]
+        public string CustomerPhoneNumber { get; set; }
+
+        //REGULAR ASSISTANT INFORMATION
+        public int? SelectedRegAssistantId { get; set; }
+
+        [Display(Name = "Personnummer")]
+        public string RegAssistantSSN { get; set; }
+
+        [Display(Name = "Förnamn")]
+        public string RegFirstName { get; set; }
+
+        [Display(Name = "Efternamn")]
+        public string RegLastName { get; set; }
+
+        [EmailAddress]
+        [Display(Name = "E-postadress")]
+        public string RegEmail { get; set; }
+
+        [Display(Name = "Telefonnummer")]
+        public string RegPhoneNumber { get; set; }
+
+        [Display(Name = "Timlön (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string HourlySalaryAsString { get; set; }
+
+        [Display(Name = "Sjuklön (%):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SickPayRateAsString { get; set; }
+
+        [Display(Name = "Semesterersättning (%):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string HolidayPayRateAsString { get; set; }
+
+        [Display(Name = "Sociala avgifter (%):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SocialFeeRateAsString { get; set; }
+
+        [Display(Name = "Pensioner/försäkringar (%):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PensionAndInsuranceRateAsString { get; set; }
+
+        //SUBSTITUTE ASSISTANT INFORMATION
+        public int? SelectedSubAssistantId { get; set; }
+
+        [Display(Name = "Personnummer")]
+        public string SubAssistantSSN { get; set; }
+
+        [Display(Name = "Förnamn")]
+        public string SubFirstName { get; set; }
+
+        [Display(Name = "Efternamn")]
+        public string SubLastName { get; set; }
+
+        [EmailAddress]
+        [Display(Name = "E-postadress")]
+        public string SubEmail { get; set; }
+
+        [Display(Name = "Telefonnummer")]
+        public string SubPhoneNumber { get; set; }
+
+
+        public bool IVOCheck { get; set; }
+
+        public bool ProCapitaCheck { get; set; }
+        
 
         //[Required]
         [Display(Name = "Vikarierande assistents personnummer")]
@@ -75,9 +171,6 @@ namespace Sjuklöner.Models
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime LastDayOfSicknessDate { get; set; }
-
-        [Display(Name = "Mottagare av beslut (e-post)")]
-        public string Email { get; set; }
 
         [Display(Name = "Antal sjukdagar")]
         public int NumberOfSickDays { get; set; }
@@ -187,26 +280,6 @@ namespace Sjuklöner.Models
         [Display(Name = "Jour-ersättning, helg (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal PerHourOnCallWeekend { get; set; }
-
-        [Display(Name = "Timlön (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HourlySalaryAsString { get; set; }
-
-        [Display(Name = "Sjuklön (%):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SickPayRateAsString { get; set; }
-
-        [Display(Name = "Semesterersättning (%):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string HolidayPayRateAsString { get; set; }
-
-        [Display(Name = "Sociala avgifter (%):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string SocialFeeRateAsString { get; set; }
-
-        [Display(Name = "Pensioner/försäkringar (%):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public string PensionAndInsuranceRateAsString { get; set; }
 
         //[Display(Name = "OB-ersättning, kväll (Kr):")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]

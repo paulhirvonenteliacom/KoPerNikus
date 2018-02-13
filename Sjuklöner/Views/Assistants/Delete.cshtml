@@ -3,22 +3,14 @@
 @{
     ViewBag.Title = "Delete";
 }
-
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
+<div class="row index-page-margin">
+    <p class="col col-md-2"></p>
+    <p class="page-header8 col col-md-10">Ta bort assistenten</p>
+    <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort denna assistent</nl>
+</div>
 <div>
-    <h4>Assistant</h4>
-    <hr />
+    <hr class="claim-divider" />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CareCompanyId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CareCompanyId)
-        </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
@@ -84,29 +76,24 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.InsuranceRate)
+            @Html.DisplayNameFor(model => model.PensionAndInsuranceRate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.InsuranceRate)
+            @Html.DisplayFor(model => model.PensionAndInsuranceRate)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PensionRate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PensionRate)
-        </dd>
-
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm("Delete", "Assistants", new { id = Model.Id }, FormMethod.Post))
+    {
         @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+        <div class="row">
+            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-danger btn-danger-small" id="confirm" />
+            </div>
+            <div class="no-padding-left2 col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+            </div>
         </div>
     }
 </div>

@@ -28,6 +28,7 @@ namespace Sjuklöner.Models
 
         [Required]
         [Display(Name = "Organisationsnummer")]
+        [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
         public string OrganisationNumber { get; set; }
 
         [Required]

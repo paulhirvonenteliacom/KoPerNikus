@@ -147,9 +147,9 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            CareCompany careCompany = db.CareCompanies.Find(id);
-            db.CareCompanies.Remove(careCompany);
-            db.SaveChanges();
+                CareCompany careCompany = db.CareCompanies.Find(id);
+                db.CareCompanies.Remove(careCompany);
+                db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -180,6 +180,7 @@ namespace Sjuklöner.Controllers
                 ombudIndexVM.OmbudForVMList = ombudForVMList;
                 ombudIndexVM.CareCompanyId = (int)companyId;
                 ombudIndexVM.CareCompanyName = companyName;
+                ombudIndexVM.CurrentUserId = currentId;
                 return View("IndexOmbud", ombudIndexVM);
             }
             return View();
@@ -288,14 +289,17 @@ namespace Sjuklöner.Controllers
         }
 
         // POST: Ombud/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteOmbud")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmedOmbud(string id)
+        public ActionResult DeleteConfirmedOmbud(string id, string submitButton)
         {
-            ApplicationUser applicationUser = db.Users.Find(id);
-            db.Users.Remove(applicationUser);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (submitButton == "Bekräfta")
+            {
+                ApplicationUser applicationUser = db.Users.Find(id);
+                db.Users.Remove(applicationUser);
+                db.SaveChanges();
+            }
+            return RedirectToAction("IndexOmbud");
         }
 
         protected override void Dispose(bool disposing)

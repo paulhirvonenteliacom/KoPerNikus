@@ -11,29 +11,49 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Referensnummer")]
         public string ClaimNumber { get; set; }
 
-        [Required]
         [Display(Name = "Sjuklön (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal SickPay { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        public string SickPay { get; set; }
 
-        [Required]
         [Display(Name = "Semesterersättning (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal HolidayPay { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        public string HolidayPay { get; set; }
 
-        [Required]
         [Display(Name = "Sociala avgifter (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal SocialFees { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        public string SocialFees { get; set; }
 
-        [Required]
         [Display(Name = "Övriga avtalsbundna kostnader (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal PensionAndInsurance { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        public string PensionAndInsurance { get; set; }
 
-        [Required]
         [Display(Name = "Yrkat belopp (Kr):")]
-        [DisplayFormat(DataFormatString = "{0:f2}")]
-        public decimal ClaimSum { get; set; }
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        public string ClaimSum { get; set; }
+
+        //[Required]
+        //[Display(Name = "Sjuklön (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal SickPay { get; set; }
+
+        //[Required]
+        //[Display(Name = "Semesterersättning (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal HolidayPay { get; set; }
+
+        //[Required]
+        //[Display(Name = "Sociala avgifter (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal SocialFees { get; set; }
+
+        //[Required]
+        //[Display(Name = "Övriga avtalsbundna kostnader (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal PensionAndInsurance { get; set; }
+
+        //[Required]
+        //[Display(Name = "Yrkat belopp (Kr):")]
+        //[DisplayFormat(DataFormatString = "{0:f2}")]
+        //public decimal ClaimSum { get; set; }
     }
 }

@@ -167,9 +167,6 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Uppgiftslämnarens tel.nummer:")]
         public string PhonenUmberOfOmbud { get; set; }
 
-        
-       
-
         [Display(Name = "Sjuklön (%):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal SickPayRate { get; set; }
@@ -541,6 +538,8 @@ namespace Sjuklöner.Viewmodels
         //[Display(Name = "Kostnad för dag 1, karensdagen (Kr):")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]
         //public string CostCalcD2T14 { get; set; }
+
+        public bool DefaultCollectiveAgreement { get; set; }
 
         [Display(Name = "Antal sjukdagar:")]
         public int NumberOfSickDays { get; set; }
