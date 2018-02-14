@@ -145,9 +145,11 @@ namespace Sjuklöner.Controllers
 
         //
         // POST: /Account/NewAdmOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
-            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
+            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any() && vm.SSN == vm.ConfirmSSN)
             {
                 var user = new ApplicationUser
                 {
@@ -163,8 +165,6 @@ namespace Sjuklöner.Controllers
                 UserManager.AddToRole(user.Id, "AdministrativeOfficial");
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
                     return RedirectToAction("Index", "Claims");
                 }
                 AddErrors(result);
