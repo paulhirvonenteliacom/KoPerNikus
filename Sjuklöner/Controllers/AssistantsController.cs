@@ -127,11 +127,14 @@ namespace Sjuklöner.Controllers
         // POST: Assistants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id, string submitButton)
         {
-            Assistant assistant = db.Assistants.Find(id);
-            db.Assistants.Remove(assistant);
-            db.SaveChanges();
+            if (submitButton == "Bekräfta")
+            {
+                Assistant assistant = db.Assistants.Find(id);
+                db.Assistants.Remove(assistant);
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 

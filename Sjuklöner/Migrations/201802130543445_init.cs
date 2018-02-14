@@ -21,8 +21,7 @@ namespace Sjuklöner.Migrations
                         HourlySalary = c.String(),
                         HolidayPayRate = c.String(),
                         PayrollTaxRate = c.String(),
-                        InsuranceRate = c.String(),
-                        PensionRate = c.String(),
+                        PensionAndInsuranceRate = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -31,16 +30,16 @@ namespace Sjuklöner.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        OmbudId = c.Int(nullable: false),
-                        CompanyName = c.String(),
-                        CompanyOrganisationNumber = c.String(),
-                        StreetAddress = c.String(),
-                        Postcode = c.String(),
-                        City = c.String(),
-                        AccountNumber = c.String(),
-                        PhoneNumber = c.String(),
-                        CollectiveAgreement = c.String(),
-                        StorageApproval = c.Boolean(nullable: false),
+                        CompanyName = c.String(nullable: false),
+                        OrganisationNumber = c.String(nullable: false),
+                        StreetAddress = c.String(nullable: false),
+                        Postcode = c.String(nullable: false),
+                        City = c.String(nullable: false),
+                        AccountNumber = c.String(nullable: false),
+                        CompanyPhoneNumber = c.String(nullable: false),
+                        SelectedCollectiveAgreementId = c.Int(nullable: false),
+                        CollectiveAgreementName = c.String(),
+                        CollectiveAgreementSpecName = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -216,24 +215,53 @@ namespace Sjuklöner.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        OwnerId = c.String(),
                         ClaimStatusId = c.Int(nullable: false),
-                        CareCompanyId = c.Int(nullable: false),
-                        IVOCheck = c.Boolean(nullable: false),
-                        ProCapitaCheck = c.Boolean(nullable: false),
                         ReferenceNumber = c.String(),
                         CompletionStage = c.Int(),
                         StatusDate = c.DateTime(),
                         DeadlineDate = c.DateTime(),
-                        CustomerFirstName = c.String(),
-                        CustomerLastName = c.String(),
+                        DefaultCollectiveAgreement = c.Boolean(nullable: false),
+                        CareCompanyId = c.Int(nullable: false),
+                        CompanyName = c.String(),
                         OrganisationNumber = c.String(),
+                        StreetAddress = c.String(),
+                        Postcode = c.String(),
+                        City = c.String(),
+                        AccountNumber = c.String(),
+                        CompanyPhoneNumber = c.String(),
+                        CollectiveAgreementName = c.String(),
+                        CollectiveAgreementSpecName = c.String(),
+                        OwnerId = c.String(),
+                        OmbudFirstName = c.String(),
+                        OmbudLastName = c.String(),
+                        OmbudPhoneNumber = c.String(),
+                        OmbudEmail = c.String(),
+                        CustomerName = c.String(nullable: false),
                         CustomerSSN = c.String(nullable: false),
-                        AssistantSSN = c.String(),
+                        CustomerAddress = c.String(nullable: false),
+                        CustomerPhoneNumber = c.String(nullable: false),
+                        SelectedRegAssistantId = c.Int(),
+                        RegAssistantSSN = c.String(),
+                        RegFirstName = c.String(),
+                        RegLastName = c.String(),
+                        RegEmail = c.String(),
+                        RegPhoneNumber = c.String(),
+                        HourlySalaryAsString = c.String(),
+                        SickPayRateAsString = c.String(),
+                        HolidayPayRateAsString = c.String(),
+                        SocialFeeRateAsString = c.String(),
+                        PensionAndInsuranceRateAsString = c.String(),
+                        SelectedSubAssistantId = c.Int(),
+                        SubAssistantSSN = c.String(),
+                        SubFirstName = c.String(),
+                        SubLastName = c.String(),
+                        SubEmail = c.String(),
+                        SubPhoneNumber = c.String(),
+                        IVOCheck = c.Boolean(nullable: false),
+                        ProCapitaCheck = c.Boolean(nullable: false),
                         StandInSSN = c.String(),
                         QualifyingDate = c.DateTime(nullable: false),
                         LastDayOfSicknessDate = c.DateTime(nullable: false),
-                        Email = c.String(),
                         NumberOfSickDays = c.Int(nullable: false),
                         NumberOfAbsenceHours = c.Decimal(nullable: false, precision: 18, scale: 2),
                         NumberOfOrdinaryHours = c.Decimal(nullable: false, precision: 18, scale: 2),
@@ -263,11 +291,6 @@ namespace Sjuklöner.Migrations
                         PerHourUnsocialHoliday = c.Decimal(nullable: false, precision: 18, scale: 2),
                         PerHourOnCallWeekday = c.Decimal(nullable: false, precision: 18, scale: 2),
                         PerHourOnCallWeekend = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        HourlySalaryAsString = c.String(),
-                        SickPayRateAsString = c.String(),
-                        HolidayPayRateAsString = c.String(),
-                        SocialFeeRateAsString = c.String(),
-                        PensionAndInsuranceRateAsString = c.String(),
                         TotalCostD1T14 = c.String(),
                         TotalCostCalcD1T14 = c.String(),
                     })
@@ -285,7 +308,6 @@ namespace Sjuklöner.Migrations
                         MimeTypeId = c.Int(),
                         DocStatusId = c.Int(),
                         PurposeId = c.Int(),
-                        OwnerId = c.String(maxLength: 128),
                         Filename = c.String(nullable: false),
                         FileSize = c.Int(nullable: false),
                         Title = c.String(),
@@ -296,13 +318,11 @@ namespace Sjuklöner.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.DocStatus", t => t.DocStatusId)
                 .ForeignKey("dbo.MimeTypes", t => t.MimeTypeId)
-                .ForeignKey("dbo.AspNetUsers", t => t.OwnerId)
                 .ForeignKey("dbo.Purposes", t => t.PurposeId)
                 .ForeignKey("dbo.Claims", t => t.Claim_Id)
                 .Index(t => t.MimeTypeId)
                 .Index(t => t.DocStatusId)
                 .Index(t => t.PurposeId)
-                .Index(t => t.OwnerId)
                 .Index(t => t.Claim_Id);
             
             CreateTable(
@@ -325,6 +345,31 @@ namespace Sjuklöner.Migrations
                         Description = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Purposes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Messages",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ClaimId = c.Int(nullable: false),
+                        CommentDate = c.DateTime(nullable: false),
+                        Comment = c.String(nullable: false),
+                        applicationUser_Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.applicationUser_Id)
+                .ForeignKey("dbo.Claims", t => t.ClaimId, cascadeDelete: true)
+                .Index(t => t.ClaimId)
+                .Index(t => t.applicationUser_Id);
             
             CreateTable(
                 "dbo.AspNetUsers",
@@ -378,22 +423,6 @@ namespace Sjuklöner.Migrations
                 .Index(t => t.UserId);
             
             CreateTable(
-                "dbo.Messages",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ClaimId = c.Int(nullable: false),
-                        CommentDate = c.DateTime(nullable: false),
-                        Comment = c.String(nullable: false),
-                        applicationUser_Id = c.String(maxLength: 128),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.applicationUser_Id)
-                .ForeignKey("dbo.Claims", t => t.ClaimId, cascadeDelete: true)
-                .Index(t => t.ClaimId)
-                .Index(t => t.applicationUser_Id);
-            
-            CreateTable(
                 "dbo.AspNetUserRoles",
                 c => new
                     {
@@ -407,15 +436,6 @@ namespace Sjuklöner.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
-                "dbo.Purposes",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "dbo.CollectiveAgreementHeaders",
                 c => new
                     {
@@ -427,6 +447,23 @@ namespace Sjuklöner.Migrations
             
             CreateTable(
                 "dbo.CollectiveAgreementInfoes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        CollectiveAgreementHeaderId = c.Int(nullable: false),
+                        StartDate = c.DateTime(nullable: false),
+                        EndDate = c.DateTime(nullable: false),
+                        PerHourUnsocialEvening = c.String(nullable: false),
+                        PerHourUnsocialNight = c.String(nullable: false),
+                        PerHourUnsocialWeekend = c.String(nullable: false),
+                        PerHourUnsocialHoliday = c.String(nullable: false),
+                        PerHourOnCallWeekday = c.String(nullable: false),
+                        PerHourOnCallWeekend = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.DefaultCollectiveAgreementInfoes",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -458,13 +495,12 @@ namespace Sjuklöner.Migrations
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.Messages", "ClaimId", "dbo.Claims");
-            DropForeignKey("dbo.Documents", "Claim_Id", "dbo.Claims");
-            DropForeignKey("dbo.Documents", "PurposeId", "dbo.Purposes");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Messages", "applicationUser_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.Documents", "OwnerId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.Documents", "Claim_Id", "dbo.Claims");
+            DropForeignKey("dbo.Documents", "PurposeId", "dbo.Purposes");
             DropForeignKey("dbo.Documents", "MimeTypeId", "dbo.MimeTypes");
             DropForeignKey("dbo.Documents", "DocStatusId", "dbo.DocStatus");
             DropForeignKey("dbo.Claims", "ClaimStatusId", "dbo.ClaimStatus");
@@ -473,13 +509,12 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
-            DropIndex("dbo.Messages", new[] { "applicationUser_Id" });
-            DropIndex("dbo.Messages", new[] { "ClaimId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
+            DropIndex("dbo.Messages", new[] { "applicationUser_Id" });
+            DropIndex("dbo.Messages", new[] { "ClaimId" });
             DropIndex("dbo.Documents", new[] { "Claim_Id" });
-            DropIndex("dbo.Documents", new[] { "OwnerId" });
             DropIndex("dbo.Documents", new[] { "PurposeId" });
             DropIndex("dbo.Documents", new[] { "DocStatusId" });
             DropIndex("dbo.Documents", new[] { "MimeTypeId" });
@@ -487,14 +522,15 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.Claims", new[] { "ClaimStatusId" });
             DropIndex("dbo.ClaimCalculations", new[] { "ClaimStatus_Id" });
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.DefaultCollectiveAgreementInfoes");
             DropTable("dbo.CollectiveAgreementInfoes");
             DropTable("dbo.CollectiveAgreementHeaders");
-            DropTable("dbo.Purposes");
             DropTable("dbo.AspNetUserRoles");
-            DropTable("dbo.Messages");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
+            DropTable("dbo.Messages");
+            DropTable("dbo.Purposes");
             DropTable("dbo.MimeTypes");
             DropTable("dbo.DocStatus");
             DropTable("dbo.Documents");

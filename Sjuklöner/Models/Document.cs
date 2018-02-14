@@ -16,7 +16,7 @@ namespace Sjuklöner.Models
 
         public int? PurposeId { get; set; }
 
-        public string OwnerId { get; set; }
+        //public string OwnerId { get; set; }
 
         [Required]
         [Display(Name = "Filnamn")]
@@ -39,6 +39,6 @@ namespace Sjuklöner.Models
 
         public virtual Purpose Purpose { get; set; }
 
-        public virtual ApplicationUser Owner { get; set; }
+        //public virtual ApplicationUser Owner { get; set; }
     }
 }

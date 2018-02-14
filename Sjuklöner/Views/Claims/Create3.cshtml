@@ -31,7 +31,7 @@
     </div>
     <div class="row">
         <p class="col col-md-2"></p>
-        <p class="col col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>
+        <p class="col col-md-10 second-page-header2">Steg 3: Ange belopp</p>
     </div>
 
     <div class="row">
@@ -40,7 +40,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.SickPay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.SickPay, new { htmlAttributes = new { @class = "form-control", @id = "sickpay", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.EditorFor(model => model.SickPay, new { htmlAttributes = new { @class = "form-control", @placeholder="00,00", id = "sickpay", onchange = "calculateSum()", onblur = "calculateSum()" } })
                     @Html.ValidationMessageFor(model => model.SickPay, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.HolidayPay, new { htmlAttributes = new { @class = "form-control", @id = "holidaypay", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.EditorFor(model => model.HolidayPay, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00", id = "holidaypay", onchange = "calculateSum()", onblur = "calculateSum()" } })
                     @Html.ValidationMessageFor(model => model.HolidayPay, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -56,7 +56,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.SocialFees, new { htmlAttributes = new { @class = "form-control", @id = "socialfees", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.EditorFor(model => model.SocialFees, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00", id = "socialfees", onchange = "calculateSum()", onblur = "calculateSum()" } })
                     @Html.ValidationMessageFor(model => model.SocialFees, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -64,14 +64,14 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.PensionAndInsurance, new { htmlAttributes = new { @class = "form-control align-bottom2", @id = "pensionandinsurance", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.EditorFor(model => model.PensionAndInsurance, new { htmlAttributes = new { @class = "form-control align-bottom2", @placeholder = "00,00", id = "pensionandinsurance", onchange = "calculateSum()", onblur = "calculateSum()" } })
                     @Html.ValidationMessageFor(model => model.PensionAndInsurance, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
-                <div class="col-md-10 align-bottom3 display-large-font1" id="claimsum">
+                <div class="col-md-10 align-bottom3 display-large-font1" id="claimamount">
                     @Html.DisplayFor(model => Model.ClaimSum)
                     @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger" })*@
                 </div>
@@ -97,7 +97,7 @@
                 <div class="form-group">
                     <div class="col col-md-offset-2 col-md-1">
                         @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
-                        <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
+                        <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Till steg 4" id="proceed" />
                     </div>
                     <div class="col col-md-1">
                         <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
@@ -111,25 +111,92 @@
     </div>
     @*</body>*@
 }
-
-@*<div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>*@
-
-@*@section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }*@
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
 <script type='text/javascript'>
     function calculateSum() {
 
         var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        var claimSum = document.getElementById("claimamount");
+        var sickPay = document.getElementById("sickpay").value;
+        var holidayPay = document.getElementById("holidaypay").value;
+        var socialFees = document.getElementById("socialfees").value;
+        var pensionAndInsurance = document.getElementById("pensionandinsurance").value;
 
-        var sickPay = document.getElementById("sickpay");
-        var holidayPay = document.getElementById("holidaypay");
-        var socialFees = document.getElementById("socialfees");
-        var pensionAndInsurance = document.getElementById("pensionandinsurance");
-        var claimSum = document.getElementById("claimsum");
+        var sickPayInt = 0;
+        var sickPayDec = 0;
 
-        claimSum.innerHTML = (parseFloat(sickPay.value) + parseFloat(holidayPay.value) + parseFloat(socialFees.value) + parseFloat(pensionAndInsurance.value)).toFixed(2);
+        var holidayPayInt = 0;
+        var holidayPayDec = 0;
+
+        var socialFeesInt = 0;
+        var socialFeesDec = 0;
+
+        var pensionAndInsuranceInt = 0;
+        var pensionAndInsuranceDec = 0;
+
+        var claimSumInt = 0;
+        var claimSumDec = 0;
+
+        var extraInt = 0;
+
+        var pos = sickPay.search(",");
+        if (pos === -1 || pos === sickPay.length) {
+            //No comma char in the string or if the comma is the last char
+            sickPayInt = parseInt(sickPay);
+        }
+        else {
+            sickPayInt = parseInt(sickPay.substring(0, pos));
+            sickPayDec = parseInt(sickPay.substring(pos + 1));
+        }
+
+        pos = holidayPay.search(",");
+        if (pos === -1 || pos === holidayPay.length) {
+            //No comma char in the string or if the comma is the last char
+            holidayPayInt = parseInt(holidayPay);
+        }
+        else {
+            holidayPayInt = parseInt(holidayPay.substring(0, pos));
+            holidayPayDec = parseInt(holidayPay.substring(pos + 1));
+        }
+
+        pos = socialFees.search(",");
+        if (pos === -1 || pos === socialFees.length) {
+            //No comma char in the string or if the comma is the last char
+            socialFeesInt = parseInt(socialFees);
+        }
+        else {
+            socialFeesInt = parseInt(socialFees.substring(0, pos));
+            socialFeesDec = parseInt(socialFees.substring(pos + 1));
+        }
+
+        pos = pensionAndInsurance.search(",");
+        if (pos === -1 || pos === pensionAndInsurance.length) {
+            //No comma char in the string or if the comma is the last char
+            pensionAndInsuranceInt = parseInt(pensionAndInsurance);
+        }
+        else {
+            pensionAndInsuranceInt = parseInt(pensionAndInsurance.substring(0, pos));
+            pensionAndInsuranceDec = parseInt(pensionAndInsurance.substring(pos + 1));
+        }
+
+        claimSumDec = sickPayDec + holidayPayDec + socialFeesDec + pensionAndInsuranceDec;
+        if (claimSumDec > 99) {
+            extraInt = parseInt(claimSumDec.toString().substring(0, 1));
+            claimSumDec = parseInt(claimSumDec.toString().substring(1));
+        }
+
+        claimSumInt = sickPayInt + holidayPayInt + socialFeesInt + pensionAndInsuranceInt + extraInt;
+
+        if (claimSumDec === 0) {
+            claimSum.innerHTML = claimSumInt.toString() + ",00";
+        }
+        else if (claimSumDec < 10) {
+            claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+        }
+        else {
+            claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+        }
     }
 </script>

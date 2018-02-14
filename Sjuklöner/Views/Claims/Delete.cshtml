@@ -5,14 +5,11 @@
 }
 <div class="row index-page-margin">
     <p class="col col-md-2"></p>
-    <p class="page-header col col-md-10">Ta bort ansökan</p>
+    <p class="page-header8 col col-md-10">Ta bort ansökan</p>
     <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort denna ansökan</nl>
-
 </div>
-<br />
-<br />
 <div>
-    <hr />
+    <hr class="claim-divider" />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.ReferenceNumber)
@@ -20,14 +17,6 @@
 
         <dd>
             @Html.DisplayFor(model => model.ReferenceNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.StatusDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StatusDate)
         </dd>
 
         <dt>
@@ -272,17 +261,15 @@
 
     </dl>
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("Delete", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <div class="row">
-            <div class="form-actions no-color">
-                <div class="col col-md-offset-2 col-md-1 no-padding-left">
-                    <input type="submit" value="Bekräfta" class="btn btn-danger btn-danger-small" />
-                </div>
-                <div class="col col-md-1">
-                    @Html.ActionLink("Avbryt", "Index", "Claims", null, new { @class = "btn btn-secondary btn-secondary-small" })
-                </div>
+            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-danger btn-danger-small" id="confirm" />
+            </div>
+            <div class="no-padding-left2 col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
             </div>
         </div>
     }
