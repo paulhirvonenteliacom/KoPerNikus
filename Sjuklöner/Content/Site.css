@@ -7,7 +7,7 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
-    width:75%;
+    width: 75%;
     max-width: none;
 }
 
@@ -70,6 +70,7 @@ li a {
     padding: 0 36px 0 24px;
     /*text-decoration: none;*/
 }
+
 .li-a-no-padding-left {
     padding: 0 36px 0 0;
 }
@@ -88,10 +89,16 @@ li a {
     text-decoration: none;
 }
 
-    .navbar-actionlink:hover, navbar-actionlink:focus {
-        color: #ffffff;
-        text-decoration: underline;
-    }
+.navbar-actionlink:hover, navbar-actionlink:focus {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.text-danger > ul > li {
+    color: #b94a48 !important;
+    float: none !important;
+    margin-left: 7.5%;
+}
 
 .logoff {
     padding-top: 0;
@@ -362,7 +369,7 @@ li a {
     font-weight: bold;
     border: none;
     text-align: right;
-} 
+}
 
 
 .second-page-header-no-padding-left {
@@ -1026,7 +1033,7 @@ special-left-margin {
     padding-left: 10px;
 }
 
-.display-padding4  {
+.display-padding4 {
     padding-left: 12px;
 }
 
@@ -1320,26 +1327,24 @@ a:hover, a:focus {
     margin-left: 15px;
     margin-top: 7px;
     float: left;
-
 }
 
-.collective-agreement-header  {
+.collective-agreement-header {
     font-size: 30px;
     font-weight: bold;
     padding-left: 5px;
 }
 
 #divRobin {
-   position:absolute;
-   left: 75% !important;
-   top:1200px; /*Outta sight*/
-   width:250px;
-   height:185px;
-   z-index:100;
-   transition-delay:3s;
-   transition-timing-function:ease-out;
-   transition: top 4s;
-   -webkit-transition:top 4s;
-   float:right;
-
+    position: absolute;
+    left: 75% !important;
+    top: 1200px; /*Outta sight*/
+    width: 250px;
+    height: 185px;
+    z-index: 100;
+    transition-delay: 3s;
+    transition-timing-function: ease-out;
+    transition: top 4s;
+    -webkit-transition: top 4s;
+    float: right;
 }
