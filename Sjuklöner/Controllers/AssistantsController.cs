@@ -28,7 +28,8 @@ namespace Sjuklöner.Controllers
             var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
 
             AssistantIndexVM assistantIndexVM = new AssistantIndexVM();
-            assistantIndexVM.CareCompanyName = "Smart Assistans"; //Hardcoded for now
+            assistantIndexVM.CareCompanyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
+            //assistantIndexVM.CareCompanyName = "Smart Assistans"; //Hardcoded for now
             assistantIndexVM.AssistantList = assistants;
 
             return View(assistantIndexVM);
