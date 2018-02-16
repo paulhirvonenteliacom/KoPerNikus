@@ -147,9 +147,9 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-                CareCompany careCompany = db.CareCompanies.Find(id);
-                db.CareCompanies.Remove(careCompany);
-                db.SaveChanges();
+            CareCompany careCompany = db.CareCompanies.Find(id);
+            db.CareCompanies.Remove(careCompany);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -199,39 +199,6 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
             return View(ombud);
-        }
-
-        // GET: Ombud/Create
-        public ActionResult CreateOmbud()
-        {
-            OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
-
-            return View("CreateOmbud", ombudCreateVM);
-        }
-
-        // POST: Ombud/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
-        public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudCreateVM ombudCreateVM)
-        {
-            ModelState.Remove(nameof(OmbudCreateVM.Id));
-            if (ModelState.IsValid)
-            {
-                ApplicationUser newOmbud = new ApplicationUser();
-                newOmbud.FirstName = ombudCreateVM.Ombud.FirstName;
-                newOmbud.LastName = ombudCreateVM.Ombud.LastName;
-                newOmbud.CareCompanyId = ombudCreateVM.CareCompanyId;
-                newOmbud.Email = ombudCreateVM.Ombud.Email;
-                newOmbud.PhoneNumber = ombudCreateVM.Ombud.PhoneNumber;
-                newOmbud.SSN = ombudCreateVM.Ombud.SSN;
-                db.Users.Add(newOmbud);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View();
         }
 
         // GET: Ombud/Edit/5
@@ -285,7 +252,16 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            return View(applicationUser);
+            var ombud = new DeleteOmbudVM
+            {
+                Id = applicationUser.Id,
+                FirstName = applicationUser.FirstName,
+                LastName = applicationUser.LastName,
+                SSN = applicationUser.SSN,
+                Email = applicationUser.Email,
+                PhoneNumber = applicationUser.PhoneNumber
+            };
+            return View(ombud);
         }
 
         // POST: Ombud/Delete/5
