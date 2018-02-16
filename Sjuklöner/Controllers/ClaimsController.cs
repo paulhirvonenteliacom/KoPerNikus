@@ -203,6 +203,9 @@ namespace Sjuklöner.Controllers
             create1VM.AssistantIds = assistantIds;
 
             create1VM.CustomerSSN = claim.CustomerSSN;
+            create1VM.CustomerName = claim.CustomerName;
+            create1VM.CustomerAddress = claim.CustomerAddress;
+            create1VM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
             create1VM.FirstDayOfSicknessDate = claim.QualifyingDate;
             create1VM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
             create1VM.OrganisationNumber = claim.OrganisationNumber;
