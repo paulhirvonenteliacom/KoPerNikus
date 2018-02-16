@@ -10,14 +10,21 @@ namespace Sjuklöner.Viewmodels
 {
     public class OmbudCreateVM
     {
-        public string Id { get; set; }
+        public int? CareCompanyId { get; set; }
 
-        public int CareCompanyId { get; set; }
+        [Display(Name = "Förnamn")]
+        public string FirstName { get; set; }
 
-        [Required]
-        [Display(Name = "Bolagsnamn")]
-        public string CareCompanyName { get; set; }
+        [Display(Name = "Efternamn")]
+        public string LastName { get; set; }
 
-        public OmbudForVM Ombud { get; set; }
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Display(Name = "Telefonnummer")]
+        public string PhoneNumber { get; set; }
+
+        [Display(Name = "Personnummer")]
+        public string SSN { get; set; }
     }
 }
