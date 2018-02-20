@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using Sjuklöner.Models;
 using Sjuklöner.BankIDService;
 using System.Collections.Generic;
+using Sjuklöner.Viewmodels;
 
 namespace Sjuklöner.Controllers
 {
@@ -145,9 +146,11 @@ namespace Sjuklöner.Controllers
 
         //
         // POST: /Account/NewAdmOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
-            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
+            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any() && vm.SSN == vm.ConfirmSSN)
             {
                 var user = new ApplicationUser
                 {
@@ -163,8 +166,6 @@ namespace Sjuklöner.Controllers
                 UserManager.AddToRole(user.Id, "AdministrativeOfficial");
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
                     return RedirectToAction("Index", "Claims");
                 }
                 AddErrors(result);
@@ -263,7 +264,7 @@ namespace Sjuklöner.Controllers
 
                         var user = new ApplicationUser
                         {
-                            UserName = registerCollectResult.userInfo.name,
+                            UserName = model.SSN,
                             Email = model.Email,
                             FirstName = registerCollectResult.userInfo.name,
                             LastName = registerCollectResult.userInfo.surname,
@@ -273,9 +274,9 @@ namespace Sjuklöner.Controllers
                             SSN = model.SSN
                         };
                         var result = await UserManager.CreateAsync(user);
-                        UserManager.AddToRole(user.Id, "Ombud");
                         if (result.Succeeded)
                         {
+                            UserManager.AddToRole(user.Id, "Ombud");
                             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -294,6 +295,48 @@ namespace Sjuklöner.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        // GET: Ombud/Create
+        public ActionResult CreateOmbud()
+        {
+            OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
+            var currentUser = User.Identity.GetUserId();
+            ombudCreateVM.CareCompanyId = UserManager.Users.Where(u => u.Id == currentUser).FirstOrDefault().CareCompanyId;
+            return View("CreateOmbud", ombudCreateVM);
+        }
+
+        // POST: Ombud/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        //public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudCreateVM ombudCreateVM)
+        public async Task<ActionResult> CreateOmbud(OmbudCreateVM vm)
+        {
+            //ModelState.Remove(nameof(OmbudCreateVM.Id));
+            if (ModelState.IsValid)
+            {
+                ApplicationUser newOmbud = new ApplicationUser
+                {
+                    UserName = vm.SSN,
+                    FirstName = vm.FirstName,
+                    LastName = vm.LastName,
+                    CareCompanyId = vm.CareCompanyId,
+                    Email = vm.Email,
+                    PhoneNumber = vm.PhoneNumber,
+                    SSN = vm.SSN,
+                    LastLogon = DateTime.Now
+                };
+                var result = await UserManager.CreateAsync(newOmbud);
+                if (result.Succeeded)
+                {
+                    UserManager.AddToRole(newOmbud.Id, "Ombud");
+                    return RedirectToAction("IndexOmbud", "CareCompanies");
+                }
+            }
+            return View();
         }
 
         //

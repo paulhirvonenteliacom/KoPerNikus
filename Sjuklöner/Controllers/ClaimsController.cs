@@ -1103,7 +1103,7 @@ namespace Sjuklöner.Controllers
 
                 //These check results are hardcoded for the demo. Need to be changed for the real solution.
                 recommendationVM.CompleteCheck = true;
-                recommendationVM.ProxyCheck = true;
+                recommendationVM.ProxyCheck = claim.ProxyCheck;
                 if (!recommendationVM.CompleteCheck)
                 {
                     recommendationVM.CompleteCheckMsg = "Bilaga saknas";

@@ -20,7 +20,7 @@
 </div>
 <div class="row">
     <div class="col col-md-1">
-        @Html.ActionLink("Nytt ombud", "CreateOmbud", null, new { @class = "btn btn-primary btn-primary3" })
+        @Html.ActionLink("Nytt ombud", "CreateOmbud", "Account", null, new { @class = "btn btn-primary btn-primary3" })
     </div>
 </div>
 <br />
@@ -67,7 +67,7 @@
             {
                 <td>
                     @Html.ActionLink("Uppdatera", "EditOmbud", new { id = item.Id }) |
-                    @Html.ActionLink("Detaljer", "DetailsOmbud", new { id = item.Id }) |
+                    @Html.ActionLink("Detaljer", "DetailsOmbud", new { id = item.Id })
                 </td>
             }
             else

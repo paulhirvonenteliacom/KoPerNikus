@@ -14,6 +14,7 @@
         <p class="page-header7 col col-md-10">Lägg till ombud</p>
         <br>
     </div>
+    @Html.HiddenFor(model => model.CareCompanyId)
     <hr class="claim-divider" />
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })

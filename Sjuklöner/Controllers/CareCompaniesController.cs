@@ -147,9 +147,9 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-                CareCompany careCompany = db.CareCompanies.Find(id);
-                db.CareCompanies.Remove(careCompany);
-                db.SaveChanges();
+            CareCompany careCompany = db.CareCompanies.Find(id);
+            db.CareCompanies.Remove(careCompany);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 

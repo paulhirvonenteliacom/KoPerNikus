@@ -156,6 +156,7 @@ namespace Sjuklöner.Models
 
         public bool ProCapitaCheck { get; set; }
         
+        public bool ProxyCheck { get; set; }
 
         //[Required]
         [Display(Name = "Vikarierande assistents personnummer")]
