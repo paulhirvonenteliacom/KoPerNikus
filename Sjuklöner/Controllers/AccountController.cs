@@ -150,11 +150,12 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
-            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any() && vm.SSN == vm.ConfirmSSN)
+            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any()) //&& vm.SSN == vm.ConfirmSSN
             {
                 var user = new ApplicationUser
                 {
-                    UserName = $"{vm.FirstName} {vm.LastName}",
+                    //UserName = $"{vm.FirstName} {vm.LastName}", //For use with BankID
+                    UserName = vm.Email,
                     Email = vm.Email,
                     FirstName = vm.FirstName,
                     LastName = vm.LastName,
@@ -162,7 +163,7 @@ namespace Sjuklöner.Controllers
                     LastLogon = DateTime.Now,
                     SSN = vm.SSN
                 };
-                var result = await UserManager.CreateAsync(user);
+                var result = await UserManager.CreateAsync(user, vm.Password);
                 UserManager.AddToRole(user.Id, "AdministrativeOfficial");
                 if (result.Succeeded)
                 {
@@ -189,13 +190,13 @@ namespace Sjuklöner.Controllers
             return View(vm);
         }
 
-        //
+        // Used with BankID
         // GET: /Account/RegisterConfirm
-        [AllowAnonymous]
-        public ActionResult RegisterConfirm(RegisterViewModel model)
-        {
-            return View(model);
-        }
+        //[AllowAnonymous]
+        //public ActionResult RegisterConfirm(RegisterViewModel model)
+        //{
+        //    return View(model);
+        //}
 
         //
         // POST: /Account/Register
@@ -204,95 +205,102 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == model.SSN).Any())
             {
-                if (!UserManager.Users.Where(u => u.SSN == model.SSN).Any())
+                /*System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+
+
+                using (var client = new RpServicePortTypeClient())
                 {
-                    System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
-
-
-                    using (var client = new RpServicePortTypeClient())
+                    var authRequest = new AuthenticateRequestType();
+                    authRequest.personalNumber = model.SSN;
+                    if (model.Type == "Mobilt")
                     {
-                        var authRequest = new AuthenticateRequestType();
-                        authRequest.personalNumber = model.SSN;
-                        if (model.Type == "Mobilt")
+                        RequirementType conditions = new RequirementType
                         {
-                            RequirementType conditions = new RequirementType
+                            condition = new[]
                             {
-                                condition = new[]
+                                new ConditionType()
                                 {
-                                    new ConditionType()
-                                    {
-                                        key = "certificatePolicies",
-                                        value = new[] {"1.2.3.4.25"},
-                                    }
+                                    key = "certificatePolicies",
+                                    value = new[] {"1.2.3.4.25"},
                                 }
-                            };
-                            authRequest.requirementAlternatives = new[] { conditions };
-                        }
-
-
-                        OrderResponseType response = client.Authenticate(authRequest);
-
-                        CollectResponseType registerCollectResult;
-
-                        do
-                        {
-                            try
-                            {
-                                registerCollectResult = client.Collect(response.orderRef);
                             }
-                            catch
-                            {
-                                return View("RegisterConfirm", model);
-                            }
-                            System.Threading.Thread.Sleep(1000);
-                        } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);
-
-                        CareCompany company = new CareCompany();
-                        company.CompanyPhoneNumber = model.CompanyPhoneNumber;
-                        company.Postcode = model.Postcode;
-                        company.City = model.City;
-                        company.OrganisationNumber = model.CompanyOrganisationNumber;
-                        company.StreetAddress = model.StreetAddress;
-                        company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
-                        company.AccountNumber = model.AccountNumber;
-                        company.CompanyName = model.CompanyName;
-                        var db = new ApplicationDbContext();
-                        db.CareCompanies.Add(company);
-                        db.SaveChanges();
-
-                        var user = new ApplicationUser
-                        {
-                            UserName = model.SSN,
-                            Email = model.Email,
-                            FirstName = registerCollectResult.userInfo.name,
-                            LastName = registerCollectResult.userInfo.surname,
-                            PhoneNumber = model.OmbudPhoneNumber,
-                            CareCompanyId = company.Id,
-                            LastLogon = DateTime.Now,
-                            SSN = model.SSN
                         };
-                        var result = await UserManager.CreateAsync(user);
-                        if (result.Succeeded)
-                        {
-                            UserManager.AddToRole(user.Id, "Ombud");
-                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                            // Send an email with this link
-                            // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                            // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                            return RedirectToAction("Index", "Claims");
-                        }
-                        AddErrors(result);
+                        authRequest.requirementAlternatives = new[] { conditions };
                     }
+                
+                
+                    OrderResponseType response = client.Authenticate(authRequest);
+                
+                    CollectResponseType registerCollectResult;
+                
+                    do
+                    {
+                        try
+                        {
+                            registerCollectResult = client.Collect(response.orderRef);
+                        }
+                        catch
+                        {
+                            return View("RegisterConfirm", model);
+                        }
+                        System.Threading.Thread.Sleep(1000);
+                    } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);*/
 
+                CareCompany company = new CareCompany();
+                company.CompanyPhoneNumber = model.CompanyPhoneNumber;
+                company.Postcode = model.Postcode;
+                company.City = model.City;
+                company.OrganisationNumber = model.CompanyOrganisationNumber;
+                company.StreetAddress = model.StreetAddress;
+                company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
+                company.AccountNumber = model.AccountNumber;
+                company.CompanyName = model.CompanyName;
+                var db = new ApplicationDbContext();
+                db.CareCompanies.Add(company);
+                db.SaveChanges();
+
+                var user = new ApplicationUser
+                {
+                    //UserName = $"{registerCollectResult.name} {registerCollectResult.surname}", For use with BankId
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.OmbudPhoneNumber,
+                    CareCompanyId = company.Id,
+                    LastLogon = DateTime.Now,
+                    SSN = model.SSN
+                };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    UserManager.AddToRole(user.Id, "Ombud");
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return RedirectToAction("Index", "Claims");
                 }
+                AddErrors(result);
+                //}
+
+
             }
 
+            List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
+            collectiveAgreements = new ApplicationDbContext().CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+            {
+                Value = $"{c.Id}",
+                Text = c.Name
+            });
+            model.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
+            ModelState.AddModelError("1", "Det finns redan ett konto med det personnummret");
             // If we got this far, something failed, redisplay form
             return View(model);
         }

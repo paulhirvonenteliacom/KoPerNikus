@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace Sjuklöner.Models
 {
@@ -75,6 +74,25 @@ namespace Sjuklöner.Models
         [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 
+        [Required]
+        [Display(Name = "Förnamn")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name ="Efternamn")]
+        public string LastName { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
         [Display(Name = "Telefonnummer (inkl. riktnummer)")]
         public string OmbudPhoneNumber { get; set; }
 
@@ -102,7 +120,7 @@ namespace Sjuklöner.Models
         public int? SelectedCollectiveAgreementId { get; set; }
 
         [Display(Name = "Kollektivavtal")]
-        public IEnumerable<SelectListItem> CollectiveAgreements { get; set; }
+        public IEnumerable<System.Web.Mvc.SelectListItem> CollectiveAgreements { get; set; }
 
         public string Type { get; set; }
     }
@@ -112,8 +130,19 @@ namespace Sjuklöner.Models
         [Required]
         public string SSN { get; set; }
 
-        [Required]        
-        public string ConfirmSSN { get; set; }
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
+        //[Required]        
+        //public string ConfirmSSN { get; set; }
 
         [Required]
         public string FirstName { get; set; }
