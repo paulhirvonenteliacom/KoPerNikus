@@ -206,9 +206,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201802121002167_init.cs" />
-    <Compile Include="Migrations\201802121002167_init.Designer.cs">
-      <DependentUpon>201802121002167_init.cs</DependentUpon>
+    <Compile Include="Migrations\201802140427417_init.cs" />
+    <Compile Include="Migrations\201802140427417_init.Designer.cs">
+      <DependentUpon>201802140427417_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -236,6 +236,9 @@
     <Compile Include="Models\DocStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Viewmodels\ClaimDetailsOmbudVM.cs" />
+    <Compile Include="Viewmodels\OmbudDeleteVM.cs" />
+    <Compile Include="Viewmodels\OmbudEditVM.cs" />
     <Compile Include="Viewmodels\OmbudCreateVM.cs" />
     <Compile Include="Viewmodels\OmbudIndexVM.cs" />
     <Compile Include="Viewmodels\AssistantIndexVM.cs" />
@@ -399,6 +402,9 @@
     <Content Include="Views\Account\RegisterConfirm.cshtml" />
     <Content Include="Views\Account\NewAdmOff.cshtml" />
     <Content Include="Views\CareCompanies\DeleteOmbud.cshtml" />
+    <Content Include="Views\CareCompanies\EditOmbud.cshtml" />
+    <Content Include="Views\CareCompanies\DetailsOmbud.cshtml" />
+    <Content Include="Views\Claims\_ClaimForOmbud.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -417,8 +423,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802121002167_init.resx">
-      <DependentUpon>201802121002167_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802140427417_init.resx">
+      <DependentUpon>201802140427417_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

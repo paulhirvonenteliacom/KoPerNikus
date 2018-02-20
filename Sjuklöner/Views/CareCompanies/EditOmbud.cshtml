@@ -1,9 +1,9 @@
-﻿@model Sjuklöner.Viewmodels.OmbudCreateVM
+﻿@model Sjuklöner.Viewmodels.OmbudEditVM
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Edit";
 }
 
-@using (Html.BeginForm("CreateOmbud", "CareCompanies", null, FormMethod.Post))
+@using (Html.BeginForm("EditOmbud", "CareCompanies", null, FormMethod.Post))
 {
     @Html.HiddenFor(model => model.CareCompanyId)
     @Html.HiddenFor(model => model.CareCompanyName)
@@ -11,7 +11,7 @@
 
     <div class="row">
         <p class="col col-md-2"></p>
-        <p class="page-header7 col col-md-10">Lägg till ombud</p>
+        <p class="page-header7 col col-md-10">Uppdatera ombud</p>
         <br>
     </div>
     <hr class="claim-divider" />

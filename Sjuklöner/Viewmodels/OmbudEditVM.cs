@@ -8,7 +8,7 @@ using static Sjuklöner.Viewmodels.OmbudIndexVM;
 
 namespace Sjuklöner.Viewmodels
 {
-    public class OmbudCreateVM
+    public class OmbudEditVM
     {
         public string Id { get; set; }
 

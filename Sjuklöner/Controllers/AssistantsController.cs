@@ -65,7 +65,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate")] Assistant assistant)
+        public ActionResult Create([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] Assistant assistant)
         {
             ModelState.Remove(nameof(Assistant.Id));
             if (ModelState.IsValid)
@@ -98,7 +98,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,InsuranceRate,PensionRate")] Assistant assistant)
+        public ActionResult Edit([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] Assistant assistant)
         {
             if (ModelState.IsValid)
             {
