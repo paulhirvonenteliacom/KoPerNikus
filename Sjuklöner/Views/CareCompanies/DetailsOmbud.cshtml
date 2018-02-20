@@ -1,12 +1,11 @@
-﻿@model Sjuklöner.Viewmodels.OmbudDeleteVM
+﻿@model Sjuklöner.Viewmodels.OmbudEditVM
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Details";
 }
 <div class="row index-page-margin">
     <p class="col col-md-2"></p>
-    <p class="page-header8 col col-md-10">Ta bort ombudet</p>
-    <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort detta ombud</nl>
+    <p class="page-header8 col col-md-10">Detaljvy, ombud</p>
 </div>
 <div>
     <hr class="claim-divider" />
@@ -51,17 +50,13 @@
             @Html.DisplayFor(model => model.PhoneNumber)
         </dd>
     </dl>
-
-@using (Html.BeginForm("DeleteOmbud", "CareCompanies", new { id = Model.Id }, FormMethod.Post))
-{
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
-                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-danger btn-danger-small" id="confirm" />
-            </div>
-            <div class="no-padding-left2 col col-md-1">
-                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
-            </div>
-        </div>
-    }
 </div>
+<div class="row">
+    <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
+        @Html.ActionLink("Tillbaka", "IndexOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+    </div>
+</div>
+@*<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Tillbaka", "IndexOmbud")
+</p>*@

@@ -303,16 +303,17 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="row form-group">
-                        <div class="col-md-offset-2 col-md-1">
-                            <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Till steg 3" id="proceed" />
-                        </div>
-                        <div class="col col-md-1">
-                            <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Spara" id="save" />
-                        </div>
-                        <div class="col col-md-1">
+                    <div class="col-md-offset-2 col-md-1">
+                        <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Till steg 3" id="proceed" />
+                    </div>
+                    <div class="col col-md-1">
+                        <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Spara" id="save" />
+                    </div>
+                    @*<div class="col col-md-1">
                             <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
-                        </div>
+                        </div>*@
+                    <div class="col col-md-1">
+                        @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
                     </div>
                 </div>
             </div>

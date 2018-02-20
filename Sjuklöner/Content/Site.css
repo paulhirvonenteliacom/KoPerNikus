@@ -1107,6 +1107,10 @@ special-left-margin {
     padding-left: 7px;
 }
 
+.no-left-margin {
+    margin-left: 0;
+}
+
 .line-height-10 {
     line-height: 1.0;
 }
@@ -1385,4 +1389,8 @@ a:hover, a:focus {
     transition: top 4s;
     -webkit-transition: top 4s;
     float: right;
+}
+
+.hidden-by-default {
+    display: none;
 }

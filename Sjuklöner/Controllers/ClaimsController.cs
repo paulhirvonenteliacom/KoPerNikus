@@ -202,14 +202,15 @@ namespace Sjuklöner.Controllers
             create1VM.SubstituteAssistants = subAssistantDdlString;
             create1VM.AssistantIds = assistantIds;
 
-            create1VM.CustomerSSN = claim.CustomerSSN;
             create1VM.CustomerName = claim.CustomerName;
+            create1VM.CustomerSSN = claim.CustomerSSN;
             create1VM.CustomerAddress = claim.CustomerAddress;
             create1VM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
             create1VM.FirstDayOfSicknessDate = claim.QualifyingDate;
             create1VM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
             create1VM.OrganisationNumber = claim.OrganisationNumber;
-            create1VM.ReferenceNumber = claim.ReferenceNumber;
+            create1VM.ClaimNumber = claim.ReferenceNumber;
+            create1VM.CompletionStage = (int)claim.CompletionStage;
 
             return create1VM;
         }
@@ -245,60 +246,70 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create1(Create1VM create1VM, string refNumber, string submitButton)
         {
-            if (submitButton == "Till steg 2" || submitButton == "Spara")
+            if (ModelState.IsValid)
             {
-                if (refNumber == null) //new claim
+
+                if (submitButton == "Till steg 2" || submitButton == "Spara")
                 {
-                    refNumber = SaveNewClaim(create1VM);
-                }
-                else if (refNumber != null) //existing claim
-                {
-                    UpdateExistingClaim(create1VM);
-                    var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ReferenceNumber).FirstOrDefault();
-                    if (claim.CompletionStage > 1)
+                    if (refNumber == null) //new claim
                     {
-                        AdjustClaimDays(create1VM);
+                        refNumber = SaveNewClaim(create1VM);
+                    }
+                    else if (refNumber != null) //existing claim
+                    {
+                        UpdateExistingClaim(create1VM);
+                        var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).FirstOrDefault();
+                        if (claim.CompletionStage > 1)
+                        {
+                            AdjustClaimDays(create1VM);
+                        }
                     }
                 }
-            }
-            if (submitButton == "Till steg 2")
-            {
-                return RedirectToAction("Create2", "Claims", new { refNumber = refNumber });
-            }
-            else if (submitButton == "Avbryt")
-            {
-                return RedirectToAction("IndexPageOmbud");
-            }
-            else if (submitButton == "Spara")
-            {
-                var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
-                var currentId = User.Identity.GetUserId();
-                ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
-                var companyId = currentUser.CareCompanyId;
-                var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
-                var regAssistantDdlString = new List<SelectListItem>();
-                var subAssistantDdlString = new List<SelectListItem>();
-
-                for (int i = 0; i < assistants.Count(); i++)
+                if (submitButton == "Till steg 2")
                 {
-                    regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
-                    subAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                    return RedirectToAction("Create2", "Claims", new { refNumber = refNumber });
                 }
-                create1VM.RegularAssistants = regAssistantDdlString;
-                create1VM.SubstituteAssistants = subAssistantDdlString;
+                else if (submitButton == "Avbryt")
+                {
+                    return RedirectToAction("IndexPageOmbud");
+                }
+                else if (submitButton == "Spara")
+                {
+                    var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                    var currentId = User.Identity.GetUserId();
+                    ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+                    var companyId = currentUser.CareCompanyId;
+                    var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+                    var regAssistantDdlString = new List<SelectListItem>();
+                    var subAssistantDdlString = new List<SelectListItem>();
 
-                return View(create1VM);
+                    for (int i = 0; i < assistants.Count(); i++)
+                    {
+                        regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                        subAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                    }
+                    create1VM.RegularAssistants = regAssistantDdlString;
+                    create1VM.SubstituteAssistants = subAssistantDdlString;
+                    create1VM.CompletionStage = (int)claim.CompletionStage;
+                    create1VM.ClaimNumber = claim.ReferenceNumber;
+
+                    return View(create1VM);
+                }
+                else
+                {
+                    return RedirectToAction("IndexPageOmbud");
+                }
             }
             else
             {
-                return RedirectToAction("IndexPageOmbud");
+                return View(create1VM);
             }
         }
 
         private void AdjustClaimDays(Create1VM create1VM)
         {
             //Find existing claim days
-            var existingClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+            var existingClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).OrderBy(c => c.SickDayNumber).ToList();
 
             //Calculate offsets at the beginning and end of the date range for the existing claim days
             var offsetStart = (create1VM.FirstDayOfSicknessDate.Date - existingClaimDays[0].Date.Date).Days;
@@ -323,7 +334,7 @@ namespace Sjuklöner.Controllers
                     ClaimDay claimDay = new ClaimDay();
                     claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(i);
                     claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(i).ToString(format: "ddd d MMM");
-                    claimDay.ReferenceNumber = create1VM.ReferenceNumber;
+                    claimDay.ReferenceNumber = create1VM.ClaimNumber;
                     claimDay.SickDayNumber = i + 1;
                     newClaimDays.Add(claimDay);
                     claimDayPos++;
@@ -353,7 +364,7 @@ namespace Sjuklöner.Controllers
                     for (int i = 0; i < offsetEnd; i++)
                     {
                         ClaimDay claimDay = new ClaimDay();
-                        claimDay.ReferenceNumber = create1VM.ReferenceNumber;
+                        claimDay.ReferenceNumber = create1VM.ClaimNumber;
                         claimDay.SickDayNumber = claimDayPos;
                         claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
                         claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
@@ -382,7 +393,7 @@ namespace Sjuklöner.Controllers
                     for (int i = 0; i < offsetEnd; i++)
                     {
                         ClaimDay claimDay = new ClaimDay();
-                        claimDay.ReferenceNumber = create1VM.ReferenceNumber;
+                        claimDay.ReferenceNumber = create1VM.ClaimNumber;
                         claimDay.SickDayNumber = claimDayPos;
                         claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
                         claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
@@ -414,7 +425,7 @@ namespace Sjuklöner.Controllers
                     for (int i = 0; i < offsetEnd; i++)
                     {
                         ClaimDay claimDay = new ClaimDay();
-                        claimDay.ReferenceNumber = create1VM.ReferenceNumber;
+                        claimDay.ReferenceNumber = create1VM.ClaimNumber;
                         claimDay.SickDayNumber = claimDayPos;
                         claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
                         claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
@@ -431,7 +442,7 @@ namespace Sjuklöner.Controllers
                     ClaimDay claimDay = new ClaimDay();
                     claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(i);
                     claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(i).ToString(format: "ddd d MMM");
-                    claimDay.ReferenceNumber = create1VM.ReferenceNumber;
+                    claimDay.ReferenceNumber = create1VM.ClaimNumber;
                     claimDay.SickDayNumber = i + 1;
                     newClaimDays.Add(claimDay);
                 }
@@ -439,7 +450,7 @@ namespace Sjuklöner.Controllers
             //Remove not neeeded claim days (they are the remaining claim days in the existing claim day list) from the db
             foreach (var claimDay in existingClaimDays)
             {
-                db.ClaimDays.Remove(db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ReferenceNumber).Where(c => c.Id == claimDay.Id).First());
+                db.ClaimDays.Remove(db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).Where(c => c.Id == claimDay.Id).First());
             }
             db.ClaimDays.AddRange(newClaimDays);
             db.SaveChanges();
@@ -560,7 +571,7 @@ namespace Sjuklöner.Controllers
 
         private void UpdateExistingClaim(Create1VM create1VM)
         {
-            var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ReferenceNumber).FirstOrDefault();
+            var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).FirstOrDefault();
             claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
 
             var currentUserId = User.Identity.GetUserId();
@@ -744,6 +755,15 @@ namespace Sjuklöner.Controllers
 
                     scheduleRow.OnCallDay = claimDays[i].OnCallDay;
                     scheduleRow.OnCallNight = claimDays[i].OnCallNight;
+
+                    scheduleRow.HoursSI = claimDays[i].HoursSI;
+                    scheduleRow.UnsocialEveningSI = claimDays[i].UnsocialEveningSI;
+                    scheduleRow.UnsocialNightSI = claimDays[i].UnsocialNightSI;
+                    scheduleRow.UnsocialWeekendSI = claimDays[i].UnsocialWeekendSI;
+                    scheduleRow.UnsocialGrandWeekendSI = claimDays[i].UnsocialGrandWeekendSI;
+
+                    scheduleRow.OnCallDaySI = claimDays[i].OnCallDaySI;
+                    scheduleRow.OnCallNightSI = claimDays[i].OnCallNightSI;
                 }
                 rowList.Add(scheduleRow);
             }
@@ -859,11 +879,11 @@ namespace Sjuklöner.Controllers
             create3VM.ClaimNumber = claim.ReferenceNumber;
             //if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
             //{
-                create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
-                create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
-                create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
-                create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
-                create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
+            create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
+            create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
+            create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
+            create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
+            create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
             //}
             return create3VM;
         }
@@ -928,6 +948,7 @@ namespace Sjuklöner.Controllers
             else
             {
                 SaveClaim3(create3VM);
+                create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
                 return View(create3VM);
             }
         }
@@ -945,7 +966,8 @@ namespace Sjuklöner.Controllers
                 claim.ClaimedHolidayPay = Convert.ToDecimal(create3VM.HolidayPay);
                 claim.ClaimedSocialFees = Convert.ToDecimal(create3VM.SocialFees);
                 claim.ClaimedPensionAndInsurance = Convert.ToDecimal(create3VM.PensionAndInsurance);
-                claim.ClaimedSum = Convert.ToDecimal(create3VM.ClaimSum);
+                claim.ClaimedSum = Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance);
+                //claim.ClaimedSum = Convert.ToDecimal(create3VM.ClaimSum);
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
             }
@@ -955,6 +977,7 @@ namespace Sjuklöner.Controllers
         // GET: Claims/Create4
         public ActionResult Create4(string ClaimNumber)
         {
+            //This get action needs to be updated to handle the case where attachments have been added to the claim but the claim was only saved with attachments, not submitted.
             var VM = new Create4VM();
             VM.ClaimNumber = ClaimNumber;
 
@@ -965,36 +988,50 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Create4
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SalaryAttachmentStandIn, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model)
+        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SalaryAttachmentStandIn, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model, string submitButton)
         {
-            if (ModelState.IsValid)
+            if (submitButton == "Skicka in" || submitButton == "Spara")
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    if (!Directory.Exists(Server.MapPath("~/Uploads")))
-                        Directory.CreateDirectory(Server.MapPath("~/Uploads"));
-                    if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
-                        Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
+                    try
+                    {
+                        if (!Directory.Exists(Server.MapPath("~/Uploads")))
+                            Directory.CreateDirectory(Server.MapPath("~/Uploads"));
+                        if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
+                            Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
 
-                    string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
+                        string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
 
-                    var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
+                        var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
-                    NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
-                    NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
-                    NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
-                    NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
-                    NewDocument(model.TimeReport, path, "TimeReport", claim);
-                    NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
+                        NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
+                        NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
+                        NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
+                        NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
+                        NewDocument(model.TimeReport, path, "TimeReport", claim);
+                        NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
 
+                        if (claim.CompletionStage < 4)
+                        {
+                            claim.CompletionStage = 4;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.Message = "ERROR: " + ex.Message.ToString();
+                    }
                 }
-                catch (Exception ex)
+                if (submitButton == "Skicka in")
                 {
-                    ViewBag.Message = "ERROR: " + ex.Message.ToString();
+                    return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
                 }
-                return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
+                else
+                {
+                    return View("Create4", model);
+                }
             }
-            return View("Create4", model);
+            return RedirectToAction("IndexPageOmbud");
         }
 
         private void NewDocument(HttpPostedFileBase file, string path, string title, Claim claim)
@@ -1161,6 +1198,86 @@ namespace Sjuklöner.Controllers
             return PartialView("_SendMessage");
         }
 
+        [HttpGet]
+        public ActionResult _ShowClaim(string refNumber)
+        {
+            var claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser ombud = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+            ClaimDetailsOmbudVM claimDetailsOmbudVM = new ClaimDetailsOmbudVM();
+            claimDetailsOmbudVM.CompletionStage = claim.CompletionStage;
+            if (claim.CompletionStage >= 1)
+            {
+                claimDetailsOmbudVM.ReferenceNumber = refNumber;
+                claimDetailsOmbudVM.StatusName = claim.ClaimStatus.Name;
+                claimDetailsOmbudVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
+
+                //Kommun
+                claimDetailsOmbudVM.Council = "Helsingborgs kommun";
+                claimDetailsOmbudVM.Administration = "Vård- och omsorgsförvaltningen";
+
+                //Assistansberättigad
+                claimDetailsOmbudVM.CustomerName = claim.CustomerName;
+                claimDetailsOmbudVM.CustomerSSN = claim.CustomerSSN;
+                claimDetailsOmbudVM.CustomerAddress = claim.CustomerAddress;
+                claimDetailsOmbudVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
+
+                //Ombud/uppgiftslämnare
+                claimDetailsOmbudVM.OmbudName = ombud.FirstName + " " + ombud.LastName;
+                claimDetailsOmbudVM.OmbudPhoneNumber = ombud.PhoneNumber;
+
+                //Assistansanordnare
+                claimDetailsOmbudVM.CompanyName = claim.CompanyName; ;
+                claimDetailsOmbudVM.OrganisationNumber = claim.OrganisationNumber;
+                claimDetailsOmbudVM.GiroNumber = claim.AccountNumber;
+                claimDetailsOmbudVM.CompanyAddress = claim.StreetAddress;
+                claimDetailsOmbudVM.CompanyPhoneNumber = claim.CompanyPhoneNumber;
+                claimDetailsOmbudVM.CollectiveAgreement = claim.CollectiveAgreementName + ", " + claim.CollectiveAgreementSpecName;
+                claimDetailsOmbudVM.Workplace = "Björkängen, Birgittagården"; //This can probably be removed
+
+                //Insjuknad ordinarie assistent
+                //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
+                claimDetailsOmbudVM.AssistantName = claim.RegFirstName + " " + claim.RegLastName;
+                claimDetailsOmbudVM.AssistantSSN = claim.RegAssistantSSN;
+                claimDetailsOmbudVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
+                claimDetailsOmbudVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
+
+                claimDetailsOmbudVM.NumberOfSickDays = claim.NumberOfSickDays;
+
+                claimDetailsOmbudVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsOmbudVM.cs.
+                claimDetailsOmbudVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
+                claimDetailsOmbudVM.Sickpay = claim.ClaimedSickPay;
+                claimDetailsOmbudVM.HolidayPay = claim.ClaimedHolidayPay;
+                claimDetailsOmbudVM.SocialFees = claim.ClaimedSocialFees;
+                claimDetailsOmbudVM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
+            }
+
+            if (claim.CompletionStage >= 2)
+            {
+                //Add code here to show the worked hours
+            }
+
+            if (claim.CompletionStage >= 3)
+            {
+                claimDetailsOmbudVM.Sickpay = claim.ClaimedSickPay;
+                claimDetailsOmbudVM.HolidayPay = claim.ClaimedHolidayPay;
+                claimDetailsOmbudVM.SocialFees = claim.ClaimedSocialFees;
+                claimDetailsOmbudVM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
+                claimDetailsOmbudVM.ClaimSum = claim.ClaimedSum;
+            }
+
+            if (claim.CompletionStage >= 4)
+            {
+                claimDetailsOmbudVM.Documents = claim.Documents;
+            }
+
+            if (claim.CompletionStage > 4)
+            {
+                claimDetailsOmbudVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
+            }
+
+            return PartialView("_ClaimForOmbud", claimDetailsOmbudVM);
+        }
 
         public ActionResult ShowClaimDetails(string referenceNumber)
         {
@@ -1170,7 +1287,10 @@ namespace Sjuklöner.Controllers
             claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.SickDayNumber).ToList();
 
             //Calculate the model sum
-            CalculateModelSum(claim, claimDays);
+            if (claimDays.Count() > 0)
+            {
+                CalculateModelSum(claim, claimDays);
+            }
 
             var ombudId = claim.OwnerId;
             var ombud = db.Users.Where(u => u.Id == ombudId).FirstOrDefault();

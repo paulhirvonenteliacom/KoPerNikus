@@ -8,11 +8,11 @@ using static Sjuklöner.Viewmodels.OmbudIndexVM;
 
 namespace Sjuklöner.Viewmodels
 {
-    public class OmbudCreateVM
+    public class OmbudEditVM
     {
         public string Id { get; set; }
 
-        public int? CareCompanyId { get; set; }
+        public int CareCompanyId { get; set; }
 
         [Display(Name = "Bolagsnamn")]
         public string CareCompanyName { get; set; }

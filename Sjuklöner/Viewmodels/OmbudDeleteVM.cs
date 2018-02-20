@@ -4,15 +4,14 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using Sjuklöner.Models;
-using static Sjuklöner.Viewmodels.OmbudIndexVM;
 
 namespace Sjuklöner.Viewmodels
 {
-    public class OmbudCreateVM
+    public class OmbudDeleteVM
     {
         public string Id { get; set; }
 
-        public int? CareCompanyId { get; set; }
+        public int CareCompanyId { get; set; }
 
         [Display(Name = "Bolagsnamn")]
         public string CareCompanyName { get; set; }

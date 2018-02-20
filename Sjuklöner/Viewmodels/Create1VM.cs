@@ -11,7 +11,9 @@ namespace Sjuklöner.Viewmodels
     {
         public string Heading { get; set; }
 
-        public string ReferenceNumber { get; set; }
+        public string ClaimNumber { get; set; }
+
+        public int CompletionStage { get; set; }
 
         [Required]
         [Display(Name = "Vårdgivarens organisationsnummer")]
@@ -66,13 +68,19 @@ namespace Sjuklöner.Viewmodels
         //[Display(Name = "Ordinarie assistents efternamn")]
         //public string AssistantLastNameFirstLetter { get; set; }
 
+        //[Required]
+        [Range(typeof(int), "2", "999999", ErrorMessage = "En ordinarie assistent måste väljas")]
         public int? SelectedRegAssistantId { get; set; }
 
+        //[Required]
         [Display(Name = "Ordinarie assistent")]
         public IEnumerable<SelectListItem> RegularAssistants { get; set; }
 
+        //[Required]
+        [Range(typeof(int), "2", "999999", ErrorMessage = "En vikarierande assistent måste väljas")]
         public int? SelectedSubAssistantId { get; set; }
 
+        //[Required]
         [Display(Name = "Vikarierande assistent")]
         public IEnumerable<SelectListItem> SubstituteAssistants { get; set; }
 

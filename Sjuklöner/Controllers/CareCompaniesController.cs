@@ -198,7 +198,53 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            return View(ombud);
+            OmbudEditVM ombudVM = new OmbudEditVM();
+            ombudVM.FirstName = ombud.FirstName;
+            ombudVM.LastName = ombud.LastName;
+            ombudVM.SSN = ombud.SSN;
+            ombudVM.Email = ombud.Email;
+            ombudVM.PhoneNumber = ombud.PhoneNumber;
+            return View("DetailsOmbud", ombudVM);
+        }
+
+        // GET: Ombud/Create
+        public ActionResult CreateOmbud()
+        {
+            OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+            ombudCreateVM.CareCompanyId = (int)currentUser.CareCompanyId;
+            ombudCreateVM.CareCompanyName = db.CareCompanies.Where(c => c.Id == ombudCreateVM.CareCompanyId).FirstOrDefault().CompanyName;
+            return View("CreateOmbud", ombudCreateVM);
+        }
+
+        // POST: Ombud/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudCreateVM ombudCreateVM, string submitButton)
+        {
+            if (submitButton == "Spara")
+            {
+                ModelState.Remove(nameof(OmbudCreateVM.Id));
+                if (ModelState.IsValid)
+                {
+                    ApplicationUser newOmbud = new ApplicationUser();
+                    newOmbud.FirstName = ombudCreateVM.FirstName;
+                    newOmbud.LastName = ombudCreateVM.LastName;
+                    newOmbud.CareCompanyId = ombudCreateVM.CareCompanyId;
+                    newOmbud.UserName = $"{ombudCreateVM.FirstName} {ombudCreateVM.LastName}";
+                    newOmbud.Email = ombudCreateVM.Email;
+                    newOmbud.PhoneNumber = ombudCreateVM.PhoneNumber;
+                    newOmbud.SSN = ombudCreateVM.SSN;
+                    newOmbud.LastLogon = DateTime.Now;
+                    db.Users.Add(newOmbud);
+                    db.SaveChanges();
+                    return RedirectToAction("IndexOmbud");
+                }
+            }
+            return View();
         }
 
         // GET: Ombud/Edit/5
@@ -214,14 +260,16 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
             ApplicationUser currentUser = db.Users.Where(u => u.Id == id).FirstOrDefault();
-            var companyId = currentUser.CareCompanyId;
-            UserEditVM userEditVM = new UserEditVM();
-            userEditVM.UserId = id;
-            userEditVM.FirstName = currentUser.FirstName;
-            userEditVM.LastName = currentUser.LastName;
-            userEditVM.PhoneNumber = currentUser.PhoneNumber;
-            userEditVM.Email = currentUser.Email;
-            return View(userEditVM);
+            OmbudEditVM ombudEditVM = new OmbudEditVM();
+            ombudEditVM.Id = id;
+            ombudEditVM.CareCompanyId = (int)currentUser.CareCompanyId;
+            ombudEditVM.FirstName = currentUser.FirstName;
+            ombudEditVM.LastName = currentUser.LastName;
+            ombudEditVM.PhoneNumber = currentUser.PhoneNumber;
+            ombudEditVM.Email = currentUser.Email;
+            ombudEditVM.SSN = currentUser.SSN;
+            ombudEditVM.CareCompanyName = db.CareCompanies.Where(c => c.Id == ombudEditVM.CareCompanyId).FirstOrDefault().CompanyName;
+            return View("EditOmbud", ombudEditVM);
         }
 
         // POST: Ombud/Edit/5
@@ -229,15 +277,27 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        //public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
+        public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudEditVM ombudEditVM, string submitButton)
         {
-            if (ModelState.IsValid)
+            if (submitButton == "Spara")
             {
-                db.Entry(applicationUser).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    var editedOmbud = db.Users.Where(u => u.Id == ombudEditVM.Id).FirstOrDefault();
+                    editedOmbud.FirstName = ombudEditVM.FirstName;
+                    editedOmbud.LastName = ombudEditVM.LastName;
+                    editedOmbud.CareCompanyId = ombudEditVM.CareCompanyId;
+                    editedOmbud.UserName = $"{ombudEditVM.FirstName} {ombudEditVM.LastName}";
+                    editedOmbud.Email = ombudEditVM.Email;
+                    editedOmbud.PhoneNumber = ombudEditVM.PhoneNumber;
+                    editedOmbud.SSN = ombudEditVM.SSN;
+                    db.Entry(editedOmbud).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("IndexOmbud");
+                }
             }
-            return View(applicationUser);
+            return View();
         }
 
         // GET: Ombud/Delete/5
@@ -252,16 +312,14 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            var ombud = new DeleteOmbudVM
-            {
-                Id = applicationUser.Id,
-                FirstName = applicationUser.FirstName,
-                LastName = applicationUser.LastName,
-                SSN = applicationUser.SSN,
-                Email = applicationUser.Email,
-                PhoneNumber = applicationUser.PhoneNumber
-            };
-            return View(ombud);
+            OmbudDeleteVM ombudVM = new OmbudDeleteVM();
+            ombudVM.Id = id;
+            ombudVM.FirstName = applicationUser.FirstName;
+            ombudVM.LastName = applicationUser.LastName;
+            ombudVM.SSN = applicationUser.SSN;
+            ombudVM.PhoneNumber = applicationUser.PhoneNumber;
+            ombudVM.Email = applicationUser.Email;
+            return View("DeleteOmbud", ombudVM);
         }
 
         // POST: Ombud/Delete/5
