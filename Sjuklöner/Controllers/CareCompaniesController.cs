@@ -218,7 +218,7 @@ namespace Sjuklöner.Controllers
             return View("CreateOmbud", ombudCreateVM);
         }
 
-        // POST: Ombud/Create
+        /*/ POST: Ombud/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -246,7 +246,7 @@ namespace Sjuklöner.Controllers
             }
             return View();
         }
-
+        */
         // GET: Ombud/Edit/5
         public ActionResult EditOmbud(string id)
         {

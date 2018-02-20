@@ -48,9 +48,13 @@ namespace Sjuklöner.Migrations
 
             //var assistants = new List<Assistant>
             //{
-            //    new Assistant{FirstName = "Isabella", LastName = "Gulldén",Email = "isabella.gullden@assistans.se",UserName = "isabella.gullden@assistans.se", LastLogon=DateTime.Now.AddDays(-2)},
-            //    new Assistant{FirstName = "Nathalie",LastName = "Hagman",Email = "nathalie.hagman@assistans.se",UserName = "nathalie.hagman@assistans.se", LastLogon=DateTime.Now.AddDays(-2)}
+            //    new Assistant{FirstName = "Isabella", LastName = "Gulldén",Email = "isabella.gullden@assistans.se",PhoneNumber = "034-234 5556",AssistantSSN = "630802-5066" },
+            //    new Assistant{FirstName = "Nathalie",LastName = "Hagman",Email = "nathalie.hagman@assistans.se",PhoneNumber = "065-455 5678",AssistantSSN = "890314-4033" }
             //};
+            //foreach (var assistant in assistants)
+            //{
+            //    context.Assistants.AddOrUpdate(a => a.Id, assistant);
+            //}
 
             //foreach (var assistant in assistants)
             //{

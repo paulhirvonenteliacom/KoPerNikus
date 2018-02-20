@@ -13,7 +13,7 @@ namespace Sjuklöner.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201802140427417_init"; }
+            get { return "201802201601399_init"; }
         }
         
         string IMigrationMetadata.Source

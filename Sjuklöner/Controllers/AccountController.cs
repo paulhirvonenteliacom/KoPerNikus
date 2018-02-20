@@ -328,7 +328,7 @@ namespace Sjuklöner.Controllers
             {
                 ApplicationUser newOmbud = new ApplicationUser
                 {
-                    UserName = vm.SSN,
+                    UserName = vm.Email,
                     FirstName = vm.FirstName,
                     LastName = vm.LastName,
                     CareCompanyId = vm.CareCompanyId,
@@ -337,7 +337,7 @@ namespace Sjuklöner.Controllers
                     SSN = vm.SSN,
                     LastLogon = DateTime.Now
                 };
-                var result = await UserManager.CreateAsync(newOmbud);
+                var result = await UserManager.CreateAsync(newOmbud, vm.Password);
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(newOmbud.Id, "Ombud");

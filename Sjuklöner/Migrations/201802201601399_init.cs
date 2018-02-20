@@ -259,6 +259,7 @@ namespace Sjuklöner.Migrations
                         SubPhoneNumber = c.String(),
                         IVOCheck = c.Boolean(nullable: false),
                         ProCapitaCheck = c.Boolean(nullable: false),
+                        ProxyCheck = c.Boolean(nullable: false),
                         StandInSSN = c.String(),
                         QualifyingDate = c.DateTime(nullable: false),
                         LastDayOfSicknessDate = c.DateTime(nullable: false),
