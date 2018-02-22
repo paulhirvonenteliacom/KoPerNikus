@@ -11,18 +11,22 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Referensnummer")]
         public string ClaimNumber { get; set; }
 
+        [Required]
         [Display(Name = "Sjuklön (Kr):")]
         [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string SickPay { get; set; }
 
+        [Required]
         [Display(Name = "Semesterersättning (Kr):")]
         [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string HolidayPay { get; set; }
 
+        [Required]
         [Display(Name = "Sociala avgifter (Kr):")]
         [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string SocialFees { get; set; }
 
+        [Required]
         [Display(Name = "Övriga avtalsbundna kostnader (Kr):")]
         [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string PensionAndInsurance { get; set; }

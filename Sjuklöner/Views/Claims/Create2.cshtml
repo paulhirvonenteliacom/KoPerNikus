@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Sjukperiod", "Create1", new { refNumber = Model.ReferenceNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Personuppgifter och sjukperiod", "Create1", new { refNumber = Model.ReferenceNumber }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Timmar</li>
         </ol>
     </nav>
@@ -33,11 +33,8 @@
         </div>
         <div class="row">
             <p class="col col-md-2"></p>
-            <p class="col col-md-10 second-page-header2">Steg 2: Ange antal timmar</p>
+            <p class="col col-md-10 second-page-header2">Steg 2 av 4: Ange antal timmar</p>
         </div>
-
-        @*<br />*@
-        @*ONLY HOURS*@
 
         <div class="row">
             <div class="form-horizontal">
@@ -303,30 +300,37 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-offset-2 col-md-1">
+                    <div class="small-padding-left3 col col-md-offset-2 col-md-1">
                         <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Till steg 3" id="proceed" />
                     </div>
-                    <div class="col col-md-1">
+                    <div class="small-padding-left3 col col-md-1">
                         <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Spara" id="save" />
                     </div>
-                    @*<div class="col col-md-1">
-                            <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
-                        </div>*@
-                    <div class="col col-md-1">
+                    <div class="small-padding-left3 col col-md-1">
+                        @Html.ActionLink(Model.ReferenceNumber, "_ShowClaim", new { refNumber = Model.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                        @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ReferenceNumber</a>*@
+                    </div>
+                    <div class="small-padding-left3 col col-md-1">
                         @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+                    </div>
+                    @*<div id="AJAXContainer"></div>*@
+                    <div class="hidden-by-default" id="claimnumber">@Model.ReferenceNumber</div>
+                    <div id='myModal' class='modal' style="text-align:left;">
+                        <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                            <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                                <button type="button" id="closbtn"> x </button>
+                                <div style="height:10px;">
+                                </div>
+                                <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </body>
 }
-<div class="row">
-    <div class="col-md-offset-2 col-md-10">
-        @*<button id="show-hours-btn" class="btn btn-default">Visa timmar script</button>*@
-        @*<button onclick="calculateHours()" class="btn btn-default">Visa timmar</button>*@
-        @*<button onclick="copyToStandin()" class="btn btn-default">Kopiera till vikarie</button>*@
-    </div>
-</div>
 <script type='text/javascript'>
     function calculateHours(id) {
         var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
@@ -610,14 +614,6 @@
                 }
             }
         }
-
-
-
-
-
-        //event.preventDefault();
-        //event.stopPropagation();
-        //return false;
     }
 
     function copyToStandin() {
@@ -705,103 +701,7 @@
             if (numberOfOnCallHours[i].innerHTML != null) {
                 numberOfOnCallHoursSI[i].innerHTML = numberOfOnCallHours[i].innerHTML.trim();
             }
-
-            //event.preventDefault();
-            //event.stopPropagation();
-            //return false;
         }
-
-        //var numberOfHours = [];
-        //var numberOfMinutes = [];
-
-        //var numberOfMorningMinutes = 0;
-        //var numberOfMorningHours = 0;
-
-
-
-        //for (var i = 0; i < data.ScheduleRowList.length; i++) {
-        //    alert(startTimeHourSI.[i].value);
-        //    //To be added: Check that the input is numeric, for example use var n = 'a'; if (+n === +n) { // is number }
-        //    //To be added: Allowed range for hours and minutes? Or can that be done in the model?
-        //    if (startTimeHourSI[i].value != null && stopTimeHourSI[i].value != null && (parseFloat(stopTimeHourSI[i].value) >= parseFloat(startTimeHourSI[i].value))) {
-        //        numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value) - parseFloat(startTimeMinuteSI[i].value);
-        //        if (numberOfMinutes[i] >= 0) {
-        //            numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
-        //        }
-        //        else {
-        //            numberOfMinutes[i] = numberOfMinutes[i] + 60;
-        //            numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
-        //        }
-        //        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
-        //        numberOfCalcHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
-
-
-        //        //Unsocial hours
-        //        if ((parseFloat(startTimeHourSI[i].value) < 7) || parseFloat(stopTimeHourSI[i].value) >= 18) {
-
-
-        //            //Check if there is working time before 07:00
-        //            if (parseFloat(startTimeHourSI[i].value) <= 7) {
-        //                //Calculate number of unsocial hours in the morning
-        //                if (parseFloat(stopTimeHourSI[i].value) < 7 || (parseFloat(stopTimeHourSI[i].value) == 7 && parseFloat(stopTimeMinuteSI[i].value) == 0)) {
-        //                    numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value) - parseFloat(startTimeMinuteSI[i].value);
-        //                    if (numberOfMinutes[i] >= 0) {
-        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
-        //                    }
-        //                    else {
-        //                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
-        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
-        //                    }
-        //                }
-        //                else {
-        //                    numberOfMinutes[i] = 60 - parseFloat(startTimeMinuteSI[i].value);
-        //                    numberOfHours[i] = 7 - parseFloat(startTimeHourSI[i].value) - 1;
-        //                }
-        //                numberOfMorningMinutes = numberOfMinutes[i];
-        //                numberOfMorningHours = numberOfHours[i];
-        //            }
-
-        //            //Check if there is working time after 18:00
-        //            if (parseFloat(stopTimeHourSI[i].value) >= 18) {
-        //                //Calculate number of unsocial hours in the evening
-        //                if (parseFloat(startTimeHourSI[i].value) >= 18) {
-        //                    numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value) - parseFloat(startTimeMinuteSI[i].value);
-        //                    if (numberOfMinutes[i] >= 0) {
-        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value);
-        //                    }
-        //                    else {
-        //                        numberOfMinutes[i] = numberOfMinutes[i] + 60;
-        //                        numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - parseFloat(startTimeHourSI[i].value) - 1;
-        //                    }
-        //                }
-        //                else {
-        //                    numberOfMinutes[i] = parseFloat(stopTimeMinuteSI[i].value);
-        //                    numberOfHours[i] = parseFloat(stopTimeHourSI[i].value) - 18;
-        //                }
-        //                numberOfMinutes[i] = numberOfMinutes[i] + numberOfMorningMinutes
-        //                numberOfHours[i] = numberOfHours[i] + numberOfMorningHours
-        //            }
-        //            numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
-        //            numberOfUnsocialHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
-        //            numberOfMorningMinutes = 0;
-        //            numberOfMorningHours = 0;
-        //        }
-        //    }
-
-        //    //Calculate number of on call hours for each date
-        //    if (startTimeHourOnCallSI[i].value != null && stopTimeHourOnCallSI[i].value != null && (parseFloat(stopTimeHourOnCallSI[i].value) >= parseFloat(startTimeHourOnCallSI[i].value))) {
-        //        numberOfMinutes[i] = parseFloat(stopTimeMinuteOnCallSI[i].value) - parseFloat(startTimeMinuteOnCallSI[i].value);
-        //        if (numberOfMinutes[i] >= 0) {
-        //            numberOfHours[i] = parseFloat(stopTimeHourOnCallSI[i].value) - parseFloat(startTimeHourOnCallSI[i].value);
-        //        }
-        //        else {
-        //            numberOfMinutes[i] = numberOfMinutes[i] + 60;
-        //            numberOfHours[i] = parseFloat(stopTimeHourOnCallSI[i].value) - parseFloat(startTimeHourOnCallSI[i].value) - 1;
-        //        }
-        //        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
-        //        numberOfOnCallHoursSI[i].innerHTML = numberOfHours[i].toFixed(2);
-        //    }
-        //}
     }
 
     function copyHoursToStandin() {
@@ -884,41 +784,47 @@
         }
     }
 
-    //$(document).ready(function () {
-    //    $("#show-hours-btn").click(function () {
-    //        alert("Hello");
-            @*var scheduleRows = @Html.Raw(Json.Encode(Model.ScheduleRowList));
-            var startTimeHour = [];
-            var startTimeMinute = [];
-            var stopTimeHour = [];
-            var stopTimeMinute = [];
-            var numberOfHours = [];
-            var numberOfMinutes = [];
-            for (var i = 0; i < scheduleRows.length; i++) {
-                alert(scheduleRows[i].StartTimeHour);
-            }*@
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    debugger;
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            debugger;
+            $('#myModal').modal('hide');
+        });
+    });
 
-            //for (var i = 0; i < scheduleRows.length; i++) {
-            //    startTimeHour[i] = scheduleRows[i].startTimeHour;
-            //    startTimeMinute[i] = scheduleRows[i].startTimeMinute;
-            //    stopTimeHour[i] = scheduleRows[i].stopTimeHour;
-            //    stopTimeMinute[i] = scheduleRows[i].stopTimeMinute;
-
-            //    if (StartTimeHour[i].value != null && (Int32.Parse(StopTimeHour[i].value) >= Int32.Parse(StartTimeHour[i].value))) {
-            //        numberOfMinutes[i] = Int32.Parse(StopTimeMinute[i].value) - Int32.Parse(StartTimeMinute[i].value);
-            //        if (numberOfMinutes[i] >= 0) {
-            //            numberOfHours[i] = Int32.Parse(StopTimeHour[i].value) - Int32.Parse(StartTimeHour[i].value);
-            //        }
-            //        else {
-            //            numberOfMinutes[i] = numberOfMinutes[i] + 60;
-            //            numberOfHours[i] = Int32.Parse(StopTimeHour[i].value) - Int32.Parse(StartTimeHour[i].value) - 1;
-            //        }
-            //        numberOfHours[i] = ((numberOfHours[i] * 60) + numberOfMinutes[i]) / 60;
-            //    }
-            //}
-            //for (var eachItem in numberOfHours) {
-            //    alert(eachItem);
-            //}
+    //$('#loadPartialActionLink').on('click', function (e) {
+    //    e.preventDefault();
+    //    var claimNumber = document.getElementById("claimnumber");
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '/Claims/_ShowClaim',
+    //        data: {
+    //            refNumber: claimNumber.innerHTML
+    //        },
+    //        success: function (data, textStatus, jqXHR) {
+    //            $('#AJAXContainer').html(data);
+    //        }
     //    });
     //});
 </script>

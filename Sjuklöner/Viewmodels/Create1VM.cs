@@ -69,7 +69,7 @@ namespace Sjuklöner.Viewmodels
         //public string AssistantLastNameFirstLetter { get; set; }
 
         //[Required]
-        [Range(typeof(int), "2", "999999", ErrorMessage = "En ordinarie assistent måste väljas")]
+        [Range(typeof(int), "1", "999999", ErrorMessage = "En ordinarie assistent måste väljas")]
         public int? SelectedRegAssistantId { get; set; }
 
         //[Required]
@@ -77,7 +77,7 @@ namespace Sjuklöner.Viewmodels
         public IEnumerable<SelectListItem> RegularAssistants { get; set; }
 
         //[Required]
-        [Range(typeof(int), "2", "999999", ErrorMessage = "En vikarierande assistent måste väljas")]
+        [Range(typeof(int), "1", "999999", ErrorMessage = "En vikarierande assistent måste väljas")]
         public int? SelectedSubAssistantId { get; set; }
 
         //[Required]

@@ -325,6 +325,20 @@ li a {
     border: none;
 }
 
+.page-header9 {
+    font-size: 50px;
+    /*line-height: 34px;*/
+    padding: 0 15px 0 25px;
+    margin-top: 40px;
+    margin-bottom: 0;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+}
+
 .page-header-no-padding-left {
     font-size: 50px;
     /*line-height: 34px;*/
@@ -414,6 +428,10 @@ li a {
 
 .table {
     margin-left: 15px;
+}
+
+.table2 {
+    margin-left: 0;
 }
 
 .subtitle-padding {
@@ -689,6 +707,10 @@ li a {
 
 .role-padding {
     padding-left: 13px;
+}
+
+.left-padding-18 {
+    padding-left: 18px;
 }
 
 .height-28 {
@@ -1019,8 +1041,9 @@ special-left-margin {
 
 .form-group-div-frame {
     border: 1px solid;
-    border-color: #ae0b05;
-    border-radius: 1px;
+    border-color: #c6bdbd;
+    /*border-color: #ae0b05;*/
+    border-radius: 4px;
     margin-bottom: 25px;
     margin-left: 18px;
 }
@@ -1059,6 +1082,10 @@ special-left-margin {
     padding-left: 22px;
 }
 
+.display-padding6 {
+    padding-left: 37px;
+}
+
 .display-padding-large {
     padding-left: 45px;
 }
@@ -1072,6 +1099,13 @@ special-left-margin {
     text-align: left;
     margin-bottom: 0;
     padding-left: 15px;
+}
+
+.control-label-left-align2 {
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 0;
+    padding-left: 27px;
 }
 
 .control-label-left-small-padding {
@@ -1228,6 +1262,15 @@ a:hover, a:focus {
 
 .medium-col {
     width: 90px;
+}
+
+.claimdetails-col {
+    width: 11%;
+    vertical-align: text-top;
+}
+
+.row-divider {
+    border-bottom: 1px solid #c6bdbd;
 }
 
 .claim-divider {
