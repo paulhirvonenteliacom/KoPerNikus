@@ -65,7 +65,8 @@
                     {
                         <tr>
                             <td>
-                                @Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })
+                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                                @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -149,7 +150,8 @@
                     {
                         <tr>
                             <td>
-                                @Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })
+                                @*@Html.ActionLink(item.ReferenceNumber, "_ShowClaim", "Claims", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -228,7 +230,8 @@
                     {
                         <tr>
                             <td>
-                                @Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })
+                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                                @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.StatusDate)
@@ -255,7 +258,6 @@
                             </td>
                         </tr>
                     }
-
                 </table>
             }
             else
@@ -267,6 +269,51 @@
             }
         </div>
     </div>
+    <div id='myModal' class='modal' style="text-align:left;">
+        <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+            @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#d2f5f4;">*@
+            @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#f5f1dc;">*@
+                <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                    <button type="button" id="closbtn"> x </button>
+                    <div style="height:10px;">
+                    </div>
+                    <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                    </div>
+                </div>
+            </div>
+    </div>
     <hr class="claim-divider" />
-
 </body>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    debugger;
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            debugger;
+            $('#myModal').modal('hide');
+        });
+    });
+</script>

@@ -16,7 +16,7 @@
 @using (Html.BeginForm("Create1", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    @*@Html.HiddenFor(model => model.ClaimNumber)*@
+    @Html.HiddenFor(model => model.ClaimNumber)
     @Html.HiddenFor(model => model.OrganisationNumber)
     for (int i = 0; i < Model.AssistantIds.Count(); i++)
     {
@@ -30,7 +30,7 @@
     </div>
     <div class="row">
         <p class="col col-md-2"></p>
-        <p class="col col-md-10 second-page-header2">Steg 1: Ange personuppgifter och sjukperiod</p>
+        <p class="col col-md-10 second-page-header2">Steg 1 av 4: Ange personuppgifter och sjukperiod</p>
     </div>
 
     <div class="row">
@@ -113,7 +113,7 @@
             </div>
         </div>
 
-        @*EMAIL OPTIONALLY NEEDED IN DEMO MODE!!!
+        @*EMAIL OPTIONALLY NEEDED IN DEMO MODE!
             <div class="form-group">
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -129,39 +129,76 @@
             <div class="small-padding-left3 col col-md-1">
                 <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
             </div>
+            @if (Model.CompletionStage >= 1)
+            {
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                    @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
+                </div>
+            }
             <div class="small-padding-left3 col col-md-1">
                 @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
             </div>
-            @if (Model.CompletionStage >= 1)
-            {
-                <a href="#" id="loadPartialActionLink">Visa ansökan</a>
-                @*@Html.ActionLink("Visa ansökan", null, null, new { refNumber = Model.ClaimNumber }, new { id = "" })*@
-                //"_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
-                <div id="AJAXContainer"></div>
-                <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
-            }
+            @*<div id="AJAXContainer"></div>*@
+            <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn"> x </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <br>
-        <br>
-        <br>
     </div>
 }
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script>
-$('#loadPartialActionLink').on('click', function (e) {
-    e.preventDefault();
-    var claimNumber = document.getElementById("claimnumber");
-    $.ajax({
-        type: "GET",
-        url: '/Claims/_ShowClaim',
-        data: {
-            refNumber: claimNumber.innerHTML
-        },
-        success: function (data, textStatus, jqXHR) {
-            $('#AJAXContainer').html(data);
-        }
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    debugger;
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            debugger;
+            $('#myModal').modal('hide');
+        });
     });
-});
+    //$('#loadPartialActionLink').on('click', function (e) {
+    //    e.preventDefault();
+    //    var claimNumber = document.getElementById("claimnumber");
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '/Claims/_ShowClaim',
+    //        data: {
+    //            refNumber: claimNumber.innerHTML
+    //        },
+    //        success: function (data, textStatus, jqXHR) {
+    //            $('#AJAXContainer').html(data);
+    //        }
+    //    });
+    //});
 </script>

@@ -552,6 +552,8 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string TotalCostCalcD1T14 { get; set; }
 
+        public List<ClaimDay> ClaimDays { get; set; }
+
         public List<ClaimCalculation> ClaimCalculations { get; set; }
 
         public List<Document> Documents { get; set; }

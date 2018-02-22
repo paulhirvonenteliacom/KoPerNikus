@@ -66,13 +66,31 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kollektivavtal:")]
         public string CollectiveAgreement { get; set; } //Avtal, fackförbund
 
+        //Vikarierande assistent
+        [Display(Name = "Namn:")]
+        public string SubAssistantName { get; set; }
+
+        [Display(Name = "Personnummer:")]
+        public string SubAssistantSSN { get; set; }
+
+        [Display(Name = "Telefonnummer (inkl. riktnr.):")]
+        public string SubPhoneNumber { get; set; }
+
+        [Display(Name = "E-postadress:")]
+        public string SubEmail { get; set; }
 
         //Insjuknad ordinarie assistent
         [Display(Name = "Namn:")]
-        public string AssistantName { get; set; }
+        public string RegAssistantName { get; set; }
 
         [Display(Name = "Personnummer:")]
-        public string AssistantSSN { get; set; }
+        public string RegAssistantSSN { get; set; }
+
+        [Display(Name = "Telefonnummer (inkl. riktnr.):")]
+        public string RegPhoneNumber { get; set; }
+
+        [Display(Name = "E-postadress:")]
+        public string RegEmail { get; set; }
 
         [Display(Name = "Karensdag, datum:")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -144,7 +162,7 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal NumberOfOnCallHoursSI { get; set; }
 
-        [Display(Name = "Yrkat belopp (Kr):")]
+        [Display(Name = "Yrkat belopp, total (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal ClaimSum { get; set; }
 
@@ -238,6 +256,8 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "Antal sjukdagar:")]
         public int NumberOfSickDays { get; set; }
+
+        public List<ClaimDay> ClaimDays { get; set; }
 
         public List<Document> Documents { get; set; }
 

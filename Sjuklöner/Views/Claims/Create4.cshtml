@@ -7,7 +7,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Sjukperiod", "Create1", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Personuppgifter och sjukperiod", "Create1", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Timmar", "Create2", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Belopp", "Create3", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
             <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Bilagor</li>
@@ -26,7 +26,7 @@
     </div>
     <div class="row">
         <p class="col col-md-2"></p>
-        <p class="col col-md-10 second-page-header2">Steg 4: Ladda upp bilagor och skicka in ansökan</p>
+        <p class="col col-md-10 second-page-header2">Steg 4 av 4: Ladda upp bilagor och skicka in ansökan</p>
     </div>
     <div class="row">
         <div class="form-horizontal">
@@ -76,20 +76,81 @@
             </div>
 
             <div class="row">
-                <div class="form-group">
-                    <div class="col col-md-offset-2 col-md-1">
-                        <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
-                    </div>
-                    <div class="col col-md-1">
-                        <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
-                    </div>
-                    <div class="col col-md-1">
-                        <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+                <div class="small-padding-left3 col col-md-offset-2 col-md-1">
+                    <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                    @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+                </div>
+                @*<div id="AJAXContainer"></div>*@
+                <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+                <div id='myModal' class='modal' style="text-align:left;">
+                    <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                        <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                            <button type="button" id="closbtn"> x </button>
+                            <div style="height:10px;">
+                            </div>
+                            <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
 }
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    debugger;
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            debugger;
+            $('#myModal').modal('hide');
+        });
+    });
+
+    //$('#loadPartialActionLink').on('click', function (e) {
+    //    e.preventDefault();
+    //    var claimNumber = document.getElementById("claimnumber");
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '/Claims/_ShowClaim',
+    //        data: {
+    //            refNumber: claimNumber.innerHTML
+    //        },
+    //        success: function (data, textStatus, jqXHR) {
+    //            $('#AJAXContainer').html(data);
+    //        }
+    //    });
+    //});
+</script>

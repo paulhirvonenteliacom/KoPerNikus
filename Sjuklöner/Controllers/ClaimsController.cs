@@ -50,8 +50,9 @@ namespace Sjuklöner.Controllers
             IndexPageOmbudVM indexPageOmbudVM = new IndexPageOmbudVM();
 
             var me = db.Users.Find(User.Identity.GetUserId());
+            int companyId = (int)me.CareCompanyId;
 
-            var claims = db.Claims.Where(c => c.OwnerId == me.Id).ToList();
+            var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.StatusDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -80,7 +81,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
-            var claims = db.Claims.Include(c => c.CareCompany).ToList();
+            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.StatusDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -257,6 +258,7 @@ namespace Sjuklöner.Controllers
                     }
                     else if (refNumber != null) //existing claim
                     {
+                        create1VM.ClaimNumber = refNumber;
                         UpdateExistingClaim(create1VM);
                         var claim = db.Claims.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).FirstOrDefault();
                         if (claim.CompletionStage > 1)
@@ -505,7 +507,7 @@ namespace Sjuklöner.Controllers
                 var subAssistant = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault();
                 claim.SubAssistantSSN = subAssistant.AssistantSSN;
                 claim.SubFirstName = subAssistant.FirstName;
-                claim.SubFirstName = subAssistant.LastName;
+                claim.SubLastName = subAssistant.LastName;
                 claim.SubPhoneNumber = subAssistant.PhoneNumber;
                 claim.SubEmail = subAssistant.Email;
             }
@@ -800,11 +802,12 @@ namespace Sjuklöner.Controllers
             db.SaveChanges();
 
             var claim = db.Claims.Where(c => c.ReferenceNumber == create2VM.ReferenceNumber).FirstOrDefault();
-            if (claim.CompletionStage < 2)
-            {
-                claim.CompletionStage = 2;
-                db.Entry(claim).State = EntityState.Modified;
-            }
+            decimal numberOfAbsenceHours = 0;
+            decimal numberOfUnsocialHours = 0;
+            decimal numberOfOnCallHours = 0;
+            decimal numberOfAbsenceHoursWithSI = 0;
+            decimal numberOfUnsocialHoursSI = 0;
+            decimal numberOfOnCallHoursSI = 0;
 
             DateTime claimDate = claim.QualifyingDate;
 
@@ -834,8 +837,29 @@ namespace Sjuklöner.Controllers
                     OnCallNightSI = day.OnCallNightSI
                 };
                 db.ClaimDays.Add(claimDay);
+
+                numberOfAbsenceHours = numberOfAbsenceHours + Convert.ToDecimal(day.Hours);
+                numberOfUnsocialHours = numberOfUnsocialHours + Convert.ToDecimal(day.UnsocialEvening) + Convert.ToDecimal(day.UnsocialNight) + Convert.ToDecimal(day.UnsocialWeekend) + Convert.ToDecimal(day.UnsocialGrandWeekend);
+                numberOfOnCallHours = numberOfOnCallHours + Convert.ToDecimal(day.OnCallDay) + Convert.ToDecimal(day.OnCallNight);
+                numberOfAbsenceHoursWithSI = numberOfAbsenceHoursWithSI + Convert.ToDecimal(day.HoursSI);
+                numberOfUnsocialHoursSI = numberOfUnsocialHoursSI + Convert.ToDecimal(day.UnsocialEveningSI) + Convert.ToDecimal(day.UnsocialNightSI) + Convert.ToDecimal(day.UnsocialWeekendSI) + Convert.ToDecimal(day.UnsocialGrandWeekendSI);
+                numberOfOnCallHoursSI = numberOfOnCallHoursSI + Convert.ToDecimal(day.OnCallDaySI) + Convert.ToDecimal(day.OnCallNightSI);
+
                 dayIdx++;
             }
+
+            claim.NumberOfAbsenceHours = numberOfAbsenceHours;
+            claim.NumberOfUnsocialHours = numberOfUnsocialHours;
+            claim.NumberOfOnCallHours = numberOfOnCallHours;
+            claim.NumberOfHoursWithSI = numberOfAbsenceHoursWithSI;
+            claim.NumberOfUnsocialHoursSI = numberOfUnsocialHoursSI;
+            claim.NumberOfOnCallHoursSI = numberOfOnCallHoursSI;
+
+            if (claim.CompletionStage < 2)
+            {
+                claim.CompletionStage = 2;
+            }
+            db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
         }
 
@@ -1257,25 +1281,44 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.Workplace = "Björkängen, Birgittagården"; //This can probably be removed
 
                 //Insjuknad ordinarie assistent
-                //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
-                claimDetailsOmbudVM.AssistantName = claim.RegFirstName + " " + claim.RegLastName;
-                claimDetailsOmbudVM.AssistantSSN = claim.RegAssistantSSN;
+                claimDetailsOmbudVM.RegAssistantName = claim.RegFirstName + " " + claim.RegLastName;
+                claimDetailsOmbudVM.RegAssistantSSN = claim.RegAssistantSSN;
+                claimDetailsOmbudVM.RegPhoneNumber = claim.RegPhoneNumber;
+                claimDetailsOmbudVM.RegEmail = claim.RegEmail;
                 claimDetailsOmbudVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
                 claimDetailsOmbudVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
 
+                //Vikarierande assistent
+                claimDetailsOmbudVM.SubAssistantName = claim.SubFirstName + " " + claim.SubLastName;
+                claimDetailsOmbudVM.SubAssistantSSN = claim.SubAssistantSSN;
+                claimDetailsOmbudVM.SubPhoneNumber = claim.SubPhoneNumber;
+                claimDetailsOmbudVM.SubEmail = claim.SubEmail;
+
                 claimDetailsOmbudVM.NumberOfSickDays = claim.NumberOfSickDays;
 
-                claimDetailsOmbudVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsOmbudVM.cs.
-                claimDetailsOmbudVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
-                claimDetailsOmbudVM.Sickpay = claim.ClaimedSickPay;
-                claimDetailsOmbudVM.HolidayPay = claim.ClaimedHolidayPay;
-                claimDetailsOmbudVM.SocialFees = claim.ClaimedSocialFees;
-                claimDetailsOmbudVM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
+                //claimDetailsOmbudVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsOmbudVM.cs.
+                //claimDetailsOmbudVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
+                claimDetailsOmbudVM.HourlySalaryAsString = claim.HourlySalaryAsString;
+                claimDetailsOmbudVM.SickPayRateAsString = claim.SickPayRateAsString;
+                claimDetailsOmbudVM.HolidayPayRateAsString = claim.HolidayPayRateAsString;
+                claimDetailsOmbudVM.SocialFeeRateAsString = claim.SocialFeeRateAsString;
+                claimDetailsOmbudVM.PensionAndInsuranceRateAsString = claim.PensionAndInsuranceRateAsString;
             }
 
             if (claim.CompletionStage >= 2)
             {
-                //Add code here to show the worked hours
+                //Hours for regular assistant
+                claimDetailsOmbudVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
+                claimDetailsOmbudVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
+                claimDetailsOmbudVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
+
+                //Hours for substitute assistant
+                claimDetailsOmbudVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
+                claimDetailsOmbudVM.NumberOfUnsocialHoursSI = claim.NumberOfUnsocialHoursSI;
+                claimDetailsOmbudVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
+
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                claimDetailsOmbudVM.ClaimDays = claimDays;
             }
 
             if (claim.CompletionStage >= 3)
