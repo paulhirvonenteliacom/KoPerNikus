@@ -300,7 +300,7 @@ namespace Sjuklöner.Controllers
                 Text = c.Name
             });
             model.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
-            ModelState.AddModelError("1", "Det finns redan ett konto med det personnummret");
+            ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnummret");
             // If we got this far, something failed, redisplay form
             return View(model);
         }
