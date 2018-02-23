@@ -290,7 +290,7 @@ namespace Sjuklöner.Controllers
                     editedOmbud.FirstName = ombudEditVM.FirstName;
                     editedOmbud.LastName = ombudEditVM.LastName;
                     editedOmbud.CareCompanyId = ombudEditVM.CareCompanyId;
-                    editedOmbud.UserName = $"{ombudEditVM.FirstName} {ombudEditVM.LastName}";
+                    editedOmbud.UserName = ombudEditVM.Email;
                     editedOmbud.Email = ombudEditVM.Email;
                     editedOmbud.PhoneNumber = ombudEditVM.PhoneNumber;
                     editedOmbud.SSN = ombudEditVM.SSN;
