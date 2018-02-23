@@ -69,13 +69,21 @@ namespace Sjuklöner.Controllers
         public ActionResult Create([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] Assistant assistant)
         {
             ModelState.Remove(nameof(Assistant.Id));
+
+            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            {
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistant.AssistantSSN).FirstOrDefault();
+                if (twinAssistant != null && twinAssistant.CareCompanyId == assistant.CareCompanyId)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                }
+            }
             if (ModelState.IsValid)
             {
                 db.Assistants.Add(assistant);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(assistant);
         }
 
