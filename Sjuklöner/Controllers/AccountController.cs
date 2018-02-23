@@ -308,10 +308,7 @@ namespace Sjuklöner.Controllers
         // GET: Ombud/Create
         public ActionResult CreateOmbud()
         {
-            OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
-            var currentUser = User.Identity.GetUserId();
-            ombudCreateVM.CareCompanyId = UserManager.Users.Where(u => u.Id == currentUser).FirstOrDefault().CareCompanyId;
-            return View("CreateOmbud", ombudCreateVM);
+            return View("CreateOmbud");
         }
 
         // POST: Ombud/Create
@@ -326,12 +323,14 @@ namespace Sjuklöner.Controllers
             //ModelState.Remove(nameof(OmbudCreateVM.Id));
             if (ModelState.IsValid)
             {
+                var currentUserId = User.Identity.GetUserId();
+                var currentUser = UserManager.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
                 ApplicationUser newOmbud = new ApplicationUser
                 {
                     UserName = vm.Email,
                     FirstName = vm.FirstName,
                     LastName = vm.LastName,
-                    CareCompanyId = vm.CareCompanyId,
+                    CareCompanyId = currentUser.CareCompanyId,
                     Email = vm.Email,
                     PhoneNumber = vm.PhoneNumber,
                     SSN = vm.SSN,
