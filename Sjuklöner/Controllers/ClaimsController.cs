@@ -1027,11 +1027,22 @@ namespace Sjuklöner.Controllers
                         string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
 
 
+                        RemoveExistingDocument(claim, "SalaryAttachment");
                         NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
+
+                        RemoveExistingDocument(claim, "SalaryAttachmentStandIn");
                         NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
+
+                        RemoveExistingDocument(claim, "SickLeaveNotification");
                         NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
+
+                        RemoveExistingDocument(claim, "DoctorsCertificate");
                         NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
+
+                        RemoveExistingDocument(claim, "TimeReport");
                         NewDocument(model.TimeReport, path, "TimeReport", claim);
+
+                        RemoveExistingDocument(claim, "TimeReportStandIn");
                         NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
 
                         if (claim.CompletionStage < 4)
@@ -1058,6 +1069,16 @@ namespace Sjuklöner.Controllers
                 }
             }
             return RedirectToAction("IndexPageOmbud");
+        }
+
+        private void RemoveExistingDocument(Claim claim, string queryValue)
+        {
+            var linqQuery = claim.Documents.Where(d => d.Title == queryValue);
+            if (linqQuery.Any())
+            {
+                System.IO.File.Delete(linqQuery.FirstOrDefault().Filename);
+                db.Documents.Remove(linqQuery.FirstOrDefault());
+            }
         }
 
         private void NewDocument(HttpPostedFileBase file, string path, string title, Claim claim)
