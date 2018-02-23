@@ -13,6 +13,7 @@ using static Sjuklöner.Viewmodels.OmbudIndexVM;
 
 namespace Sjuklöner.Controllers
 {
+    [Authorize]
     public class CareCompaniesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
