@@ -247,9 +247,38 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create1(Create1VM create1VM, string refNumber, string submitButton)
         {
+            //Check if the sickleave period is in the future.
+            if (create1VM.FirstDayOfSicknessDate.Date >= DateTime.Now.Date)
+            {
+                ModelState.AddModelError("FirstDayOfSicknessDate", "Datumet får vara senast gårdagens datum.");
+            }
+            if (create1VM.LastDayOfSicknessDate.Date >= DateTime.Now.Date)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Datumet får vara senast gårdagens datum.");
+            }
+            //Check that the last day of sickness is equal to or greater than the first day of sickness
+            if (create1VM.FirstDayOfSicknessDate.Date > create1VM.LastDayOfSicknessDate.Date)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
+            }
+            //Check if the regular assistant has been selected
+            if (create1VM.SelectedRegAssistantId == null)
+            {
+                ModelState.AddModelError("RegularAssistants", "Ordinarie assistent måste väljas.");
+            }
+            //Check if the substitue assistant has been selected
+            if (create1VM.SelectedSubAssistantId == null)
+            {
+                ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent måste väljas.");
+            }
+            //Check if the substitute assistant is the same as the regular assistant
+            if (create1VM.SelectedRegAssistantId == create1VM.SelectedSubAssistantId)
+            {
+                ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
+            }
+
             if (ModelState.IsValid)
             {
-
                 if (submitButton == "Till steg 2" || submitButton == "Spara")
                 {
                     if (refNumber == null) //new claim
@@ -304,6 +333,20 @@ namespace Sjuklöner.Controllers
             }
             else
             {
+                var currentId = User.Identity.GetUserId();
+                ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+                var companyId = currentUser.CareCompanyId;
+                var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+                var regAssistantDdlString = new List<SelectListItem>();
+                var subAssistantDdlString = new List<SelectListItem>();
+
+                for (int i = 0; i < assistants.Count(); i++)
+                {
+                    regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                    subAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                }
+                create1VM.RegularAssistants = regAssistantDdlString;
+                create1VM.SubstituteAssistants = subAssistantDdlString;
                 return View(create1VM);
             }
         }
@@ -1439,7 +1482,7 @@ namespace Sjuklöner.Controllers
 
                     claimCalc.UnsocialSumD2T14 = claimCalculations[i].UnsocialSumD2T14;
                     claimCalc.OnCallSumD2T14 = claimCalculations[i].OnCallSumD2T14;
-                    
+
                     //Load the money by category for day 2 to day 14
                     //Sickpay for day 2 to day 14
                     claimCalc.SalaryD2T14 = claimCalculations[i].SalaryD2T14;
