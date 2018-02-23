@@ -70,7 +70,7 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [RegularExpression(@"(((20)((0[0 - 9])|(1[0 - 7])))|(([1][^ 0 - 8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$")]
+        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$")]
         [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 
@@ -93,30 +93,40 @@ namespace Sjuklöner.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
+        [Required]
         [Display(Name = "Telefonnummer (inkl. riktnummer)")]
         public string OmbudPhoneNumber { get; set; }
 
-        [Display(Name = "Företagets namn")]
+        [Required]
+        [Display(Name = "Bolagets namn")]
         public string CompanyName { get; set; }
 
-        [Display(Name = "Företagets organisationsnummer")]
+        [Required]
+        [Display(Name = "Bolagets organisationsnummer")]
+        [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
         public string CompanyOrganisationNumber { get; set; }
 
+        [Required]
         [Display(Name = "Telefonnummer (inkl. riktnummer)")]
         public string CompanyPhoneNumber { get; set; }
 
+        [Required]
         [Display(Name = "Gatuadress")]
         public string StreetAddress { get; set; }
 
+        [Required]
         [Display(Name = "Postnummer")]
         public string Postcode { get; set; }
 
+        [Required]
         [Display(Name = "Ort")]
         public string City { get; set; }
 
+        [Required]
         [Display(Name = "Bank-/Postgironummer")]
         public string AccountNumber { get; set; }
 
+        [Required]
         public int? SelectedCollectiveAgreementId { get; set; }
 
         [Display(Name = "Kollektivavtal")]
