@@ -42,7 +42,7 @@ namespace Sjuklöner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Assistant assistant = db.Assistants.Find(id);
+            Assistant assistant = db.Assistants.Include(a => a.CareCompany).FirstOrDefault(a => a.Id == id);
             if (assistant == null)
             {
                 return HttpNotFound();

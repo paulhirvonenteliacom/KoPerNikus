@@ -6,23 +6,31 @@
 <body>
     <div class="row index-page-margin">
         <p class="page-header col col-md-10">Ansökningar</p>
-        @using (Html.BeginForm("IndexPageOmbud", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            <select name="searchBy" class="col-md-2 input-sm">
-                <option value="Referensnummer">Referensnummer</option>
-                <option value="CSSN">Kundens Personnummer</option>
-                <option value="ASSN">Assistentens Personnummer</option>
-            </select>
-            <input type="text" name="searchString" id="searchString" class="col-md-2" input-sm />
-            <input type="submit" />
-        }
     </div>
     <br />
     <br />
     <div class="row">
-        <div class="col">
+        <div class="col col-md-7 no-padding-left2">
             @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
         </div>
+        @*<div class="col col-md-2">
+                Välj kolumn för sökning
+            </div>*@
+        @using (Html.BeginForm("IndexPageOmbud", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+                <select name="searchBy" class="col-md-2 input-sm align-bottom4">
+                    <option value="Referensnummer">Referensnummer</option>
+                    <option value="CSSN">Kundens Personnummer</option>
+                    <option value="ASSN">Assistentens Personnummer</option>
+                </select>
+            @*<div class="col col-md-2">*@
+                <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom4"/>
+                @*<input type="text" name="searchString" id="searchString" class="input-height col-md-2" input-sm />*@
+            @*</div>*@
+            <div class="col col-md-1 col-no-left-padding col-no-right-padding">
+                <input type="submit" value="Sök" class="btn btn-secondary btn-secondary-xsmall input-height align-bottom4" />
+            </div>
+        }
     </div>
     <hr class="claim-divider" />
     <div class="row">
@@ -273,14 +281,14 @@
         <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
             @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#d2f5f4;">*@
             @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#f5f1dc;">*@
-                <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
-                    <button type="button" id="closbtn"> x </button>
-                    <div style="height:10px;">
-                    </div>
-                    <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
-                    </div>
+            <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                <button type="button" id="closbtn"> x </button>
+                <div style="height:10px;">
+                </div>
+                <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
                 </div>
             </div>
+        </div>
     </div>
     <hr class="claim-divider" />
 </body>

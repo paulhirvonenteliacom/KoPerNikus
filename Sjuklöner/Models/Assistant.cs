@@ -12,6 +12,8 @@ namespace Sjuklöner.Models
 
         public int CareCompanyId { get; set; }
 
+        public virtual CareCompany CareCompany { get; set; }
+
         [Display(Name = "Förnamn")]
         public string FirstName { get; set; }
 
