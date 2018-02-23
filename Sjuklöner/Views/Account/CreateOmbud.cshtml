@@ -3,10 +3,8 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("CreateOmbud", "CareCompanies", null, FormMethod.Post))
+@using (Html.BeginForm("CreateOmbud", "Account", null, FormMethod.Post))
 {
-    @Html.HiddenFor(model => model.CareCompanyId)
-    @Html.HiddenFor(model => model.CareCompanyName)
     @Html.AntiForgeryToken()
 
     <div class="row">
@@ -14,7 +12,6 @@
         <p class="page-header7 col col-md-10">Lägg till ombud</p>
         <br>
     </div>
-    @Html.HiddenFor(model => model.CareCompanyId)
     <hr class="claim-divider" />
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
