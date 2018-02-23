@@ -304,7 +304,7 @@ namespace Sjuklöner.Controllers
         // GET: Ombud/Delete/5
         public ActionResult DeleteOmbud(string id)
         {
-            if (id == null)
+            if (id == null || id == User.Identity.GetUserId())
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
