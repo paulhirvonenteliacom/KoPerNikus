@@ -692,7 +692,7 @@ namespace Sjuklöner.Controllers
                 dateInSchedule = claim.QualifyingDate.AddDays(i);
 
                 CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
-                Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SV");
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SE");
 
                 scheduleRow.ScheduleRowDateString = dateInSchedule.ToString(format: "ddd d MMM");
                 scheduleRow.DayDate = dateInSchedule;
@@ -741,7 +741,7 @@ namespace Sjuklöner.Controllers
                 dateInSchedule = claim.QualifyingDate.AddDays(i);
 
                 CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
-                Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SV");
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SE");
 
                 scheduleRow.ScheduleRowDateString = dateInSchedule.ToString(format: "ddd d MMM");
                 scheduleRow.DayDate = dateInSchedule;
