@@ -959,8 +959,6 @@ namespace Sjuklöner.Controllers
                 create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
                 SaveClaim3(create3VM);
                 var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
-                claim.ClaimStatusId = 5;
-                claim.StatusDate = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Create4", new { ClaimNumber = refNumber });
@@ -1016,50 +1014,77 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Skicka in" || submitButton == "Spara")
             {
+                if (!Directory.Exists(Server.MapPath("~/Uploads")))
+                    Directory.CreateDirectory(Server.MapPath("~/Uploads"));
+                if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
+                    Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
+
+                var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
+
+                if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
+                    ModelState.AddModelError("1", "Lönespecifikation för ordinarie assistent behövs");
+
+                if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
+                    ModelState.AddModelError("1", "Lönespecifikation för vikarierande assistent behövs");
+
+                if (CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
+                    ModelState.AddModelError("1", "Sjukfrånvaroanmälan behövs");
+
+                if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
+                    ModelState.AddModelError("1", "Läkarintyg behövs");
+
+                if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
+                    ModelState.AddModelError("1", "Tidsrapportering för ordinarie assistent behövs");
+
+                if (!CheckExistingDocument(claim, "TimeReportStandIn", model.TimeReportStandIn))
+                    ModelState.AddModelError("1", "Tidsrapportering för vikarierande assistent behövs");
+
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        if (!Directory.Exists(Server.MapPath("~/Uploads")))
-                            Directory.CreateDirectory(Server.MapPath("~/Uploads"));
-                        if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
-                            Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
-
                         string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
 
-                        var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
+                        if (model.SalaryAttachment != null)
+                            NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
 
-                        RemoveExistingDocument(claim, "SalaryAttachment");
-                        NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
+                        if (model.SalaryAttachmentStandIn != null)
+                            NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
 
-                        RemoveExistingDocument(claim, "SalaryAttachmentStandIn");
-                        NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
+                        if (model.SickLeaveNotification != null)
+                            NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
 
-                        RemoveExistingDocument(claim, "SickLeaveNotification");
-                        NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
+                        if (model.DoctorsCertificate != null)
+                            NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
 
-                        RemoveExistingDocument(claim, "DoctorsCertificate");
-                        NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
+                        if (model.TimeReport != null)
+                            NewDocument(model.TimeReport, path, "TimeReport", claim);
 
-                        RemoveExistingDocument(claim, "TimeReport");
-                        NewDocument(model.TimeReport, path, "TimeReport", claim);
-
-                        RemoveExistingDocument(claim, "TimeReportStandIn");
-                        NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
+                        if (model.TimeReportStandIn != null)
+                            NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
 
                         if (claim.CompletionStage < 4)
                         {
                             claim.CompletionStage = 4;
+                        }
+                        if (submitButton == "Skicka in")
+                        {
+                            claim.ClaimStatusId = 5;
+                            claim.StatusDate = DateTime.Now;
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+
+                            return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
+                        }
+                        else
+                        {
+                            return View("Create4", model);
                         }
                     }
                     catch (Exception ex)
                     {
                         ViewBag.Message = "ERROR: " + ex.Message.ToString();
                     }
-                }
-                if (submitButton == "Skicka in")
-                {
-                    return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
                 }
                 else
                 {
@@ -1069,21 +1094,26 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("IndexPageOmbud");
         }
 
-        private void RemoveExistingDocument(Claim claim, string queryValue)
+        private bool CheckExistingDocument(Claim claim, string queryValue, HttpPostedFileBase file)
         {
             var linqQuery = claim.Documents.Where(d => d.Title == queryValue);
-            if (linqQuery.Any())
+            if (!linqQuery.Any() && file == null)
+                return false;
+            if (linqQuery.Any() && file != null)
             {
                 System.IO.File.Delete(linqQuery.FirstOrDefault().Filename);
                 db.Documents.Remove(linqQuery.FirstOrDefault());
+                db.SaveChanges();
             }
+            return true;
+
         }
 
         private void NewDocument(HttpPostedFileBase file, string path, string title, Claim claim)
         {
             var document = new Document();
             document.DateUploaded = DateTime.Now;
-            document.Filename = $"{title}_{file.FileName}";
+            document.Filename = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
             //document.OwnerId = User.Identity.GetUserId();
