@@ -252,6 +252,7 @@ namespace Sjuklöner.Controllers
                         System.Threading.Thread.Sleep(1000);
                     } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);*/
 
+                CareCompany company = new CareCompany();
                 var user = new ApplicationUser
                 {
                     //UserName = $"{registerCollectResult.name} {registerCollectResult.surname}", For use with BankId
@@ -267,7 +268,6 @@ namespace Sjuklöner.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    CareCompany company = new CareCompany();
                     company.CompanyPhoneNumber = model.CompanyPhoneNumber;
                     company.Postcode = model.Postcode;
                     company.City = model.City;
@@ -347,7 +347,7 @@ namespace Sjuklöner.Controllers
                 }
                 AddErrors(result);
             }
-            return View();
+            return View(vm);
         }
 
         //
