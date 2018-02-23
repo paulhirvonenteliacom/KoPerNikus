@@ -206,13 +206,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201802221532564_init.cs" />
-    <Compile Include="Migrations\201802221532564_init.Designer.cs">
-      <DependentUpon>201802221532564_init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802230849380_addCareCompanyKeyToAssistantClass.cs" />
-    <Compile Include="Migrations\201802230849380_addCareCompanyKeyToAssistantClass.Designer.cs">
-      <DependentUpon>201802230849380_addCareCompanyKeyToAssistantClass.cs</DependentUpon>
+    <Compile Include="Migrations\201802231236400_init.cs" />
+    <Compile Include="Migrations\201802231236400_init.Designer.cs">
+      <DependentUpon>201802231236400_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -427,11 +423,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802221532564_init.resx">
-      <DependentUpon>201802221532564_init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802230849380_addCareCompanyKeyToAssistantClass.resx">
-      <DependentUpon>201802230849380_addCareCompanyKeyToAssistantClass.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802231236400_init.resx">
+      <DependentUpon>201802231236400_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

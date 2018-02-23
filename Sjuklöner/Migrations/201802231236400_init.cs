@@ -23,7 +23,9 @@ namespace Sjuklöner.Migrations
                         PayrollTaxRate = c.String(),
                         PensionAndInsuranceRate = c.String(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.CareCompanies", t => t.CareCompanyId, cascadeDelete: true)
+                .Index(t => t.CareCompanyId);
             
             CreateTable(
                 "dbo.CareCompanies",
@@ -507,6 +509,7 @@ namespace Sjuklöner.Migrations
             DropForeignKey("dbo.Claims", "ClaimStatusId", "dbo.ClaimStatus");
             DropForeignKey("dbo.Claims", "CareCompanyId", "dbo.CareCompanies");
             DropForeignKey("dbo.ClaimCalculations", "ClaimStatus_Id", "dbo.ClaimStatus");
+            DropForeignKey("dbo.Assistants", "CareCompanyId", "dbo.CareCompanies");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
@@ -522,6 +525,7 @@ namespace Sjuklöner.Migrations
             DropIndex("dbo.Claims", new[] { "CareCompanyId" });
             DropIndex("dbo.Claims", new[] { "ClaimStatusId" });
             DropIndex("dbo.ClaimCalculations", new[] { "ClaimStatus_Id" });
+            DropIndex("dbo.Assistants", new[] { "CareCompanyId" });
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.DefaultCollectiveAgreementInfoes");
             DropTable("dbo.CollectiveAgreementInfoes");

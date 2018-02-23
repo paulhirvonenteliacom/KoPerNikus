@@ -207,7 +207,7 @@ namespace Sjuklöner.Controllers
             return View("DetailsOmbud", ombudVM);
         }
 
-        // GET: Ombud/Create
+        /*// GET: Ombud/Create
         public ActionResult CreateOmbud()
         {
             OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
@@ -216,7 +216,7 @@ namespace Sjuklöner.Controllers
             ombudCreateVM.CareCompanyId = (int)currentUser.CareCompanyId;
             ombudCreateVM.CareCompanyName = db.CareCompanies.Where(c => c.Id == ombudCreateVM.CareCompanyId).FirstOrDefault().CompanyName;
             return View("CreateOmbud", ombudCreateVM);
-        }
+        }*/
 
         /*/ POST: Ombud/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

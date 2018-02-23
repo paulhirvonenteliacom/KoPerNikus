@@ -10,8 +10,6 @@ namespace Sjuklöner.Viewmodels
 {
     public class OmbudCreateVM
     {
-        public int? CareCompanyId { get; set; }
-
         [Display(Name = "Bolagsnamn")]
         public string CareCompanyName { get; set; }
 
