@@ -121,6 +121,7 @@ namespace Sjuklöner.Controllers
                     careCompany.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
                     db.Entry(careCompany).State = EntityState.Modified;
                     db.SaveChanges();
+                    return View(careCompanyEditVM);
                 }
                 return RedirectToAction("Index", "Claims");
             }
