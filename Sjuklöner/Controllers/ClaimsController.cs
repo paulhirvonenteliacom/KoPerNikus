@@ -1341,6 +1341,7 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
                 claimDetailsOmbudVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
                 claimDetailsOmbudVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
+                //claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
 
                 //Hours for substitute assistant
                 claimDetailsOmbudVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
@@ -1363,11 +1364,147 @@ namespace Sjuklöner.Controllers
             if (claim.CompletionStage >= 4)
             {
                 claimDetailsOmbudVM.Documents = claim.Documents;
+                claimDetailsOmbudVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
+                claimDetailsOmbudVM.DecisionMade = false;
+                if (claim.ClaimStatus.Name == "Beslutad")
+                {
+                    claimDetailsOmbudVM.ApprovedSum = claim.ApprovedSum;
+                    claimDetailsOmbudVM.RejectedSum = claim.RejectedSum;
+                    claimDetailsOmbudVM.DecisionMade = true;
+                }
             }
 
-            if (claim.CompletionStage > 4)
+            if (claim.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
             {
-                claimDetailsOmbudVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
+                //
+                var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
+                List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
+                for (int i = 0; i < claimCalculations.Count(); i++)
+                {
+                    ClaimCalculation claimCalc = new ClaimCalculation();
+                    claimCalc.StartDate = claimCalculations[i].StartDate.Date;
+                    claimCalc.EndDate = claimCalculations[i].EndDate.Date;
+
+                    claimCalc.PerHourUnsocialEvening = claimCalculations[i].PerHourUnsocialEvening;
+                    claimCalc.PerHourUnsocialNight = claimCalculations[i].PerHourUnsocialNight;
+                    claimCalc.PerHourUnsocialWeekend = claimCalculations[i].PerHourUnsocialWeekend;
+                    claimCalc.PerHourUnsocialHoliday = claimCalculations[i].PerHourUnsocialHoliday;
+                    claimCalc.PerHourOnCallWeekday = claimCalculations[i].PerHourOnCallWeekday;
+                    claimCalc.PerHourOnCallWeekend = claimCalculations[i].PerHourOnCallWeekend;
+
+                    if (i == 0)
+                    {
+                        //QUALIFYING DAY
+
+                        //Hours for qualifying day
+                        claimCalc.HoursQD = claimCalculations[i].HoursQD;
+
+                        //Holiday pay for qualifying day
+                        claimCalc.HolidayPayQD = claimCalculations[i].HolidayPayQD;
+                        claimCalc.HolidayPayCalcQD = claimCalculations[i].HolidayPayCalcQD;
+
+                        //Social fees for qualifying day
+                        claimCalc.SocialFeesQD = claimCalculations[i].SocialFeesQD;
+                        claimCalc.SocialFeesCalcQD = claimCalculations[i].SocialFeesCalcQD;
+
+                        //Pension and insurance for qualifying day
+                        claimCalc.PensionAndInsuranceQD = claimCalculations[i].PensionAndInsuranceQD;
+                        claimCalc.PensionAndInsuranceCalcQD = claimCalculations[i].PensionAndInsuranceCalcQD;
+
+                        //Sum for qualifying day (sum of the three previous items)
+                        claimCalc.CostQD = claimCalculations[i].CostQD;
+                        claimCalc.CostCalcQD = claimCalculations[i].CostCalcQD;
+                    }
+
+                    //DAY 2 TO DAY 14
+                    claimCalc.HoursD2T14 = "0,00";
+                    claimCalc.UnsocialEveningD2T14 = "0,00";
+                    claimCalc.UnsocialNightD2T14 = "0,00";
+                    claimCalc.UnsocialWeekendD2T14 = "0,00";
+                    claimCalc.UnsocialGrandWeekendD2T14 = "0,00";
+                    claimCalc.UnsocialSumD2T14 = "0,00";
+                    claimCalc.OnCallDayD2T14 = "0,00";
+                    claimCalc.OnCallNightD2T14 = "0,00";
+                    claimCalc.OnCallSumD2T14 = "0,00";
+
+                    claimCalc.HoursD2T14 = claimCalculations[i].HoursD2T14;
+
+                    claimCalc.UnsocialEveningD2T14 = claimCalculations[i].UnsocialEveningD2T14;
+                    claimCalc.UnsocialNightD2T14 = claimCalculations[i].UnsocialNightD2T14;
+                    claimCalc.UnsocialWeekendD2T14 = claimCalculations[i].UnsocialWeekendD2T14;
+                    claimCalc.UnsocialGrandWeekendD2T14 = claimCalculations[i].UnsocialGrandWeekendD2T14;
+
+                    claimCalc.OnCallDayD2T14 = claimCalculations[i].OnCallDayD2T14;
+                    claimCalc.OnCallNightD2T14 = claimCalculations[i].OnCallNightD2T14;
+
+                    claimCalc.UnsocialSumD2T14 = claimCalculations[i].UnsocialSumD2T14;
+                    claimCalc.OnCallSumD2T14 = claimCalculations[i].OnCallSumD2T14;
+                    
+                    //Load the money by category for day 2 to day 14
+                    //Sickpay for day 2 to day 14
+                    claimCalc.SalaryD2T14 = claimCalculations[i].SalaryD2T14;
+                    claimCalc.SalaryCalcD2T14 = claimCalculations[i].SalaryCalcD2T14;
+
+                    //Holiday pay for day 2 to day 14
+                    claimCalc.HolidayPayD2T14 = claimCalculations[i].HolidayPayD2T14;
+                    claimCalc.HolidayPayCalcD2T14 = claimCalculations[i].HolidayPayCalcD2T14;
+
+                    //Unsocial evening pay for day 2 to day 14
+                    claimCalc.UnsocialEveningPayD2T14 = claimCalculations[i].UnsocialEveningPayD2T14;
+                    claimCalc.UnsocialEveningPayCalcD2T14 = claimCalculations[i].UnsocialEveningPayCalcD2T14;
+
+                    //Unsocial night pay for day 2 to day 14
+                    claimCalc.UnsocialNightPayD2T14 = claimCalculations[i].UnsocialNightPayD2T14;
+                    claimCalc.UnsocialNightPayCalcD2T14 = claimCalculations[i].UnsocialNightPayCalcD2T14;
+
+                    //Unsocial weekend pay for day 2 to day 14
+                    claimCalc.UnsocialWeekendPayD2T14 = claimCalculations[i].UnsocialWeekendPayD2T14;
+                    claimCalc.UnsocialWeekendPayCalcD2T14 = claimCalculations[i].UnsocialWeekendPayCalcD2T14;
+
+                    //Unsocial grand weekend pay for day 2 to day 14
+                    claimCalc.UnsocialGrandWeekendPayD2T14 = claimCalculations[i].UnsocialGrandWeekendPayD2T14;
+                    claimCalc.UnsocialGrandWeekendPayCalcD2T14 = claimCalculations[i].UnsocialGrandWeekendPayCalcD2T14;
+
+                    //Unsocial sum pay for day 2 to day 14
+                    claimCalc.UnsocialSumPayD2T14 = claimCalculations[i].UnsocialSumPayD2T14;
+                    claimCalc.UnsocialSumPayCalcD2T14 = claimCalculations[i].UnsocialSumPayCalcD2T14;
+
+                    //On call day pay for day 2 to day 14
+                    claimCalc.OnCallDayPayD2T14 = claimCalculations[i].OnCallDayPayD2T14;
+                    claimCalc.OnCallDayPayCalcD2T14 = claimCalculations[i].OnCallDayPayCalcD2T14;
+
+                    //On call night pay for day 2 to day 14
+                    claimCalc.OnCallNightPayD2T14 = claimCalculations[i].OnCallNightPayD2T14;
+                    claimCalc.OnCallNightPayCalcD2T14 = claimCalculations[i].OnCallNightPayCalcD2T14;
+
+                    //On call sum pay for day 2 to day 14
+                    claimCalc.OnCallSumPayD2T14 = claimCalculations[i].OnCallSumPayD2T14;
+                    claimCalc.OnCallSumPayCalcD2T14 = claimCalculations[i].OnCallSumPayCalcD2T14;
+
+                    //Sick pay for day 2 to day 14
+                    claimCalc.SickPayD2T14 = claimCalculations[i].SickPayD2T14;
+                    claimCalc.SickPayCalcD2T14 = claimCalculations[i].SickPayCalcD2T14;
+
+                    //Social fees for day 2 to day 14
+                    claimCalc.SocialFeesD2T14 = claimCalculations[i].SocialFeesD2T14;
+                    claimCalc.SocialFeesCalcD2T14 = claimCalculations[i].SocialFeesCalcD2T14;
+
+                    //Pensions and insurances for day 2 to day 14
+                    claimCalc.PensionAndInsuranceD2T14 = claimCalculations[i].PensionAndInsuranceD2T14;
+                    claimCalc.PensionAndInsuranceCalcD2T14 = claimCalculations[i].PensionAndInsuranceCalcD2T14;
+
+                    //Sum for day 2 to day 14
+                    claimCalc.CostD2T14 = claimCalculations[i].CostD2T14;
+                    claimCalc.CostCalcD2T14 = claimCalculations[i].CostCalcD2T14;
+
+                    claimCalcs.Add(claimCalc);
+                }
+                claimDetailsOmbudVM.ClaimCalculations = claimCalcs;
+
+                //Total sum for day 1 to day 14
+                claimDetailsOmbudVM.TotalCostD1T14 = claim.TotalCostD1T14;
+                claimDetailsOmbudVM.TotalCostCalcD1T14 = claim.TotalCostCalcD1T14;
+                //
             }
 
             return PartialView("_ClaimForOmbud", claimDetailsOmbudVM);
@@ -1386,13 +1523,10 @@ namespace Sjuklöner.Controllers
                 CalculateModelSum(claim, claimDays);
             }
 
-            var ombudId = claim.OwnerId;
-            var ombud = db.Users.Where(u => u.Id == ombudId).FirstOrDefault();
-
-
             ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
 
             claimDetailsVM.ReferenceNumber = referenceNumber;
+            //claimDetailsVM.StatusName = claim.ClaimStatus.Name;
             claimDetailsVM.StatusName = claim.ClaimStatus.Name;
             claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
 
@@ -1407,8 +1541,8 @@ namespace Sjuklöner.Controllers
             claimDetailsVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
             //Ombud/uppgiftslämnare
-            claimDetailsVM.OmbudName = ombud.FirstName + " " + ombud.LastName;
-            claimDetailsVM.OmbudPhoneNumber = ombud.PhoneNumber;
+            claimDetailsVM.OmbudName = claim.OmbudFirstName + " " + claim.OmbudLastName;
+            claimDetailsVM.OmbudPhoneNumber = claim.OmbudPhoneNumber;
 
             //Assistansanordnare
             claimDetailsVM.CompanyName = claim.CompanyName; ;

@@ -161,11 +161,11 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Arbetsställe:")]
         public string Workplace { get; set; }
 
-        [Display(Name = "Uppgiftslämnare/ombud:")]
-        public string NameOfOmbud { get; set; }
+        //[Display(Name = "Uppgiftslämnare/ombud:")]
+        //public string NameOfOmbud { get; set; }
 
-        [Display(Name = "Uppgiftslämnarens tel.nummer:")]
-        public string PhonenUmberOfOmbud { get; set; }
+        //[Display(Name = "Uppgiftslämnarens tel.nummer:")]
+        //public string PhoneNumberOfOmbud { get; set; }
 
         [Display(Name = "Sjuklön (%):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
