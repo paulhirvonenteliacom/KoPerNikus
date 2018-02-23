@@ -175,7 +175,6 @@
                 data: { refNumber: this.innerHTML },
                 cache: false,
                 success: function (data, textStatus, jqXHR) {
-                    debugger;
                     $("#myModalContent").html(data);
                     $("#myModal").modal(options);
                     $("#myModal").modal('show');
@@ -183,7 +182,6 @@
             });
         })
         $("#closbtn").click(function () {
-            debugger;
             $('#myModal').modal('hide');
         });
     });

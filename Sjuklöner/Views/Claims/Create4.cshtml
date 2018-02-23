@@ -36,42 +36,42 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.SalaryAttachment, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="btn btn-default" required />
+                    <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="btn btn-default" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.SalaryAttachmentStandIn, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="file" name="SalaryAttachmentStandIn" id="SalaryAttachmentStandIn" class="btn btn-default" required />
+                    <input type="file" name="SalaryAttachmentStandIn" id="SalaryAttachmentStandIn" class="btn btn-default" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.DoctorsCertificate, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="btn btn-default" required />
+                    <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="btn btn-default" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.SickLeaveNotification, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="file" name="SickLeaveNotification" id="SickLeaveNotification" class="btn btn-default" required />
+                    <input type="file" name="SickLeaveNotification" id="SickLeaveNotification" class="btn btn-default" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.TimeReport, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="file" name="TimeReport" id="TimeReport" class="btn btn-default" required />
+                    <input type="file" name="TimeReport" id="TimeReport" class="btn btn-default" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.TimeReportStandIn, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="file" name="TimeReportStandIn" id="TimeReportStandIn" class="btn btn-default" required />
+                    <input type="file" name="TimeReportStandIn" id="TimeReportStandIn" class="btn btn-default" />
                 </div>
             </div>
 
@@ -126,7 +126,6 @@
                 data: { refNumber: this.innerHTML },
                 cache: false,
                 success: function (data, textStatus, jqXHR) {
-                    debugger;
                     $("#myModalContent").html(data);
                     $("#myModal").modal(options);
                     $("#myModal").modal('show');
@@ -134,7 +133,6 @@
             });
         })
         $("#closbtn").click(function () {
-            debugger;
             $('#myModal').modal('hide');
         });
     });
