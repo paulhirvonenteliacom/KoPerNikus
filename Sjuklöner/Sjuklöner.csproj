@@ -214,6 +214,10 @@
     <Compile Include="Migrations\201802231329426_addRequiredToAssistantClass.Designer.cs">
       <DependentUpon>201802231329426_addRequiredToAssistantClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802231400363_removedRequiredOnAssistantClassProperties.cs" />
+    <Compile Include="Migrations\201802231400363_removedRequiredOnAssistantClassProperties.Designer.cs">
+      <DependentUpon>201802231400363_removedRequiredOnAssistantClassProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -240,7 +244,9 @@
     <Compile Include="Models\DocStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Viewmodels\AssistantEditVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsOmbudVM.cs" />
+    <Compile Include="Viewmodels\AssistantCreateVM.cs" />
     <Compile Include="Viewmodels\OmbudDeleteVM.cs" />
     <Compile Include="Viewmodels\OmbudEditVM.cs" />
     <Compile Include="Viewmodels\OmbudCreateVM.cs" />
@@ -432,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802231329426_addRequiredToAssistantClass.resx">
       <DependentUpon>201802231329426_addRequiredToAssistantClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802231400363_removedRequiredOnAssistantClassProperties.resx">
+      <DependentUpon>201802231400363_removedRequiredOnAssistantClassProperties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
