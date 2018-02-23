@@ -205,6 +205,10 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            var db = new ApplicationDbContext();
+            if (db.CareCompanies.Where(c => c.OrganisationNumber == model.CompanyOrganisationNumber).Any())
+                ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnummret.");
+
             if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == model.SSN).Any())
             {
                 /*System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
@@ -249,18 +253,6 @@ namespace Sjuklöner.Controllers
                     } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);*/
 
                 CareCompany company = new CareCompany();
-                company.CompanyPhoneNumber = model.CompanyPhoneNumber;
-                company.Postcode = model.Postcode;
-                company.City = model.City;
-                company.OrganisationNumber = model.CompanyOrganisationNumber;
-                company.StreetAddress = model.StreetAddress;
-                company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
-                company.AccountNumber = model.AccountNumber;
-                company.CompanyName = model.CompanyName;
-                var db = new ApplicationDbContext();
-                db.CareCompanies.Add(company);
-                db.SaveChanges();
-
                 var user = new ApplicationUser
                 {
                     //UserName = $"{registerCollectResult.name} {registerCollectResult.surname}", For use with BankId
@@ -276,6 +268,17 @@ namespace Sjuklöner.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    company.CompanyPhoneNumber = model.CompanyPhoneNumber;
+                    company.Postcode = model.Postcode;
+                    company.City = model.City;
+                    company.OrganisationNumber = model.CompanyOrganisationNumber;
+                    company.StreetAddress = model.StreetAddress;
+                    company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
+                    company.AccountNumber = model.AccountNumber;
+                    company.CompanyName = model.CompanyName;
+                    db.CareCompanies.Add(company);
+                    db.SaveChanges();
+
                     UserManager.AddToRole(user.Id, "Ombud");
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
@@ -300,7 +303,7 @@ namespace Sjuklöner.Controllers
                 Text = c.Name
             });
             model.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
-            ModelState.AddModelError("1", "Det finns redan ett konto med det personnummret");
+            ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnummret");
             // If we got this far, something failed, redisplay form
             return View(model);
         }
@@ -342,8 +345,9 @@ namespace Sjuklöner.Controllers
                     UserManager.AddToRole(newOmbud.Id, "Ombud");
                     return RedirectToAction("IndexOmbud", "CareCompanies");
                 }
+                AddErrors(result);
             }
-            return View();
+            return View(vm);
         }
 
         //

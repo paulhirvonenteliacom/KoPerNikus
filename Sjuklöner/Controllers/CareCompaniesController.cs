@@ -13,6 +13,7 @@ using static Sjuklöner.Viewmodels.OmbudIndexVM;
 
 namespace Sjuklöner.Controllers
 {
+    [Authorize]
     public class CareCompaniesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -121,6 +122,7 @@ namespace Sjuklöner.Controllers
                     careCompany.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
                     db.Entry(careCompany).State = EntityState.Modified;
                     db.SaveChanges();
+                    return View(careCompanyEditVM);
                 }
                 return RedirectToAction("Index", "Claims");
             }
@@ -288,7 +290,7 @@ namespace Sjuklöner.Controllers
                     editedOmbud.FirstName = ombudEditVM.FirstName;
                     editedOmbud.LastName = ombudEditVM.LastName;
                     editedOmbud.CareCompanyId = ombudEditVM.CareCompanyId;
-                    editedOmbud.UserName = $"{ombudEditVM.FirstName} {ombudEditVM.LastName}";
+                    editedOmbud.UserName = ombudEditVM.Email;
                     editedOmbud.Email = ombudEditVM.Email;
                     editedOmbud.PhoneNumber = ombudEditVM.PhoneNumber;
                     editedOmbud.SSN = ombudEditVM.SSN;
@@ -303,7 +305,7 @@ namespace Sjuklöner.Controllers
         // GET: Ombud/Delete/5
         public ActionResult DeleteOmbud(string id)
         {
-            if (id == null)
+            if (id == null || id == User.Identity.GetUserId())
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
