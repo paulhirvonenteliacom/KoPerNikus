@@ -53,12 +53,8 @@ namespace Sjuklöner.Controllers
         // GET: Assistants/Create
         public ActionResult Create()
         {
-            var currentId = User.Identity.GetUserId();
-            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
-
-            Assistant assistant = new Assistant();
-            assistant.CareCompanyId = (int)currentUser.CareCompanyId;
-            return View(assistant);
+            AssistantCreateVM assistantCreateVM = new AssistantCreateVM();
+            return View(assistantCreateVM);
         }
 
         // POST: Assistants/Create
@@ -66,25 +62,38 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] Assistant assistant)
+        public ActionResult Create([Bind(Include = "FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] AssistantCreateVM assistantCreateVM)
         {
-            ModelState.Remove(nameof(Assistant.Id));
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistant.AssistantSSN).FirstOrDefault();
-                if (twinAssistant != null && twinAssistant.CareCompanyId == assistant.CareCompanyId)
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
+                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
                 }
             }
             if (ModelState.IsValid)
             {
+                Assistant assistant = new Assistant();
+                assistant.FirstName = assistantCreateVM.FirstName;
+                assistant.LastName = assistantCreateVM.LastName;
+                assistant.AssistantSSN = assistantCreateVM.AssistantSSN;
+                assistant.PhoneNumber = assistantCreateVM.PhoneNumber;
+                assistant.Email = assistantCreateVM.Email;
+                assistant.HourlySalary = assistantCreateVM.HourlySalary;
+                assistant.HolidayPayRate = assistantCreateVM.HolidayPayRate;
+                assistant.PayrollTaxRate = assistantCreateVM.PayrollTaxRate;
+                assistant.PensionAndInsuranceRate = assistantCreateVM.PensionAndInsuranceRate;
+                assistant.CareCompanyId = (int)currentUser.CareCompanyId;
+
                 db.Assistants.Add(assistant);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(assistant);
+            return View(assistantCreateVM);
         }
 
         // GET: Assistants/Edit/5
@@ -99,7 +108,19 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            return View(assistant);
+            AssistantEditVM assistantEditVM = new AssistantEditVM();
+            assistantEditVM.FirstName = assistant.FirstName;
+            assistantEditVM.LastName = assistant.LastName;
+            assistantEditVM.AssistantSSN = assistant.AssistantSSN;
+            assistantEditVM.PhoneNumber = assistant.PhoneNumber;
+            assistantEditVM.Email = assistant.Email;
+            assistantEditVM.HourlySalary = assistant.HourlySalary;
+            assistantEditVM.HolidayPayRate = assistant.HolidayPayRate;
+            assistantEditVM.PayrollTaxRate = assistant.PayrollTaxRate;
+            assistantEditVM.PensionAndInsuranceRate = assistant.PensionAndInsuranceRate;
+            assistantEditVM.Id = (int)id;
+
+            return View(assistantEditVM);
         }
 
         // POST: Assistants/Edit/5
@@ -107,15 +128,40 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CareCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] Assistant assistant)
+        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] AssistantEditVM assistantEditVM)
         {
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+
+            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            {
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).FirstOrDefault();
+                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                }
+            }
             if (ModelState.IsValid)
             {
-                db.Entry(assistant).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var assistant = db.Assistants.Where(a => a.Id == assistantEditVM.Id).FirstOrDefault();
+                if (assistant != null)
+                {
+                    assistant.FirstName = assistantEditVM.FirstName;
+                    assistant.LastName = assistantEditVM.LastName;
+                    assistant.AssistantSSN = assistantEditVM.AssistantSSN;
+                    assistant.PhoneNumber = assistantEditVM.PhoneNumber;
+                    assistant.Email = assistantEditVM.Email;
+                    assistant.HourlySalary = assistantEditVM.HourlySalary;
+                    assistant.HolidayPayRate = assistantEditVM.HolidayPayRate;
+                    assistant.PayrollTaxRate = assistantEditVM.PayrollTaxRate;
+                    assistant.PensionAndInsuranceRate = assistantEditVM.PensionAndInsuranceRate;
+                    assistant.CareCompanyId = (int)currentUser.CareCompanyId;
+                    db.Entry(assistant).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
-            return View(assistant);
+            return View(assistantEditVM);
         }
 
         // GET: Assistants/Delete/5

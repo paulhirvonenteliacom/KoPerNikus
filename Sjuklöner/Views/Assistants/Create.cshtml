@@ -1,4 +1,4 @@
-﻿@model Sjuklöner.Models.Assistant
+﻿@model Sjuklöner.Viewmodels.AssistantCreateVM
 
 @{
     ViewBag.Title = "Create";
@@ -6,8 +6,6 @@
 
 @using (Html.BeginForm())
 {
-    @Html.HiddenFor(model => model.Id)
-    @Html.HiddenFor(model => model.CareCompanyId)
     @Html.AntiForgeryToken()
 
     <div class="row">
