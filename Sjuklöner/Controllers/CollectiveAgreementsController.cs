@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Sjuklöner.Models;
 using Sjuklöner.Viewmodels;
+using static Sjuklöner.Viewmodels.CollectiveAgreementEditVM;
 
 namespace Sjuklöner.Controllers
 {
@@ -101,48 +102,95 @@ namespace Sjuklöner.Controllers
         //public ActionResult Create([Bind(Include = "Id,Name,StartDate,EndDate,PerHourUnsocialEvening,PerHourUnsocialNight,PerHourUnsocialWeekend,PerHourUnsocialHoliday,PerHourOnCallWeekday,PerHourOnCallWeekend,NewAgreement")] CollectiveAgreementCreateVM collectiveAgreement, string submitButton)
         public ActionResult Create(CollectiveAgreementCreateVM collectiveAgreement, string submitButton)
         {
-            if (submitButton == "Spara")
+            //Check if the time period overlaps with an existing time period for the same collective agreement
+            if (!collectiveAgreement.NewAgreement)
             {
-                //if (ModelState.IsValid)
-                //{
-                int latestHeaderId = 1;
-
-                if (collectiveAgreement.NewAgreement == true)
+                var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == collectiveAgreement.HeaderId).ToList();
+                bool noOverlapFound = true;
+                int idx = 0;
+                do
                 {
-                    CollectiveAgreementHeader collectiveAgreementHeader = new CollectiveAgreementHeader();
-                    collectiveAgreementHeader.Name = collectiveAgreement.Name;
-                    collectiveAgreementHeader.Counter = 1;
-                    db.CollectiveAgreementHeaders.Add(collectiveAgreementHeader);
+                    if (collectiveAgreement.StartDate >= collectiveAgreementInfos[idx].StartDate && collectiveAgreement.StartDate <= collectiveAgreementInfos[idx].EndDate)
+                    {
+                        ModelState.AddModelError("StartDate", "Datumet överlappar med en existerande period.");
+                        noOverlapFound = false;
+                    }
+                    idx++;
+
+                } while (noOverlapFound && idx < collectiveAgreementInfos.Count());
+
+                noOverlapFound = true;
+                idx = 0;
+                do
+                {
+                    if (collectiveAgreement.EndDate >= collectiveAgreementInfos[idx].StartDate && collectiveAgreement.EndDate <= collectiveAgreementInfos[idx].EndDate)
+                    {
+                        ModelState.AddModelError("EndDate", "Datumet överlappar med en existerande period.");
+                        noOverlapFound = false;
+                    }
+                    idx++;
+
+                } while (noOverlapFound && idx < collectiveAgreementInfos.Count());
+            }
+            //Check if a collective agreement with the same name already exists
+            if (collectiveAgreement.NewAgreement)
+            {
+                if (db.CollectiveAgreementHeaders.Where(c => c.Name == collectiveAgreement.Name).FirstOrDefault() != null)
+                {
+                    ModelState.AddModelError("Name", "Det finns redan ett avtal med samma namn.");
+                }
+            }
+            //Check that the last date of the agreement is equal to or greater than the first date
+            if (collectiveAgreement.StartDate.Date > collectiveAgreement.EndDate.Date)
+            {
+                ModelState.AddModelError("EndDate", "Kollektivavtalets slutdatum får inte vara tidigare än avtalets startdatum.");
+            }
+            if (ModelState.IsValid)
+            {
+                if (submitButton == "Spara")
+                {
+                    int latestHeaderId = 1;
+
+                    if (collectiveAgreement.NewAgreement == true)
+                    {
+                        CollectiveAgreementHeader collectiveAgreementHeader = new CollectiveAgreementHeader();
+                        collectiveAgreementHeader.Name = collectiveAgreement.Name;
+                        collectiveAgreementHeader.Counter = 1;
+                        db.CollectiveAgreementHeaders.Add(collectiveAgreementHeader);
+                        db.SaveChanges();
+                        latestHeaderId = db.CollectiveAgreementHeaders.ToList().Last().Id;
+                    }
+                    else
+                    {
+                        var header = db.CollectiveAgreementHeaders.Where(c => c.Id == collectiveAgreement.HeaderId).FirstOrDefault();
+                        header.Counter++;
+                        db.Entry(header).State = EntityState.Modified;
+                    }
+                    CollectiveAgreementInfo collectiveAgreementInfo = new CollectiveAgreementInfo();
+                    collectiveAgreementInfo.StartDate = collectiveAgreement.StartDate;
+                    collectiveAgreementInfo.EndDate = collectiveAgreement.EndDate;
+                    collectiveAgreementInfo.PerHourUnsocialEvening = collectiveAgreement.PerHourUnsocialEvening;
+                    collectiveAgreementInfo.PerHourUnsocialNight = collectiveAgreement.PerHourUnsocialNight;
+                    collectiveAgreementInfo.PerHourUnsocialWeekend = collectiveAgreement.PerHourUnsocialWeekend;
+                    collectiveAgreementInfo.PerHourUnsocialHoliday = collectiveAgreement.PerHourUnsocialHoliday;
+                    collectiveAgreementInfo.PerHourOnCallWeekday = collectiveAgreement.PerHourOnCallWeekday;
+                    collectiveAgreementInfo.PerHourOnCallWeekend = collectiveAgreement.PerHourOnCallWeekend;
+
+                    if (collectiveAgreement.NewAgreement == true)
+                    {
+                        collectiveAgreementInfo.CollectiveAgreementHeaderId = latestHeaderId;
+                    }
+                    else
+                    {
+                        collectiveAgreementInfo.CollectiveAgreementHeaderId = collectiveAgreement.HeaderId;
+                    }
+                    db.CollectiveAgreementInfos.Add(collectiveAgreementInfo);
                     db.SaveChanges();
-                    latestHeaderId = db.CollectiveAgreementHeaders.ToList().Last().Id;
                 }
-                else
-                {
-                    var header = db.CollectiveAgreementHeaders.Where(c => c.Id == collectiveAgreement.HeaderId).FirstOrDefault();
-                    header.Counter++;
-                    db.Entry(header).State = EntityState.Modified;
-                }
-                CollectiveAgreementInfo collectiveAgreementInfo = new CollectiveAgreementInfo();
-                collectiveAgreementInfo.StartDate = collectiveAgreement.StartDate;
-                collectiveAgreementInfo.EndDate = collectiveAgreement.EndDate;
-                collectiveAgreementInfo.PerHourUnsocialEvening = collectiveAgreement.PerHourUnsocialEvening;
-                collectiveAgreementInfo.PerHourUnsocialNight = collectiveAgreement.PerHourUnsocialNight;
-                collectiveAgreementInfo.PerHourUnsocialWeekend = collectiveAgreement.PerHourUnsocialWeekend;
-                collectiveAgreementInfo.PerHourUnsocialHoliday = collectiveAgreement.PerHourUnsocialHoliday;
-                collectiveAgreementInfo.PerHourOnCallWeekday = collectiveAgreement.PerHourOnCallWeekday;
-                collectiveAgreementInfo.PerHourOnCallWeekend = collectiveAgreement.PerHourOnCallWeekend;
-
-                if (collectiveAgreement.NewAgreement == true)
-                {
-                    collectiveAgreementInfo.CollectiveAgreementHeaderId = latestHeaderId;
-                }
-                else
-                {
-                    collectiveAgreementInfo.CollectiveAgreementHeaderId = collectiveAgreement.HeaderId;
-                }
-                db.CollectiveAgreementInfos.Add(collectiveAgreementInfo);
-                db.SaveChanges();
-                //}
+            }
+            else
+            {
+                return View(collectiveAgreement);
             }
             return RedirectToAction("Index");
         }
@@ -155,7 +203,7 @@ namespace Sjuklöner.Controllers
                 CollectiveAgreementEditVM collectiveAgreementEditVM = new CollectiveAgreementEditVM();
                 collectiveAgreementEditVM.Type = type;
 
-                CollAgreementHeader collAgreementHeader = new CollAgreementHeader();
+                CollAgreementHeaderForVM collAgreementHeader = new CollAgreementHeaderForVM();
                 collectiveAgreementEditVM.CollAgreementHeader = collAgreementHeader;
                 var collectiveAgreementHeader = db.CollectiveAgreementHeaders.Where(c => c.Id == headerId).FirstOrDefault();
                 collectiveAgreementEditVM.CollAgreementHeader.Id = collectiveAgreementHeader.Id;
@@ -164,15 +212,15 @@ namespace Sjuklöner.Controllers
 
                 if (type == "header")
                 {
-                    List<CollAgreementInfo> collAgreementInfos = new List<CollAgreementInfo>();
+                    List<CollAgreementInfoForVM> collAgreementInfos = new List<CollAgreementInfoForVM>();
                     collectiveAgreementEditVM.CollAgreementInfo = collAgreementInfos;
                     var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == collectiveAgreementHeader.Id).ToList();
                     foreach (var collectiveAgreementInfo in collectiveAgreementInfos)
                     {
-                        CollAgreementInfo collAgreementInfo = new CollAgreementInfo();
+                        CollAgreementInfoForVM collAgreementInfo = new CollAgreementInfoForVM();
                         collAgreementInfo.Id = collectiveAgreementInfo.Id;
-                        collAgreementInfo.StartDate = collectiveAgreementInfo.StartDate.ToShortDateString();
-                        collAgreementInfo.EndDate = collectiveAgreementInfo.EndDate.ToShortDateString();
+                        collAgreementInfo.StartDate = collectiveAgreementInfo.StartDate;
+                        collAgreementInfo.EndDate = collectiveAgreementInfo.EndDate;
                         collAgreementInfo.PerHourUnsocialEvening = collectiveAgreementInfo.PerHourUnsocialEvening;
                         collAgreementInfo.PerHourUnsocialNight = collectiveAgreementInfo.PerHourUnsocialNight;
                         collAgreementInfo.PerHourUnsocialWeekend = collectiveAgreementInfo.PerHourUnsocialWeekend;
@@ -184,13 +232,13 @@ namespace Sjuklöner.Controllers
                 }
                 else if (type == "info" && infoId != null)
                 {
-                    List<CollAgreementInfo> collAgreementInfos = new List<CollAgreementInfo>();
+                    List<CollAgreementInfoForVM> collAgreementInfos = new List<CollAgreementInfoForVM>();
                     collectiveAgreementEditVM.CollAgreementInfo = collAgreementInfos;
                     var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.Id == infoId).FirstOrDefault();
-                    CollAgreementInfo collAgreementInfo = new CollAgreementInfo();
+                    CollAgreementInfoForVM collAgreementInfo = new CollAgreementInfoForVM();
                     collAgreementInfo.Id = collectiveAgreementInfos.Id;
-                    collAgreementInfo.StartDate = collectiveAgreementInfos.StartDate.ToShortDateString();
-                    collAgreementInfo.EndDate = collectiveAgreementInfos.EndDate.ToShortDateString();
+                    collAgreementInfo.StartDate = collectiveAgreementInfos.StartDate;
+                    collAgreementInfo.EndDate = collectiveAgreementInfos.EndDate;
                     collAgreementInfo.PerHourUnsocialEvening = collectiveAgreementInfos.PerHourUnsocialEvening;
                     collAgreementInfo.PerHourUnsocialNight = collectiveAgreementInfos.PerHourUnsocialNight;
                     collAgreementInfo.PerHourUnsocialWeekend = collectiveAgreementInfos.PerHourUnsocialWeekend;
@@ -214,10 +262,97 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(CollectiveAgreementEditVM collectiveAgreementEditVM, string submitButton)
         {
-            if (submitButton == "Spara")
+            //Check if a collective agreement with the same name already exists
+            if (db.CollectiveAgreementHeaders.Where(c => c.Name == collectiveAgreementEditVM.CollAgreementHeader.Name).Where(c => c.Id != collectiveAgreementEditVM.CollAgreementHeader.Id).FirstOrDefault() != null)
             {
-                if (ModelState.IsValid)
+                ModelState.AddModelError("CollagreementHeader.Name", "Det finns redan ett avtal med samma namn.");
+            }
+            //Check that the last date of the agreement is equal to or greater than the first date
+            for (int i = 0; i < collectiveAgreementEditVM.CollAgreementInfo.Count(); i++)
+            {
+                if (collectiveAgreementEditVM.CollAgreementInfo[i].StartDate.Date > collectiveAgreementEditVM.CollAgreementInfo[i].EndDate.Date)
                 {
+                    ModelState.AddModelError("CollAgreementInfo[" + i.ToString() + "].EndDate", "Kollektivavtalets slutdatum får inte vara tidigare än avtalets startdatum.");
+                }
+            }
+            //Check if there is an overlap between time periods for the same collective agreement for the case where several time periods may have been edited
+            if (collectiveAgreementEditVM.CollAgreementInfo.Count() > 1)
+            {
+                //Check start date for overlaps
+                bool noOverlapFound = true;
+                int idx = 1;
+                int startIdx = 0;
+                int stopIdx = collectiveAgreementEditVM.CollAgreementInfo.Count();
+                do
+                {
+                    do
+                    {
+                        if (collectiveAgreementEditVM.CollAgreementInfo[startIdx].StartDate >= collectiveAgreementEditVM.CollAgreementInfo[idx].StartDate && collectiveAgreementEditVM.CollAgreementInfo[startIdx].StartDate <= collectiveAgreementEditVM.CollAgreementInfo[idx].EndDate)
+                        {
+                            ModelState.AddModelError("CollAgreementInfo[" + startIdx.ToString() + "].StartDate", "Datumet överlappar med en existerande period.");
+                            noOverlapFound = false;
+                        }
+                        idx++;
+                    } while (noOverlapFound && idx < stopIdx);
+                    startIdx++;
+                    idx = startIdx + 1;
+                } while (noOverlapFound && idx < stopIdx);
+
+                //Check end date for overlaps
+                noOverlapFound = true;
+                idx = 1;
+                startIdx = 0;
+                do
+                {
+                    do
+                    {
+                        if (collectiveAgreementEditVM.CollAgreementInfo[startIdx].EndDate >= collectiveAgreementEditVM.CollAgreementInfo[idx].StartDate && collectiveAgreementEditVM.CollAgreementInfo[startIdx].EndDate <= collectiveAgreementEditVM.CollAgreementInfo[idx].EndDate)
+                        {
+                            ModelState.AddModelError("CollAgreementInfo[" + startIdx.ToString() + "].EndDate", "Datumet överlappar med en existerande period.");
+                            noOverlapFound = false;
+                        }
+                        idx++;
+                    } while (noOverlapFound && idx < stopIdx);
+                    startIdx++;
+                    idx = startIdx + 1;
+                } while (noOverlapFound && idx < stopIdx);
+            }
+            else if (collectiveAgreementEditVM.CollAgreementInfo.Count() == 1 && collectiveAgreementEditVM.CollAgreementHeader.Counter > 1)
+            {
+                int collAgreementInfoId = collectiveAgreementEditVM.CollAgreementInfo[0].Id;
+                var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == collectiveAgreementEditVM.CollAgreementHeader.Id).Where(c => c.Id != collAgreementInfoId).ToList();
+                //Check start date for overlaps for the case where only one time period has been edited
+                bool noOverlapFound = true;
+                int idx = 0;
+                int stopIdx = collectiveAgreementInfos.Count();
+                do
+                {
+                    if (collectiveAgreementEditVM.CollAgreementInfo[0].StartDate >= collectiveAgreementInfos[idx].StartDate && collectiveAgreementEditVM.CollAgreementInfo[0].StartDate <= collectiveAgreementInfos[idx].EndDate)
+                    {
+                        ModelState.AddModelError("CollAgreementInfo[0].StartDate", "Datumet överlappar med en existerande period.");
+                        noOverlapFound = false;
+                    }
+                    idx++;
+                } while (noOverlapFound && idx < stopIdx);
+
+                noOverlapFound = true;
+                idx = 0;
+                do
+                {
+                    if (collectiveAgreementEditVM.CollAgreementInfo[0].EndDate >= collectiveAgreementInfos[idx].StartDate && collectiveAgreementEditVM.CollAgreementInfo[0].EndDate <= collectiveAgreementInfos[idx].EndDate)
+                    {
+                        ModelState.AddModelError("CollAgreementInfo[0].EndDate", "Datumet överlappar med en existerande period.");
+                        noOverlapFound = false;
+                    }
+                    idx++;
+                } while (noOverlapFound && idx < stopIdx);
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (submitButton == "Spara")
+                {
+
                     if (collectiveAgreementEditVM.Type == "header")
                     {
                         var headerId = collectiveAgreementEditVM.CollAgreementHeader.Id;
@@ -237,8 +372,8 @@ namespace Sjuklöner.Controllers
                         {
                             CollectiveAgreementInfo collectiveAgreementInfo = new CollectiveAgreementInfo();
                             collectiveAgreementInfo.CollectiveAgreementHeaderId = headerId;
-                            collectiveAgreementInfo.StartDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[i].StartDate);
-                            collectiveAgreementInfo.EndDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[i].EndDate);
+                            collectiveAgreementInfo.StartDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[i].StartDate).Date;
+                            collectiveAgreementInfo.EndDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[i].EndDate).Date;
                             collectiveAgreementInfo.PerHourUnsocialEvening = collectiveAgreementEditVM.CollAgreementInfo[i].PerHourUnsocialEvening;
                             collectiveAgreementInfo.PerHourUnsocialNight = collectiveAgreementEditVM.CollAgreementInfo[i].PerHourUnsocialNight;
                             collectiveAgreementInfo.PerHourUnsocialWeekend = collectiveAgreementEditVM.CollAgreementInfo[i].PerHourUnsocialWeekend;
@@ -251,11 +386,17 @@ namespace Sjuklöner.Controllers
                     }
                     else if (collectiveAgreementEditVM.Type == "info")
                     {
+                        var headerId = collectiveAgreementEditVM.CollAgreementHeader.Id;
+                        var header = db.CollectiveAgreementHeaders.Where(c => c.Id == headerId).FirstOrDefault();
+
+                        header.Name = collectiveAgreementEditVM.CollAgreementHeader.Name;
+                        db.Entry(header).State = EntityState.Modified;
+
                         int infoId = collectiveAgreementEditVM.CollAgreementInfo[0].Id;
                         var collAgreementInfo = db.CollectiveAgreementInfos.Where(c => c.Id == infoId).FirstOrDefault();
                         db.Entry(collAgreementInfo).State = EntityState.Modified;
-                        collAgreementInfo.StartDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[0].StartDate);
-                        collAgreementInfo.EndDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[0].EndDate);
+                        collAgreementInfo.StartDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[0].StartDate).Date;
+                        collAgreementInfo.EndDate = Convert.ToDateTime(collectiveAgreementEditVM.CollAgreementInfo[0].EndDate).Date;
                         collAgreementInfo.PerHourUnsocialEvening = collectiveAgreementEditVM.CollAgreementInfo[0].PerHourUnsocialEvening;
                         collAgreementInfo.PerHourUnsocialNight = collectiveAgreementEditVM.CollAgreementInfo[0].PerHourUnsocialNight;
                         collAgreementInfo.PerHourUnsocialWeekend = collectiveAgreementEditVM.CollAgreementInfo[0].PerHourUnsocialWeekend;
@@ -265,6 +406,10 @@ namespace Sjuklöner.Controllers
                     }
                     db.SaveChanges();
                 }
+            }
+            else
+            {
+                return View(collectiveAgreementEditVM);
             }
             return RedirectToAction("Index");
         }

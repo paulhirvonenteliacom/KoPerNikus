@@ -247,9 +247,43 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create1(Create1VM create1VM, string refNumber, string submitButton)
         {
+            //Check if the sickleave period is in the future.
+            if (create1VM.FirstDayOfSicknessDate.Date >= DateTime.Now.Date)
+            {
+                ModelState.AddModelError("FirstDayOfSicknessDate", "Datumet får vara senast gårdagens datum.");
+            }
+            if (create1VM.LastDayOfSicknessDate.Date >= DateTime.Now.Date)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Datumet får vara senast gårdagens datum.");
+            }
+            //Check that the last day of sickness is equal to or greater than the first day of sickness
+            if (create1VM.FirstDayOfSicknessDate.Date > create1VM.LastDayOfSicknessDate.Date)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
+            }
+            //Check that the number of days in the sickleave period is maximum 14
+            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 13)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
+            }
+            //Check if the regular assistant has been selected
+            if (create1VM.SelectedRegAssistantId == null)
+            {
+                ModelState.AddModelError("RegularAssistants", "Ordinarie assistent måste väljas.");
+            }
+            //Check if the substitue assistant has been selected
+            if (create1VM.SelectedSubAssistantId == null)
+            {
+                ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent måste väljas.");
+            }
+            //Check if the substitute assistant is the same as the regular assistant
+            if (create1VM.SelectedRegAssistantId == create1VM.SelectedSubAssistantId)
+            {
+                ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
+            }
+
             if (ModelState.IsValid)
             {
-
                 if (submitButton == "Till steg 2" || submitButton == "Spara")
                 {
                     if (refNumber == null) //new claim
@@ -304,6 +338,20 @@ namespace Sjuklöner.Controllers
             }
             else
             {
+                var currentId = User.Identity.GetUserId();
+                ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+                var companyId = currentUser.CareCompanyId;
+                var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).OrderBy(a => a.LastName).ToList();
+                var regAssistantDdlString = new List<SelectListItem>();
+                var subAssistantDdlString = new List<SelectListItem>();
+
+                for (int i = 0; i < assistants.Count(); i++)
+                {
+                    regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                    subAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
+                }
+                create1VM.RegularAssistants = regAssistantDdlString;
+                create1VM.SubstituteAssistants = subAssistantDdlString;
                 return View(create1VM);
             }
         }
@@ -779,18 +827,53 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
-            if (submitButton == "Till steg 3")
+            //Check that some working hours have been filled in for the regular and substitute assistants
+            bool hoursFound = false;
+            int idx = 0;
+            do
             {
-                SaveClaim2(create2VM);
-                return RedirectToAction("Create3", "Claims", new { refNumber = refNumber });
+                if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
+                {
+                    hoursFound = true;
+                }
+                idx++;
+            } while (!hoursFound && idx < create2VM.ScheduleRowList.Count());
+            if (!hoursFound)
+            {
+                ModelState.AddModelError("ScheduleRowList[0].Hours", "Minst ett fält måste fyllas i.");
             }
-            else if (submitButton == "Avbryt")
+            bool hoursSIFound = false;
+            idx = 0;
+            do
             {
-                return RedirectToAction("IndexPageOmbud");
+                if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI))
+                {
+                    hoursSIFound = true;
+                }
+                idx++;
+            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count()); if (!hoursSIFound)
+            {
+                ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Minst ett fält måste fyllas i.");
+            }
+            if (ModelState.IsValid)
+            {
+                if (submitButton == "Till steg 3")
+                {
+                    SaveClaim2(create2VM);
+                    return RedirectToAction("Create3", "Claims", new { refNumber = refNumber });
+                }
+                else if (submitButton == "Avbryt")
+                {
+                    return RedirectToAction("IndexPageOmbud");
+                }
+                else
+                {
+                    SaveClaim2(create2VM);
+                    return View(create2VM);
+                }
             }
             else
             {
-                SaveClaim2(create2VM);
                 return View(create2VM);
             }
         }
@@ -1439,7 +1522,7 @@ namespace Sjuklöner.Controllers
 
                     claimCalc.UnsocialSumD2T14 = claimCalculations[i].UnsocialSumD2T14;
                     claimCalc.OnCallSumD2T14 = claimCalculations[i].OnCallSumD2T14;
-                    
+
                     //Load the money by category for day 2 to day 14
                     //Sickpay for day 2 to day 14
                     claimCalc.SalaryD2T14 = claimCalculations[i].SalaryD2T14;

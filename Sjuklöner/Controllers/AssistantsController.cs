@@ -69,13 +69,12 @@ namespace Sjuklöner.Controllers
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
+            if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
-                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
-                {
-                    ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
-                }
+                ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
             }
+
             if (ModelState.IsValid)
             {
                 Assistant assistant = new Assistant();

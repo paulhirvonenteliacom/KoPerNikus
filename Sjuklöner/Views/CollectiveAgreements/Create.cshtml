@@ -47,6 +47,7 @@ else
     }
     else
     {
+        @Html.HiddenFor(model => model.Name)
         <div class="row row-height-50">
             <div class="form-group">
                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
@@ -128,8 +129,8 @@ else
             <div class="col col-md-offset-2 col-md-1">
                 <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Spara" id="proceed" />
             </div>
-            <div class="col col-md-1">
-                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+            <div class="col col-md-2">
+                @Html.ActionLink("Avbryt", "Index", "CollectiveAgreements", null, new { @class = "btn btn-secondary btn-secondary-small" })
             </div>
         </div>
     </div>

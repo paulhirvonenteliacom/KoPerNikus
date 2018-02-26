@@ -13,20 +13,14 @@
         <div class="col col-md-7 no-padding-left2">
             @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
         </div>
-        @*<div class="col col-md-2">
-                Välj kolumn för sökning
-            </div>*@
         @using (Html.BeginForm("IndexPageOmbud", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
-                <select name="searchBy" class="col-md-2 input-sm align-bottom4">
-                    <option value="Referensnummer">Referensnummer</option>
-                    <option value="CSSN">Kundens Personnummer</option>
-                    <option value="ASSN">Assistentens Personnummer</option>
-                </select>
-            @*<div class="col col-md-2">*@
-                <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom4"/>
-                @*<input type="text" name="searchString" id="searchString" class="input-height col-md-2" input-sm />*@
-            @*</div>*@
+            <select name="searchBy" class="col-md-2 input-sm align-bottom4">
+                <option value="Referensnummer">Referensnummer</option>
+                <option value="CSSN">Kundens Personnummer</option>
+                <option value="ASSN">Assistentens Personnummer</option>
+            </select>
+            <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom4" />
             <div class="col col-md-1 col-no-left-padding col-no-right-padding">
                 <input type="submit" value="Sök" class="btn btn-secondary btn-secondary-xsmall input-height align-bottom4" />
             </div>

@@ -5,19 +5,17 @@
     ViewBag.Title = "Edit";
 }
 <div class="row">
-    <p class="page-header5 col col-md-12">Uppdatera bolagsuppgifter</p>
+    <p class="page-header7 col col-md-offset-2 col-md-10">Uppdatera bolagsuppgifter</p>
 </div>
 <div class="row">
-    <p class="col col-md-12 col-left-margin-6">Uppgifterna används vid ansökan om sjuklöneersättning</p>
+    <p class="col col-md-offset-2 col-md-10">Uppgifterna används vid ansökan om sjuklöneersättning</p>
 </div>
 <hr class="claim-divider" />
-<br />
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CareCompany.Id)
         @Html.HiddenFor(model => model.CareCompanyId)
