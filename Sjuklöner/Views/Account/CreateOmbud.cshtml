@@ -10,7 +10,9 @@
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="page-header7 col col-md-10">Lägg till ombud</p>
-        <br>
+    </div>
+    <div class="row">
+        <p class="col col-md-offset-2 col-md-10">Uppgifterna används vid ansökan om sjuklöneersättning</p>
     </div>
     <hr class="claim-divider" />
     <div class="form-horizontal">
@@ -34,7 +36,7 @@
             @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger "})
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger " })
             </div>
         </div>
         <div class="form-group">

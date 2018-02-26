@@ -218,6 +218,14 @@
     <Compile Include="Migrations\201802231400363_removedRequiredOnAssistantClassProperties.Designer.cs">
       <DependentUpon>201802231400363_removedRequiredOnAssistantClassProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802250951356_ChangedDateTimeToDateInCollectiveAgreementInfo.cs" />
+    <Compile Include="Migrations\201802250951356_ChangedDateTimeToDateInCollectiveAgreementInfo.Designer.cs">
+      <DependentUpon>201802250951356_ChangedDateTimeToDateInCollectiveAgreementInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802251053407_replacedValidationInCollectiveAgreementInfoClassWithValInNewViewModel.cs" />
+    <Compile Include="Migrations\201802251053407_replacedValidationInCollectiveAgreementInfoClassWithValInNewViewModel.Designer.cs">
+      <DependentUpon>201802251053407_replacedValidationInCollectiveAgreementInfoClassWithValInNewViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -441,6 +449,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802231400363_removedRequiredOnAssistantClassProperties.resx">
       <DependentUpon>201802231400363_removedRequiredOnAssistantClassProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802250951356_ChangedDateTimeToDateInCollectiveAgreementInfo.resx">
+      <DependentUpon>201802250951356_ChangedDateTimeToDateInCollectiveAgreementInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802251053407_replacedValidationInCollectiveAgreementInfoClassWithValInNewViewModel.resx">
+      <DependentUpon>201802251053407_replacedValidationInCollectiveAgreementInfoClassWithValInNewViewModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -14,6 +14,7 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(model => model.CollAgreementHeader.Id)
+    @Html.HiddenFor(model => model.CollAgreementHeader.Counter)
     @Html.HiddenFor(model => model.Type)
     for (int i = 0; i < Model.CollAgreementInfo.Count(); i++)
     {
@@ -22,19 +23,51 @@
     @Html.AntiForgeryToken()
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <table class="table table-no-margin-bottom">
-        <tr>
-            <th class="table-large-font">
-                @Html.DisplayNameFor(model => model.CollAgreementHeader.Name)
-            </th>
-        </tr>
-        <tr>
-            <td class="large-table-font table-wide-column">
+    if (Model.Type == "header")
+    {
+        <p class="collective-agreement-header">
+            @Html.DisplayNameFor(model => model.CollAgreementHeader.Name)
+        </p>
+        <div class="row">
+            <div class="col col-md-6 table-large-font col-padding-20">
                 @Html.EditorFor(model => model.CollAgreementHeader.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger" })
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        @*<table class="table-no-border table table-no-margin-bottom">
+                <tr>
+                    <th class="table-no-border table-large-font">
+                        @Html.DisplayNameFor(model => model.CollAgreementHeader.Name)
+                    </th>
+                </tr>
+                <tr>
+                    <td class="table-no-border large-table-font table-wide-column">
+                        @Html.EditorFor(model => model.CollAgreementHeader.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            </table>*@
+    }
+    else
+    {
+        @*<div class="row">
+            <div class="col col-md-8 collective-agreement-header">*@
+        <p class="collective-agreement-header">
+            @Model.CollAgreementHeader.Name
+        </p>
+        @*</div>
+            </div>*@
+        @*<div class="row table-large-font">
+                @Model.CollAgreementHeader.Name
+            </div>*@
+        @*<table class="table-no-border table table-no-margin-bottom">
+                <tr>
+                    <th class="table-no-border table-large-font">
+                        @Model.CollAgreementHeader.Name
+                    </th>
+                </tr>
+            </table>*@
+    }
     @*<div class="row">
             <div class="form-group">
                 @Html.LabelFor(model => model.CollAgreementHeader.Name, htmlAttributes: new { @class = "control-label col-md-2 display-right-align" })
@@ -75,7 +108,7 @@
             </th>
         </tr>
         @for (int i = 0; i < Model.CollAgreementInfo.Count(); i++)
-                {
+        {
             <tr>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].StartDate, new { htmlAttributes = new { @class = "form-control" } })
@@ -117,8 +150,8 @@
             <div class="col col-md-1">
                 <input class="btn btn-primary btn-primary-small btn-left-margin-22" type="submit" name="submitButton" value="Spara" id="proceed" />
             </div>
-            <div class="col col-md-1">
-                <input class="btn btn-secondary btn-secondary-small btn-left-margin-22" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+            <div class="col col-md-2 col-left-margin-18">
+                @Html.ActionLink("Avbryt", "Index", "CollectiveAgreements", null, new { @class = "btn btn-secondary btn-secondary-small" })
             </div>
         </div>
     </div>

@@ -5,21 +5,20 @@
 }
 <body>
     <div class="row index-page-margin">
-        @*<p class="col col-md-2"></p>*@
-        <p class="page-header col col-md-10">Ansökningar</p>
         @using (Html.BeginForm("IndexPageAdmOff", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
-            <select name="searchBy" class="col-md-2 input-sm">
+        <p class="page-header col col-md-7">Ansökningar</p>
+            <select name="searchBy" class="col-md-2 input-sm align-bottom5">
                 <option value="Referensnummer">Referensnummer</option>
                 <option value="CSSN">Kundens Personnummer</option>
                 <option value="ASSN">Assistentens Personnummer</option>
             </select>
-            <input type="text" name="searchString" id="searchString" class="col-md-2" input-sm />
-            <input type="submit" />
+            <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom5" />
+            <div class="col col-md-1 col-no-left-padding col-no-right-padding">
+                <input type="submit" value="Sök" class="btn btn-secondary btn-secondary-xsmall input-height align-bottom5" />
+            </div>
         }
-        @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
     </div>
-    <br />
     <br />
     <hr class="claim-divider" />
     <div class="row">

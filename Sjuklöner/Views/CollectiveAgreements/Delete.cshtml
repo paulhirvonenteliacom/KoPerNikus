@@ -3,14 +3,21 @@
 @{
     ViewBag.Title = "Delete";
 }
-
-
 <div class="row">
     <p class="page-header5 col col-md-12">Ta bort kollektivavtalet</p>
 </div>
+@if (Model.Type == "header")
+{
     <div class="row">
         <nl class="col col-md-12 col-left-margin-6 font-size-16">Klicka på "Bekräfta" nedan för att ta bort detta kollektivavtal</nl>
     </div>
+}
+else
+{
+    <div class="row">
+        <nl class="col col-md-12 col-left-margin-6 font-size-16">Klicka på "Bekräfta" nedan för att ta bort denna rad i kollektivatalet</nl>
+    </div>
+}
 <br />
 <br />
 @using (Html.BeginForm())

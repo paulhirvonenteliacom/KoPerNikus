@@ -261,6 +261,11 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
             }
+            //Check that the number of days in the sickleave period is maximum 14
+            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 13)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
+            }
             //Check if the regular assistant has been selected
             if (create1VM.SelectedRegAssistantId == null)
             {
@@ -822,18 +827,53 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
-            if (submitButton == "Till steg 3")
+            //Check that some working hours have been filled in for the regular and substitute assistants
+            bool hoursFound = false;
+            int idx = 0;
+            do
             {
-                SaveClaim2(create2VM);
-                return RedirectToAction("Create3", "Claims", new { refNumber = refNumber });
+                if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
+                {
+                    hoursFound = true;
+                }
+                idx++;
+            } while (!hoursFound && idx < create2VM.ScheduleRowList.Count());
+            if (!hoursFound)
+            {
+                ModelState.AddModelError("ScheduleRowList[0].Hours", "Minst ett fält måste fyllas i.");
             }
-            else if (submitButton == "Avbryt")
+            bool hoursSIFound = false;
+            idx = 0;
+            do
             {
-                return RedirectToAction("IndexPageOmbud");
+                if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI))
+                {
+                    hoursSIFound = true;
+                }
+                idx++;
+            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count()); if (!hoursSIFound)
+            {
+                ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Minst ett fält måste fyllas i.");
+            }
+            if (ModelState.IsValid)
+            {
+                if (submitButton == "Till steg 3")
+                {
+                    SaveClaim2(create2VM);
+                    return RedirectToAction("Create3", "Claims", new { refNumber = refNumber });
+                }
+                else if (submitButton == "Avbryt")
+                {
+                    return RedirectToAction("IndexPageOmbud");
+                }
+                else
+                {
+                    SaveClaim2(create2VM);
+                    return View(create2VM);
+                }
             }
             else
             {
-                SaveClaim2(create2VM);
                 return View(create2VM);
             }
         }

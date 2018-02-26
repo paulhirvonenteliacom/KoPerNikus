@@ -434,6 +434,11 @@ li a {
     margin-left: 0;
 }
 
+.table-no-border {
+    border-top: none;
+}
+
+
 .subtitle-padding {
     padding-bottom: 50px;
 }
@@ -749,6 +754,10 @@ li a {
 
 .col-padding-17 {
     padding-left: 17px;
+}
+
+.col-padding-20 {
+    padding-left: 20px;
 }
 
 .col-left-margin {
@@ -1236,6 +1245,10 @@ special-left-margin {
     margin-top: 16px;
 }
 
+.align-bottom5 {
+    margin-top: 38px;
+}
+
 .breadcrumb {
     background-color: #ffffff;
     margin-top: 110px;
@@ -1359,6 +1372,11 @@ a:hover, a:focus {
 
 .table-large-font {
     font-size: 30px;
+}
+
+.table-large-font-bold {
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .table-wide-column {

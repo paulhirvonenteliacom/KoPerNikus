@@ -53,13 +53,13 @@ namespace Sjuklöner.Viewmodels
         [Required]
         [Display(Name = "Första sjukdag")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime FirstDayOfSicknessDate { get; set; }
 
         [Required]
         [Display(Name = "Sista sjukdag")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime LastDayOfSicknessDate { get; set; }
 
         //[Display(Name = "Ordinarie assistents förnamn")]
