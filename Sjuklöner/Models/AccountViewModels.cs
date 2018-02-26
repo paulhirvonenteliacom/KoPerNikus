@@ -103,7 +103,7 @@ namespace Sjuklöner.Models
 
         [Required]
         [Display(Name = "Bolagets organisationsnummer")]
-        [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
+        [RegularExpression(@"[0-9]{6}-[0-9]{4}$", ErrorMessage = "Formatet på organisationsnummret bör vara XXXXXX-XXXX där alla X är siffror.")]
         public string CompanyOrganisationNumber { get; set; }
 
         [Required]
