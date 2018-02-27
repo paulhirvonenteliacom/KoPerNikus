@@ -30,23 +30,24 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
 
+        [Required]
         [Display(Name = "Timlön (Kr)")]
-        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,3}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string HourlySalary { get; set; }
 
         [Required]
         [Display(Name = "Semesterersättning (%)")]
-        [DisplayFormat(DataFormatString = "{0:####}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string HolidayPayRate { get; set; }
 
         [Required]
         [Display(Name = "Arbetsgivaravgift (%)")]
-        [DisplayFormat(DataFormatString = "{0:####}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string PayrollTaxRate { get; set; }
 
         [Required]
         [Display(Name = "Avtalspension och försäkring (%)")]
-        [DisplayFormat(DataFormatString = "{0:###}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string PensionAndInsuranceRate { get; set; }
     }
 }

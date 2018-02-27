@@ -693,8 +693,22 @@ namespace Sjuklöner.Controllers
             }
             else
             {
-                db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
-                newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                if (db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber != 0)
+                {
+                    newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                    db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
+                    
+                }
+                //The code below avoids starting with ref number "YYYY00001" after updating the database if there are claims in the database
+                else
+                {
+                    var lastClaim = db.Claims.ToList().LastOrDefault();
+                    if (lastClaim != null)
+                    {
+                        newReferenceNumber = DateTime.Now.Year.ToString() + (Convert.ToInt32(lastClaim.ReferenceNumber.Substring(4)) + 1).ToString("D5");
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = Convert.ToInt32(newReferenceNumber.Substring(4));
+                    }
+                }
             }
             return newReferenceNumber;
         }
@@ -827,9 +841,57 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
+            //Check that no day has more than 25 hours of work
+            bool moreThan25Hours = false;
+            int idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Antalet arbetstimmar inklusive jourtid är för högt.");
+                    moreThan25Hours = true;
+                }
+                idx++;
+            } while (!moreThan25Hours && idx < create2VM.ScheduleRowList.Count());
+            moreThan25Hours = false;
+            idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI) > 25)
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "Antalet arbetstimmar inklusive jourtid är för högt.");
+                    moreThan25Hours = true;
+                }
+                idx++;
+            } while (!moreThan25Hours && idx < create2VM.ScheduleRowList.Count());
+
+            //Check that there are not more unsocial hours than working hours for each day
+            bool tooManyUnsocialHours = false;
+            idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours))
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Antalet arbetstimmar får inte vara lägre än antalet OB-timmar.");
+                    tooManyUnsocialHours = true;
+                }
+                idx++;
+            } while (!tooManyUnsocialHours && idx < create2VM.ScheduleRowList.Count());
+            tooManyUnsocialHours = false;
+            idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI))
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "Antalet arbetstimmar får inte vara lägre än antalet OB-timmar.");
+                    tooManyUnsocialHours = true;
+                }
+                idx++;
+            } while (!tooManyUnsocialHours && idx < create2VM.ScheduleRowList.Count());
+
             //Check that some working hours have been filled in for the regular and substitute assistants
             bool hoursFound = false;
-            int idx = 0;
+            idx = 0;
             do
             {
                 if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
@@ -851,7 +913,8 @@ namespace Sjuklöner.Controllers
                     hoursSIFound = true;
                 }
                 idx++;
-            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count()); if (!hoursSIFound)
+            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
+            if (!hoursSIFound)
             {
                 ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Minst ett fält måste fyllas i.");
             }

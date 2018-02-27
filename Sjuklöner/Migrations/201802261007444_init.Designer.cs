@@ -7,13 +7,13 @@ namespace Sjuklöner.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class addRequiredToAssistantClass : IMigrationMetadata
+    public sealed partial class init : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(addRequiredToAssistantClass));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init));
         
         string IMigrationMetadata.Id
         {
-            get { return "201802231329426_addRequiredToAssistantClass"; }
+            get { return "201802261007444_init"; }
         }
         
         string IMigrationMetadata.Source
