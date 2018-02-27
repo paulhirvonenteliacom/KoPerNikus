@@ -1,66 +1,72 @@
 ﻿@model Sjuklöner.Models.NewAdmOffVM
 @{
-    ViewBag.Title = "View";
-}
-<h2 class="page-header1">Lägg till ny handläggare</h2>
+                /**/
 
+                ViewBag.Title = "View";
+}
 @using (Html.BeginForm("NewAdmOff", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Lägg till ny handläggare</h4>
-    <hr />
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="page-header7 col col-md-10">Lägg till handläggare</p>
+    </div>
+    <hr class="claim-divider" />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
         @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.FirstName, new { @class = "form-control" })
+            @Html.EditorFor(m => m.FirstName, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.LastName, new { @class = "form-control" })
+            @Html.EditorFor(m => m.LastName, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.SSN, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.SSN, new { @class = "form-control" })
+            @Html.EditorFor(m => m.SSN, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     /*<div class="form-group">
         @Html.LabelFor(m => m.ConfirmSSN, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.ConfirmSSN, new { @class = "form-control" })
+            @Html.EditorFor(m => m.ConfirmSSN, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>*/
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.PasswordFor(m => m.Password, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.PasswordFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.Email, new { @class = "form-control" })
+            @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.PhoneNumber, new { @class = "form-control" })
+            @Html.EditorFor(m => m.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
+        <div class="col-md-offset-2 col-md-1">
+            <input type="submit" class="btn btn-primary btn-primary-small" value="Spara" />
+        </div>
+        <div class="small-padding-left3 col col-md-1">
+            @Html.ActionLink("Avbryt", "IndexPageAdmOff", "Claims", null, new { @class = "btn btn-secondary btn-secondary-small" })
         </div>
     </div>
 }

@@ -10,9 +10,19 @@
     <br />
     <br />
     <div class="row">
-        <div class="col col-md-7 no-padding-left2">
-            @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
-        </div>
+        @if (Model.AssistantsExist)
+        {
+            <div class="col col-md-7 no-padding-left2">
+                @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
+            </div>
+        }
+        else
+        {
+            <div class="col col-md-6 left-margin-12 font-size-16">
+                Information om två assistenter krävs för att kunna skapa en ansökan. 
+                <p class="col-no-left-padding">@Html.ActionLink("Klicka här ", "Create", "Assistants", null, null)för att lägga in assistenter.</p>
+            </div>
+        }
         @using (Html.BeginForm("IndexPageOmbud", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             <select name="searchBy" class="col-md-2 input-sm align-bottom4">
@@ -276,7 +286,7 @@
             @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#d2f5f4;">*@
             @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#f5f1dc;">*@
             <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
-                <button type="button" id="closbtn"> x </button>
+                <button type="button" id="closbtn" float="right"> Stäng </button>
                 <div style="height:10px;">
                 </div>
                 <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">

@@ -69,6 +69,14 @@ namespace Sjuklöner.Controllers
                 indexPageOmbudVM.UnderReviewClaims = underReviewClaims.ToList();
             }
 
+            //Check if at least two assistants have been defined for the company
+            var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).ToList();
+            indexPageOmbudVM.AssistantsExist = false;
+            if (assistants.Count() >= 2)
+            {
+                indexPageOmbudVM.AssistantsExist = true;
+            }
+
             return View("IndexPageOmbud", indexPageOmbudVM);
         }
 
