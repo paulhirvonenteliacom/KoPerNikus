@@ -12,6 +12,7 @@ using Sjuklöner.Viewmodels;
 
 namespace Sjuklöner.Controllers
 {
+    [Authorize]
     public class AssistantsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

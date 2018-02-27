@@ -1168,22 +1168,22 @@ namespace Sjuklöner.Controllers
                 var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
                 if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
-                    ModelState.AddModelError("1", "Lönespecifikation för ordinarie assistent behövs");
+                    ModelState.AddModelError("", "Lönespecifikation för ordinarie assistent behövs");
 
                 if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
-                    ModelState.AddModelError("1", "Lönespecifikation för vikarierande assistent behövs");
+                    ModelState.AddModelError("", "Lönespecifikation för vikarierande assistent behövs");
 
-                if (CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
-                    ModelState.AddModelError("1", "Sjukfrånvaroanmälan behövs");
+                if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
+                    ModelState.AddModelError("", "Sjukfrånvaroanmälan behövs");
 
                 if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
-                    ModelState.AddModelError("1", "Läkarintyg behövs");
+                    ModelState.AddModelError("", "Läkarintyg behövs");
 
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
-                    ModelState.AddModelError("1", "Tidsrapportering för ordinarie assistent behövs");
+                    ModelState.AddModelError("", "Tidsrapportering för ordinarie assistent behövs");
 
                 if (!CheckExistingDocument(claim, "TimeReportStandIn", model.TimeReportStandIn))
-                    ModelState.AddModelError("1", "Tidsrapportering för vikarierande assistent behövs");
+                    ModelState.AddModelError("", "Tidsrapportering för vikarierande assistent behövs");
 
                 if (ModelState.IsValid)
                 {

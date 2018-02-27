@@ -35,7 +35,7 @@ namespace Sjuklöner.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta nytt lösenord")]
-        [Compare("Nytt lösenord", ErrorMessage = "Det nya lösenordet och det bekräftade lösenordet är inte lika.")]
+        [Compare("NewPassword", ErrorMessage = "Det nya lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -54,7 +54,7 @@ namespace Sjuklöner.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta nytt lösenord")]
-        [Compare("Nytt lösenord", ErrorMessage = "Det nya lösenordet och det bekräftade lösenordet är inte lika.")]
+        [Compare("NewPassword", ErrorMessage = "Det nya lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
     }
 
