@@ -695,7 +695,7 @@ namespace Sjuklöner.Controllers
             {
                 if (db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber != 0)
                 {
-                    newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                    newReferenceNumber = DateTime.Now.Year.ToString() + Convert.ToInt32(latestReference.LatestReferenceNumber + 1).ToString("D5");
                     db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
                     
                 }
@@ -707,6 +707,12 @@ namespace Sjuklöner.Controllers
                     {
                         newReferenceNumber = DateTime.Now.Year.ToString() + (Convert.ToInt32(lastClaim.ReferenceNumber.Substring(4)) + 1).ToString("D5");
                         db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = Convert.ToInt32(newReferenceNumber.Substring(4));
+                    }
+                    else
+                    {
+                        newReferenceNumber = DateTime.Now.Year.ToString() + "00001";
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 1;
+
                     }
                 }
             }
@@ -1522,7 +1528,15 @@ namespace Sjuklöner.Controllers
 
             if (claim.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
             {
-                //
+                List<ClaimDay> claimDays = new List<ClaimDay>();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+                //Calculate the model sum
+                if (claimDays.Count() > 0)
+                {
+                    CalculateModelSum(claim, claimDays);
+                }
+
                 var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
                 List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
                 for (int i = 0; i < claimCalculations.Count(); i++)
@@ -2093,8 +2107,11 @@ namespace Sjuklöner.Controllers
                 Claim claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
                 if (claim.CompletionStage > 1)
                 {
-                    //Come back to this and consider what should be done with other entities (ClaimDays,ClaimCalculations, CollectiveAgreementHeader and Info). Probably depending on the CompletionStage of the claim.
                     db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                }
+                if (claim.CompletionStage >= 4)
+                {
+                    db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
                 }
                 db.Claims.Remove(claim);
                 db.SaveChanges();
