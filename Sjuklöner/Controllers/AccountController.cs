@@ -89,7 +89,7 @@ namespace Sjuklöner.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", "Ogiltigt användarnamn eller lösenord.");
                     return View(model);
             }
         }
@@ -132,7 +132,7 @@ namespace Sjuklöner.Controllers
                     return View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid code.");
+                    ModelState.AddModelError("", "Ogiltig kod.");
                     return View(model);
             }
         }
@@ -209,7 +209,9 @@ namespace Sjuklöner.Controllers
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.CompanyOrganisationNumber).Any())
                 ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnumret.");
             if (UserManager.Users.Where(u => u.SSN == model.SSN).Any())
-                ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnumret");
+                ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnumret.");
+            if (UserManager.Users.Where(u => u.Email == model.Email).Any())
+                ModelState.AddModelError("Email", "Det finns redan ett konto med den e-postadressen.");
 
             if (ModelState.IsValid)
             {
@@ -261,6 +263,7 @@ namespace Sjuklöner.Controllers
                 company.OrganisationNumber = model.CompanyOrganisationNumber;
                 company.StreetAddress = model.StreetAddress;
                 company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
+                company.CollectiveAgreementSpecName = model.CollectiveAgreementSpecName;
                 company.AccountNumber = model.AccountNumber;
                 company.CompanyName = model.CompanyName;
                 db.CareCompanies.Add(company);

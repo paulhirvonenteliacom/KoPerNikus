@@ -132,6 +132,9 @@ namespace Sjuklöner.Models
         [Display(Name = "Kollektivavtal")]
         public IEnumerable<System.Web.Mvc.SelectListItem> CollectiveAgreements { get; set; }
 
+        [Display(Name = "Kollektivavtalets branschbeteckning")]
+        public string CollectiveAgreementSpecName { get; set; }
+
         public string Type { get; set; }
     }
 
