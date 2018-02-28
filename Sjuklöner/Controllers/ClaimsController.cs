@@ -69,6 +69,14 @@ namespace Sjuklöner.Controllers
                 indexPageOmbudVM.UnderReviewClaims = underReviewClaims.ToList();
             }
 
+            //Check if at least two assistants have been defined for the company
+            var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).ToList();
+            indexPageOmbudVM.AssistantsExist = false;
+            if (assistants.Count() >= 2)
+            {
+                indexPageOmbudVM.AssistantsExist = true;
+            }
+
             return View("IndexPageOmbud", indexPageOmbudVM);
         }
 
@@ -693,8 +701,28 @@ namespace Sjuklöner.Controllers
             }
             else
             {
-                db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
-                newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                if (db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber != 0)
+                {
+                    newReferenceNumber = DateTime.Now.Year.ToString() + Convert.ToInt32(latestReference.LatestReferenceNumber + 1).ToString("D5");
+                    db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
+                    
+                }
+                //The code below avoids starting with ref number "YYYY00001" after updating the database if there are claims in the database
+                else
+                {
+                    var lastClaim = db.Claims.ToList().LastOrDefault();
+                    if (lastClaim != null)
+                    {
+                        newReferenceNumber = DateTime.Now.Year.ToString() + (Convert.ToInt32(lastClaim.ReferenceNumber.Substring(4)) + 1).ToString("D5");
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = Convert.ToInt32(newReferenceNumber.Substring(4));
+                    }
+                    else
+                    {
+                        newReferenceNumber = DateTime.Now.Year.ToString() + "00001";
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 1;
+
+                    }
+                }
             }
             return newReferenceNumber;
         }
@@ -827,9 +855,57 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
+            //Check that no day has more than 25 hours of work
+            bool moreThan25Hours = false;
+            int idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Antalet arbetstimmar inklusive jourtid är för högt.");
+                    moreThan25Hours = true;
+                }
+                idx++;
+            } while (!moreThan25Hours && idx < create2VM.ScheduleRowList.Count());
+            moreThan25Hours = false;
+            idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI) > 25)
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "Antalet arbetstimmar inklusive jourtid är för högt.");
+                    moreThan25Hours = true;
+                }
+                idx++;
+            } while (!moreThan25Hours && idx < create2VM.ScheduleRowList.Count());
+
+            //Check that there are not more unsocial hours than working hours for each day
+            bool tooManyUnsocialHours = false;
+            idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours))
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Antalet arbetstimmar får inte vara lägre än antalet OB-timmar.");
+                    tooManyUnsocialHours = true;
+                }
+                idx++;
+            } while (!tooManyUnsocialHours && idx < create2VM.ScheduleRowList.Count());
+            tooManyUnsocialHours = false;
+            idx = 0;
+            do
+            {
+                if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI))
+                {
+                    ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "Antalet arbetstimmar får inte vara lägre än antalet OB-timmar.");
+                    tooManyUnsocialHours = true;
+                }
+                idx++;
+            } while (!tooManyUnsocialHours && idx < create2VM.ScheduleRowList.Count());
+
             //Check that some working hours have been filled in for the regular and substitute assistants
             bool hoursFound = false;
-            int idx = 0;
+            idx = 0;
             do
             {
                 if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
@@ -851,7 +927,8 @@ namespace Sjuklöner.Controllers
                     hoursSIFound = true;
                 }
                 idx++;
-            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count()); if (!hoursSIFound)
+            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
+            if (!hoursSIFound)
             {
                 ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Minst ett fält måste fyllas i.");
             }
@@ -1459,7 +1536,15 @@ namespace Sjuklöner.Controllers
 
             if (claim.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
             {
-                //
+                List<ClaimDay> claimDays = new List<ClaimDay>();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+                //Calculate the model sum
+                if (claimDays.Count() > 0)
+                {
+                    CalculateModelSum(claim, claimDays);
+                }
+
                 var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
                 List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
                 for (int i = 0; i < claimCalculations.Count(); i++)
@@ -2030,8 +2115,11 @@ namespace Sjuklöner.Controllers
                 Claim claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
                 if (claim.CompletionStage > 1)
                 {
-                    //Come back to this and consider what should be done with other entities (ClaimDays,ClaimCalculations, CollectiveAgreementHeader and Info). Probably depending on the CompletionStage of the claim.
                     db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                }
+                if (claim.CompletionStage >= 4)
+                {
+                    db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
                 }
                 db.Claims.Remove(claim);
                 db.SaveChanges();

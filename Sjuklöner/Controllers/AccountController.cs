@@ -207,9 +207,9 @@ namespace Sjuklöner.Controllers
         {
             var db = new ApplicationDbContext();
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.CompanyOrganisationNumber).Any())
-                ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnummret.");
+                ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnumret.");
             if (UserManager.Users.Where(u => u.SSN == model.SSN).Any())
-                ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnummret");
+                ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnumret");
 
             if (ModelState.IsValid)
             {
@@ -264,6 +264,9 @@ namespace Sjuklöner.Controllers
                 company.AccountNumber = model.AccountNumber;
                 company.CompanyName = model.CompanyName;
                 db.CareCompanies.Add(company);
+                db.SaveChanges();
+                //Find the id of the just saved company
+                company = db.CareCompanies.OrderBy(c => c.Id).ToList().Last();
                 var user = new ApplicationUser
                 {
                     //UserName = $"{registerCollectResult.name} {registerCollectResult.surname}", For use with BankId

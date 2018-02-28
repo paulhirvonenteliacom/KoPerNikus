@@ -83,14 +83,14 @@ namespace Sjuklöner.Models
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -103,7 +103,7 @@ namespace Sjuklöner.Models
 
         [Required]
         [Display(Name = "Bolagets organisationsnummer")]
-        [RegularExpression(@"[0-9]{6}-[0-9]{4}$", ErrorMessage = "Formatet på organisationsnummret bör vara XXXXXX-XXXX där alla X är siffror.")]
+        [RegularExpression(@"[0-9]{6}-[0-9]{4}$", ErrorMessage = "Formatet på organisationsnummret ska vara XXXXXX-XXXX där alla X är siffror.")]
         public string CompanyOrganisationNumber { get; set; }
 
         [Required]
@@ -138,17 +138,18 @@ namespace Sjuklöner.Models
     public class NewAdmOffVM
     {
         [Required]
+        [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         //[Required]        
@@ -180,14 +181,14 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

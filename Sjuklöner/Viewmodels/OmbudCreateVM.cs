@@ -14,14 +14,15 @@ namespace Sjuklöner.Viewmodels
         public string CareCompanyName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -33,7 +34,7 @@ namespace Sjuklöner.Viewmodels
         public string LastName { get; set; }
 
         [Required]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-XXXX och YYYYMMDDXXXX är giltiga.")]
+        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
         [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 

@@ -284,8 +284,9 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Spara")
             {
-                if (db.Users.Where(u => u.Email == ombudEditVM.Email).Any())
-                    ModelState.AddModelError("Email", "Det finns redan en användare med den e-postadressen");
+                var possibleTwin = db.Users.Where(u => u.Email == ombudEditVM.Email).FirstOrDefault();
+                if (possibleTwin != null && possibleTwin.Id != ombudEditVM.Id)
+                    ModelState.AddModelError("Email", "Det finns redan en användare med den emailadressen");
                 if (ModelState.IsValid)
                 {
                     var editedOmbud = db.Users.Where(u => u.Id == ombudEditVM.Id).FirstOrDefault();

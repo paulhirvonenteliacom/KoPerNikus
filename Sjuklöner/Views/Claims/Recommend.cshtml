@@ -190,6 +190,14 @@
         var claimSumInt = 0;
         var claimSumDec = 0;
 
+        if (approvedSumString === "") {
+            approvedSumString = "0"
+        }
+
+        if (rejectedSumString === "") {
+            rejectedSumString = "0"
+        }
+
         if (pos === -1 || pos === claimSumString.length) {
             //No comma char in the string or if the comma is the last char
             claimSumInt = parseInt(claimSumString);
