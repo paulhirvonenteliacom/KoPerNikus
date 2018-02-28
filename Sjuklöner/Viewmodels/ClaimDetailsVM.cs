@@ -28,7 +28,7 @@ namespace Sjuklöner.Viewmodels
         public string CustomerName { get; set; }
 
         [Display(Name = "Personnummer:")]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
+        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-XXXX och YYYYMMDDXXXX är giltiga.")]
         public string CustomerSSN { get; set; }
 
         [Display(Name = "Adress:")]
@@ -71,7 +71,7 @@ namespace Sjuklöner.Viewmodels
         public string AssistantName { get; set; }
 
         [Display(Name = "Personnummer:")]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer")]
+        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-XXXX och YYYYMMDDXXXX är giltiga.")]
         public string AssistantSSN { get; set; }
 
         [Display(Name = "Karensdag, datum:")]
