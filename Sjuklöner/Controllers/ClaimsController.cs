@@ -114,9 +114,19 @@ namespace Sjuklöner.Controllers
             if (searchBy == "Referensnummer")
                 Claims = Claims.Where(c => c.ReferenceNumber.Contains(searchString));
             else if (searchBy == "CSSN")
-                Claims = Claims.Where(c => c.CustomerSSN.Contains(searchString));
+            {
+                searchString = searchString.Replace("-", "");
+                if (searchString.Length > 10)
+                    searchString = searchString.Substring(2);
+                Claims = Claims.Where(c => c.CustomerSSN.Replace("-", "").Contains(searchString));
+            }
             else if (searchBy == "ASSN")
-                Claims = Claims.Where(c => c.RegAssistantSSN.Contains(searchString));
+            {
+                searchString = searchString.Replace("-", "");
+                if (searchString.Length > 10)
+                    searchString = searchString.Substring(1);
+                Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
+            }
 
             return Claims;
         }
@@ -705,7 +715,7 @@ namespace Sjuklöner.Controllers
                 {
                     newReferenceNumber = DateTime.Now.Year.ToString() + Convert.ToInt32(latestReference.LatestReferenceNumber + 1).ToString("D5");
                     db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
-                    
+
                 }
                 //The code below avoids starting with ref number "YYYY00001" after updating the database if there are claims in the database
                 else
