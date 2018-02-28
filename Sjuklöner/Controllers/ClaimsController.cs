@@ -117,14 +117,14 @@ namespace Sjuklöner.Controllers
             {
                 searchString = searchString.Replace("-", "");
                 if (searchString.Length > 10)
-                    searchString.Substring(1);
+                    searchString = searchString.Substring(2);
                 Claims = Claims.Where(c => c.CustomerSSN.Replace("-", "").Contains(searchString));
             }
             else if (searchBy == "ASSN")
             {
                 searchString = searchString.Replace("-", "");
                 if (searchString.Length > 10)
-                    searchString.Substring(1);
+                    searchString = searchString.Substring(1);
                 Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
             }
 
