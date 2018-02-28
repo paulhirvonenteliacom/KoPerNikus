@@ -325,6 +325,8 @@ namespace Sjuklöner.Controllers
         public async Task<ActionResult> CreateOmbud(OmbudCreateVM vm)
         {
             //ModelState.Remove(nameof(OmbudCreateVM.Id));
+            if (UserManager.Users.Where(u => u.Email == vm.Email).Any())
+                ModelState.AddModelError("Email", "Det finns redan en användare med den e-postadressen");
             if (ModelState.IsValid)
             {
                 var currentUserId = User.Identity.GetUserId();
