@@ -70,7 +70,7 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$")]
+        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-XXXX och YYYYMMDDXXXX är giltiga.")]
         [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 
@@ -83,14 +83,14 @@ namespace Sjuklöner.Models
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Bekräfta lösenord")]
+        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -141,30 +141,34 @@ namespace Sjuklöner.Models
         public string SSN { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Bekräfta lösenord")]
+        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
         public string ConfirmPassword { get; set; }
 
         //[Required]        
         //public string ConfirmSSN { get; set; }
 
         [Required]
+        [Display(Name = "Förnamn")]
         public string FirstName { get; set; }
 
         [Required]
+        [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
         [Required]
         [EmailAddress]
+        [Display(Name = "E-post")]
         public string Email { get; set; }
 
         [Required]
+        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
         public string PhoneNumber { get; set; }
     }
 
@@ -176,13 +180,14 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et bör vara åtminstone {2} bokstäver långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
+        [Compare("Password", ErrorMessage = "Lösenordet och bekräftelsen matchade inte.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
