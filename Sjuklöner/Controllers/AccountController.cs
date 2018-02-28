@@ -150,7 +150,11 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
-            if (ModelState.IsValid && !UserManager.Users.Where(u => u.SSN == vm.SSN).Any()) //&& vm.SSN == vm.ConfirmSSN
+            if (UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
+                ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
+            if (UserManager.Users.Where(u => u.Email == vm.Email).Any())
+                ModelState.AddModelError("Email", "Det finns redan en användare med den e-postaddressen");
+            if (ModelState.IsValid) //&& vm.SSN == vm.ConfirmSSN
             {
                 var user = new ApplicationUser
                 {
@@ -164,9 +168,9 @@ namespace Sjuklöner.Controllers
                     SSN = vm.SSN
                 };
                 var result = await UserManager.CreateAsync(user, vm.Password);
-                UserManager.AddToRole(user.Id, "AdministrativeOfficial");
                 if (result.Succeeded)
                 {
+                    UserManager.AddToRole(user.Id, "AdministrativeOfficial");
                     return RedirectToAction("Index", "Claims");
                 }
                 AddErrors(result);
@@ -256,20 +260,19 @@ namespace Sjuklöner.Controllers
                         System.Threading.Thread.Sleep(1000);
                     } while (registerCollectResult.progressStatus != ProgressStatusType.COMPLETE);*/
 
-                CareCompany company = new CareCompany();
-                company.CompanyPhoneNumber = model.CompanyPhoneNumber;
-                company.Postcode = model.Postcode;
-                company.City = model.City;
-                company.OrganisationNumber = model.CompanyOrganisationNumber;
-                company.StreetAddress = model.StreetAddress;
-                company.SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId;
-                company.CollectiveAgreementSpecName = model.CollectiveAgreementSpecName;
-                company.AccountNumber = model.AccountNumber;
-                company.CompanyName = model.CompanyName;
+                CareCompany company = new CareCompany()
+                {
+                    CompanyPhoneNumber = model.CompanyPhoneNumber,
+                    Postcode = model.Postcode,
+                    City = model.City,
+                    OrganisationNumber = model.CompanyOrganisationNumber,
+                    StreetAddress = model.StreetAddress,
+                    SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId,
+                    CollectiveAgreementSpecName = model.CollectiveAgreementSpecName,
+                    AccountNumber = model.AccountNumber,
+                    CompanyName = model.CompanyName
+                };
                 db.CareCompanies.Add(company);
-                db.SaveChanges();
-                //Find the id of the just saved company
-                company = db.CareCompanies.OrderBy(c => c.Id).ToList().Last();
                 var user = new ApplicationUser
                 {
                     //UserName = $"{registerCollectResult.name} {registerCollectResult.surname}", For use with BankId
@@ -278,7 +281,6 @@ namespace Sjuklöner.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     PhoneNumber = model.OmbudPhoneNumber,
-                    CareCompanyId = company.Id,
                     LastLogon = DateTime.Now,
                     SSN = model.SSN
                 };
@@ -287,6 +289,7 @@ namespace Sjuklöner.Controllers
                 {
 
                     db.SaveChanges();
+                    user.CareCompanyId = company.Id;
                     UserManager.AddToRole(user.Id, "Ombud");
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
@@ -473,10 +476,12 @@ namespace Sjuklöner.Controllers
         [AllowAnonymous]
         public ActionResult BankIDWaitScreen(string SSN, string returnUrl, string Type)
         {
-            IDLoginVM VM = new IDLoginVM();
-            VM.ssn = SSN;
-            VM.type = Type;
-            VM.ReturnUrl = returnUrl;
+            IDLoginVM VM = new IDLoginVM
+            {
+                ssn = SSN,
+                type = Type,
+                ReturnUrl = returnUrl
+            };
 
             return View("BankIDWaitScreen", VM);
         }
@@ -588,7 +593,7 @@ namespace Sjuklöner.Controllers
             {
                 return View("Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider,  model.ReturnUrl,  model.RememberMe });
         }
 
         //
