@@ -434,8 +434,33 @@ li a {
     margin-left: 0;
 }
 
-.table-no-border {
+.table-no-border, table1 thead > tr > td, .table1 tbody > tr > td, .table1 tfoot > tr > td {
     border-top: none;
+    padding: 0 8px 2px 8px;
+    vertical-align: top;
+}
+
+.table-border-none {
+    border-top: none;
+    border-bottom: none;
+    border: none;
+}
+
+.table-row-height-30 {
+    height: 30px;
+}
+
+.table td.table-line-height-08 {
+    line-height: 0.8;
+    padding-top: 0;
+}
+
+.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+    vertical-align: middle;
+}
+
+.table1 thead > tr > td, .table1 tbody > tr > td, .table1 tfoot > tr > td {
+    vertical-align: top;
 }
 
 
@@ -634,10 +659,6 @@ li a {
 
 .btn-left-margin-22 {
     margin-left: 22px;
-}
-
-.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
-    vertical-align: middle;
 }
 
 #add-stand-in-btn {
@@ -890,7 +911,30 @@ special-left-margin {
 }
 
 .small-errormessage {
+    width: 94px;
+}
+
+.small-errormessage2 {
     width: 95px;
+    text-align: left;
+}
+
+.no-padding-left3 {
+    padding-left: -32px;
+    margin-left: -32px;
+    width: 92px;
+}
+
+.no-padding-left4 {
+    padding-left: 0;
+    margin-left: 0;
+    width: 220px;
+}
+
+.no-padding-left5 {
+    padding-left: 0;
+    margin-left: 0;
+    width: 92px;
 }
 
 .col-margin-left {
@@ -1208,6 +1252,10 @@ special-left-margin {
     padding-left: 0;
 }
 
+.col-no-margin-left {
+    margin-left: 0;
+}
+
 .col-no-left-padding {
     padding-left: 0;
 }
@@ -1414,6 +1462,7 @@ a:hover, a:focus {
 
 .no-padding-left2 {
     padding-left: 0;
+    text-align: left;
 }
 
 .small-padding-left {
