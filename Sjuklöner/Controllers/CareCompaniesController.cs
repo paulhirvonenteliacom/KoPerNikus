@@ -105,6 +105,8 @@ namespace Sjuklöner.Controllers
         public ActionResult Edit([Bind(Include = "CareCompanyId,CareCompany,SelectedCollectiveAgreementId,CollectiveAgreement")] CareCompanyEditVM careCompanyEditVM, string submitButton)
         {
             //ModelState.Remove(nameof(CareCompany.CollectiveAgreementSpecName));
+            careCompanyEditVM.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
+            List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
             if (ModelState.IsValid)
             {
                 if (submitButton == "Spara")
@@ -122,10 +124,24 @@ namespace Sjuklöner.Controllers
                     careCompany.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
                     db.Entry(careCompany).State = EntityState.Modified;
                     db.SaveChanges();
-                    return View(careCompanyEditVM);
+
+                    //collectiveAgreements = db.CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+                    //{
+                    //    Value = $"{c.Id}",
+                    //    Text = c.Name
+                    //});
+                    //careCompanyEditVM.CollectiveAgreement = new SelectList(collectiveAgreements, "Value", "Text");
+                    //return View(careCompanyEditVM);
                 }
                 return RedirectToAction("Index", "Claims");
             }
+
+            collectiveAgreements = db.CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+            {
+                Value = $"{c.Id}",
+                Text = c.Name
+            });
+            careCompanyEditVM.CollectiveAgreement = new SelectList(collectiveAgreements, "Value", "Text");
             return View();
         }
 

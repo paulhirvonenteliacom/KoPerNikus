@@ -32,6 +32,7 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
 
+        [Required]
         [Display(Name = "Timlön (Kr)")]
         [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
         public string HourlySalary { get; set; }
