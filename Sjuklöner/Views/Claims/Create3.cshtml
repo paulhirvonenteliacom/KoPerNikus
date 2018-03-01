@@ -73,7 +73,7 @@
                 @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
                 <div class="col-md-10 align-bottom3 display-large-font1" id="claimamount">
                     @Html.DisplayFor(model => Model.ClaimSum)
-                    @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })*@
+                    @Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
 
@@ -204,14 +204,19 @@
 
         claimSumInt = sickPayInt + holidayPayInt + socialFeesInt + pensionAndInsuranceInt + extraInt;
 
-        if (claimSumDec === 0) {
-            claimSum.innerHTML = claimSumInt.toString() + ",00";
-        }
-        else if (claimSumDec < 10) {
-            claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+        if (isNaN(claimSumInt) || claimSumInt == "" || claimSumInt == null || isNAN(claimSumDec) {
+            claimSum.innerHTML = "00,00";
         }
         else {
-            claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+            if (claimSumDec === 0) {
+                claimSum.innerHTML = claimSumInt.toString() + ",00";
+            }
+            else if (claimSumDec < 10) {
+                claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+            }
+            else {
+                claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+            }
         }
     }
 
