@@ -893,9 +893,10 @@ namespace Sjuklöner.Controllers
 
             }
             //Check that no day has more than 25 hours of work
+            int idx;
             if (ModelState.IsValid)
             {
-                int idx = 0;
+                idx = 0;
                 foreach (var row in create2VM.ScheduleRowList)
                 {
                     if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
