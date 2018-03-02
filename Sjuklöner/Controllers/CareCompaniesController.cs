@@ -376,9 +376,15 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Bekräfta")
             {
+                var myId = User.Identity.GetUserId();
+                var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
                 ApplicationUser applicationUser = db.Users.Find(id);
-                db.Users.Remove(applicationUser);
-                db.SaveChanges();
+                if(applicationUser != me && applicationUser.CareCompanyId == me.CareCompanyId)
+                {
+                    db.Users.Remove(applicationUser);
+                    db.SaveChanges();
+                }
+
             }
             return RedirectToAction("IndexOmbud");
         }
