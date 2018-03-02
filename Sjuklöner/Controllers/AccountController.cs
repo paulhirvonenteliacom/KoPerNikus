@@ -152,15 +152,22 @@ namespace Sjuklöner.Controllers
         {
             //Check that the SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            if (vm.SSN.Length == 12 && vm.SSN.Contains("-"))
+            if (vm.SSN.Length == 12 || vm.SSN.Length == 13)
             {
-                errorFound = true;
+                if (vm.SSN.Length == 12 && vm.SSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (vm.SSN.Length == 12 && !errorFound)
+                {
+                    vm.SSN = vm.SSN.Insert(8, "-");
+                }
+                if (vm.SSN.Length == 13 && vm.SSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
             }
-            if (vm.SSN.Length == 12 && !errorFound)
-            {
-                vm.SSN = vm.SSN.Insert(8, "-");
-            }
-            if (vm.SSN.Length == 13 && vm.SSN.Substring(8, 1) != "-")
+            else
             {
                 errorFound = true;
             }
@@ -230,15 +237,22 @@ namespace Sjuklöner.Controllers
         {
             //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            if (model.SSN.Length == 12 && model.SSN.Contains("-"))
+            if (model.SSN.Length == 12 || model.SSN.Length == 13)
             {
-                errorFound = true;
+                if (model.SSN.Length == 12 && model.SSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (model.SSN.Length == 12 && !errorFound)
+                {
+                    model.SSN = model.SSN.Insert(8, "-");
+                }
+                if (model.SSN.Length == 13 && model.SSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
             }
-            if (model.SSN.Length == 12 && !errorFound)
-            {
-                model.SSN = model.SSN.Insert(8, "-");
-            }
-            if (model.SSN.Length == 13 && model.SSN.Substring(8, 1) != "-")
+            else
             {
                 errorFound = true;
             }

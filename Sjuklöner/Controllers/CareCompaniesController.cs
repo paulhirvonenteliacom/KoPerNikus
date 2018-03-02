@@ -300,15 +300,22 @@ namespace Sjuklöner.Controllers
         {
             //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            if (ombudEditVM.SSN.Length == 12 && ombudEditVM.SSN.Contains("-"))
+            if (ombudEditVM.SSN.Length == 12 || ombudEditVM.SSN.Length == 13)
             {
-                errorFound = true;
+                if (ombudEditVM.SSN.Length == 12 && ombudEditVM.SSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (ombudEditVM.SSN.Length == 12 && !errorFound)
+                {
+                    ombudEditVM.SSN = ombudEditVM.SSN.Insert(8, "-");
+                }
+                if (ombudEditVM.SSN.Length == 13 && ombudEditVM.SSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
             }
-            if (ombudEditVM.SSN.Length == 12 && !errorFound)
-            {
-                ombudEditVM.SSN = ombudEditVM.SSN.Insert(8, "-");
-            }
-            if (ombudEditVM.SSN.Length == 13 && ombudEditVM.SSN.Substring(8, 1) != "-")
+            else
             {
                 errorFound = true;
             }

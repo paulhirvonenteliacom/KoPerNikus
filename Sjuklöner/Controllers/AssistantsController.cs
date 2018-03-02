@@ -70,15 +70,22 @@ namespace Sjuklöner.Controllers
 
             //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            if (assistantCreateVM.AssistantSSN.Length == 12 && assistantCreateVM.AssistantSSN.Contains("-"))
+            if (assistantCreateVM.AssistantSSN.Length == 12 || assistantCreateVM.AssistantSSN.Length == 13)
             {
-                errorFound = true;
+                if (assistantCreateVM.AssistantSSN.Length == 12 && assistantCreateVM.AssistantSSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (assistantCreateVM.AssistantSSN.Length == 12 && !errorFound)
+                {
+                    assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Insert(8, "-");
+                }
+                if (assistantCreateVM.AssistantSSN.Length == 13 && assistantCreateVM.AssistantSSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
             }
-            if (assistantCreateVM.AssistantSSN.Length == 12 && !errorFound)
-            {
-                assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Insert(8, "-");
-            }
-            if (assistantCreateVM.AssistantSSN.Length == 13 && assistantCreateVM.AssistantSSN.Substring(8, 1) != "-")
+            else
             {
                 errorFound = true;
             }
@@ -157,15 +164,22 @@ namespace Sjuklöner.Controllers
 
             //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            if (assistantEditVM.AssistantSSN.Length == 12 && assistantEditVM.AssistantSSN.Contains("-"))
+            if (assistantEditVM.AssistantSSN.Length == 12 || assistantEditVM.AssistantSSN.Length == 13)
             {
-                errorFound = true;
+                if (assistantEditVM.AssistantSSN.Length == 12 && assistantEditVM.AssistantSSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (assistantEditVM.AssistantSSN.Length == 12 && !errorFound)
+                {
+                    assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Insert(8, "-");
+                }
+                if (assistantEditVM.AssistantSSN.Length == 13 && assistantEditVM.AssistantSSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
             }
-            if (assistantEditVM.AssistantSSN.Length == 12 && !errorFound)
-            {
-                assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Insert(8, "-");
-            }
-            if (assistantEditVM.AssistantSSN.Length == 13 && assistantEditVM.AssistantSSN.Substring(8, 1) != "-")
+            else
             {
                 errorFound = true;
             }
