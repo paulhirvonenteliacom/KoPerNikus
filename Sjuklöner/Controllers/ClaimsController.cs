@@ -1479,7 +1479,7 @@ namespace Sjuklöner.Controllers
                 return false;
             if (linqQuery.Any() && file != null)
             {
-                System.IO.File.Delete(linqQuery.FirstOrDefault().Filename);
+                System.IO.File.Delete(linqQuery.FirstOrDefault().FilePath);
                 db.Documents.Remove(linqQuery.FirstOrDefault());
                 db.SaveChanges();
             }
@@ -1491,7 +1491,8 @@ namespace Sjuklöner.Controllers
         {
             var document = new Document();
             document.DateUploaded = DateTime.Now;
-            document.Filename = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
+            document.Filename = $"{title}_{Path.GetFileName(file.FileName)}";
+            document.FilePath = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
             //document.OwnerId = User.Identity.GetUserId();
