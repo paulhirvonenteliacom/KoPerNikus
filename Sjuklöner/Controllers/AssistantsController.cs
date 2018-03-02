@@ -70,6 +70,7 @@ namespace Sjuklöner.Controllers
 
             //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
+            assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Trim();
             if (assistantCreateVM.AssistantSSN.Length == 12 || assistantCreateVM.AssistantSSN.Length == 13)
             {
                 if (assistantCreateVM.AssistantSSN.Length == 12 && assistantCreateVM.AssistantSSN.Contains("-"))
@@ -164,6 +165,7 @@ namespace Sjuklöner.Controllers
 
             //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
+            assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Trim();
             if (assistantEditVM.AssistantSSN.Length == 12 || assistantEditVM.AssistantSSN.Length == 13)
             {
                 if (assistantEditVM.AssistantSSN.Length == 12 && assistantEditVM.AssistantSSN.Contains("-"))

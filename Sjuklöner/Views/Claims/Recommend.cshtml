@@ -198,7 +198,7 @@
             rejectedSumString = "0"
         }
 
-        if (pos === -1 || pos === claimSumString.length) {
+        if (pos === -1 || pos === claimSumString.length - 1) {
             //No comma char in the string or if the comma is the last char
             claimSumInt = parseInt(claimSumString);
         }
@@ -210,7 +210,7 @@
         if (id === 1) {
             //Find out where the decimal comma is
             var n = approvedSumString.search(",");
-            if (n === -1 || n === approvedSumString.length) {
+            if (n === -1 || n === approvedSumString.length - 1) {
                 //No comma char in the string or if the comma is the last char
                 approvedSumInt = parseInt(approvedSumString);
             }
@@ -219,32 +219,43 @@
                 approvedSumDec = parseInt(approvedSumString.substring(n + 1));
             }
 
-            if (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)) {
+            if (isNaN(approvedSumInt) || isNaN(approvedSumDec)) {
                 rejectedSum.value = "0,00";
             }
             else {
-                rejectedSumInt = claimSumInt - approvedSumInt;
-                rejectedSumDec = claimSumDec - approvedSumDec;
-                if (rejectedSumDec < 0) {
-                    rejectedSumInt = rejectedSumInt - 1;
-                    rejectedSumDec = 100 - approvedSumDec + claimSumDec;
-                }
-                if (rejectedSumInt < 0) {
+                if (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)) {
                     rejectedSum.value = "0,00";
                 }
                 else {
-                    if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
-                        rejectedSum.value = claimSumString;
+                    rejectedSumInt = claimSumInt - approvedSumInt;
+                    rejectedSumDec = claimSumDec - approvedSumDec;
+
+                    if (!isNaN(rejectedSumInt) && !isNaN(rejectedSumDec)) {
+                        if (rejectedSumDec < 0) {
+                            rejectedSumInt = rejectedSumInt - 1;
+                            rejectedSumDec = 100 - approvedSumDec + claimSumDec;
+                        }
+                        if (rejectedSumInt < 0) {
+                            rejectedSum.value = "0,00";
+                        }
+                        else {
+                            if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                                rejectedSum.value = claimSumString;
+                            }
+                            else {
+                            rejectedSum.value = rejectedSumInt.toString() + "," + rejectedSumDec.toString();
+                            }
+                        }
                     }
                     else {
-                        rejectedSum.value = rejectedSumInt.toString() + "," + rejectedSumDec.toString();
+                        approvedSum.value = "0,00";
                     }
                 }
             }
         }
 
         var p = approvedSumString.search(",");
-        if (p === -1 || p === approvedSumString.length) {
+        if (p === -1 || p === approvedSumString.length - 1) {
             //No comma char in the string or if the comma is the last char
             approvedSumInt = parseInt(approvedSumString);
         }
@@ -256,7 +267,7 @@
         if (id === 2) {
             //Find out where the decimal comma is
             var n = rejectedSumString.search(",");
-            if (n === -1 || n === rejectedSumString.length) {
+            if (n === -1 || n === rejectedSumString.length - 1) {
                 //No comma char in the string or if the comma is the last char
                 rejectedSumInt = parseInt(rejectedSumString);
             }
@@ -264,22 +275,27 @@
                 rejectedSumInt = parseInt(rejectedSumString.substring(0, n));
                 rejectedSumDec = parseInt(rejectedSumString.substring(n + 1));
             }
-            if (!(rejectedSum.value === "0,00" && (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)))) {
-                approvedSumInt = claimSumInt - rejectedSumInt;
-                approvedSumDec = claimSumDec - rejectedSumDec;
-                if (approvedSumDec < 0) {
-                    approvedSumInt = approvedSumInt - 1;
-                    approvedSumDec = 100 - rejectedSumDec + claimSumDec;
-                }
-                if (approvedSumInt < 0) {
-                    approvedSum.value = "0,00";
-                }
-                else {
-                    approvedSum.value = approvedSumInt.toString() + "," + approvedSumDec.toString();
-                }
+            if (isNaN(rejectedSumInt) || isNaN(rejectedSumDec)) {
+                approvedSum.value = "0,00";
             }
-            if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
-                rejectedSum.value = claimSumString;
+            else {
+                if (!(rejectedSum.value === "0,00" && (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)))) {
+                    approvedSumInt = claimSumInt - rejectedSumInt;
+                    approvedSumDec = claimSumDec - rejectedSumDec;
+                    if (approvedSumDec < 0) {
+                        approvedSumInt = approvedSumInt - 1;
+                        approvedSumDec = 100 - rejectedSumDec + claimSumDec;
+                    }
+                    if (approvedSumInt < 0) {
+                        approvedSum.value = "0,00";
+                    }
+                    else {
+                        approvedSum.value = approvedSumInt.toString() + "," + approvedSumDec.toString();
+                    }
+                }
+                if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                    rejectedSum.value = claimSumString;
+                }
             }
         }
     }
