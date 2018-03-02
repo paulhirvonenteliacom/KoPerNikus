@@ -150,6 +150,25 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
+            //Check that the SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            bool errorFound = false;
+            if (vm.SSN.Length == 12 && vm.SSN.Contains("-"))
+            {
+                errorFound = true;
+            }
+            if (vm.SSN.Length == 12 && !errorFound)
+            {
+                vm.SSN = vm.SSN.Insert(8, "-");
+            }
+            if (vm.SSN.Length == 13 && vm.SSN.Substring(8, 1) != "-")
+            {
+                errorFound = true;
+            }
+            if (errorFound)
+            {
+                ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+            }
+
             if (UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
                 ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
             if (UserManager.Users.Where(u => u.Email == vm.Email).Any())
@@ -209,6 +228,25 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            bool errorFound = false;
+            if (model.SSN.Length == 12 && model.SSN.Contains("-"))
+            {
+                errorFound = true;
+            }
+            if (model.SSN.Length == 12 && !errorFound)
+            {
+                model.SSN = model.SSN.Insert(8, "-");
+            }
+            if (model.SSN.Length == 13 && model.SSN.Substring(8, 1) != "-")
+            {
+                errorFound = true;
+            }
+            if (errorFound)
+            {
+                ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+            }
+
             var db = new ApplicationDbContext();
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.CompanyOrganisationNumber).Any())
                 ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnumret.");
