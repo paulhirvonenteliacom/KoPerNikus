@@ -105,6 +105,8 @@ namespace Sjuklöner.Controllers
         public ActionResult Edit([Bind(Include = "CareCompanyId,CareCompany,SelectedCollectiveAgreementId,CollectiveAgreement")] CareCompanyEditVM careCompanyEditVM, string submitButton)
         {
             //ModelState.Remove(nameof(CareCompany.CollectiveAgreementSpecName));
+            careCompanyEditVM.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
+            List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
             if (ModelState.IsValid)
             {
                 if (submitButton == "Spara")
@@ -122,10 +124,24 @@ namespace Sjuklöner.Controllers
                     careCompany.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
                     db.Entry(careCompany).State = EntityState.Modified;
                     db.SaveChanges();
-                    return View(careCompanyEditVM);
+
+                    //collectiveAgreements = db.CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+                    //{
+                    //    Value = $"{c.Id}",
+                    //    Text = c.Name
+                    //});
+                    //careCompanyEditVM.CollectiveAgreement = new SelectList(collectiveAgreements, "Value", "Text");
+                    //return View(careCompanyEditVM);
                 }
                 return RedirectToAction("Index", "Claims");
             }
+
+            collectiveAgreements = db.CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+            {
+                Value = $"{c.Id}",
+                Text = c.Name
+            });
+            careCompanyEditVM.CollectiveAgreement = new SelectList(collectiveAgreements, "Value", "Text");
             return View();
         }
 
@@ -282,6 +298,36 @@ namespace Sjuklöner.Controllers
         //public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudEditVM ombudEditVM, string submitButton)
         {
+            //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            bool errorFound = false;
+            if (!string.IsNullOrWhiteSpace(ombudEditVM.SSN))
+            {
+                ombudEditVM.SSN = ombudEditVM.SSN.Trim();
+            }
+            if (!string.IsNullOrWhiteSpace(ombudEditVM.SSN) && (ombudEditVM.SSN.Length == 12 || ombudEditVM.SSN.Length == 13))
+            {
+                if (ombudEditVM.SSN.Length == 12 && ombudEditVM.SSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (ombudEditVM.SSN.Length == 12 && !errorFound)
+                {
+                    ombudEditVM.SSN = ombudEditVM.SSN.Insert(8, "-");
+                }
+                if (ombudEditVM.SSN.Length == 13 && ombudEditVM.SSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+            if (errorFound)
+            {
+                ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+            }
+
             if (submitButton == "Spara")
             {
                 var possibleTwin = db.Users.Where(u => u.Email == ombudEditVM.Email).FirstOrDefault();
@@ -334,9 +380,15 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Bekräfta")
             {
+                var myId = User.Identity.GetUserId();
+                var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
                 ApplicationUser applicationUser = db.Users.Find(id);
-                db.Users.Remove(applicationUser);
-                db.SaveChanges();
+                if(applicationUser != me && applicationUser.CareCompanyId == me.CareCompanyId)
+                {
+                    db.Users.Remove(applicationUser);
+                    db.SaveChanges();
+                }
+
             }
             return RedirectToAction("IndexOmbud");
         }

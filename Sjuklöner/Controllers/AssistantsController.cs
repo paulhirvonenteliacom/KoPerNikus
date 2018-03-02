@@ -68,11 +68,44 @@ namespace Sjuklöner.Controllers
             var currentId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
-            var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
-            if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+            //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            bool errorFound = false;
+            if (!string.IsNullOrWhiteSpace(assistantCreateVM.AssistantSSN))
             {
-                ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Trim();
+            }
+            if (!string.IsNullOrWhiteSpace(assistantCreateVM.AssistantSSN) && (assistantCreateVM.AssistantSSN.Length == 12 || assistantCreateVM.AssistantSSN.Length == 13))
+            {
+                if (assistantCreateVM.AssistantSSN.Length == 12 && assistantCreateVM.AssistantSSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (assistantCreateVM.AssistantSSN.Length == 12 && !errorFound)
+                {
+                    assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Insert(8, "-");
+                }
+                if (assistantCreateVM.AssistantSSN.Length == 13 && assistantCreateVM.AssistantSSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+            if (errorFound)
+            {
+                ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+            }
+
+            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            if (!errorFound)
+            {
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
+                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                }
             }
 
             if (ModelState.IsValid)
@@ -133,14 +166,46 @@ namespace Sjuklöner.Controllers
             var currentId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            bool errorFound = false;
+            if (!string.IsNullOrWhiteSpace(assistantEditVM.AssistantSSN))
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).FirstOrDefault();
+                assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Trim();
+            }
+            if (!string.IsNullOrWhiteSpace(assistantEditVM.AssistantSSN) && (assistantEditVM.AssistantSSN.Length == 12 || assistantEditVM.AssistantSSN.Length == 13))
+            {
+                if (assistantEditVM.AssistantSSN.Length == 12 && assistantEditVM.AssistantSSN.Contains("-"))
+                {
+                    errorFound = true;
+                }
+                if (assistantEditVM.AssistantSSN.Length == 12 && !errorFound)
+                {
+                    assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Insert(8, "-");
+                }
+                if (assistantEditVM.AssistantSSN.Length == 13 && assistantEditVM.AssistantSSN.Substring(8, 1) != "-")
+                {
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+            if (errorFound)
+            {
+                ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+            }
+
+            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            if (!errorFound)
+            {
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).Where(a => a.Id != assistantEditVM.Id).FirstOrDefault();
                 if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
                 }
             }
+
             if (ModelState.IsValid)
             {
                 var assistant = db.Assistants.Where(a => a.Id == assistantEditVM.Id).FirstOrDefault();

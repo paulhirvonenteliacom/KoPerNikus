@@ -73,7 +73,7 @@
                 @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
                 <div class="col-md-10 align-bottom3 display-large-font1" id="claimamount">
                     @Html.DisplayFor(model => Model.ClaimSum)
-                    @*@Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })*@
+                    @Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
 
@@ -157,7 +157,7 @@
         var extraInt = 0;
 
         var pos = sickPay.search(",");
-        if (pos === -1 || pos === sickPay.length) {
+        if (pos === -1 || pos === sickPay.length - 1) {
             //No comma char in the string or if the comma is the last char
             sickPayInt = parseInt(sickPay);
         }
@@ -167,7 +167,7 @@
         }
 
         pos = holidayPay.search(",");
-        if (pos === -1 || pos === holidayPay.length) {
+        if (pos === -1 || pos === holidayPay.length - 1) {
             //No comma char in the string or if the comma is the last char
             holidayPayInt = parseInt(holidayPay);
         }
@@ -177,7 +177,7 @@
         }
 
         pos = socialFees.search(",");
-        if (pos === -1 || pos === socialFees.length) {
+        if (pos === -1 || pos === socialFees.length - 1) {
             //No comma char in the string or if the comma is the last char
             socialFeesInt = parseInt(socialFees);
         }
@@ -187,7 +187,7 @@
         }
 
         pos = pensionAndInsurance.search(",");
-        if (pos === -1 || pos === pensionAndInsurance.length) {
+        if (pos === -1 || pos === pensionAndInsurance.length - 1) {
             //No comma char in the string or if the comma is the last char
             pensionAndInsuranceInt = parseInt(pensionAndInsurance);
         }
@@ -197,21 +197,28 @@
         }
 
         claimSumDec = sickPayDec + holidayPayDec + socialFeesDec + pensionAndInsuranceDec;
-        if (claimSumDec > 99) {
-            extraInt = parseInt(claimSumDec.toString().substring(0, 1));
-            claimSumDec = parseInt(claimSumDec.toString().substring(1));
+        if (!isNaN(claimSumDec)) {
+            if (claimSumDec > 99) {
+                extraInt = parseInt(claimSumDec.toString().substring(0, 1));
+                claimSumDec = parseInt(claimSumDec.toString().substring(1));
+            }
         }
 
         claimSumInt = sickPayInt + holidayPayInt + socialFeesInt + pensionAndInsuranceInt + extraInt;
 
-        if (claimSumDec === 0) {
-            claimSum.innerHTML = claimSumInt.toString() + ",00";
-        }
-        else if (claimSumDec < 10) {
-            claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+        if (isNaN(claimSumInt) || isNaN(claimSumDec)) {
+            claimSum.innerHTML = "00,00";
         }
         else {
-            claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+            if (claimSumDec === 0) {
+                claimSum.innerHTML = claimSumInt.toString() + ",00";
+            }
+            else if (claimSumDec < 10) {
+                claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+            }
+            else {
+                claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+            }
         }
     }
 
