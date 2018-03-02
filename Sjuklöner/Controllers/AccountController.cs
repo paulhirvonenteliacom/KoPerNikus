@@ -152,8 +152,8 @@ namespace Sjuklöner.Controllers
         {
             //Check that the SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            vm.SSN = vm.SSN.Trim();
-            if (vm.SSN.Length == 12 || vm.SSN.Length == 13)
+            if (!string.IsNullOrWhiteSpace(vm.SSN)) = vm.SSN.Trim();
+            if (!string.IsNullOrWhiteSpace(vm.SSN) && (vm.SSN.Length == 12 || vm.SSN.Length == 13))
             {
                 if (vm.SSN.Length == 12 && vm.SSN.Contains("-"))
                 {
@@ -238,8 +238,8 @@ namespace Sjuklöner.Controllers
         {
             //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
-            model.SSN = model.SSN.Trim();
-            if (model.SSN.Length == 12 || model.SSN.Length == 13)
+            if (!string.IsNullOrWhiteSpace(model.SSN)) = vm.SSN.Trim();
+            if (!string.IsNullOrWhiteSpace(model.SSN) && (model.SSN.Length == 12 || model.SSN.Length == 13))
             {
                 if (model.SSN.Length == 12 && model.SSN.Contains("-"))
                 {

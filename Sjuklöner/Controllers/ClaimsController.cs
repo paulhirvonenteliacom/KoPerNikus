@@ -269,7 +269,7 @@ namespace Sjuklöner.Controllers
             //Check that the customer SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
             create1VM.CustomerSSN = create1VM.CustomerSSN.Trim();
-            if (create1VM.CustomerSSN.Length == 12 || create1VM.CustomerSSN.Length == 13)
+            if (!string.IsNullOrWhiteSpace(create1VM.CustomerSSN) && create1VM.CustomerSSN.Length == 12 || create1VM.CustomerSSN.Length == 13)
             {
                 if (create1VM.CustomerSSN.Length == 12 && create1VM.CustomerSSN.Contains("-"))
                 {

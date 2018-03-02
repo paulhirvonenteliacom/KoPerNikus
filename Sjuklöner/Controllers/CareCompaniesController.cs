@@ -301,7 +301,7 @@ namespace Sjuklöner.Controllers
             //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
             ombudEditVM.SSN = ombudEditVM.SSN.Trim();
-            if (ombudEditVM.SSN.Length == 12 || ombudEditVM.SSN.Length == 13)
+            if (!string.IsNullOrWhiteSpace(ombudEditVM.SSN) && (ombudEditVM.SSN.Length == 12 || ombudEditVM.SSN.Length == 13))
             {
                 if (ombudEditVM.SSN.Length == 12 && ombudEditVM.SSN.Contains("-"))
                 {
@@ -377,9 +377,15 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Bekräfta")
             {
+                var myId = User.Identity.GetUserId();
+                var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
                 ApplicationUser applicationUser = db.Users.Find(id);
-                db.Users.Remove(applicationUser);
-                db.SaveChanges();
+                if(applicationUser != me && applicationUser.CareCompanyId == me.CareCompanyId)
+                {
+                    db.Users.Remove(applicationUser);
+                    db.SaveChanges();
+                }
+
             }
             return RedirectToAction("IndexOmbud");
         }
