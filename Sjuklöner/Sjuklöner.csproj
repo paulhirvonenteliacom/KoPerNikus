@@ -214,6 +214,10 @@
     <Compile Include="Migrations\201803020830530_unifiedSSNFormat.Designer.cs">
       <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.cs" />
+    <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.Designer.cs">
+      <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -434,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803020830530_unifiedSSNFormat.resx">
       <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803031650429_addReferenceNumberToDocument.resx">
+      <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

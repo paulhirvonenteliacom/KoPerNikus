@@ -52,6 +52,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
             int companyId = (int)me.CareCompanyId;
+            indexPageOmbudVM.CompanyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
 
             var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.StatusDate).ToList();
             if (claims.Count > 0)
@@ -266,24 +267,16 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create1(Create1VM create1VM, string refNumber, string submitButton)
         {
-            //Check that the customer SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
+            //Check that the SSN has the correct format
             if (!string.IsNullOrWhiteSpace(create1VM.CustomerSSN))
             {
                 create1VM.CustomerSSN = create1VM.CustomerSSN.Trim();
-            }
-            if (!string.IsNullOrWhiteSpace(create1VM.CustomerSSN) && create1VM.CustomerSSN.Length == 12 || create1VM.CustomerSSN.Length == 13)
-            {
-                if (create1VM.CustomerSSN.Length == 12 && create1VM.CustomerSSN.Contains("-"))
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?([a-zåäö]|[0-9]){4}$");
+                Match match = regex.Match(create1VM.CustomerSSN);
+                if (!match.Success)
                 {
-                    errorFound = true;
-                }
-                if (create1VM.CustomerSSN.Length == 12 && !errorFound)
-                {
-                    create1VM.CustomerSSN = create1VM.CustomerSSN.Insert(8, "-");
-                }
-                if (create1VM.CustomerSSN.Length == 13 && create1VM.CustomerSSN.Substring(8, 1) != "-")
-                {
+                    ModelState.AddModelError("CustomerSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
                     errorFound = true;
                 }
             }
@@ -291,10 +284,36 @@ namespace Sjuklöner.Controllers
             {
                 errorFound = true;
             }
-            if (errorFound)
+
+            //Check that the customer is born in the 20th or 21st century
+            if (!errorFound)
             {
-                ModelState.AddModelError("CustomerSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                if (int.Parse(create1VM.CustomerSSN.Substring(0, 2)) != 19 && int.Parse(create1VM.CustomerSSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("CustomerSSN", "Kunden måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
             }
+
+            //Check that the customer was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime assistantBirthday = new DateTime(int.Parse(create1VM.CustomerSSN.Substring(0, 4)), int.Parse(create1VM.CustomerSSN.Substring(4, 2)), int.Parse(create1VM.CustomerSSN.Substring(6, 2)));
+                if (assistantBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("CustomerSSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (create1VM.CustomerSSN.Length == 12)
+                {
+                    create1VM.CustomerSSN = create1VM.CustomerSSN.Insert(8, "-");
+                }
+            }
+
             //Check if the sickleave period is in the future.
             if (create1VM.FirstDayOfSicknessDate.Date >= DateTime.Now.Date)
             {
@@ -1404,22 +1423,22 @@ namespace Sjuklöner.Controllers
                 var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
                 if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
-                    ModelState.AddModelError("", "Lönespecifikation för ordinarie assistent behövs");
+                    ModelState.AddModelError("SalaryAttachment", "Lönespecifikation för ordinarie assistent saknas");
 
                 if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
-                    ModelState.AddModelError("", "Lönespecifikation för vikarierande assistent behövs");
+                    ModelState.AddModelError("SalaryAttachmentStandIn", "Lönespecifikation för vikarierande assistent saknas");
 
                 if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
-                    ModelState.AddModelError("", "Sjukfrånvaroanmälan behövs");
+                    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas");
 
                 if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
-                    ModelState.AddModelError("", "Läkarintyg behövs");
+                    ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas");
 
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
-                    ModelState.AddModelError("", "Tidsrapportering för ordinarie assistent behövs");
+                    ModelState.AddModelError("TimeReport", "Tidsrapportering, Försäkringskassan för ordinarie assistent saknas");
 
                 if (!CheckExistingDocument(claim, "TimeReportStandIn", model.TimeReportStandIn))
-                    ModelState.AddModelError("", "Tidsrapportering för vikarierande assistent behövs");
+                    ModelState.AddModelError("TimeReportStandIn", "Tidsrapportering, Försäkringskassan för vikarierande assistent saknas");
 
                 if (ModelState.IsValid)
                 {
@@ -1449,17 +1468,20 @@ namespace Sjuklöner.Controllers
                         {
                             claim.CompletionStage = 4;
                         }
+
                         if (submitButton == "Skicka in")
                         {
                             claim.ClaimStatusId = 5;
                             claim.StatusDate = DateTime.Now;
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
-
                             return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
                         }
                         else
                         {
+                            claim.StatusDate = DateTime.Now;
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
                             return View("Create4", model);
                         }
                     }
@@ -1500,6 +1522,7 @@ namespace Sjuklöner.Controllers
             document.FileType = file.ContentType;
             //document.OwnerId = User.Identity.GetUserId();
             document.Title = title;
+            document.ReferenceNumber = claim.ReferenceNumber;
             db.Documents.Add(document);
             claim.Documents.Add(document);
             db.SaveChanges();
@@ -2342,6 +2365,10 @@ namespace Sjuklöner.Controllers
                 if (claim.CompletionStage >= 4)
                 {
                     db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                    if (claim.Documents.Count() > 0)
+                    {
+                        db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == refNumber));
+                    }
                 }
                 db.Claims.Remove(claim);
                 db.SaveChanges();

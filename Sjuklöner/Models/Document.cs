@@ -16,6 +16,8 @@ namespace Sjuklöner.Models
 
         public int? PurposeId { get; set; }
 
+        public string ReferenceNumber { get; set; }
+
         //public string OwnerId { get; set; }
 
         [Required]

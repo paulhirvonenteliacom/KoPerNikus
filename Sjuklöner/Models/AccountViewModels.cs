@@ -70,7 +70,7 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
+        [RegularExpression(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
         [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 
@@ -142,6 +142,7 @@ namespace Sjuklöner.Models
     {
         [Required]
         [Display(Name = "Personnummer")]
+        //[RegularExpression(@"^((19|20)[0-9]{2})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
         public string SSN { get; set; }
 
         [Required]
@@ -150,6 +151,7 @@ namespace Sjuklöner.Models
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
         [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
@@ -189,6 +191,7 @@ namespace Sjuklöner.Models
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
         [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]

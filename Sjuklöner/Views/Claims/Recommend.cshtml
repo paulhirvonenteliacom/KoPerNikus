@@ -36,7 +36,8 @@
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="form-group col line-height-06">
+            @*The div below will be needed for the real solution when Robin will do a sanity check of the attached documents.*@
+            @*<div class="form-group col line-height-06">
                 @Html.LabelFor(model => model.CompleteCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
                 @if (!Model.CompleteCheck)
                 {
@@ -50,7 +51,7 @@
                         <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.CompleteCheckMsg)
                     </div>
                 }
-            </div>
+            </div>*@
             <div class="form-group col line-height-06">
                 @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
                 @if (!Model.IvoCheck)
