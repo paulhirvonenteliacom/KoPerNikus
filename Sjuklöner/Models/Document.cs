@@ -24,6 +24,8 @@ namespace Sjuklöner.Models
         [Display(Name = "Filnamn")]
         public string Filename { get; set; }
 
+        public string FilePath { get; set; }
+
         public int FileSize { get; set; }
 
         public string Title { get; set; }

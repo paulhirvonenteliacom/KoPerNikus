@@ -214,7 +214,11 @@
     <Compile Include="Migrations\201803020830530_unifiedSSNFormat.Designer.cs">
       <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.cs" />
+    <Compile Include="Migrations\201803021701263_FilePath-FileNameDocuments.cs" />
+    <Compile Include="Migrations\201803021701263_FilePath-FileNameDocuments.Designer.cs">
+      <DependentUpon>201803021701263_FilePath-FileNameDocuments.cs</DependentUpon>
+    </Compile>
+	<Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.cs" />
     <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.Designer.cs">
       <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
     </Compile>
@@ -316,6 +320,7 @@
     <None Include="Connected Services\BankIDService\v4.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -438,6 +443,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803020830530_unifiedSSNFormat.resx">
       <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803021701263_FilePath-FileNameDocuments.resx">
+      <DependentUpon>201803021701263_FilePath-FileNameDocuments.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803031650429_addReferenceNumberToDocument.resx">
       <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
