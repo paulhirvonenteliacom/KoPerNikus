@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Sjuklöner.Models;
 using Microsoft.AspNet.Identity;
 using Sjuklöner.Viewmodels;
+using System.Text.RegularExpressions;
 
 namespace Sjuklöner.Controllers
 {
@@ -68,24 +69,16 @@ namespace Sjuklöner.Controllers
             var currentId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
+            //Check that the SSN has the correct format
             if (!string.IsNullOrWhiteSpace(assistantCreateVM.AssistantSSN))
             {
                 assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Trim();
-            }
-            if (!string.IsNullOrWhiteSpace(assistantCreateVM.AssistantSSN) && (assistantCreateVM.AssistantSSN.Length == 12 || assistantCreateVM.AssistantSSN.Length == 13))
-            {
-                if (assistantCreateVM.AssistantSSN.Length == 12 && assistantCreateVM.AssistantSSN.Contains("-"))
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(assistantCreateVM.AssistantSSN);
+                if (!match.Success)
                 {
-                    errorFound = true;
-                }
-                if (assistantCreateVM.AssistantSSN.Length == 12 && !errorFound)
-                {
-                    assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Insert(8, "-");
-                }
-                if (assistantCreateVM.AssistantSSN.Length == 13 && assistantCreateVM.AssistantSSN.Substring(8, 1) != "-")
-                {
+                    ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
                     errorFound = true;
                 }
             }
@@ -93,9 +86,31 @@ namespace Sjuklöner.Controllers
             {
                 errorFound = true;
             }
-            if (errorFound)
+
+            //Check that the assistant is born in the 20th or 21st century
+            if (!errorFound)
             {
-                ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                if (int.Parse(assistantCreateVM.AssistantSSN.Substring(0, 2)) != 19 && int.Parse(assistantCreateVM.AssistantSSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the assistant is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime assistantBirthday = new DateTime(int.Parse(assistantCreateVM.AssistantSSN.Substring(0, 4)), int.Parse(assistantCreateVM.AssistantSSN.Substring(4, 2)), int.Parse(assistantCreateVM.AssistantSSN.Substring(6, 2)));
+                if (assistantBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (assistantBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara minst 18 år.");
+                    errorFound = true;
+                }
             }
 
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
@@ -105,6 +120,15 @@ namespace Sjuklöner.Controllers
                 if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (assistantCreateVM.AssistantSSN.Length == 12)
+                {
+                    assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Insert(8, "-");
                 }
             }
 
@@ -166,24 +190,16 @@ namespace Sjuklöner.Controllers
             var currentId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            //Check that the assistant SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
             bool errorFound = false;
+            //Check that the SSN has the correct format
             if (!string.IsNullOrWhiteSpace(assistantEditVM.AssistantSSN))
             {
                 assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Trim();
-            }
-            if (!string.IsNullOrWhiteSpace(assistantEditVM.AssistantSSN) && (assistantEditVM.AssistantSSN.Length == 12 || assistantEditVM.AssistantSSN.Length == 13))
-            {
-                if (assistantEditVM.AssistantSSN.Length == 12 && assistantEditVM.AssistantSSN.Contains("-"))
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(assistantEditVM.AssistantSSN);
+                if (!match.Success)
                 {
-                    errorFound = true;
-                }
-                if (assistantEditVM.AssistantSSN.Length == 12 && !errorFound)
-                {
-                    assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Insert(8, "-");
-                }
-                if (assistantEditVM.AssistantSSN.Length == 13 && assistantEditVM.AssistantSSN.Substring(8, 1) != "-")
-                {
+                    ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
                     errorFound = true;
                 }
             }
@@ -191,9 +207,31 @@ namespace Sjuklöner.Controllers
             {
                 errorFound = true;
             }
-            if (errorFound)
+
+            //Check that the assistant is born in the 20th or 21st century
+            if (!errorFound)
             {
-                ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                if (int.Parse(assistantEditVM.AssistantSSN.Substring(0, 2)) != 19 && int.Parse(assistantEditVM.AssistantSSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the assistant is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime assistantBirthday = new DateTime(int.Parse(assistantEditVM.AssistantSSN.Substring(0, 4)), int.Parse(assistantEditVM.AssistantSSN.Substring(4, 2)), int.Parse(assistantEditVM.AssistantSSN.Substring(6, 2)));
+                if (assistantBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (assistantBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara minst 18 år.");
+                    errorFound = true;
+                }
             }
 
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
@@ -203,6 +241,15 @@ namespace Sjuklöner.Controllers
                 if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (assistantEditVM.AssistantSSN.Length == 12)
+                {
+                    assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Insert(8, "-");
                 }
             }
 

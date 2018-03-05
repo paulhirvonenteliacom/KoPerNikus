@@ -16,11 +16,13 @@ namespace Sjuklöner.Models
 
         public int? PurposeId { get; set; }
 
-        //public string OwnerId { get; set; }
+        public string ReferenceNumber { get; set; }
 
         [Required]
         [Display(Name = "Filnamn")]
         public string Filename { get; set; }
+
+        public string FilePath { get; set; }
 
         public int FileSize { get; set; }
 

@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Amount";
 }
-@section RobinRevealed
+@*@section RobinRevealed
     {
     <script>
         window.onload = function (){
@@ -15,7 +15,7 @@
             overflow:hidden;
         }
     </style>   
-}
+}*@
 
 
 @*<div class="row margin-breadcrumb">
@@ -44,9 +44,8 @@
 
     <div class="row">
         <div class="col">
-            @*<p class="second-page-header-no-padding-left">Tack för din ansökan!</p>*@
-            <p class="left-margin-18">Handläggningstiden är normalt tre arbetsdagar. Vid godkännande sker utbetalning till angivet konto en eller två bankdagar efter beslut.
-            <br class="left-margin-18"/>Vid avslag har du möjlighet att överklaga och skicka in en uppdaterad ansökan inom tre veckor efter beslut.</p>
+            <p class="left-margin-18">Handläggningstiden är normalt tre arbetsdagar. Utbetalning av godkänt belopp görs till angivet konto en eller två bankdagar efter beslut.
+            <br class="left-margin-18"/>Vid avslag har du möjlighet att överklaga senast inom tre veckor efter beslut.</p>
             <p></p>
             <p class="bold-14 left-margin-18">Referensnummer: @Model.ClaimNumber</p>
             <p class="bold-14 left-margin-18">Yrkat belopp (kr): @Model.ClaimSum</p>
