@@ -1420,10 +1420,10 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Skicka in" || submitButton == "Spara")
             {
-                if (!Directory.Exists(Server.MapPath("~/Uploads")))
-                    Directory.CreateDirectory(Server.MapPath("~/Uploads"));
-                if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
-                    Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
+                if (!Directory.Exists(Server.MapPath("~/sjukloner/Uploads")))
+                    Directory.CreateDirectory(Server.MapPath("~/sjukloner/Uploads"));
+                if (!Directory.Exists(Server.MapPath($"~/sjukloner/Uploads/{model.ClaimNumber}")))
+                    Directory.CreateDirectory(Server.MapPath($"~/sjukloner/Uploads/{model.ClaimNumber}"));
 
                 var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
@@ -1449,7 +1449,7 @@ namespace Sjuklöner.Controllers
                 {
                     try
                     {
-                        string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
+                        string path = Server.MapPath($"~/sjukloner/Uploads/{model.ClaimNumber}");
 
                         if (model.SalaryAttachment != null)
                             NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
