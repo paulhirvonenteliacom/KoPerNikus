@@ -214,10 +214,6 @@
     <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.Designer.cs">
       <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201803050949559_test.cs" />
-    <Compile Include="Migrations\201803050949559_test.Designer.cs">
-      <DependentUpon>201803050949559_test.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201803051001510_filepath.cs" />
     <Compile Include="Migrations\201803051001510_filepath.Designer.cs">
       <DependentUpon>201803051001510_filepath.cs</DependentUpon>
@@ -321,6 +317,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -443,9 +440,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803031650429_addReferenceNumberToDocument.resx">
       <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201803050949559_test.resx">
-      <DependentUpon>201803050949559_test.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803051001510_filepath.resx">
       <DependentUpon>201803051001510_filepath.cs</DependentUpon>
