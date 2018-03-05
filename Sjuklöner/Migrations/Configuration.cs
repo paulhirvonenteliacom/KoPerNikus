@@ -73,8 +73,8 @@ namespace Sjuklöner.Migrations
 
             var ombuds = new List<Ombud>
             {
-                new Ombud{FirstName = "Ombud",LastName = "Ombudsson",Email = "ombud.ombudsson@assistans.se",UserName = "ombud.ombudsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 1, SSN = "197503266251", PhoneNumber = "034-453 7685"},
-                new Ombud{FirstName = "Olle",LastName = "Nilsson",Email = "olle.nilsson@assistans.se",UserName = "olle.nilsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 2, PhoneNumber = "032-987 1290"}
+                new Ombud{FirstName = "Ombud",LastName = "Ombudsson",Email = "ombud.ombudsson@assistans.se",UserName = "ombud.ombudsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 1, SSN = "19750326-6251", PhoneNumber = "034-453 7685"},
+                new Ombud{FirstName = "Olle",LastName = "Nilsson",Email = "olle.nilsson@assistans.se",UserName = "olle.nilsson@assistans.se", LastLogon=DateTime.Now.AddDays(-2), CareCompanyId = 2, SSN = "19850326-3351", PhoneNumber = "032-987 1290"}
             };
 
             foreach (var ombud in ombuds)
@@ -94,7 +94,7 @@ namespace Sjuklöner.Migrations
 
             var administrativeOfficials = new List<AdministrativeOfficial>
             {
-                new AdministrativeOfficial{FirstName = "Henrik",LastName = "Signell",Email = "henrik.signell@helsingborg.se",UserName = "henrik.signell@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "196705078134"}
+                new AdministrativeOfficial{FirstName = "Henrik",LastName = "Signell",Email = "henrik.signell@helsingborg.se",UserName = "henrik.signell@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "19670507-8134"}
             };
 
             foreach (var administrativeOfficial in administrativeOfficials)

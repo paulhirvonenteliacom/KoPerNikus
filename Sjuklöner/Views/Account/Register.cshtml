@@ -16,7 +16,7 @@
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary("", new { @class = "text-danger font-size-11" })
+    @*@Html.ValidationSummary("", new { @class = "text-danger font-size-11" })*@
     <div class="row row-padding2">
         <div class="col col-md-offset-2 col-md-6 bold-24">Ombudsuppgifter</div>
         <div class="col col-md-4 bold-24">Bolagsuppgifter</div>
@@ -26,14 +26,14 @@
             @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -43,14 +43,14 @@
             @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.CompanyOrganisationNumber, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.CompanyOrganisationNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.CompanyOrganisationNumber, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.CompanyOrganisationNumber, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -60,14 +60,14 @@
             @Html.LabelFor(model => model.SSN, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.SSN, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.SSN, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.SSN, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.CompanyPhoneNumber, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.CompanyPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.CompanyPhoneNumber, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.CompanyPhoneNumber, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -77,14 +77,14 @@
             @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.StreetAddress, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.StreetAddress, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.StreetAddress, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.StreetAddress, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -94,14 +94,14 @@
             @Html.LabelFor(model => model.OmbudPhoneNumber, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.OmbudPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.OmbudPhoneNumber, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.OmbudPhoneNumber, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.Postcode, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.Postcode, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.Postcode, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.Postcode, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -111,14 +111,14 @@
             @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -128,14 +128,14 @@
             @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.PasswordFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div>
             @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label col col-md-2 display-right-align3" })
             <div class="col col-md-4">
                 @Html.EditorFor(model => model.AccountNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @*@Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger font-size-11" })*@
+                @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>

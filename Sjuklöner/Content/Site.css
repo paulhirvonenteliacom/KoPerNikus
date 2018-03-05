@@ -881,6 +881,14 @@ special-left-margin {
     font-size: 24px;
 }
 
+.row-height-26 {
+    height: 26px;
+}
+
+.row-height-14 {
+    height: 14px;
+}
+
 .row-height-42 {
     height: 42px;
     font-size: 24px;
@@ -1027,6 +1035,12 @@ special-left-margin {
 
 .row-padding2 {
     padding: 5px 0 5px 0;
+}
+
+.wide-input {
+    max-width: 750px;
+    width: 750px;
+    text-align: left;
 }
 
 .height-24 {
@@ -1397,6 +1411,14 @@ a:hover, a:focus {
 
 .small-col-ombud {
     width: 10%;
+}
+
+.ssmall-col-ombud {
+    width: 8%;
+}
+
+.xsmall-col-ombud {
+    width: 5%;
 }
 
 .medium-col {

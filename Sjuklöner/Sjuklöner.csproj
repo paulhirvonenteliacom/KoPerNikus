@@ -232,9 +232,13 @@
     <Compile Include="Migrations\201802270931327_init.Designer.cs">
       <DependentUpon>201802270931327_init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201803020830530_unifiedSSNFormat.cs" />
-    <Compile Include="Migrations\201803020830530_unifiedSSNFormat.Designer.cs">
-      <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
+    <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.cs" />
+    <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.Designer.cs">
+      <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803051001510_filepath.cs" />
+    <Compile Include="Migrations\201803051001510_filepath.Designer.cs">
+      <DependentUpon>201803051001510_filepath.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -335,6 +339,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -455,13 +460,25 @@
     <EmbeddedResource Include="Migrations\201802270931327_init.resx">
       <DependentUpon>201802270931327_init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201803020830530_unifiedSSNFormat.resx">
-      <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201803031650429_addReferenceNumberToDocument.resx">
+      <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803051001510_filepath.resx">
+      <DependentUpon>201803051001510_filepath.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

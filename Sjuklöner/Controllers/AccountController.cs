@@ -12,6 +12,7 @@ using Sjuklöner.Models;
 using Sjuklöner.BankIDService;
 using System.Collections.Generic;
 using Sjuklöner.Viewmodels;
+using System.Text.RegularExpressions;
 
 namespace Sjuklöner.Controllers
 {
@@ -150,24 +151,19 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
-            //Check that the SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = UserManager.Users.Where(u => u.Id == currentId).FirstOrDefault();
+
             bool errorFound = false;
+            //Check that the SSN has the correct format
             if (!string.IsNullOrWhiteSpace(vm.SSN))
             {
-                vm.SSN  = vm.SSN.Trim();
-            }
-            if (!string.IsNullOrWhiteSpace(vm.SSN) && (vm.SSN.Length == 12 || vm.SSN.Length == 13))
-            {
-                if (vm.SSN.Length == 12 && vm.SSN.Contains("-"))
+                vm.SSN = vm.SSN.Trim();
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(vm.SSN);
+                if (!match.Success)
                 {
-                    errorFound = true;
-                }
-                if (vm.SSN.Length == 12 && !errorFound)
-                {
-                    vm.SSN = vm.SSN.Insert(8, "-");
-                }
-                if (vm.SSN.Length == 13 && vm.SSN.Substring(8, 1) != "-")
-                {
+                    ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
                     errorFound = true;
                 }
             }
@@ -175,13 +171,51 @@ namespace Sjuklöner.Controllers
             {
                 errorFound = true;
             }
-            if (errorFound)
+
+            //Check that the administrative official is born in the 20th or 21st century
+            if (!errorFound)
             {
-                ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                if (int.Parse(vm.SSN.Substring(0, 2)) != 19 && int.Parse(vm.SSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("SSN", "Handläggaren måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
             }
 
-            if (UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
-                ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
+            //Check that the administrative official is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime admOffBirthday = new DateTime(int.Parse(vm.SSN.Substring(0, 4)), int.Parse(vm.SSN.Substring(4, 2)), int.Parse(vm.SSN.Substring(6, 2)));
+                if (admOffBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("SSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (admOffBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("SSN", "Handläggaren måste vara minst 18 år.");
+                    errorFound = true;
+                }
+            }
+
+            //Check if there is an administrative official with the same SSN already.
+            if (!errorFound)
+            {
+                if (UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
+                { 
+                    ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (vm.SSN.Length == 12)
+                {
+                    vm.SSN = vm.SSN.Insert(8, "-");
+                }
+            }
+
             if (UserManager.Users.Where(u => u.Email == vm.Email).Any())
                 ModelState.AddModelError("Email", "Det finns redan en användare med den e-postaddressen");
             if (ModelState.IsValid) //&& vm.SSN == vm.ConfirmSSN
@@ -239,24 +273,19 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            //Check that the ombud SSN is 12 or 13 characters. If it is 13 then the 9th shall be a "-". t will always be saved as 13 characters where the 9th is a "-".
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = UserManager.Users.Where(u => u.Id == currentId).FirstOrDefault();
+
             bool errorFound = false;
+            //Check that the SSN has the correct format
             if (!string.IsNullOrWhiteSpace(model.SSN))
             {
                 model.SSN = model.SSN.Trim();
-            }
-            if (!string.IsNullOrWhiteSpace(model.SSN) && (model.SSN.Length == 12 || model.SSN.Length == 13))
-            {
-                if (model.SSN.Length == 12 && model.SSN.Contains("-"))
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(model.SSN);
+                if (!match.Success)
                 {
-                    errorFound = true;
-                }
-                if (model.SSN.Length == 12 && !errorFound)
-                {
-                    model.SSN = model.SSN.Insert(8, "-");
-                }
-                if (model.SSN.Length == 13 && model.SSN.Substring(8, 1) != "-")
-                {
+                    ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
                     errorFound = true;
                 }
             }
@@ -264,16 +293,55 @@ namespace Sjuklöner.Controllers
             {
                 errorFound = true;
             }
-            if (errorFound)
+
+            //Check that the ombud is born in the 20th or 21st century
+            if (!errorFound)
             {
-                ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                if (int.Parse(model.SSN.Substring(0, 2)) != 19 && int.Parse(model.SSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("SSN", "Ombudet måste vara fött på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
             }
 
-            var db = new ApplicationDbContext();
+            //Check that the ombud is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime ombudBirthday = new DateTime(int.Parse(model.SSN.Substring(0, 4)), int.Parse(model.SSN.Substring(4, 2)), int.Parse(model.SSN.Substring(6, 2)));
+                if (ombudBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("SSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (ombudBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("SSN", "Ombudet måste vara minst 18 år.");
+                    errorFound = true;
+                }
+            }
+
+            ApplicationDbContext db = new ApplicationDbContext();
+            //Check if there is an ombud with the same SSN already in the company. The same ombud is allowed in another company.
+            if (!errorFound)
+            {
+                var twinOmbud = UserManager.Users.Where(u => u.SSN == model.SSN).FirstOrDefault();
+                if (twinOmbud != null && db.CareCompanies.Where(c => c.Id == twinOmbud.CareCompanyId).FirstOrDefault().OrganisationNumber == model.CompanyOrganisationNumber)
+                {
+                    ModelState.AddModelError("SSN", "Det finns redan ett ombud med detta personnummer på samma bolag.");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (model.SSN.Length == 12)
+                {
+                    model.SSN = model.SSN.Insert(8, "-");
+                }
+            }
+
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.CompanyOrganisationNumber).Any())
                 ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnumret.");
-            if (UserManager.Users.Where(u => u.SSN == model.SSN).Any())
-                ModelState.AddModelError("SSN", "Det finns redan ett konto med det personnumret.");
             if (UserManager.Users.Where(u => u.Email == model.Email).Any())
                 ModelState.AddModelError("Email", "Det finns redan ett konto med den e-postadressen.");
 
@@ -363,8 +431,6 @@ namespace Sjuklöner.Controllers
                 }
                 AddErrors(result);
                 //}
-
-
             }
 
             List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
@@ -393,13 +459,79 @@ namespace Sjuklöner.Controllers
         //public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudCreateVM ombudCreateVM)
         public async Task<ActionResult> CreateOmbud(OmbudCreateVM vm)
         {
-            //ModelState.Remove(nameof(OmbudCreateVM.Id));
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = UserManager.Users.Where(u => u.Id == currentId).FirstOrDefault();
+
+            bool errorFound = false;
+            //Check that the SSN has the correct format
+            if (!string.IsNullOrWhiteSpace(vm.SSN))
+            {
+                vm.SSN = vm.SSN.Trim();
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(vm.SSN);
+                if (!match.Success)
+                {
+                    ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+
+            //Check that the ombud is born in the 20th or 21st century
+            if (!errorFound)
+            {
+                if (int.Parse(vm.SSN.Substring(0, 2)) != 19 && int.Parse(vm.SSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("SSN", "Ombudet måste vara fött på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the ombud is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime ombudBirthday = new DateTime(int.Parse(vm.SSN.Substring(0, 4)), int.Parse(vm.SSN.Substring(4, 2)), int.Parse(vm.SSN.Substring(6, 2)));
+                if (ombudBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("SSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (ombudBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("SSN", "Ombudet måste vara minst 18 år.");
+                    errorFound = true;
+                }
+            }
+
+            //Check if there is an ombud with the same SSN already in the company. The same ombud is allowed in another company.
+            if (!errorFound)
+            {
+                var twinOmbud = UserManager.Users.Where(u => u.SSN == vm.SSN).FirstOrDefault();
+                if (twinOmbud != null && twinOmbud.CareCompanyId == currentUser.CareCompanyId)
+                {
+                    ModelState.AddModelError("SSN", "Det finns redan ett ombud med detta personnummer");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (vm.SSN.Length == 12)
+                {
+                    vm.SSN = vm.SSN.Insert(8, "-");
+                }
+            }
+
             if (UserManager.Users.Where(u => u.Email == vm.Email).Any())
                 ModelState.AddModelError("Email", "Det finns redan en användare med den e-postadressen");
+
             if (ModelState.IsValid)
             {
-                var currentUserId = User.Identity.GetUserId();
-                var currentUser = UserManager.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
+                //var currentUserId = User.Identity.GetUserId();
+                //var currentUser = UserManager.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
                 ApplicationUser newOmbud = new ApplicationUser
                 {
                     UserName = vm.Email,
