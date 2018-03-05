@@ -18,8 +18,6 @@ namespace Sjuklöner.Models
 
         public string ReferenceNumber { get; set; }
 
-        //public string OwnerId { get; set; }
-
         [Required]
         [Display(Name = "Filnamn")]
         public string Filename { get; set; }

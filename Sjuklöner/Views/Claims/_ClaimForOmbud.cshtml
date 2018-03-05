@@ -743,8 +743,88 @@
             </div>
         </div>
     }
+
+    @if (Model.CompletionStage >= 4)
+    {
+        <div class="row">
+            <div class="col col-md-2">
+            </div>
+            <div class="col col-md-9 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Bilagor
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachment").FirstOrDefault().Filename}")">
+                                    Lönespecifikation, ordinarie
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding6">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachmentStandIn").FirstOrDefault().Filename}")">
+                                    Lönespecifikation, vikarie
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SickLeaveNotification").FirstOrDefault().Filename}")">
+                                    Sjukfrånvaroanmälan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
+                    {
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row display-padding6">
+                                    <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
+                                        Läkarintyg
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReport").FirstOrDefault().Filename}")">
+                                    Tidsredovisning, Försäkringskassan, ordinarie assistent
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding6">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn").FirstOrDefault().Filename}")">
+                                    Tidsredovisning, Försäkringskassan, vikarierande assistent
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     @if (Model.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
     {
+
+
+
         <div class="row">
             <div class="col col-md-12 form-group-div-frame">
                 <div class="row form-group-heading">
@@ -1388,69 +1468,7 @@
 
 <div class="form-horizontal">
 
-    @if (Model.CompletionStage >= 4)
-    {
-        <div class="row">
-            <div class="col col-md-2">
-            </div>
-            <div class="col col-md-9 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Bilagor
-                </div>
-                <div class="row">
-                    <div class="col col-md-3">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachment").FirstOrDefault().Filename}")">
-                                    Lönespecifikation, ordinarie
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-3">
-                        <div class="row display-padding4">
-                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachmentStandIn").FirstOrDefault().Filename}")">
-                                Lönespecifikation, vikarie
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col col-md-3">
-                        <div class="row display-padding4">
-                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SickLeaveNotification").FirstOrDefault().Filename}")">
-                                Sjukfrånvaroanmälan
-                            </a>
-                        </div>
-                    </div>
-                    @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
-                    {
-                        <div class="col col-md-3">
-                            <div class="row display-padding4">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
-                                    Läkarintyg
-                                </a>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div class="row">
-                    <div class="col col-md-3">
-                        <div class="row display-padding3">
-                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReport").FirstOrDefault().Filename}")">
-                                Tidsredovisning, Försäkringskassan, ordinarie assistent
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col col-md-3">
-                        <div class="row display-padding4">
-                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn").FirstOrDefault().Filename}")">
-                                Tidsredovisning, Försäkringskassan, vikarierande assistent
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+
 </div>
 
 

@@ -333,6 +333,11 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
             }
+            //Check that the last day in the sickleave period is not older than one year
+            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > 365)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än ett år tillbaka i tiden.");
+            }
             //Check if the regular assistant has been selected
             if (create1VM.SelectedRegAssistantId == null)
             {
@@ -1521,7 +1526,6 @@ namespace Sjuklöner.Controllers
             document.FilePath = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
-            //document.OwnerId = User.Identity.GetUserId();
             document.Title = title;
             document.ReferenceNumber = claim.ReferenceNumber;
             db.Documents.Add(document);

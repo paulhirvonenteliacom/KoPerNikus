@@ -210,17 +210,17 @@
     <Compile Include="Migrations\201802270931327_init.Designer.cs">
       <DependentUpon>201802270931327_init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201803020830530_unifiedSSNFormat.cs" />
-    <Compile Include="Migrations\201803020830530_unifiedSSNFormat.Designer.cs">
-      <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201803021701263_FilePath-FileNameDocuments.cs" />
-    <Compile Include="Migrations\201803021701263_FilePath-FileNameDocuments.Designer.cs">
-      <DependentUpon>201803021701263_FilePath-FileNameDocuments.cs</DependentUpon>
-    </Compile>
-	<Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.cs" />
+    <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.cs" />
     <Compile Include="Migrations\201803031650429_addReferenceNumberToDocument.Designer.cs">
       <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803050949559_test.cs" />
+    <Compile Include="Migrations\201803050949559_test.Designer.cs">
+      <DependentUpon>201803050949559_test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803051001510_filepath.cs" />
+    <Compile Include="Migrations\201803051001510_filepath.Designer.cs">
+      <DependentUpon>201803051001510_filepath.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -441,14 +441,14 @@
     <EmbeddedResource Include="Migrations\201802270931327_init.resx">
       <DependentUpon>201802270931327_init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201803020830530_unifiedSSNFormat.resx">
-      <DependentUpon>201803020830530_unifiedSSNFormat.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201803021701263_FilePath-FileNameDocuments.resx">
-      <DependentUpon>201803021701263_FilePath-FileNameDocuments.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803031650429_addReferenceNumberToDocument.resx">
       <DependentUpon>201803031650429_addReferenceNumberToDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803050949559_test.resx">
+      <DependentUpon>201803050949559_test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803051001510_filepath.resx">
+      <DependentUpon>201803051001510_filepath.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
