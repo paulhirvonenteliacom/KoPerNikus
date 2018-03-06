@@ -1420,10 +1420,10 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Skicka in" || submitButton == "Spara")
             {
-                if (!Directory.Exists(Server.MapPath("~/sjukloner/Uploads")))
-                    Directory.CreateDirectory(Server.MapPath("~/sjukloner/Uploads"));
-                if (!Directory.Exists(Server.MapPath($"~/sjukloner/Uploads/{model.ClaimNumber}")))
-                    Directory.CreateDirectory(Server.MapPath($"~/sjukloner/Uploads/{model.ClaimNumber}"));
+                if (!Directory.Exists(Server.MapPath("~/Uploads")))
+                    Directory.CreateDirectory(Server.MapPath("~/Uploads"));
+                if (!Directory.Exists(Server.MapPath($"~/Uploads/{model.ClaimNumber}")))
+                    Directory.CreateDirectory(Server.MapPath($"~/Uploads/{model.ClaimNumber}"));
 
                 var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
@@ -1449,7 +1449,7 @@ namespace Sjuklöner.Controllers
                 {
                     try
                     {
-                        string path = Server.MapPath($"~/sjukloner/Uploads/{model.ClaimNumber}");
+                        string path = Server.MapPath($"~/Uploads/{model.ClaimNumber}");
 
                         if (model.SalaryAttachment != null)
                             NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
@@ -1545,28 +1545,21 @@ namespace Sjuklöner.Controllers
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
 
                 message.To.Add(new MailAddress(claim.OmbudEmail));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                SendEmail(message);
+                //SendEmail(message);
             }
 
-            string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
-
-            var UserId = db.Users.Where(u => u.FirstName == "Henrik").FirstOrDefault().Id;
-
-            Directory.CreateDirectory(appdataPath);
-            using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+            using (var writer = XmlWriter.Create("\\sjukloner" + "\\info.xml"))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("claiminformation");
-                writer.WriteElementString("SSN", claim.CustomerSSN);
+                writer.WriteElementString("SSN", claim.CustomerSSN.Substring(2));
                 writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteElementString("ClaimId", claim.Id.ToString());
-                writer.WriteElementString("UserId", UserId);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
