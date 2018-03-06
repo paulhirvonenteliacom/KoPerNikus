@@ -147,10 +147,10 @@
 
     <div class="row line-height-10">
         <div class="col col-md-offset-6 col-md-1">
-            <input class="btn btn-primary" type="submit" value="Nästa steg" />
+            <input class="btn btn-primary" type="submit" value="Nästa steg" style="margin-left: 0px;"/>
         </div>
         <div class="col col-md-1">
-            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary" })
+            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @style = "margin-left:10px;", @class = "btn-sm js-show-view-btn btn btn-secondary" })
             @*@Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })*@
         </div>
         <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
