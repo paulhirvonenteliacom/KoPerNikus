@@ -1702,8 +1702,8 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
                 //Ombud/uppgiftslämnare
-                claimDetailsOmbudVM.OmbudName = ombud.FirstName + " " + ombud.LastName;
-                claimDetailsOmbudVM.OmbudPhoneNumber = ombud.PhoneNumber;
+                claimDetailsOmbudVM.OmbudName = claim.OmbudFirstName + " " + claim.OmbudLastName;
+                claimDetailsOmbudVM.OmbudPhoneNumber = claim.OmbudPhoneNumber;
 
                 //Assistansanordnare
                 claimDetailsOmbudVM.CompanyName = claim.CompanyName; ;
