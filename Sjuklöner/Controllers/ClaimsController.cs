@@ -1552,7 +1552,7 @@ namespace Sjuklöner.Controllers
                 //SendEmail(message);
             }
 
-            using (var writer = XmlWriter.Create("\\sjukloner" + "\\info.xml"))
+            using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\info.xml")))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("claiminformation");
@@ -1560,6 +1560,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteElementString("ClaimId", claim.Id.ToString());
+                writer.WriteElementString("OmbudName", $"{claim.OmbudFirstName} {claim.OmbudLastName}");
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
