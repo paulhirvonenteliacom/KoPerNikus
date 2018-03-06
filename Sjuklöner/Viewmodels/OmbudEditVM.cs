@@ -18,11 +18,11 @@ namespace Sjuklöner.Viewmodels
         public string CareCompanyName { get; set; }
 
         [Required]
-        [Display(Name = "Efternamn")]
+        [Display(Name = "Förnamn")]
         public string FirstName { get; set; }
 
         [Required]
-        [Display(Name = "Förnamn")]
+        [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
         [Required]
