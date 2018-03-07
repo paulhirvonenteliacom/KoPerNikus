@@ -10,9 +10,19 @@
     <br />
     <br />
     <div class="row">
-        <div class="col col-md-7 no-padding-left2">
-            @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
-        </div>
+        @if (Model.AssistantsExist)
+        {
+            <div class="col col-md-7 no-padding-left2">
+                @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
+            </div>
+        }
+        else
+        {
+            <div class="col col-md-6 left-margin-12 font-size-16">
+                Välkommen! Du är nu registrerad som ombud för @Model.CompanyName. För att kunna skapa en ansökan krävs information om två assistenter. Den ena är den insjuknade ordinarie assistenten och den andra är den vikarierande assistenten. 
+                <p class="col-no-left-padding">@Html.ActionLink("Klicka här ", "Create", "Assistants", null, null)för att skapa assistenter.</p>
+            </div>
+        }
         @using (Html.BeginForm("IndexPageOmbud", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             <select name="searchBy" class="col-md-2 input-sm align-bottom4">
@@ -131,14 +141,20 @@
                         <th class="small-col-ombud">
                             Skapad datum
                         </th>
+                        <th class="xsmall-col-ombud">
+                            Steg
+                        </th>
                         <th class="small-col-ombud">
                             Kundens personnummer
                         </th>
-                        <th class="small-col-ombud">
+                        <th class="ssmall-col-ombud">
                             Första sjukdag
                         </th>
-                        <th class="small-col-ombud">
+                        <th class="ssmall-col-ombud">
                             Sista sjukdag
+                        </th>
+                        <th class="ssmall-col-ombud">
+                            Antal sjukdagar
                         </th>
                         <th class="medium-col">
                             Yrkat belopp (Kr)
@@ -150,39 +166,45 @@
 
                     @foreach (var item in Model.DraftClaims)
                     {
-                        <tr>
-                            <td>
-                                @*@Html.ActionLink(item.ReferenceNumber, "_ShowClaim", "Claims", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
-                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.QualifyingDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ClaimedSum)
-                            </td>
-                            <td>
-                                @Html.ActionLink("Uppdatera", "Create1", new { refNumber = item.ReferenceNumber }, new { @role = "button", @class = "btn btn-secondary btn-secondary-small" })
-                            </td>
-                            <td>
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
-                            </td>
-                            <td>
-                                @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
-                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @*@Html.ActionLink(item.ReferenceNumber, "_ShowClaim", "Claims", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompletionStage)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Uppdatera", "Create1", new { refNumber = item.ReferenceNumber }, new { @role = "button", @class = "btn btn-secondary btn-secondary-small" })
+                        </td>
+                        <td>
+                            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                            @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                        </td>
+                    </tr>
                     }
 
                 </table>
@@ -276,7 +298,7 @@
             @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#d2f5f4;">*@
             @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#f5f1dc;">*@
             <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
-                <button type="button" id="closbtn"> x </button>
+                <button type="button" id="closbtn" float="right"> Stäng </button>
                 <div style="height:10px;">
                 </div>
                 <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">

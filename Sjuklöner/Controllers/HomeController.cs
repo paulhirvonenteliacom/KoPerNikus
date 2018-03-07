@@ -11,11 +11,7 @@ namespace Sjuklöner.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            if (User.IsInRole("Assistant"))
-            {
-                return RedirectToAction("Create", "Claims");
-            }
-            else if (User.IsInRole("Ombud"))
+            if (User.IsInRole("Ombud"))
             {
                 return RedirectToAction("Index", "Claims");
             }

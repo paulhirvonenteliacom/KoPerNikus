@@ -20,7 +20,7 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Sjukfrånvaroanmälan")]
         public HttpPostedFileBase SickLeaveNotification { get; set; }
 
-        [Display(Name = "Sjukintyg")]
+        [Display(Name = "Läkarintyg")]
         public HttpPostedFileBase DoctorsCertificate { get; set; }
 
         [Display(Name = "Tidsredovisning, ordinarie assistent")]

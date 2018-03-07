@@ -22,7 +22,7 @@
     }
     @Html.AntiForgeryToken()
 
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
     if (Model.Type == "header")
     {
         <p class="collective-agreement-header">
@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col col-md-6 table-large-font col-padding-20">
                 @Html.EditorFor(model => model.CollAgreementHeader.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         @*<table class="table-no-border table table-no-margin-bottom">
@@ -43,7 +43,7 @@
                 <tr>
                     <td class="table-no-border large-table-font table-wide-column">
                         @Html.EditorFor(model => model.CollAgreementHeader.Name, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger font-size-11" })
                     </td>
                 </tr>
             </table>*@
@@ -73,14 +73,14 @@
                 @Html.LabelFor(model => model.CollAgreementHeader.Name, htmlAttributes: new { @class = "control-label col-md-2 display-right-align" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.CollAgreementHeader.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.CollAgreementHeader.Name, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
             <div class="col col-md-6">
             </div>
         </div>*@
     <br />
-    <table class="table">
+    <table class="table table1 table-border-none">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.CollAgreementInfo[0].StartDate)
@@ -110,37 +110,56 @@
         @for (int i = 0; i < Model.CollAgreementInfo.Count(); i++)
         {
             <tr>
-                <td>
+                <td class="table-no-border">
                     @Html.EditorFor(model => model.CollAgreementInfo[i].StartDate, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].StartDate, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].EndDate, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].EndDate, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].PerHourUnsocialEvening, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialEvening, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].PerHourUnsocialNight, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialNight, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].PerHourUnsocialWeekend, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialWeekend, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].PerHourUnsocialHoliday, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialHoliday, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].PerHourOnCallWeekday, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourOnCallWeekday, "", new { @class = "text-danger" })
                 </td>
                 <td>
                     @Html.EditorFor(model => model.CollAgreementInfo[i].PerHourOnCallWeekend, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourOnCallWeekend, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+
+            <tr class="table-row-height-30">
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].StartDate, "", new { @class = "line-height-06 text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].EndDate, "", new { @class = "text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialEvening, "", new { @class = "text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialNight, "", new { @class = "text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialWeekend, "", new { @class = "text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourUnsocialHoliday, "", new { @class = "text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourOnCallWeekday, "", new { @class = "text-danger font-size-11" })
+                </td>
+                <td class="table-line-height-08">
+                    @Html.ValidationMessageFor(model => model.CollAgreementInfo[i].PerHourOnCallWeekend, "", new { @class = "text-danger font-size-11" })
                 </td>
             </tr>
         }

@@ -9,9 +9,11 @@ using System.Web.Mvc;
 using Sjuklöner.Models;
 using Microsoft.AspNet.Identity;
 using Sjuklöner.Viewmodels;
+using System.Text.RegularExpressions;
 
 namespace Sjuklöner.Controllers
 {
+    [Authorize]
     public class AssistantsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -67,11 +69,67 @@ namespace Sjuklöner.Controllers
             var currentId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
-            var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
-            if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+            bool errorFound = false;
+            //Check that the SSN has the correct format
+            if (!string.IsNullOrWhiteSpace(assistantCreateVM.AssistantSSN))
             {
-                ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Trim();
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(assistantCreateVM.AssistantSSN);
+                if (!match.Success)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+
+            //Check that the assistant is born in the 20th or 21st century
+            if (!errorFound)
+            {
+                if (int.Parse(assistantCreateVM.AssistantSSN.Substring(0, 2)) != 19 && int.Parse(assistantCreateVM.AssistantSSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the assistant is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime assistantBirthday = new DateTime(int.Parse(assistantCreateVM.AssistantSSN.Substring(0, 4)), int.Parse(assistantCreateVM.AssistantSSN.Substring(4, 2)), int.Parse(assistantCreateVM.AssistantSSN.Substring(6, 2)));
+                if (assistantBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (assistantBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara minst 18 år.");
+                    errorFound = true;
+                }
+            }
+
+            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            if (!errorFound)
+            {
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
+                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (assistantCreateVM.AssistantSSN.Length == 12)
+                {
+                    assistantCreateVM.AssistantSSN = assistantCreateVM.AssistantSSN.Insert(8, "-");
+                }
             }
 
             if (ModelState.IsValid)
@@ -132,14 +190,69 @@ namespace Sjuklöner.Controllers
             var currentId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
 
-            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            bool errorFound = false;
+            //Check that the SSN has the correct format
+            if (!string.IsNullOrWhiteSpace(assistantEditVM.AssistantSSN))
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).FirstOrDefault();
+                assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Trim();
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(assistantEditVM.AssistantSSN);
+                if (!match.Success)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+
+            //Check that the assistant is born in the 20th or 21st century
+            if (!errorFound)
+            {
+                if (int.Parse(assistantEditVM.AssistantSSN.Substring(0, 2)) != 19 && int.Parse(assistantEditVM.AssistantSSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the assistant is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime assistantBirthday = new DateTime(int.Parse(assistantEditVM.AssistantSSN.Substring(0, 4)), int.Parse(assistantEditVM.AssistantSSN.Substring(4, 2)), int.Parse(assistantEditVM.AssistantSSN.Substring(6, 2)));
+                if (assistantBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("AssistantSSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (assistantBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("AssistantSSN", "Assistenten måste vara minst 18 år.");
+                    errorFound = true;
+                }
+            }
+
+            //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
+            if (!errorFound)
+            {
+                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).Where(a => a.Id != assistantEditVM.Id).FirstOrDefault();
                 if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
+                    errorFound = true;
                 }
             }
+
+            if (!errorFound)
+            {
+                if (assistantEditVM.AssistantSSN.Length == 12)
+                {
+                    assistantEditVM.AssistantSSN = assistantEditVM.AssistantSSN.Insert(8, "-");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 var assistant = db.Assistants.Where(a => a.Id == assistantEditVM.Id).FirstOrDefault();

@@ -16,6 +16,7 @@ using System.Runtime.Serialization.Json;
 using System.Net.Mail;
 using System.Configuration;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace Sjuklöner.Controllers
 {
@@ -51,6 +52,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
             int companyId = (int)me.CareCompanyId;
+            indexPageOmbudVM.CompanyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
 
             var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.StatusDate).ToList();
             if (claims.Count > 0)
@@ -67,6 +69,14 @@ namespace Sjuklöner.Controllers
                 indexPageOmbudVM.DecidedClaims = decidedClaims.ToList(); //Old "Rejected
                 indexPageOmbudVM.DraftClaims = draftClaims.ToList();
                 indexPageOmbudVM.UnderReviewClaims = underReviewClaims.ToList();
+            }
+
+            //Check if at least two assistants have been defined for the company
+            var assistants = db.Assistants.Where(a => a.CareCompanyId == companyId).ToList();
+            indexPageOmbudVM.AssistantsExist = false;
+            if (assistants.Count() >= 2)
+            {
+                indexPageOmbudVM.AssistantsExist = true;
             }
 
             return View("IndexPageOmbud", indexPageOmbudVM);
@@ -106,9 +116,19 @@ namespace Sjuklöner.Controllers
             if (searchBy == "Referensnummer")
                 Claims = Claims.Where(c => c.ReferenceNumber.Contains(searchString));
             else if (searchBy == "CSSN")
-                Claims = Claims.Where(c => c.CustomerSSN.Contains(searchString));
+            {
+                searchString = searchString.Replace("-", "");
+                if (searchString.Length > 10)
+                    searchString = searchString.Substring(2);
+                Claims = Claims.Where(c => c.CustomerSSN.Replace("-", "").Contains(searchString));
+            }
             else if (searchBy == "ASSN")
-                Claims = Claims.Where(c => c.RegAssistantSSN.Contains(searchString));
+            {
+                searchString = searchString.Replace("-", "");
+                if (searchString.Length > 10)
+                    searchString = searchString.Substring(1);
+                Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
+            }
 
             return Claims;
         }
@@ -247,6 +267,53 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create1(Create1VM create1VM, string refNumber, string submitButton)
         {
+            bool errorFound = false;
+            //Check that the SSN has the correct format
+            if (!string.IsNullOrWhiteSpace(create1VM.CustomerSSN))
+            {
+                create1VM.CustomerSSN = create1VM.CustomerSSN.Trim();
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?([a-zåäö]|[0-9]){4}$");
+                Match match = regex.Match(create1VM.CustomerSSN);
+                if (!match.Success)
+                {
+                    ModelState.AddModelError("CustomerSSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+
+            //Check that the customer is born in the 20th or 21st century
+            if (!errorFound)
+            {
+                if (int.Parse(create1VM.CustomerSSN.Substring(0, 2)) != 19 && int.Parse(create1VM.CustomerSSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("CustomerSSN", "Kunden måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the customer was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime assistantBirthday = new DateTime(int.Parse(create1VM.CustomerSSN.Substring(0, 4)), int.Parse(create1VM.CustomerSSN.Substring(4, 2)), int.Parse(create1VM.CustomerSSN.Substring(6, 2)));
+                if (assistantBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("CustomerSSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (create1VM.CustomerSSN.Length == 12)
+                {
+                    create1VM.CustomerSSN = create1VM.CustomerSSN.Insert(8, "-");
+                }
+            }
+
             //Check if the sickleave period is in the future.
             if (create1VM.FirstDayOfSicknessDate.Date >= DateTime.Now.Date)
             {
@@ -265,6 +332,11 @@ namespace Sjuklöner.Controllers
             if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 13)
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
+            }
+            //Check that the last day in the sickleave period is not older than one year
+            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > 365)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än ett år tillbaka i tiden.");
             }
             //Check if the regular assistant has been selected
             if (create1VM.SelectedRegAssistantId == null)
@@ -693,8 +765,28 @@ namespace Sjuklöner.Controllers
             }
             else
             {
-                db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
-                newReferenceNumber = DateTime.Now.Year.ToString() + (latestReference.LatestReferenceNumber).ToString("D5");
+                if (db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber != 0)
+                {
+                    newReferenceNumber = DateTime.Now.Year.ToString() + Convert.ToInt32(latestReference.LatestReferenceNumber + 1).ToString("D5");
+                    db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = latestReference.LatestReferenceNumber + 1;
+
+                }
+                //The code below avoids starting with ref number "YYYY00001" after updating the database if there are claims in the database
+                else
+                {
+                    var lastClaim = db.Claims.ToList().LastOrDefault();
+                    if (lastClaim != null)
+                    {
+                        newReferenceNumber = DateTime.Now.Year.ToString() + (Convert.ToInt32(lastClaim.ReferenceNumber.Substring(4)) + 1).ToString("D5");
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = Convert.ToInt32(newReferenceNumber.Substring(4));
+                    }
+                    else
+                    {
+                        newReferenceNumber = DateTime.Now.Year.ToString() + "00001";
+                        db.ClaimReferenceNumbers.FirstOrDefault().LatestReferenceNumber = 1;
+
+                    }
+                }
             }
             return newReferenceNumber;
         }
@@ -827,34 +919,252 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
-            //Check that some working hours have been filled in for the regular and substitute assistants
-            bool hoursFound = false;
             int idx = 0;
-            do
+            //Check that each entry has a correct format
+            Regex regex = new Regex(@"\d{0,2}(\,\d{0,2})?$");
+            foreach (var row in create2VM.ScheduleRowList)
             {
-                if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
+                if (create2VM.ScheduleRowList[idx].Hours != null)
                 {
-                    hoursFound = true;
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].Hours);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialEvening != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialEvening);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEvening", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialNight != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialNight);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNight", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialWeekend != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialWeekend);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekend", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialGrandWeekend != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekend", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].OnCallDay != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallDay);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDay", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].OnCallNight != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallNight);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].HoursSI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].HoursSI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialEveningSI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialEveningSI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialNightSI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialNightSI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialWeekendSI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialWeekendSI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].OnCallDaySI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallDaySI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI", "Fel format.");
+                    }
+                }
+                if (create2VM.ScheduleRowList[idx].OnCallNightSI != null)
+                {
+                    Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallNightSI);
+                    if (!match.Success)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI", "Fel format.");
+                    }
                 }
                 idx++;
-            } while (!hoursFound && idx < create2VM.ScheduleRowList.Count());
-            if (!hoursFound)
-            {
-                ModelState.AddModelError("ScheduleRowList[0].Hours", "Minst ett fält måste fyllas i.");
             }
-            bool hoursSIFound = false;
+
             idx = 0;
-            do
+            if (ModelState.IsValid)
             {
-                if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI))
+                //Check that no day has more than 25 hours of work
+                foreach (var row in create2VM.ScheduleRowList)
                 {
-                    hoursSIFound = true;
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "För högt antal timmar.");
+                    }
+                    idx++;
                 }
-                idx++;
-            } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count()); if (!hoursSIFound)
-            {
-                ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Minst ett fält måste fyllas i.");
+
+                //Check that no single item has more than 25 hours
+                idx = 0;
+                foreach (var row in create2VM.ScheduleRowList)
+                {
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEvening", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNight", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekend", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekend", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDay", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI", "För högt antal timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI) > 25)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI", "För högt antal timmar.");
+                    }
+                    idx++;
+                }
+
+                //Check that there are not more unsocial hours than working hours for each day
+                idx = 0;
+                foreach (var row in create2VM.ScheduleRowList)
+                {
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours))
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För många OB-timmar.");
+                    }
+                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI))
+                    {
+                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "För många OB-timmar.");
+                    }
+                    idx++;
+                }
+
+                //Check that some working hours have been filled in for the regular and substitute assistants
+                bool hoursFound = false;
+                idx = 0;
+                do
+                {
+                    if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
+                    {
+                        hoursFound = true;
+                    }
+                    idx++;
+                } while (!hoursFound && idx < create2VM.ScheduleRowList.Count());
+                if (!hoursFound)
+                {
+                    ModelState.AddModelError("ScheduleRowList[0].Hours", "Inga timmar ifyllda.");
+                }
+                bool hoursSIFound = false;
+                idx = 0;
+                do
+                {
+                    if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI))
+                    {
+                        hoursSIFound = true;
+                    }
+                    idx++;
+                } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
+                if (!hoursSIFound)
+                {
+                    ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Inga timmar ifyllda.");
+                }
             }
+
             if (ModelState.IsValid)
             {
                 if (submitButton == "Till steg 3")
@@ -1037,22 +1347,35 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create3(Create3VM create3VM, string refNumber, string submitButton)
         {
-            if (submitButton == "Till steg 4")
+            if (Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance) > 40000)
             {
-                create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
-                SaveClaim3(create3VM);
-                var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
-                db.Entry(claim).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Create4", new { ClaimNumber = refNumber });
+                ModelState.AddModelError("ClaimSum", "För högt yrkat belopp.");
             }
-            else if (submitButton == "Avbryt")
+
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("IndexPageOmbud");
+                if (submitButton == "Till steg 4")
+                {
+                    create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
+                    SaveClaim3(create3VM);
+                    var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                    db.Entry(claim).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Create4", new { ClaimNumber = refNumber });
+                }
+                else if (submitButton == "Avbryt")
+                {
+                    return RedirectToAction("IndexPageOmbud");
+                }
+                else
+                {
+                    SaveClaim3(create3VM);
+                    create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
+                    return View(create3VM);
+                }
             }
             else
             {
-                SaveClaim3(create3VM);
                 create3VM.ClaimSum = String.Format("{0:0.00}", Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance));
                 return View(create3VM);
             }
@@ -1105,22 +1428,22 @@ namespace Sjuklöner.Controllers
                 var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
                 if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
-                    ModelState.AddModelError("1", "Lönespecifikation för ordinarie assistent behövs");
+                    ModelState.AddModelError("SalaryAttachment", "Lönespecifikation för ordinarie assistent saknas");
 
                 if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
-                    ModelState.AddModelError("1", "Lönespecifikation för vikarierande assistent behövs");
+                    ModelState.AddModelError("SalaryAttachmentStandIn", "Lönespecifikation för vikarierande assistent saknas");
 
-                if (CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
-                    ModelState.AddModelError("1", "Sjukfrånvaroanmälan behövs");
+                if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
+                    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas");
 
                 if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
-                    ModelState.AddModelError("1", "Läkarintyg behövs");
+                    ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas");
 
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
-                    ModelState.AddModelError("1", "Tidsrapportering för ordinarie assistent behövs");
+                    ModelState.AddModelError("TimeReport", "Tidsrapportering, Försäkringskassan för ordinarie assistent saknas");
 
                 if (!CheckExistingDocument(claim, "TimeReportStandIn", model.TimeReportStandIn))
-                    ModelState.AddModelError("1", "Tidsrapportering för vikarierande assistent behövs");
+                    ModelState.AddModelError("TimeReportStandIn", "Tidsrapportering, Försäkringskassan för vikarierande assistent saknas");
 
                 if (ModelState.IsValid)
                 {
@@ -1150,17 +1473,20 @@ namespace Sjuklöner.Controllers
                         {
                             claim.CompletionStage = 4;
                         }
+
                         if (submitButton == "Skicka in")
                         {
                             claim.ClaimStatusId = 5;
                             claim.StatusDate = DateTime.Now;
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
-
                             return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
                         }
                         else
                         {
+                            claim.StatusDate = DateTime.Now;
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
                             return View("Create4", model);
                         }
                     }
@@ -1184,7 +1510,7 @@ namespace Sjuklöner.Controllers
                 return false;
             if (linqQuery.Any() && file != null)
             {
-                System.IO.File.Delete(linqQuery.FirstOrDefault().Filename);
+                System.IO.File.Delete(linqQuery.FirstOrDefault().FilePath);
                 db.Documents.Remove(linqQuery.FirstOrDefault());
                 db.SaveChanges();
             }
@@ -1196,11 +1522,12 @@ namespace Sjuklöner.Controllers
         {
             var document = new Document();
             document.DateUploaded = DateTime.Now;
-            document.Filename = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
+            document.Filename = $"{title}_{Path.GetFileName(file.FileName)}";
+            document.FilePath = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
-            //document.OwnerId = User.Identity.GetUserId();
             document.Title = title;
+            document.ReferenceNumber = claim.ReferenceNumber;
             db.Documents.Add(document);
             claim.Documents.Add(document);
             db.SaveChanges();
@@ -1218,28 +1545,22 @@ namespace Sjuklöner.Controllers
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
 
                 message.To.Add(new MailAddress(claim.OmbudEmail));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                SendEmail(message);
+                //SendEmail(message);
             }
 
-            string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
-
-            var UserId = db.Users.Where(u => u.FirstName == "Henrik").FirstOrDefault().Id;
-
-            Directory.CreateDirectory(appdataPath);
-            using (var writer = XmlWriter.Create(appdataPath + "\\info.xml"))
+            using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\info.xml")))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("claiminformation");
-                writer.WriteElementString("SSN", claim.CustomerSSN);
+                writer.WriteElementString("SSN", claim.CustomerSSN.Substring(2));
                 writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteElementString("ClaimId", claim.Id.ToString());
-                writer.WriteElementString("UserId", UserId);
+                writer.WriteElementString("OmbudName", $"{claim.OmbudFirstName} {claim.OmbudLastName}");
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
@@ -1381,8 +1702,8 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
                 //Ombud/uppgiftslämnare
-                claimDetailsOmbudVM.OmbudName = ombud.FirstName + " " + ombud.LastName;
-                claimDetailsOmbudVM.OmbudPhoneNumber = ombud.PhoneNumber;
+                claimDetailsOmbudVM.OmbudName = claim.OmbudFirstName + " " + claim.OmbudLastName;
+                claimDetailsOmbudVM.OmbudPhoneNumber = claim.OmbudPhoneNumber;
 
                 //Assistansanordnare
                 claimDetailsOmbudVM.CompanyName = claim.CompanyName; ;
@@ -1459,7 +1780,15 @@ namespace Sjuklöner.Controllers
 
             if (claim.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
             {
-                //
+                List<ClaimDay> claimDays = new List<ClaimDay>();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+                //Calculate the model sum
+                if (claimDays.Count() > 0)
+                {
+                    CalculateModelSum(claim, claimDays);
+                }
+
                 var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
                 List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
                 for (int i = 0; i < claimCalculations.Count(); i++)
@@ -2030,8 +2359,15 @@ namespace Sjuklöner.Controllers
                 Claim claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
                 if (claim.CompletionStage > 1)
                 {
-                    //Come back to this and consider what should be done with other entities (ClaimDays,ClaimCalculations, CollectiveAgreementHeader and Info). Probably depending on the CompletionStage of the claim.
                     db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                }
+                if (claim.CompletionStage >= 4)
+                {
+                    db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                    if (claim.Documents.Count() > 0)
+                    {
+                        db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == refNumber));
+                    }
                 }
                 db.Claims.Remove(claim);
                 db.SaveChanges();

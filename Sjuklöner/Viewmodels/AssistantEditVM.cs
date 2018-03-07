@@ -20,7 +20,6 @@ namespace Sjuklöner.Viewmodels
 
         [Required]
         [Display(Name = "Personnummer")]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string AssistantSSN { get; set; }
 
         [Required]
@@ -32,23 +31,24 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
 
+        [Required]
         [Display(Name = "Timlön (Kr)")]
-        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,3}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string HourlySalary { get; set; }
 
         [Required]
         [Display(Name = "Semesterersättning (%)")]
-        [DisplayFormat(DataFormatString = "{0:####}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string HolidayPayRate { get; set; }
 
         [Required]
         [Display(Name = "Arbetsgivaravgift (%)")]
-        [DisplayFormat(DataFormatString = "{0:####}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string PayrollTaxRate { get; set; }
 
         [Required]
         [Display(Name = "Avtalspension och försäkring (%)")]
-        [DisplayFormat(DataFormatString = "{0:###}", ApplyFormatInEditMode = true)]
+        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för högt värde.")]
         public string PensionAndInsuranceRate { get; set; }
     }
 }

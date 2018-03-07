@@ -434,8 +434,33 @@ li a {
     margin-left: 0;
 }
 
-.table-no-border {
+.table-no-border, table1 thead > tr > td, .table1 tbody > tr > td, .table1 tfoot > tr > td {
     border-top: none;
+    padding: 0 8px 2px 8px;
+    vertical-align: top;
+}
+
+.table-border-none {
+    border-top: none;
+    border-bottom: none;
+    border: none;
+}
+
+.table-row-height-30 {
+    height: 30px;
+}
+
+.table td.table-line-height-08 {
+    line-height: 0.8;
+    padding-top: 0;
+}
+
+.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+    vertical-align: middle;
+}
+
+.table1 thead > tr > td, .table1 tbody > tr > td, .table1 tfoot > tr > td {
+    vertical-align: top;
 }
 
 
@@ -636,10 +661,6 @@ li a {
     margin-left: 22px;
 }
 
-.table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
-    vertical-align: middle;
-}
-
 #add-stand-in-btn {
     font-weight: bold;
     font-size: 16px;
@@ -684,6 +705,14 @@ li a {
     font-weight: bold;
     margin-left: 15px;
     padding-top: 6px;
+}
+
+.font-size-9 {
+    font-size: 9px;
+}
+
+.font-size-11 {
+    font-size: 11px;
 }
 
 .font-size-12 {
@@ -798,6 +827,21 @@ special-left-margin {
     padding-left: 28px;
     /*background-color: #c9caff;*/
     margin-bottom: 50px;
+    margin-left: 15px;
+    /*background-color: #ebe6e6;*/
+    /*background-color: #d7cece;*/
+}
+
+.div-assistant-frame2 {
+    line-height: 0.8;
+    border: 1px solid;
+    border-color: #ae0b05;
+    border-radius: 1px;
+    /*border-color: #d7cece;*/
+    padding-left: 28px;
+    /*background-color: #c9caff;*/
+    margin-bottom: 20px;
+    margin-left: 15px;
     /*background-color: #ebe6e6;*/
     /*background-color: #d7cece;*/
 }
@@ -809,10 +853,40 @@ special-left-margin {
     margin-left: 27px;
 }
 
+.row-height-10 {
+    height: 10px;
+}
+
+.row-height-4 {
+    height: 4px;
+}
+
+.row-height-22 {
+    height: 22px;
+}
+
+/*.margin-bottom-4 {
+    margin-bottom: 8px;
+}*/
+
+
 .height-38 {
     height: 38px;
     font-size: 18px;
     /*font-weight: bold;*/
+}
+
+.row-height-24 {
+    height: 24px;
+    font-size: 24px;
+}
+
+.row-height-26 {
+    height: 26px;
+}
+
+.row-height-14 {
+    height: 14px;
 }
 
 .row-height-42 {
@@ -842,6 +916,33 @@ special-left-margin {
     margin-left: 6px;
     margin-right: 3px;
     width: 8px;
+}
+
+.small-errormessage {
+    width: 94px;
+}
+
+.small-errormessage2 {
+    width: 95px;
+    text-align: left;
+}
+
+.no-padding-left3 {
+    padding-left: -32px;
+    margin-left: -32px;
+    width: 92px;
+}
+
+.no-padding-left4 {
+    padding-left: 0;
+    margin-left: 0;
+    width: 220px;
+}
+
+.no-padding-left5 {
+    padding-left: 0;
+    margin-left: 0;
+    width: 92px;
 }
 
 .col-margin-left {
@@ -919,6 +1020,11 @@ special-left-margin {
     margin-right: -3px;
 }
 
+.small-row-margin4 {
+    margin: 1px 0 1px 0;
+    /*margin-right: -3px;*/
+}
+
 .oncall-margin {
     margin-left: 9px;
 }
@@ -929,6 +1035,12 @@ special-left-margin {
 
 .row-padding2 {
     padding: 5px 0 5px 0;
+}
+
+.wide-input {
+    max-width: 750px;
+    width: 750px;
+    text-align: left;
 }
 
 .height-24 {
@@ -985,6 +1097,10 @@ special-left-margin {
     line-height: 1;
 }
 
+.row-height-12 {
+    height: 12px;
+}
+
 .row-height-50 {
     height: 50px;
 }
@@ -998,8 +1114,12 @@ special-left-margin {
     height: 36px;
 }
 
-.row height-30 {
+.row-height-30 {
     height: 30px;
+}
+
+.row-height-32 {
+    height: 32px;
 }
 
 .height-30 {
@@ -1146,6 +1266,10 @@ special-left-margin {
     padding-left: 0;
 }
 
+.col-no-margin-left {
+    margin-left: 0;
+}
+
 .col-no-left-padding {
     padding-left: 0;
 }
@@ -1289,6 +1413,14 @@ a:hover, a:focus {
     width: 10%;
 }
 
+.ssmall-col-ombud {
+    width: 8%;
+}
+
+.xsmall-col-ombud {
+    width: 5%;
+}
+
 .medium-col {
     width: 90px;
 }
@@ -1352,6 +1484,7 @@ a:hover, a:focus {
 
 .no-padding-left2 {
     padding-left: 0;
+    text-align: left;
 }
 
 .small-padding-left {
@@ -1364,6 +1497,14 @@ a:hover, a:focus {
 
 .small-padding-left3 {
     padding-left: 6px;
+}
+
+.small-padding-left4 {
+    padding-left: 14px;
+}
+
+.small-padding-left5 {
+    padding-left: 11px;
 }
 
 .table-button-cell {

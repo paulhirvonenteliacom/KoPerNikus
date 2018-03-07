@@ -70,7 +70,7 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))?\d{4}$")]
+        [RegularExpression(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
         [Display(Name = "Personnummer")]
         public string SSN { get; set; }
 
@@ -83,14 +83,14 @@ namespace Sjuklöner.Models
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Bekräfta lösenord")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -103,7 +103,7 @@ namespace Sjuklöner.Models
 
         [Required]
         [Display(Name = "Bolagets organisationsnummer")]
-        [RegularExpression(@"[0-9]{6}-[0-9]{4}$")]
+        [RegularExpression(@"[0-9]{6}-[0-9]{4}$", ErrorMessage = "Formatet på organisationsnummret ska vara XXXXXX-XXXX där alla X är siffror.")]
         public string CompanyOrganisationNumber { get; set; }
 
         [Required]
@@ -132,39 +132,49 @@ namespace Sjuklöner.Models
         [Display(Name = "Kollektivavtal")]
         public IEnumerable<System.Web.Mvc.SelectListItem> CollectiveAgreements { get; set; }
 
+        [Display(Name = "Kollektivavtalets branschbeteckning")]
+        public string CollectiveAgreementSpecName { get; set; }
+
         public string Type { get; set; }
     }
 
     public class NewAdmOffVM
     {
         [Required]
+        [Display(Name = "Personnummer")]
+        //[RegularExpression(@"^((19|20)[0-9]{2})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
         public string SSN { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Bekräfta lösenord")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         //[Required]        
         //public string ConfirmSSN { get; set; }
 
         [Required]
+        [Display(Name = "Förnamn")]
         public string FirstName { get; set; }
 
         [Required]
+        [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
         [Required]
         [EmailAddress]
+        [Display(Name = "E-post")]
         public string Email { get; set; }
 
         [Required]
+        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
         public string PhoneNumber { get; set; }
     }
 
@@ -176,13 +186,15 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Lösenord")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
+        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

@@ -8,6 +8,10 @@ namespace Sjuklöner.Viewmodels
 {
     public class IndexPageOmbudVM
     {
+        public bool AssistantsExist { get; set; }
+
+        public string CompanyName { get; set; }
+
         public List<Claim> DecidedClaims  { get; set; }  //Avslagna
 
         public List<Claim> DraftClaims { get; set; }  //Ej inskickade, utkast

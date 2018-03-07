@@ -30,7 +30,7 @@ else
     @Html.HiddenFor(model => model.HeaderId)
     @Html.AntiForgeryToken()
 
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
     if (Model.NewAgreement)
     {
         <div class="row row-height-50">
@@ -38,7 +38,7 @@ else
                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
             <div class="col col-md-5">
@@ -64,14 +64,14 @@ else
             @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.PerHourUnsocialEvening, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.PerHourUnsocialEvening, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
-                @Html.ValidationMessageFor(model => model.PerHourUnsocialEvening, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.PerHourUnsocialEvening, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -80,14 +80,14 @@ else
             @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.PerHourUnsocialNight, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.PerHourUnsocialNight, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
-                @Html.ValidationMessageFor(model => model.PerHourUnsocialNight, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.PerHourUnsocialNight, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -96,14 +96,14 @@ else
             @Html.LabelFor(model => model.PerHourOnCallWeekday, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.PerHourOnCallWeekday, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
-                @Html.ValidationMessageFor(model => model.PerHourOnCallWeekday, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.PerHourOnCallWeekday, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.PerHourUnsocialWeekend, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.PerHourUnsocialWeekend, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
-                @Html.ValidationMessageFor(model => model.PerHourUnsocialWeekend, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.PerHourUnsocialWeekend, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
@@ -112,14 +112,14 @@ else
             @Html.LabelFor(model => model.PerHourOnCallWeekend, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.PerHourOnCallWeekend, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
-                @Html.ValidationMessageFor(model => model.PerHourOnCallWeekend, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.PerHourOnCallWeekend, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.PerHourUnsocialHoliday, htmlAttributes: new { @class = "control-label col-md-2 display-right-align2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.PerHourUnsocialHoliday, new { htmlAttributes = new { @class = "form-control", @placeholder = "00,00" } })
-                @Html.ValidationMessageFor(model => model.PerHourUnsocialHoliday, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.PerHourUnsocialHoliday, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
     </div>
