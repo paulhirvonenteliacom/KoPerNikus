@@ -153,8 +153,8 @@ namespace Sjuklöner.Migrations
             var collectiveAgreementHeaders = new List<CollectiveAgreementHeader>
             {
                 new CollectiveAgreementHeader{ Id = 1, Name = "Kommunal - Vårdföretagarna", Counter = 3 },
-                new CollectiveAgreementHeader{ Id = 2, Name = "Kommunal - Arbetsgivarföreningen KFO", Counter = 3 },
-                new CollectiveAgreementHeader{ Id = 3, Name = "Kommunal - KFS", Counter = 3 }
+                new CollectiveAgreementHeader{ Id = 2, Name = "Kommunal - Arbetsgivarföreningen KFO", Counter = 4 },
+                new CollectiveAgreementHeader{ Id = 3, Name = "Kommunal - KFS", Counter = 4 }
                 //Pay for oncall hours for the agreements below is a percentage of the hourly salary. It has been left to later to include them if necessary at a later point in time. 
                 //new CollectiveAgreementHeader{ Id = 4, Name = "SKL/PACTA, HÖK 16", Counter = 3 },
                 //new CollectiveAgreementHeader{ Id = 5, Name = "SKL/PACTA, PAN 16, personlig assistent", Counter = 3 },

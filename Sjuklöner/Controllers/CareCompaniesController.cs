@@ -143,7 +143,7 @@ namespace Sjuklöner.Controllers
                 Text = c.Name
             });
             careCompanyEditVM.CollectiveAgreement = new SelectList(collectiveAgreements, "Value", "Text");
-            return View();
+            return View(careCompanyEditVM);
         }
 
         // GET: CareCompanies/Delete/5
