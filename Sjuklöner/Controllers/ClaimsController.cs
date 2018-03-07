@@ -2797,10 +2797,11 @@ namespace Sjuklöner.Controllers
 
         private static void SendEmail(MailMessage message)
         {
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", Convert.ToInt32(587));
+            SmtpClient smtpClient = new SmtpClient(ConfigurationManager.AppSettings["SMTPServer"], Convert.ToInt32(587));
             NetworkCredential credentials = new NetworkCredential(ConfigurationManager.AppSettings["mailAccount"], ConfigurationManager.AppSettings["mailPassword"]);
             smtpClient.Credentials = credentials;
-            smtpClient.EnableSsl = true;
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+            //smtpClient.EnableSsl = true;
             smtpClient.Send(message);
             return;
         }
