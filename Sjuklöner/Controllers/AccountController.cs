@@ -61,6 +61,14 @@ namespace Sjuklöner.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (User.IsInRole("Ombud"))
+            {
+                return RedirectToAction("Index", "Claims");
+            }
+            else if (User.IsInRole("AdministrativeOfficial"))
+            {
+                return RedirectToAction("Index", "Claims");
+            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }

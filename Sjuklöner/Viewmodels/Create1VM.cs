@@ -37,7 +37,7 @@ namespace Sjuklöner.Viewmodels
         public string CustomerAddress { get; set; }
 
         [Required]
-        [Display(Name = "Kundens tel.nr (inkl. riktnr.")]
+        [Display(Name = "Kundens tel.nr (inkl. riktnr.)")]
         public string CustomerPhoneNumber { get; set; }
 
         [Required]
