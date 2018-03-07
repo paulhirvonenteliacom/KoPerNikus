@@ -2,6 +2,12 @@
     padding-top: 50px;
     padding-bottom: 20px;
 }
+footer 
+{
+    position:fixed;
+    bottom:0;
+    width:80%;
+}
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
