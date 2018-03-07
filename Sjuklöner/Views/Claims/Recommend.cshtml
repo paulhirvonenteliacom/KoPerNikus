@@ -20,8 +20,9 @@
         <div class="form-horizontal">
             <div class="form-group col line-height-10">
                 @Html.LabelFor(model => model.ClaimNumber, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
-                <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="referencenumber">
-                    @Html.DisplayFor(model => Model.ClaimNumber, null)
+                <div class="col-md-6 display-large-font" id="referencenumber">
+                    @Html.HiddenFor(model => Model.ClaimNumber, null)
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @style = "margin-left:10px;", @class = "btn-sm js-show-view-btn btn btn-secondary" })
                 </div>
             </div>
         </div>
@@ -115,7 +116,7 @@
             <div class="form-group col line-height-06">
                 @Html.LabelFor(model => model.ModelSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
                 <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="modelsum">
-                    @Html.DisplayFor(model => Model.ModelSum)
+                    @Html.DisplayFor(model => model.ModelSum)
                 </div>
             </div>
         </div>
@@ -146,13 +147,13 @@
     </div>
 
     <div class="row line-height-10">
-        <div class="col col-md-offset-6 col-md-1">
+        @*<div class="col col-md-offset-6 col-md-1">
             <input class="btn btn-primary" type="submit" value="Nästa steg" style="margin-left: 0px;"/>
         </div>
         <div class="col col-md-1">
-            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @style = "margin-left:10px;", @class = "btn-sm js-show-view-btn btn btn-secondary" })
-            @*@Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })*@
-        </div>
+            
+            @*Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })*
+        </div>*@
         <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
         <div id='myModal' class='modal' style="text-align:left;">
             <div class="modal-dialog" style="width:85%; height:400px; padding:10px;">
