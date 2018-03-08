@@ -1543,13 +1543,13 @@ namespace Sjuklöner.Controllers
             {
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
-
                 message.To.Add(new MailAddress(claim.OmbudEmail));
+                message.To.Add(new MailAddress("nevershaveyourduck@gmail.com"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                //SendEmail(message);
+                SendEmail(message);
             }
 
             using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\info.xml")))
@@ -2797,15 +2797,19 @@ namespace Sjuklöner.Controllers
 
         private static void SendEmail(MailMessage message)
         {
-            SmtpClient smtpClient = new SmtpClient(ConfigurationManager.AppSettings["SMTPServer"], Convert.ToInt32(587));
+            int smtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPort"]);
+            string smtpHost = ConfigurationManager.AppSettings["SMTPServer"];
+            SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort);
             NetworkCredential credentials = new NetworkCredential(ConfigurationManager.AppSettings["mailAccount"], ConfigurationManager.AppSettings["mailPassword"]);
             smtpClient.Credentials = credentials;
+            //smtpClient.UseDefaultCredentials = true;
+
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             //smtpClient.EnableSsl = true;
             smtpClient.Send(message);
             return;
         }
-
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
