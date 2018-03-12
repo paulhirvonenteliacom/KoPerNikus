@@ -2797,15 +2797,15 @@ namespace Sjuklöner.Controllers
 
         private static void SendEmail(MailMessage message)
         {
-            int smtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPort"]);
+            int smtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPPort"]);
             string smtpHost = ConfigurationManager.AppSettings["SMTPServer"];
             SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort);
             NetworkCredential credentials = new NetworkCredential(ConfigurationManager.AppSettings["mailAccount"], ConfigurationManager.AppSettings["mailPassword"]);
             smtpClient.Credentials = credentials;
             //smtpClient.UseDefaultCredentials = true;
 
-            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            //smtpClient.EnableSsl = true;
+            if (smtpHost == "smtp.gmail.com")
+                smtpClient.EnableSsl = true;
             smtpClient.Send(message);
             return;
         }
