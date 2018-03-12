@@ -151,11 +151,14 @@ namespace Sjuklöner.Models
         [Display(Name = "Telefonnummer")]
         public string SubPhoneNumber { get; set; }
 
-
         public bool IVOCheck { get; set; }
 
         public bool ProCapitaCheck { get; set; }
-        
+
+        public string LastAssistanceDate { get; set; } //Last date of personal assistance according to current decision. Wanted format from Robin: YYYY-MM-DD
+
+        public string FirstAssistanceDate { get; set; } //First date of personal assistance according to current decision. Wanted format from Robin: YYYY-MM-DD
+
         public bool ProxyCheck { get; set; }
 
         //[Required]
