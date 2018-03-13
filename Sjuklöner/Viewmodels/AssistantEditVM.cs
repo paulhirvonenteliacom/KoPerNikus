@@ -28,7 +28,7 @@ namespace Sjuklöner.Viewmodels
         public string Email { get; set; }
 
         [Required]
-        [Display(Name = "Telefonnummer")]
+        [Display(Name = "Tel.nr. (inkl. riktnr.)")]
         public string PhoneNumber { get; set; }
 
         [Required]
