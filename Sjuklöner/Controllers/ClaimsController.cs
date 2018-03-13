@@ -1267,16 +1267,16 @@ namespace Sjuklöner.Controllers
             {
                 create3VM = LoadClaimCreate3VM(claim);
             }
-            else if (!demoMode)
+            else if (!demoMode)    // Död kod ?
             {
                 create3VM = LoadNewClaimCreate3VM(claim);
             }
-            else //Demo
+            else //demoMode == true, Detta fall gäller ej Helsingborg 
             {
                 create3VM = LoadDemoClaimCreate3VM(refNumber);
             }
             return View("Create3", create3VM);
-        }
+        }       
 
         private Create3VM LoadNewClaimCreate3VM(Claim claim)
         {
@@ -1294,14 +1294,63 @@ namespace Sjuklöner.Controllers
         {
             Create3VM create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
-            //if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
-            //{
-            create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
-            create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
-            create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
-            create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
-            create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
-            //}
+            if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
+            {
+                create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
+                create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
+                create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
+                create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
+                create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
+            }
+            else if (claim.CompletionStage < 3) // stage 3 has not been filled in earlier. Show calculated values according to Collective Agreement
+            {
+                decimal totalSickPayCalc = 0;
+                decimal totalHolidayPayCalc = 0;
+                decimal totalSocialFeesCalc = 0;
+                decimal totalPensionAndInsuranceCalc = 0;
+
+                //Calculate the model sum
+                List<ClaimDay> claimDays = new List<ClaimDay>();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create3VM.ClaimNumber).OrderBy(c => c.SickDayNumber).ToList();
+                if (claimDays.Count() > 0)
+                {
+                    CalculateModelSum(claim, claimDays, null, null);
+                }
+
+                var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
+                List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
+
+                for (int i = 0; i < claimCalculations.Count(); i++)
+                {
+                    if (i == 0)
+                    {
+                        //QUALIFYING DAY
+                        totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayQD);
+                        totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
+                        totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
+                    }
+                    //DAY 2 TO DAY 14
+                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
+                    totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
+                    totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
+                    totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
+                }
+
+                //Calculated values according to Collective Agreement should be shown in the View 
+                create3VM.SickPay = String.Format("{0:0.00}", totalSickPayCalc);
+                create3VM.HolidayPay = String.Format("{0:0.00}", totalHolidayPayCalc);
+                create3VM.SocialFees = String.Format("{0:0.00}", totalSocialFeesCalc);
+                create3VM.PensionAndInsurance = String.Format("{0:0.00}", totalPensionAndInsuranceCalc);
+                create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1T14);                
+            }
+            else   // This should never happen ?
+            {
+                create3VM.SickPay = "00,00";
+                create3VM.HolidayPay = "00,00";
+                create3VM.SocialFees = "00,00";
+                create3VM.PensionAndInsurance = "00,00";
+                create3VM.ClaimSum = "00,00";
+            }
             return create3VM;
         }
 
