@@ -1351,6 +1351,11 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create3(Create3VM create3VM, string refNumber, string submitButton)
         {
+            if (Convert.ToDecimal(create3VM.SickPay) == 0 && Convert.ToDecimal(create3VM.HolidayPay) == 0 && Convert.ToDecimal(create3VM.SocialFees) == 0 && Convert.ToDecimal(create3VM.PensionAndInsurance) == 0)
+            {
+                ModelState.AddModelError("ClaimSum", "Minst ett av beloppen måste fyllas i.");
+            }
+
             if (Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance) > 40000)
             {
                 ModelState.AddModelError("ClaimSum", "För högt yrkat belopp.");
@@ -2446,7 +2451,7 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool OverlappingClaim(DateTime lastDayOfSicknessDate, DateTime firstDayOfSicknessDate, string SSN)
+        private bool OverlappingClaim(DateTime firstDayOfSicknessDate, DateTime lastDayOfSicknessDate, string SSN)
         {
             //Check if a claim for overlapping dates already exists for the same customer.
             var claims = db.Claims.Where(c => c.CustomerSSN == SSN).ToList();
