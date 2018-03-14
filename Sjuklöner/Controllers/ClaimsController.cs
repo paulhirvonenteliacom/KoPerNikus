@@ -353,6 +353,10 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
             }
+            if (OverlappingClaim(create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN))
+            {
+                ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -1668,9 +1672,32 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas";
                 }
-                else //There is a decision about personal assistance. Now it needs to be checked if the decision is still valid.
+                else //There is a decision about personal assistance. Now it needs to be checked if it is valid for the whole sickleave period or parts of it or not at all.
                 {
-                    DateTime endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(5, 2)), int.Parse(claim.LastAssistanceDate.Substring(7, 2)));
+                    DateTime endOfAssistance = new DateTime();
+                    if (claim.LastAssistanceDate != null)
+                    {
+                        endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(5, 2)), int.Parse(claim.LastAssistanceDate.Substring(7, 2)));
+                    }
+                    else
+                    {
+                        //Set a default value for endOfAsssitance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                        //decision about personal assistance covers the whole sickleave period.
+                        endOfAssistance = DateTime.Now.Date.AddDays(20);
+                    }
+
+                    DateTime startOfAssistance = new DateTime();
+                    if (claim.FirstAssistanceDate != null)
+                    {
+                        startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(0, 4)), int.Parse(claim.FirstAssistanceDate.Substring(5, 2)), int.Parse(claim.FirstAssistanceDate.Substring(7, 2)));
+                    }
+                    else
+                    {
+                        //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
+                        //decision about personal assistance covers the whole sickleave period.
+                        startOfAssistance = DateTime.Now.Date.AddDays(-20);
+                    }
+
                     //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
                     if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date)
                     {
@@ -1678,18 +1705,37 @@ namespace Sjuklöner.Controllers
                     }
                     //Check if the last day of approved personal assistance is equal to or greater than the first day of the sickperiod and earlier than the last day of the sickleave period. 
                     //In that case the model sum calculation which has been done prior to stage 3 in the claim process shall adjusted to only include those days for which personal assistance has been approved.
-                    else if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.LastDayOfSicknessDate.AddDays(-claim.NumberOfSickDays + 1).Date)
+                    //Two edge cases have been implemented:
+                    //1. The case where the last date of approved assistance is within the sickleave period 
+                    //2. The case where the first date of approved assistance is within the sickleave period. 
+                    //The case where both the qualifying date and last day of sickness are outside the approved personal assistance dates is not covered. It is a very unlikely case.
+                    else if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
                     {
-                        //Calculate the number of claimdays to be removed from the calcluation and the start index (zero-based) of the range of claimdays that shall be included in the calculation
+                        //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
                         int numberOfDaysToRemove = (claim.LastDayOfSicknessDate.Date - endOfAssistance.Date).Days;
                         int startIndex = claim.NumberOfSickDays - numberOfDaysToRemove;
 
-                        //Calculate the model sum
+                        //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
+                        //does not cover the whole sickleave period.
                         if (claimDays.Count() - numberOfDaysToRemove > 0)
                         {
                             CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
                         }
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate;
+                    }
+                    else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
+                    {
+                        //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
+                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.QualifyingDate.Date).Days;
+                        int startIndex = 0;
+
+                        //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
+                        //does not cover the whole sickleave period.
+                        if (claimDays.Count() - numberOfDaysToRemove > 0)
+                        {
+                            CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
+                        }
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate;
                     }
                     else
                     {
@@ -2449,19 +2495,19 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool overlappingClaim(DateTime? lastDayOfSicknessDate, DateTime? firstDayOfSicknessDate, string userId, string SSN)
+        private bool OverlappingClaim(DateTime lastDayOfSicknessDate, DateTime firstDayOfSicknessDate, string SSN)
         {
-            //Check if a claim for overlapping dates already exists.
-            var claims = db.Claims.Where(c => c.OwnerId == userId).Where(c => c.CustomerSSN == SSN).ToList();
+            //Check if a claim for overlapping dates already exists for the same customer.
+            var claims = db.Claims.Where(c => c.CustomerSSN == SSN).ToList();
             if (claims != null)
             {
                 foreach (var claim in claims)
                 {
-                    if (firstDayOfSicknessDate <= claim.LastDayOfSicknessDate && firstDayOfSicknessDate >= claim.QualifyingDate)
+                    if (firstDayOfSicknessDate.Date <= claim.LastDayOfSicknessDate.Date && firstDayOfSicknessDate.Date >= claim.QualifyingDate.Date)
                     {
                         return true;
                     }
-                    if (lastDayOfSicknessDate <= claim.LastDayOfSicknessDate && lastDayOfSicknessDate >= claim.QualifyingDate)
+                    if (lastDayOfSicknessDate.Date <= claim.LastDayOfSicknessDate.Date && lastDayOfSicknessDate.Date >= claim.QualifyingDate.Date)
                     {
                         return true;
                     }

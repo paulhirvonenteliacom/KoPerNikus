@@ -94,7 +94,7 @@ namespace Sjuklöner.Models
         public string ConfirmPassword { get; set; }
 
         [Required]
-        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
+        [Display(Name = "Tel. nr. (inkl. riktnr.)")]
         public string OmbudPhoneNumber { get; set; }
 
         [Required]
@@ -102,12 +102,12 @@ namespace Sjuklöner.Models
         public string CompanyName { get; set; }
 
         [Required]
-        [Display(Name = "Bolagets organisationsnummer")]
+        [Display(Name = "Organisationsnummer")]
         [RegularExpression(@"[0-9]{6}-[0-9]{4}$", ErrorMessage = "Formatet på organisationsnummret ska vara XXXXXX-XXXX där alla X är siffror.")]
         public string CompanyOrganisationNumber { get; set; }
 
         [Required]
-        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
+        [Display(Name = "Tel. nr. (inkl. riktnr.)")]
         public string CompanyPhoneNumber { get; set; }
 
         [Required]
