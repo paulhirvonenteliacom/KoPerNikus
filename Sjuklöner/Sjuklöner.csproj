@@ -445,6 +445,8 @@
     <Content Include="Views\CareCompanies\EditOmbud.cshtml" />
     <Content Include="Views\CareCompanies\DetailsOmbud.cshtml" />
     <Content Include="Views\Claims\_ClaimForOmbud.cshtml" />
+    <Content Include="Views\Account\IndexAdmOff.cshtml" />
+    <Content Include="Views\Account\EditAdmOff.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

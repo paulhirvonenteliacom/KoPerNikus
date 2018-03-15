@@ -13,6 +13,9 @@ using Sjuklöner.BankIDService;
 using System.Collections.Generic;
 using Sjuklöner.Viewmodels;
 using System.Text.RegularExpressions;
+using System.Data.Entity;
+using static Sjuklöner.Models.AdmOffIndexVM;
+using System.Net;
 
 namespace Sjuklöner.Controllers
 {
@@ -21,6 +24,8 @@ namespace Sjuklöner.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -146,6 +151,43 @@ namespace Sjuklöner.Controllers
             }
         }
 
+        // GET: /Account/IndexAdmOff
+        [Authorize(Roles = "Admin")]
+        public ActionResult IndexAdmOff()
+        {
+            //var admOffs = UserManager.Users.Include("Roles").OrderBy(u => u.LastName).ToList();
+            var role = db.Roles.SingleOrDefault(m => m.Name == "AdministrativeOfficial");
+            //List<ApplicationUser> admOffs = new List<ApplicationUser>();
+            //admOffs = null;
+            AdmOffIndexVM admOffIndexVM = new AdmOffIndexVM();
+            admOffIndexVM.AdmOffsExist = false;
+            if (role != null)
+            {
+                var admOffs = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id));
+
+                if (admOffs.Count() > 0)
+                {
+
+                    List<AdmOffForVM> admOffForVMList = new List<AdmOffForVM>();
+                    foreach (var admOff in admOffs)
+                    {
+                        AdmOffForVM AdmOffForVM = new AdmOffForVM();
+                        AdmOffForVM.Id = admOff.Id;
+                        AdmOffForVM.FirstName = admOff.FirstName;
+                        AdmOffForVM.LastName = admOff.LastName;
+                        AdmOffForVM.SSN = admOff.SSN;
+                        AdmOffForVM.Email = admOff.Email;
+                        AdmOffForVM.PhoneNumber = admOff.PhoneNumber;
+                        admOffForVMList.Add(AdmOffForVM);
+                    }
+                    admOffIndexVM.AdmOffForVMList = admOffForVMList;
+                    admOffIndexVM.AdmOffsExist = true;
+                }
+            }
+            return View("IndexAdmOff", admOffIndexVM);
+        }
+
+
         //
         // GET: /Account/NewAdmOff
         public ActionResult NewAdmOff()
@@ -210,7 +252,7 @@ namespace Sjuklöner.Controllers
             if (!errorFound)
             {
                 if (UserManager.Users.Where(u => u.SSN == vm.SSN).Any())
-                { 
+                {
                     ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
                     errorFound = true;
                 }
@@ -248,6 +290,124 @@ namespace Sjuklöner.Controllers
                 AddErrors(result);
             }
             return View(vm);
+        }
+
+        // GET: AdmOff/Edit/5
+        public ActionResult EditAdmOff(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser admOff = db.Users.Where(u => u.Id == id).FirstOrDefault();
+            if (admOff == null)
+            {
+                return HttpNotFound();
+            }
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == id).FirstOrDefault();
+            AdmOffEditVM admOffEditVM = new AdmOffEditVM();
+            admOffEditVM.Id = id;
+            admOffEditVM.FirstName = currentUser.FirstName;
+            admOffEditVM.LastName = currentUser.LastName;
+            admOffEditVM.PhoneNumber = currentUser.PhoneNumber;
+            admOffEditVM.Email = currentUser.Email;
+            admOffEditVM.SSN = currentUser.SSN;
+            return View("EditAdmOff", admOffEditVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditAdmOff(AdmOffEditVM admOffEditVM)
+        {
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = UserManager.Users.Where(u => u.Id == currentId).FirstOrDefault();
+
+            bool errorFound = false;
+            //Check that the SSN has the correct format
+            if (!string.IsNullOrWhiteSpace(admOffEditVM.SSN))
+            {
+                admOffEditVM.SSN = admOffEditVM.SSN.Trim();
+                Regex regex = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$");
+                Match match = regex.Match(admOffEditVM.SSN);
+                if (!match.Success)
+                {
+                    ModelState.AddModelError("SSN", "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.");
+                    errorFound = true;
+                }
+            }
+            else
+            {
+                errorFound = true;
+            }
+
+            //Check that the administrative official is born in the 20th or 21st century
+            if (!errorFound)
+            {
+                if (int.Parse(admOffEditVM.SSN.Substring(0, 2)) != 19 && int.Parse(admOffEditVM.SSN.Substring(0, 2)) != 20)
+                {
+                    ModelState.AddModelError("SSN", "Handläggaren måste vara född på 1900- eller 2000-talet.");
+                    errorFound = true;
+                }
+            }
+
+            //Check that the administrative official is at least 18 years old and was not born in the future:-)
+            if (!errorFound)
+            {
+                DateTime admOffBirthday = new DateTime(int.Parse(admOffEditVM.SSN.Substring(0, 4)), int.Parse(admOffEditVM.SSN.Substring(4, 2)), int.Parse(admOffEditVM.SSN.Substring(6, 2)));
+                if (admOffBirthday.Date > DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("SSN", "Födelsedatumet får inte vara senare än idag.");
+                    errorFound = true;
+                }
+                else if (admOffBirthday > DateTime.Now.AddYears(-18))
+                {
+                    ModelState.AddModelError("SSN", "Handläggaren måste vara minst 18 år.");
+                    errorFound = true;
+                }
+            }
+
+            //Check if there is an administrative official with the same SSN already.
+            if (!errorFound)
+            {
+                if (UserManager.Users.Where(u => u.SSN == admOffEditVM.SSN).Any())
+                {
+                    ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
+                    errorFound = true;
+                }
+            }
+
+            if (!errorFound)
+            {
+                if (admOffEditVM.SSN.Length == 12)
+                {
+                    admOffEditVM.SSN = admOffEditVM.SSN.Insert(8, "-");
+                }
+            }
+
+            if (UserManager.Users.Where(u => u.Email == admOffEditVM.Email).Any())
+                ModelState.AddModelError("Email", "Det finns redan en användare med den e-postaddressen");
+            if (ModelState.IsValid) //&& admOffEditVM.SSN == admOffEditVM.ConfirmSSN
+            {
+                var user = new ApplicationUser
+                {
+                    //UserName = $"{admOffEditVM.FirstName} {admOffEditVM.LastName}", //For use with BankID
+                    UserName = admOffEditVM.Email,
+                    Email = admOffEditVM.Email,
+                    FirstName = admOffEditVM.FirstName,
+                    LastName = admOffEditVM.LastName,
+                    PhoneNumber = admOffEditVM.PhoneNumber,
+                    LastLogon = DateTime.Now,
+                    SSN = admOffEditVM.SSN
+                };
+                //var result = await UserManager.CreateAsync(user, admOffEditVM.Password);
+                //if (result.Succeeded)
+                //{
+                //    UserManager.AddToRole(user.Id, "AdministrativeOfficial");
+                //    return RedirectToAction("Index", "Claims");
+                //}
+                //AddErrors(result);
+            }
+            return View(admOffEditVM);
         }
 
         //
@@ -793,7 +953,7 @@ namespace Sjuklöner.Controllers
             {
                 return View("Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider,  model.ReturnUrl,  model.RememberMe });
+            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, model.ReturnUrl, model.RememberMe });
         }
 
         //

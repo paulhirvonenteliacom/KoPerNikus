@@ -79,7 +79,7 @@ namespace Sjuklöner.Models
         public string FirstName { get; set; }
 
         [Required]
-        [Display(Name ="Efternamn")]
+        [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
         [Required]
@@ -174,8 +174,92 @@ namespace Sjuklöner.Models
         public string Email { get; set; }
 
         [Required]
-        [Display(Name = "Telefonnummer (inkl. riktnummer)")]
+        [Display(Name = "Tel. nr. (inkl. riktnr.)")]
         public string PhoneNumber { get; set; }
+    }
+
+    public class AdmOffEditVM
+    {
+        public string Id { get; set; }
+
+        [Required]
+        [Display(Name = "Personnummer")]
+        //[RegularExpression(@"^((19|20)[0-9]{2})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
+        public string SSN { get; set; }
+
+        //[Required]
+        //[StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
+        //[DataType(DataType.Password)]
+        //[Display(Name = "Lösenord")]
+        //public string Password { get; set; }
+
+        //[Required]
+        //[DataType(DataType.Password)]
+        //[Display(Name = "Bekräfta lösenord")]
+        //[Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
+        //public string ConfirmPassword { get; set; }
+
+        //[Required]        
+        //public string ConfirmSSN { get; set; }
+
+        [Required]
+        [Display(Name = "Förnamn")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Efternamn")]
+        public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "E-post")]
+        public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Tel. nr. (inkl. riktnr.)")]
+        public string PhoneNumber { get; set; }
+    }
+
+    public class AdmOffIndexVM
+    {
+        public List<AdmOffForVM> AdmOffForVMList { get; set; }
+
+        public bool AdmOffsExist { get; set; }
+
+        public class AdmOffForVM
+        {
+            public string Id { get; set; }
+
+            [Display(Name = "Förnamn")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Efternamn")]
+            public string LastName { get; set; }
+
+            [Display(Name = "Personnummer")]
+            //[RegularExpression(@"^((19|20)[0-9]{2})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
+            public string SSN { get; set; }
+
+            //[DataType(DataType.Password)]
+            //[Display(Name = "Bekräfta lösenord")]
+            //[Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
+            //public string ConfirmPassword { get; set; }
+
+            //[Required]        
+            //public string ConfirmSSN { get; set; }
+
+            [EmailAddress]
+            [Display(Name = "E-post")]
+            public string Email { get; set; }
+
+            [Display(Name = "Tel. nr. (inkl. riktnr.)")]
+            public string PhoneNumber { get; set; }
+
+            //[StringLength(100, ErrorMessage = "{0}et måste vara minst {2} tecken långt.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Lösenord")]
+            public string Password { get; set; }
+        }
     }
 
     public class ResetPasswordViewModel

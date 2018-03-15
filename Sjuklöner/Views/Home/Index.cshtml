@@ -8,32 +8,36 @@
 {
     @Html.AntiForgeryToken()
 
+    <div class="row">
+        <p class="page-header7 col col-md-12 left-margin-12">Administration av e-tjänsten för sjuklöner</p>
+    </div>
+    <hr class="claim-divider" />
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera handläggare", "IndexAdmOff", "Account")</p>
+    </div>
 
-    <body class="assistant-claim">
-        <div class="row">
-            <p class="col col-md-2"></p>
-            <p class="page-header col col-md-10">Administration av e-tjänsten för sjuklöner</p>
-        </div>
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera kollektivavtal", "Index", "CollectiveAgreements")</p>
+    </div>
 
-        <div class="row">
-            <p class="col col-md-2"></p>
-            <p class="col col-md-10">@Html.ActionLink("Administrera handläggare", "Index", "Home")</p>
-        </div>
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera ansökningar", "Index", "Claims")</p>
+    </div>
 
-        <div class="row">
-            <p class="col col-md-2"></p>
-            <p class="col col-md-10">@Html.ActionLink("Administrera assistanspersonal", "Index", "Home")</p>
-        </div>
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistansbolag", "Index", "CareCompanies")</p>
+    </div>
 
-        <div class="row">
-            <p class="col col-md-2"></p>
-            <p class="col col-md-10">@Html.ActionLink("Administrera ombud", "Index", "Home")</p>
-        </div>
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera ombud", "IndexOmbud", "CareCompanies")</p>
+    </div>
 
-        <div class="row">
-            <p class="col col-md-2"></p>
-            <p class="col col-md-10">@Html.ActionLink("Konfigurera e-tjänsten", "Index", "Home")</p>
-        </div>
-    </body>
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistenter", "Index", "Home")</p>
+    </div>
+
+    <div class="row">
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Konfigurera e-tjänsten", "Index", "Home")</p>
+    </div>
 }
 
