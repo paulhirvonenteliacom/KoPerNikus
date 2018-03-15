@@ -353,7 +353,7 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
             }
-            if (OverlappingClaim(create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN))
+            if (OverlappingClaim(refNumber, create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN))
             {
                 ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund.");
             }
@@ -2501,10 +2501,18 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool OverlappingClaim(DateTime firstDayOfSicknessDate, DateTime lastDayOfSicknessDate, string SSN)
+        private bool OverlappingClaim(string referenceNumber, DateTime firstDayOfSicknessDate, DateTime lastDayOfSicknessDate, string SSN)
         {
             //Check if a claim for overlapping dates already exists for the same customer.
-            var claims = db.Claims.Where(c => c.CustomerSSN == SSN).ToList();
+            List<Claim> claims = new List<Claim>();
+            if (referenceNumber == null) //New claim
+            {
+                claims = db.Claims.Where(c => c.CustomerSSN == SSN).ToList();
+            }
+            else //Update of existing claim. The already stored claim must be excluded from the list of claims to be checked for overlaps
+            {
+                claims = db.Claims.Where(c => c.CustomerSSN == SSN).Where(c => c.ReferenceNumber != referenceNumber).ToList();
+            }
             if (claims != null)
             {
                 foreach (var claim in claims)
