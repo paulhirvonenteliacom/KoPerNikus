@@ -1345,7 +1345,8 @@ namespace Sjuklöner.Controllers
                 create3VM.HolidayPay = String.Format("{0:0.00}", totalHolidayPayCalc);
                 create3VM.SocialFees = String.Format("{0:0.00}", totalSocialFeesCalc);
                 create3VM.PensionAndInsurance = String.Format("{0:0.00}", totalPensionAndInsuranceCalc);
-                create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1T14);                
+                create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1T14);
+                create3VM.ShowCalculatedValues = true;
             }
             else   // This should never happen ?
             {
