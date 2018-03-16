@@ -1544,7 +1544,6 @@ namespace Sjuklöner.Controllers
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
                 message.To.Add(new MailAddress(claim.OmbudEmail));
-                message.To.Add(new MailAddress("nevershaveyourduck@gmail.com"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
