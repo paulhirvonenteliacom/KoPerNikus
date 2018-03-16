@@ -56,6 +56,9 @@ namespace Sjuklöner.Controllers
         public ActionResult Create()
         {
             AssistantCreateVM assistantCreateVM = new AssistantCreateVM();
+            assistantCreateVM.HolidayPayRate = "12,00";
+            assistantCreateVM.PayrollTaxRate = "31,42";
+            assistantCreateVM.PensionAndInsuranceRate = "6,00";
             return View(assistantCreateVM);
         }
 

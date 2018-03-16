@@ -353,6 +353,10 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
             }
+            if (OverlappingClaim(refNumber, create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN))
+            {
+                ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -1267,16 +1271,16 @@ namespace Sjuklöner.Controllers
             {
                 create3VM = LoadClaimCreate3VM(claim);
             }
-            else if (!demoMode)
+            else if (!demoMode)    // Död kod ?
             {
                 create3VM = LoadNewClaimCreate3VM(claim);
             }
-            else //Demo
+            else //demoMode == true, Detta fall gäller ej Helsingborg 
             {
                 create3VM = LoadDemoClaimCreate3VM(refNumber);
             }
             return View("Create3", create3VM);
-        }
+        }       
 
         private Create3VM LoadNewClaimCreate3VM(Claim claim)
         {
@@ -1294,14 +1298,64 @@ namespace Sjuklöner.Controllers
         {
             Create3VM create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
-            //if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
-            //{
-            create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
-            create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
-            create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
-            create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
-            create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
-            //}
+            if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
+            {
+                create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
+                create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
+                create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
+                create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
+                create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
+            }
+            else if (claim.CompletionStage < 3) // stage 3 has not been filled in earlier. Show calculated values according to Collective Agreement
+            {
+                decimal totalSickPayCalc = 0;
+                decimal totalHolidayPayCalc = 0;
+                decimal totalSocialFeesCalc = 0;
+                decimal totalPensionAndInsuranceCalc = 0;
+
+                //Calculate the model sum
+                List<ClaimDay> claimDays = new List<ClaimDay>();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create3VM.ClaimNumber).OrderBy(c => c.SickDayNumber).ToList();
+                if (claimDays.Count() > 0)
+                {
+                    CalculateModelSum(claim, claimDays, null, null);
+                }
+
+                var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
+                List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
+
+                for (int i = 0; i < claimCalculations.Count(); i++)
+                {
+                    if (i == 0)
+                    {
+                        //QUALIFYING DAY
+                        totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayQD);
+                        totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
+                        totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
+                    }
+                    //DAY 2 TO DAY 14
+                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
+                    totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
+                    totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
+                    totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
+                }
+
+                //Calculated values according to Collective Agreement should be shown in the View 
+                create3VM.SickPay = String.Format("{0:0.00}", totalSickPayCalc);
+                create3VM.HolidayPay = String.Format("{0:0.00}", totalHolidayPayCalc);
+                create3VM.SocialFees = String.Format("{0:0.00}", totalSocialFeesCalc);
+                create3VM.PensionAndInsurance = String.Format("{0:0.00}", totalPensionAndInsuranceCalc);
+                create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1T14);
+                create3VM.ShowCalculatedValues = true;
+            }
+            else   // This should never happen ?
+            {
+                create3VM.SickPay = "00,00";
+                create3VM.HolidayPay = "00,00";
+                create3VM.SocialFees = "00,00";
+                create3VM.PensionAndInsurance = "00,00";
+                create3VM.ClaimSum = "00,00";
+            }
             return create3VM;
         }
 
@@ -1347,6 +1401,11 @@ namespace Sjuklöner.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create3(Create3VM create3VM, string refNumber, string submitButton)
         {
+            if (Convert.ToDecimal(create3VM.SickPay) == 0 && Convert.ToDecimal(create3VM.HolidayPay) == 0 && Convert.ToDecimal(create3VM.SocialFees) == 0 && Convert.ToDecimal(create3VM.PensionAndInsurance) == 0)
+            {
+                ModelState.AddModelError("ClaimSum", "Minst ett av beloppen måste fyllas i.");
+            }
+
             if (Convert.ToDecimal(create3VM.SickPay) + Convert.ToDecimal(create3VM.HolidayPay) + Convert.ToDecimal(create3VM.SocialFees) + Convert.ToDecimal(create3VM.PensionAndInsurance) > 40000)
             {
                 ModelState.AddModelError("ClaimSum", "För högt yrkat belopp.");
@@ -1577,11 +1636,21 @@ namespace Sjuklöner.Controllers
             if (claim != null)
             {
                 //Find ClaimDay records for the claim
-                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.ReferenceNumber).ToList();
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
 
                 //These check results are hardcoded for the demo. Need to be changed for the real solution.
-                recommendationVM.CompleteCheck = true;
-                recommendationVM.ProxyCheck = claim.ProxyCheck;
+                recommendationVM.IvoCheck = false;
+                recommendationVM.IvoCheck = claim.IVOCheck;
+                if (!recommendationVM.IvoCheck)
+                {
+                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i IVO";
+                }
+                else
+                {
+                    recommendationVM.IvoCheckMsg = "Verksamheten finns i IVO";
+                }
+
+                recommendationVM.CompleteCheck = true; //All attachments will be included by default since the claim cannot be submitted without attachements
                 if (!recommendationVM.CompleteCheck)
                 {
                     recommendationVM.CompleteCheckMsg = "Bilaga saknas";
@@ -1590,6 +1659,9 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.CompleteCheckMsg = "Alla bilagor är med";
                 }
+
+                recommendationVM.ProxyCheck = false;
+                recommendationVM.ProxyCheck = claim.ProxyCheck;
                 if (!recommendationVM.ProxyCheck)
                 {
                     recommendationVM.ProxyCheckMsg = "Ombudet saknar giltig fullmakt";
@@ -1600,26 +1672,80 @@ namespace Sjuklöner.Controllers
                 }
 
                 recommendationVM.AssistanceCheck = false;
-                recommendationVM.IvoCheck = false;
-
                 recommendationVM.AssistanceCheck = claim.ProCapitaCheck;
-                recommendationVM.IvoCheck = claim.IVOCheck;
                 if (!recommendationVM.AssistanceCheck)
                 {
                     recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas";
                 }
-                else
+                else //There is a decision about personal assistance. Now it needs to be checked if it is valid for the whole sickleave period or parts of it or not at all.
                 {
-                    recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
-                }
+                    DateTime endOfAssistance = new DateTime();
+                    if (claim.LastAssistanceDate != null)
+                    {
+                        endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(5, 2)), int.Parse(claim.LastAssistanceDate.Substring(7, 2)));
+                    }
+                    else
+                    {
+                        //Set a default value for endOfAsssitance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                        //decision about personal assistance covers the whole sickleave period.
+                        endOfAssistance = DateTime.Now.Date.AddDays(20);
+                    }
 
-                if (!recommendationVM.IvoCheck)
-                {
-                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i IVO";
-                }
-                else
-                {
-                    recommendationVM.IvoCheckMsg = "Verksamheten finns i IVO";
+                    DateTime startOfAssistance = new DateTime();
+                    if (claim.FirstAssistanceDate != null)
+                    {
+                        startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(0, 4)), int.Parse(claim.FirstAssistanceDate.Substring(5, 2)), int.Parse(claim.FirstAssistanceDate.Substring(7, 2)));
+                    }
+                    else
+                    {
+                        //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
+                        //decision about personal assistance covers the whole sickleave period.
+                        startOfAssistance = DateTime.Now.Date.AddDays(-20);
+                    }
+
+                    //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
+                    if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date)
+                    {
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
+                    }
+                    //Check if the last day of approved personal assistance is equal to or greater than the first day of the sickperiod and earlier than the last day of the sickleave period. 
+                    //In that case the model sum calculation which has been done prior to stage 3 in the claim process shall adjusted to only include those days for which personal assistance has been approved.
+                    //Two edge cases have been implemented:
+                    //1. The case where the last date of approved assistance is within the sickleave period 
+                    //2. The case where the first date of approved assistance is within the sickleave period. 
+                    //The case where both the qualifying date and last day of sickness are outside the approved personal assistance dates is not covered. It is a very unlikely case.
+                    else if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
+                    {
+                        //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
+                        int numberOfDaysToRemove = (claim.LastDayOfSicknessDate.Date - endOfAssistance.Date).Days;
+                        int startIndex = claim.NumberOfSickDays - numberOfDaysToRemove;
+
+                        //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
+                        //does not cover the whole sickleave period.
+                        if (claimDays.Count() - numberOfDaysToRemove > 0)
+                        {
+                            CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
+                        }
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate;
+                    }
+                    else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
+                    {
+                        //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
+                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.QualifyingDate.Date).Days;
+                        int startIndex = 0;
+
+                        //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
+                        //does not cover the whole sickleave period.
+                        if (claimDays.Count() - numberOfDaysToRemove > 0)
+                        {
+                            CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
+                        }
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate;
+                    }
+                    else
+                    {
+                        recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas för sjukperioden";
+                    }
                 }
 
                 recommendationVM.ClaimNumber = claim.ReferenceNumber;
@@ -1785,7 +1911,7 @@ namespace Sjuklöner.Controllers
                 //Calculate the model sum
                 if (claimDays.Count() > 0)
                 {
-                    CalculateModelSum(claim, claimDays);
+                    CalculateModelSum(claim, claimDays, null, null);
                 }
 
                 var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
@@ -1931,7 +2057,7 @@ namespace Sjuklöner.Controllers
             //Calculate the model sum
             if (claimDays.Count() > 0)
             {
-                CalculateModelSum(claim, claimDays);
+                CalculateModelSum(claim, claimDays, null, null);
             }
 
             ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
@@ -2374,19 +2500,27 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool overlappingClaim(DateTime? lastDayOfSicknessDate, DateTime? firstDayOfSicknessDate, string userId, string SSN)
+        private bool OverlappingClaim(string referenceNumber, DateTime firstDayOfSicknessDate, DateTime lastDayOfSicknessDate, string SSN)
         {
-            //Check if a claim for overlapping dates already exists.
-            var claims = db.Claims.Where(c => c.OwnerId == userId).Where(c => c.CustomerSSN == SSN).ToList();
+            //Check if a claim for overlapping dates already exists for the same customer.
+            List<Claim> claims = new List<Claim>();
+            if (referenceNumber == null) //New claim
+            {
+                claims = db.Claims.Where(c => c.CustomerSSN == SSN).ToList();
+            }
+            else //Update of existing claim. The already stored claim must be excluded from the list of claims to be checked for overlaps
+            {
+                claims = db.Claims.Where(c => c.CustomerSSN == SSN).Where(c => c.ReferenceNumber != referenceNumber).ToList();
+            }
             if (claims != null)
             {
                 foreach (var claim in claims)
                 {
-                    if (firstDayOfSicknessDate <= claim.LastDayOfSicknessDate && firstDayOfSicknessDate >= claim.QualifyingDate)
+                    if (firstDayOfSicknessDate.Date <= claim.LastDayOfSicknessDate.Date && firstDayOfSicknessDate.Date >= claim.QualifyingDate.Date)
                     {
                         return true;
                     }
-                    if (lastDayOfSicknessDate <= claim.LastDayOfSicknessDate && lastDayOfSicknessDate >= claim.QualifyingDate)
+                    if (lastDayOfSicknessDate.Date <= claim.LastDayOfSicknessDate.Date && lastDayOfSicknessDate.Date >= claim.QualifyingDate.Date)
                     {
                         return true;
                     }
@@ -2405,8 +2539,38 @@ namespace Sjuklöner.Controllers
             return stream;
         }
 
-        private void CalculateModelSum(Claim claim, List<ClaimDay> claimDays)
+        private void CalculateModelSum(Claim claim, List<ClaimDay> claimDays, int? startIndex, int? numberOfDaysToRemove)
         {
+            //The optional parameters startIndex and numberOfDaysToRemove are only needed if the decision about personal assistance does not cover the whole sickleave period.
+            //In that case only a subset of the claimdays shall be included in the model sum calculation.
+            //The parameter startIndex tells from which (zero based) index claimdays in the claimDays list shall be excluded from the calculation.
+            //The parameter numberOfDaysToRemove tells how many claimdays shall be removed from the calculation of the model sum (starting from startIndex).
+
+            //These declarations are needed in order for this method to be able to handle edge cases where the decision about personal assistance only
+            //covers a part of the sickleave period
+            DateTime adjustedLastDayOfSickness = new DateTime();
+            adjustedLastDayOfSickness = claim.LastDayOfSicknessDate;
+            DateTime adjustedQualifyingDay = new DateTime();
+            adjustedQualifyingDay = claim.QualifyingDate;
+            int adjustedNumberOfSickdays = claim.NumberOfSickDays;
+            int sickdayNumberOffset = 0;
+
+            if (startIndex != null && numberOfDaysToRemove != null)
+            //This is only true if the decision about personal assistance only covers a part of the sickleave period. In that case not all claimdays shall be included in the model sum calculation.
+            {
+                claimDays.RemoveRange((int)startIndex, (int)numberOfDaysToRemove);
+                if (startIndex > 0) //This means that the decision about personal assistance covers one or more days of the sickleave period starting from claim.QualifyingDate (1st day of sickness), but it does not cover the whole sickleave period.
+                {
+                    adjustedLastDayOfSickness = claim.LastDayOfSicknessDate.AddDays(-(int)numberOfDaysToRemove);
+                    sickdayNumberOffset = (int)numberOfDaysToRemove;
+                }
+                else //This means that the decision about personal assistance covers one or more days at the end of the sickleave period, but not the whole period.
+                {
+                    adjustedQualifyingDay = claim.QualifyingDate.AddDays((int)numberOfDaysToRemove);
+                }
+                adjustedNumberOfSickdays = claim.NumberOfSickDays - (int)numberOfDaysToRemove;
+            }
+
             //Check if there are any previous ClaimCalculation records for this claim. Existing records need to be removed.
             var prevClaimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).ToList();
             if (prevClaimCalculations.Count() > 0)
@@ -2439,7 +2603,7 @@ namespace Sjuklöner.Controllers
                 claimDays.OrderBy(c => c.SickDayNumber);
                 do
                 {
-                    claimDayDate = claim.QualifyingDate.AddDays(claimDays[claimDayIdx].SickDayNumber - 1);
+                    claimDayDate = adjustedQualifyingDay.AddDays(claimDays[claimDayIdx].SickDayNumber - 1 - sickdayNumberOffset);
                     infoFound = false;
                     infoIdx = 0;
                     do
@@ -2480,70 +2644,6 @@ namespace Sjuklöner.Controllers
                     }
                     claimDayIdx++;
                 } while (claimDayIdx < claimDays.Count() && !useDefaultCollectiveAgreement);
-
-                //foreach (var claimDay in claimDays)
-                //{
-                //    claimDayDate = claim.QualifyingDate.AddDays(claimDay.SickDayNumber - 1);
-                //    infoFound = false;
-                //    infoIdx = 0;
-                //    do
-                //    {
-                //        if (claimDayDate >= collectiveAgreementInfos[infoIdx].StartDate && claimDayDate <= collectiveAgreementInfos[infoIdx].EndDate)
-                //        {
-                //            infoFound = true;
-
-                //            //The lines below are used to keep track on how many different CollectiveAgreementInfo records are used in the claim. Calculations for each different CollectiveAgreementInfo needs to be shown separately in ShowClaimDetails. 
-                //            infoUsed = false;
-                //            infoUsedIdx = 0;
-                //            if (usedCollectiveAgreementInfoIds.Count() == 0)
-                //            {
-                //                usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
-                //            }
-                //            else
-                //            {
-                //                do
-                //                {
-                //                    if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
-                //                    {
-                //                        infoUsed = true;
-                //                    }
-                //                    infoUsedIdx++;
-                //                } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
-                //                if (!infoUsed)
-                //                {
-                //                    usedCollectiveAgreementInfoIds.Add(collectiveAgreementInfos[infoIdx].Id);
-                //                }
-                //            }
-                //        }
-                //        infoIdx++;
-                //    } while (!infoFound && infoIdx < collectiveAgreementInfos.Count());
-                //    //Assign default values if no info found
-                //    if (!infoFound)
-                //    {
-                //        useDefaultCollectiveAgreement = true;
-                //        //infoUsed = false;
-                //        //infoUsedIdx = 0;
-                //        //if (usedCollectiveAgreementInfoIds.Count() == 0)
-                //        //{
-                //        //    usedCollectiveAgreementInfoIds.Add(0);
-                //        //}
-                //        //else
-                //        //{
-                //        //    do
-                //        //    {
-                //        //        if (usedCollectiveAgreementInfoIds[infoUsedIdx] == collectiveAgreementInfos[infoIdx].Id)
-                //        //        {
-                //        //            infoUsed = true;
-                //        //        }
-                //        //        infoUsedIdx++;
-                //        //    } while (!infoUsed && infoUsedIdx < usedCollectiveAgreementInfoIds.Count());
-                //        //    if (!infoUsed)
-                //        //    {
-                //        //        usedCollectiveAgreementInfoIds.Add(0);
-                //        //    }
-                //        //}
-                //    }
-                //}
             }
             else
             {
@@ -2557,17 +2657,17 @@ namespace Sjuklöner.Controllers
             {
                 for (int idx = 0; idx < usedCollectiveAgreementInfoIds.Count(); idx++)
                 {
-                    if (collectiveAgreementInfos[idx].EndDate.Date >= claim.LastDayOfSicknessDate.Date)
+                    if (collectiveAgreementInfos[idx].EndDate.Date >= adjustedLastDayOfSickness.Date)
                     {
-                        applicableSickDays = 1 + (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (adjustedLastDayOfSickness.Date - adjustedQualifyingDay).Days - prevSickDayIdx;
                     }
                     else
                     {
-                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - claim.QualifyingDate).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - adjustedQualifyingDay).Days - prevSickDayIdx;
                     }
                     prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 }
-                if (applicableSickDays < claim.NumberOfSickDays)
+                if (applicableSickDays < adjustedNumberOfSickdays)
                 {
                     useDefaultCollectiveAgreement = true;
                 }
@@ -2609,16 +2709,16 @@ namespace Sjuklöner.Controllers
                     claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourOnCallWeekend);
 
                     //Calculate how many days the CollectiveAgreementInfo applies to
-                    if (collectiveAgreementInfos[idx].EndDate.Date >= claim.LastDayOfSicknessDate.Date)
+                    if (collectiveAgreementInfos[idx].EndDate.Date >= adjustedLastDayOfSickness.Date)
                     {
-                        applicableSickDays = 1 + (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (adjustedLastDayOfSickness.Date - adjustedQualifyingDay).Days - prevSickDayIdx;
                     }
                     else
                     {
-                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - claim.QualifyingDate).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - adjustedQualifyingDay).Days - prevSickDayIdx;
                     }
-                    claimCalculation.StartDate = claim.QualifyingDate.AddDays(prevSickDayIdx);
-                    claimCalculation.EndDate = claim.QualifyingDate.AddDays(prevSickDayIdx + applicableSickDays - 1);
+                    claimCalculation.StartDate = adjustedQualifyingDay.AddDays(prevSickDayIdx);
+                    claimCalculation.EndDate = adjustedQualifyingDay.AddDays(prevSickDayIdx + applicableSickDays - 1);
                 }
                 else
                 {
@@ -2637,9 +2737,9 @@ namespace Sjuklöner.Controllers
                     claimCalculation.PerHourOnCallWeekday = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourOnCallWeekday);
                     claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourOnCallWeekend);
 
-                    claimCalculation.StartDate = claim.QualifyingDate;
-                    claimCalculation.EndDate = claim.LastDayOfSicknessDate;
-                    applicableSickDays = claim.NumberOfSickDays;
+                    claimCalculation.StartDate = adjustedQualifyingDay;
+                    claimCalculation.EndDate = adjustedLastDayOfSickness;
+                    applicableSickDays = adjustedNumberOfSickdays;
                 }
 
                 if (idx == 0) //Include qualifying day only in first ClaimCalculation record
@@ -2775,7 +2875,7 @@ namespace Sjuklöner.Controllers
                 prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 db.ClaimCalculations.Add(claimCalculation);
                 totalCostD1D14 = totalCostD1D14 + Convert.ToDecimal(claimCalculation.TotalCostD1T14);
-                if (claim.NumberOfSickDays == 1)
+                if (adjustedNumberOfSickdays == 1)
                 {
                     totalCostCalcD1D14 = claimCalculation.CostQD;
                 }
@@ -2796,19 +2896,19 @@ namespace Sjuklöner.Controllers
 
         private static void SendEmail(MailMessage message)
         {
-            int smtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPort"]);
+            int smtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPPort"]);
             string smtpHost = ConfigurationManager.AppSettings["SMTPServer"];
             SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort);
             NetworkCredential credentials = new NetworkCredential(ConfigurationManager.AppSettings["mailAccount"], ConfigurationManager.AppSettings["mailPassword"]);
             smtpClient.Credentials = credentials;
             //smtpClient.UseDefaultCredentials = true;
 
-            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            //smtpClient.EnableSsl = true;
+            if (smtpHost == "smtp.gmail.com")
+                smtpClient.EnableSsl = true;
             smtpClient.Send(message);
             return;
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

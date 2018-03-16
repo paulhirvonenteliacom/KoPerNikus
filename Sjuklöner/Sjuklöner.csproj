@@ -240,6 +240,10 @@
     <Compile Include="Migrations\201803051001510_filepath.Designer.cs">
       <DependentUpon>201803051001510_filepath.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803121748013_addFirstAssistanceDateAndLastAssistanceDateInClaim.cs" />
+    <Compile Include="Migrations\201803121748013_addFirstAssistanceDateAndLastAssistanceDateInClaim.Designer.cs">
+      <DependentUpon>201803121748013_addFirstAssistanceDateAndLastAssistanceDateInClaim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -441,6 +445,8 @@
     <Content Include="Views\CareCompanies\EditOmbud.cshtml" />
     <Content Include="Views\CareCompanies\DetailsOmbud.cshtml" />
     <Content Include="Views\Claims\_ClaimForOmbud.cshtml" />
+    <Content Include="Views\Account\IndexAdmOff.cshtml" />
+    <Content Include="Views\Account\EditAdmOff.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -470,6 +476,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803051001510_filepath.resx">
       <DependentUpon>201803051001510_filepath.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803121748013_addFirstAssistanceDateAndLastAssistanceDateInClaim.resx">
+      <DependentUpon>201803121748013_addFirstAssistanceDateAndLastAssistanceDateInClaim.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
