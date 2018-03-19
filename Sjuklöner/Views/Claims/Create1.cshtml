@@ -57,7 +57,7 @@
             <div>
                 @Html.LabelFor(model => model.RegularAssistants, htmlAttributes: new { @class = "control-label col-md-2 display-right-align3" })
                 <div class="col-md-4">
-                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
@@ -73,7 +73,7 @@
             <div>
                 @Html.LabelFor(model => model.SubstituteAssistants, htmlAttributes: new { @class = "control-label col-md-2 display-right-align3" })
                 <div class="col-md-4">
-                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { @class = "form-control" })
                     @*@Html.ValidationMessageFor(model => model.SelectedSubAssistantId, "", new { @class = "text-danger font-size-11" })*@
                     @*@Html.ValidationMessage("SelectedSubAssistantId", "Ingen vald", new { @class = "text-danger font-size-11" })*@
                     @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11" })
