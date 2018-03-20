@@ -1,0 +1,74 @@
+﻿@model Sjuklöner.Viewmodels.AssistantIndexAllCompaniesVM
+@{
+    ViewBag.Title = "IndexAllCompanies";
+}
+<div class="row">
+    <p class="page-header5 col col-md-12">Assistentlista</p>
+</div>
+<br />
+<div class="row">
+    <div class="col col-md-1">
+        @Html.ActionLink("Ny assistent", "CreateAssistantCompany", null, new { @class = "btn btn-primary btn-primary3" })
+    </div>
+</div>
+<br />
+@for (int i = 0; i < Model.CareCompanyList.Count; i++)
+{
+    var assistants = Model.AssistantList.Where(a => a.CareCompanyId == @Model.CareCompanyList[i].Id);
+    if (assistants.Any())
+    {
+        <hr class="claim-divider" />
+        <p class="collective-agreement-header">@Model.CareCompanyList[i].CompanyName</p>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssistantList[0].FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssistantList[0].LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssistantList[0].AssistantSSN)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssistantList[0].Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AssistantList[0].PhoneNumber)
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in assistants)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AssistantSSN)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Uppdatera", "EditAssistantCompany", new { id = item.Id }) |
+                        @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </table>
+    } 
+}
+<div class="row row-padding2">
+    <div class="col col-md-2">
+        @Html.ActionLink("Avbryt", "Index", "Home", null, new { @class = "btn btn-secondary btn-secondary-small" })
+    </div>
+</div>
+
