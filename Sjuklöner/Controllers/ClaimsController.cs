@@ -1682,7 +1682,7 @@ namespace Sjuklöner.Controllers
                     DateTime endOfAssistance = new DateTime();
                     if (claim.LastAssistanceDate != null)
                     {
-                        endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(5, 2)), int.Parse(claim.LastAssistanceDate.Substring(7, 2)));
+                        endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(6, 4)), int.Parse(claim.LastAssistanceDate.Substring(0, 2)), int.Parse(claim.LastAssistanceDate.Substring(3, 2)));
                     }
                     else
                     {
@@ -1694,7 +1694,7 @@ namespace Sjuklöner.Controllers
                     DateTime startOfAssistance = new DateTime();
                     if (claim.FirstAssistanceDate != null)
                     {
-                        startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(0, 4)), int.Parse(claim.FirstAssistanceDate.Substring(5, 2)), int.Parse(claim.FirstAssistanceDate.Substring(7, 2)));
+                        startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(6, 4)), int.Parse(claim.FirstAssistanceDate.Substring(0, 2)), int.Parse(claim.FirstAssistanceDate.Substring(3, 2)));
                     }
                     else
                     {
