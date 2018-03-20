@@ -35,6 +35,8 @@ namespace Sjuklöner.Viewmodels
         [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
         public string ClaimSum { get; set; }
 
+        public bool ShowCalculatedValues { get; internal set; }
+
         //[Required]
         //[Display(Name = "Sjuklön (Kr):")]
         //[DisplayFormat(DataFormatString = "{0:f2}")]

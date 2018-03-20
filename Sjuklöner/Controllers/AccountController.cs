@@ -597,7 +597,29 @@ namespace Sjuklöner.Controllers
 
                     return RedirectToAction("Index", "Claims");
                 }
-                AddErrors(result);
+                string errorMessagePassword = "";
+                foreach (var error in result.Errors)
+                {
+                    if(error.Contains("Passwords must have at least one digit ('0'-'9')."))
+                    {
+                        errorMessagePassword = errorMessagePassword + "Lösenordet behöver innehålla åtminstone en siffra.";
+                    }
+                    if (error.Contains("Passwords must have at least one non letter or digit character."))
+                    {
+                        errorMessagePassword = errorMessagePassword + " Lösenordet måste innehålla åtminstone ett specialtecken.";
+                    }
+                    if (error.Contains("Passwords must have at least one uppercase ('A'-'Z')."))
+                    {
+                        errorMessagePassword = errorMessagePassword + " Lösenordet måste innehålla åtminstone en stor bokstav.";
+                    }
+                    if(error.Contains("Passwords must have at least one lowercase ('a'-'z')."))
+                    {
+                        errorMessagePassword = errorMessagePassword + " Lösenordet måste innehålla åtminstone en liten bokstav.";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(errorMessagePassword))
+                    ModelState.AddModelError("Password", errorMessagePassword.Trim());
+                //AddErrors(result);
                 //}
             }
 

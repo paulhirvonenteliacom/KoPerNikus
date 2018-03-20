@@ -1,7 +1,7 @@
 ﻿@model Sjuklöner.Models.ManageLoginsViewModel
 @using Microsoft.Owin.Security
 @{
-    ViewBag.Title = "Manage your external logins";
+    ViewBag.Title = "Hantera Dina Externa Inloggningar";
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -12,8 +12,8 @@
     if (loginProviders.Count() == 0) {
         <div>
             <p>
-                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
-                for details on setting up this ASP.NET application to support logging in via external services.
+                Inga externa inloggningstjänser har konfigurerats. Läs <a href="https://go.microsoft.com/fwlink/?LinkId=313242">denna artikel</a>
+                för information om hur man konfigurerar en ASP.NET-applikation så att den får stöd för externa inloggníngar.
             </p>
         </div>
     }
@@ -21,7 +21,7 @@
     {
         if (Model.CurrentLogins.Count > 0)
         {
-            <h4>Registered Logins</h4>
+            <h4>Registrerade Inloggningars</h4>
             <table class="table">
                 <tbody>
                     @foreach (var account in Model.CurrentLogins)
@@ -37,7 +37,7 @@
                                         <div>
                                             @Html.Hidden("loginProvider", account.LoginProvider)
                                             @Html.Hidden("providerKey", account.ProviderKey)
-                                            <input type="submit" class="btn btn-default" value="Remove" title="Remove this @account.LoginProvider login from your account" />
+                                            <input type="submit" class="btn btn-default" value="Remove" title="Ta bortdenna @account.LoginProvider -inloggning från ditt konto" />
                                         </div>
                                     }
                                 }
