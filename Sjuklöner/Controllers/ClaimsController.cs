@@ -59,7 +59,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 5);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4);
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
@@ -1535,7 +1535,7 @@ namespace Sjuklöner.Controllers
 
                         if (submitButton == "Skicka in")
                         {
-                            claim.ClaimStatusId = 5;
+                            claim.ClaimStatusId = 4;
                             claim.StatusDate = DateTime.Now;
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
