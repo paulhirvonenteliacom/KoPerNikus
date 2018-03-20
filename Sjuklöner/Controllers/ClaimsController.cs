@@ -95,16 +95,16 @@ namespace Sjuklöner.Controllers
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
-                var inInobxClaims = claims.Where(c => c.ClaimStatusId == 5);
+                var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
-                    inInobxClaims = Search(inInobxClaims, searchString, searchBy);
+                    inInboxClaims = Search(inInboxClaims, searchString, searchBy);
                     underReviewClaims = Search(underReviewClaims, searchString, searchBy);
                 }
                 indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
-                indexPageAdmOffVM.InInboxClaims = inInobxClaims.ToList();
+                indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
                 indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
             }
 
@@ -1610,7 +1610,7 @@ namespace Sjuklöner.Controllers
                 SendEmail(message);
             }
 
-            using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\info.xml")))
+            using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + claim.ReferenceNumber + ".xml")))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("claiminformation");
