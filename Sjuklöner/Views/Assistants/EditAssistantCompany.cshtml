@@ -1,0 +1,111 @@
+﻿@model Sjuklöner.Viewmodels.AssistantCompanyEditVM
+
+@{
+    ViewBag.Title = "Edit";
+}
+<div class="row">
+    <p class="page-header7 col col-md-offset-2 col-md-10">Uppdatera assistent</p>
+</div>
+<div class="row">
+    <p class="col col-md-2"></p>
+    <p class="col col-md-10">Uppgifterna används vid ansökan om sjuklöneersättning</p>
+</div>
+<hr class="claim-divider" />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.CompanyId)
+
+    <div class="row row-padding2">
+        <div class="col col-md-6">
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col col-md-4 display-right-align3" })
+                <div class="col col-md-8">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.AssistantSSN, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.AssistantSSN, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AssistantSSN, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col col-md-6">
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.HourlySalary, htmlAttributes: new { @class = "control-label col col-md-6 display-right-align3" })
+                <div class="col col-md-4">
+                    @Html.EditorFor(model => model.HourlySalary, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.HourlySalary, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.HolidayPayRate, htmlAttributes: new { @class = "control-label col-md-6 display-right-align3" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.HolidayPayRate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.HolidayPayRate, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.PayrollTaxRate, htmlAttributes: new { @class = "control-label col-md-6 display-right-align3" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.PayrollTaxRate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PayrollTaxRate, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.PensionAndInsuranceRate, htmlAttributes: new { @class = "control-label col-md-6 display-right-align3" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.PensionAndInsuranceRate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PensionAndInsuranceRate, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <div class="col col-md-offset-2 col-md-1">
+                <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Spara" id="proceed" />
+            </div>
+            <div class="col col-md-2">
+                @Html.ActionLink("Avbryt", "IndexAllCompanies", "Assistants", null, new { @class = "btn btn-secondary btn-secondary-small" })
+            </div>
+        </div>
+    </div>
+}
