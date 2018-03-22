@@ -453,6 +453,7 @@
     <Content Include="Views\Assistants\IndexAllCompanies.cshtml" />
     <Content Include="Views\Assistants\CreateAssistantCompany.cshtml" />
     <Content Include="Views\Assistants\EditAssistantCompany.cshtml" />
+    <Content Include="Views\Account\DetailsAdmOff.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
