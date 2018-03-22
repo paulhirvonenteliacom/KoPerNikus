@@ -588,6 +588,8 @@ namespace Sjuklöner.Controllers
             claim.ReferenceNumber = GenerateReferenceNumber();
             claim.CompletionStage = 1; //CompletionsStage is used for keeping track on what stage in the claim process has been completed. Used when jumping back in the process and also when updating a draft claim.
             claim.ClaimStatusId = 2;  //ClaimStatus.Name = "Utkast"
+            claim.FirstAssistanceDate = null; //This property is later set by Robin if there is a date in Procapita for first date for approved personal assistance. 
+            claim.LastAssistanceDate = null; //This property is later set by Robin if there is a date in Procapita for last date for approved personal assistance. 
 
             var currentUserId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
@@ -1280,7 +1282,7 @@ namespace Sjuklöner.Controllers
                 create3VM = LoadDemoClaimCreate3VM(refNumber);
             }
             return View("Create3", create3VM);
-        }       
+        }
 
         private Create3VM LoadNewClaimCreate3VM(Claim claim)
         {
@@ -1682,39 +1684,88 @@ namespace Sjuklöner.Controllers
                     DateTime endOfAssistance = new DateTime();
                     if (claim.LastAssistanceDate != null)
                     {
-                        endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(5, 2)), int.Parse(claim.LastAssistanceDate.Substring(7, 2)));
+                        //Check if claim.LastAssistanceDate is in the format YYYYMMDD
+                        string tempDate = claim.LastAssistanceDate.Trim();
+                        Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
+                        Match match1 = regex1.Match(tempDate);
+                        Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
+                        Match match2 = regex2.Match(tempDate);
+                        if (match1.Success)
+                        {
+                            claim.LastAssistanceDate = tempDate; //Ensures that there are no leading or trailing spaces in the string. 
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            endOfAssistance = new DateTime(int.Parse(tempDate.Substring(0, 4)), int.Parse(tempDate.Substring(4, 2)), int.Parse(tempDate.Substring(6, 2)));
+                        }
+                        //Check if claim.LastAssistanceDate is a date in the format MM/DD/YYYY.
+                        else if (match2.Success)
+                        {
+                            //Check if claim.LastAssistanceDate is a date in the format MM/DD/YYYY. In that case it must reformatted to YYYYMMDD.
+                            claim.LastAssistanceDate = tempDate.Substring(6, 4) + tempDate.Substring(0, 2) + tempDate.Substring(3, 2);
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(4, 2)), int.Parse(claim.LastAssistanceDate.Substring(6, 2)));
+                        }
+                        else
+                        {
+                            //Set a default value for endOfAsssitance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                            //decision about personal assistance covers the whole sickleave period.
+                            endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                        }
                     }
                     else
                     {
                         //Set a default value for endOfAsssitance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
-                        endOfAssistance = DateTime.Now.Date.AddDays(20);
+                        endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
                     }
 
                     DateTime startOfAssistance = new DateTime();
                     if (claim.FirstAssistanceDate != null)
                     {
-                        startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(0, 4)), int.Parse(claim.FirstAssistanceDate.Substring(5, 2)), int.Parse(claim.FirstAssistanceDate.Substring(7, 2)));
+                        //Check if claim.FirstAssistanceDate is in the format YYYYMMDD
+                        string tempDate = claim.FirstAssistanceDate.Trim();
+                        Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
+                        Match match1 = regex1.Match(tempDate);
+                        Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
+                        Match match2 = regex2.Match(tempDate);
+                        if (match1.Success)
+                        {
+                            claim.FirstAssistanceDate = tempDate; //Ensures that there are no leading or trailing spaces in the string. 
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            startOfAssistance = new DateTime(int.Parse(tempDate.Substring(0, 4)), int.Parse(tempDate.Substring(4, 2)), int.Parse(tempDate.Substring(6, 2)));
+                        }
+                        //Check if claim.FirstAssistanceDate is a date in the format MM/DD/YYYY.
+                        else if (match2.Success)
+                        {
+                            //Check if claim.LastAssistanceDate is a date in the format MM/DD/YYYY. In that case it must reformatted to YYYYMMDD.
+                            claim.FirstAssistanceDate = tempDate.Substring(6, 4) + tempDate.Substring(0, 2) + tempDate.Substring(3, 2);
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(0, 4)), int.Parse(claim.FirstAssistanceDate.Substring(4, 2)), int.Parse(claim.FirstAssistanceDate.Substring(6, 2)));
+                        }
+                        else
+                        {
+                            //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
+                            //decision about personal assistance covers the whole sickleave period.
+                            startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                        }
                     }
                     else
                     {
                         //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
-                        startOfAssistance = DateTime.Now.Date.AddDays(-20);
+                        startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
                     }
 
-                    //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
-                    if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date)
-                    {
-                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
-                    }
                     //Check if the last day of approved personal assistance is equal to or greater than the first day of the sickperiod and earlier than the last day of the sickleave period. 
                     //In that case the model sum calculation which has been done prior to stage 3 in the claim process shall adjusted to only include those days for which personal assistance has been approved.
                     //Two edge cases have been implemented:
                     //1. The case where the last date of approved assistance is within the sickleave period 
                     //2. The case where the first date of approved assistance is within the sickleave period. 
                     //The case where both the qualifying date and last day of sickness are outside the approved personal assistance dates is not covered. It is a very unlikely case.
-                    else if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
+                    if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
                     {
                         //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
                         int numberOfDaysToRemove = (claim.LastDayOfSicknessDate.Date - endOfAssistance.Date).Days;
@@ -1741,6 +1792,11 @@ namespace Sjuklöner.Controllers
                             CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
                         }
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate;
+                    }
+                    //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
+                    else if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date) //CHECK THIS OUT
+                    {
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
                     }
                     else
                     {
@@ -2562,11 +2618,11 @@ namespace Sjuklöner.Controllers
                 if (startIndex > 0) //This means that the decision about personal assistance covers one or more days of the sickleave period starting from claim.QualifyingDate (1st day of sickness), but it does not cover the whole sickleave period.
                 {
                     adjustedLastDayOfSickness = claim.LastDayOfSicknessDate.AddDays(-(int)numberOfDaysToRemove);
-                    sickdayNumberOffset = (int)numberOfDaysToRemove;
                 }
                 else //This means that the decision about personal assistance covers one or more days at the end of the sickleave period, but not the whole period.
                 {
                     adjustedQualifyingDay = claim.QualifyingDate.AddDays((int)numberOfDaysToRemove);
+                    sickdayNumberOffset = (int)numberOfDaysToRemove;
                 }
                 adjustedNumberOfSickdays = claim.NumberOfSickDays - (int)numberOfDaysToRemove;
             }

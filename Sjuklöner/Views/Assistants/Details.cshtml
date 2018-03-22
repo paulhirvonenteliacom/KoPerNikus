@@ -93,7 +93,13 @@
 </div>
 <div class="row">
     <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
-        @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @if (User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Tillbaka", "IndexAllCompanies", null, new { @class = "btn btn-primary btn-primary-small" })
+    }
+    else
+    {
         @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
+    }
     </div>
 </div>
