@@ -44,13 +44,39 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            return View(careCompany);
+            CareCompanyDetailsVM detailsVM = new CareCompanyDetailsVM();
+            detailsVM.CompanyName = careCompany.CompanyName;
+            detailsVM.OrganisationNumber = careCompany.OrganisationNumber;
+            detailsVM.StreetAddress = careCompany.StreetAddress;
+            detailsVM.Postcode = careCompany.Postcode;
+            detailsVM.City = careCompany.City;
+            detailsVM.AccountNumber = careCompany.AccountNumber;
+            detailsVM.CompanyPhoneNumber = careCompany.CompanyPhoneNumber;
+
+            CollectiveAgreementHeader collectiveAgreement = db.CollectiveAgreementHeaders.Where(c => c.Id == careCompany.SelectedCollectiveAgreementId).SingleOrDefault();
+            if (collectiveAgreement != null)
+            {
+                detailsVM.CollectiveAgreementName = collectiveAgreement.Name;
+            }          
+
+            detailsVM.CollectiveAgreementSpecName = careCompany.CollectiveAgreementSpecName;
+
+            return View(detailsVM);           
         }
 
         // GET: CareCompanies/Create
         public ActionResult Create()
         {
-            return View();
+            var vm = new CareCompanyCreateVM();
+            List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
+            collectiveAgreements = new ApplicationDbContext().CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+            {
+                Value = $"{c.Id}",
+                Text = c.Name
+            });
+            vm.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
+            return View(vm);
+           
         }
 
         // POST: CareCompanies/Create
@@ -58,8 +84,44 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyName,OrganisationNumber,StreetAddress,Postcode,City,AccountNumber,CompanyPhoneNumber,SelectedCollectiveAgreementId,CollectiveAgreementSpecName")] CareCompany careCompany)
+        public ActionResult Create(CareCompanyCreateVM model)
         {
+            if (db.CareCompanies.Where(c => c.OrganisationNumber == model.OrganisationNumber).Any())
+            {
+                ModelState.AddModelError("OrganisationNumber", "Det finns redan ett bolag med det organisationsnumret.");
+            }                
+
+            if (ModelState.IsValid)
+            {
+                CareCompany company = new CareCompany()
+                {
+                    CompanyPhoneNumber = model.CompanyPhoneNumber,
+                    Postcode = model.Postcode,
+                    City = model.City,
+                    OrganisationNumber = model.OrganisationNumber,
+                    StreetAddress = model.StreetAddress,
+                    SelectedCollectiveAgreementId = model.SelectedCollectiveAgreementId,
+                    CollectiveAgreementSpecName = model.CollectiveAgreementSpecName,
+                    AccountNumber = model.AccountNumber,
+                    CompanyName = model.CompanyName
+                };
+
+                db.CareCompanies.Add(company);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
+            collectiveAgreements = new ApplicationDbContext().CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
+            {
+                Value = $"{c.Id}",
+                Text = c.Name
+            });
+            model.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
+            // If we got this far, something failed, redisplay form
+            return View(model);
+
+            /*
             ModelState.Remove(nameof(CareCompany.CollectiveAgreementSpecName));
             if (ModelState.IsValid)
             {
@@ -69,6 +131,7 @@ namespace Sjuklöner.Controllers
             }
 
             return View(careCompany);
+            */
         }
 
         // GET: CareCompanies/Edit/5
@@ -106,6 +169,11 @@ namespace Sjuklöner.Controllers
         public ActionResult Edit([Bind(Include = "CareCompanyId,CareCompany,SelectedCollectiveAgreementId,CollectiveAgreement")] CareCompanyEditVM careCompanyEditVM, string submitButton)
         {
             //ModelState.Remove(nameof(CareCompany.CollectiveAgreementSpecName));
+            if (db.CareCompanies.Where(c => (c.OrganisationNumber == careCompanyEditVM.CareCompany.OrganisationNumber && c.Id != careCompanyEditVM.CareCompany.Id)).Any())
+            {               
+                ModelState.AddModelError("", "Det finns redan ett bolag med det organisationsnumret.");
+            }
+            
             careCompanyEditVM.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
             List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
             if (ModelState.IsValid)
@@ -134,7 +202,12 @@ namespace Sjuklöner.Controllers
                     //careCompanyEditVM.CollectiveAgreement = new SelectList(collectiveAgreements, "Value", "Text");
                     //return View(careCompanyEditVM);
                 }
-                return RedirectToAction("Index", "Claims");
+                if (User.IsInRole("Ombud"))
+                {
+                    return RedirectToAction("Index", "Claims");
+                }
+
+                return RedirectToAction("Index");
             }
 
             collectiveAgreements = db.CollectiveAgreementHeaders.ToList().ConvertAll(c => new SelectListItem
@@ -158,17 +231,46 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            return View(careCompany);
+
+            // It should not be possible to delete Assistansbolag with connected Users  
+            if (db.Users.Where(u => u.CareCompanyId == id).Any())
+            {
+                return RedirectToAction("Index");
+            }
+
+            CareCompanyDeleteVM deleteVM = new CareCompanyDeleteVM();
+            deleteVM.CareCompanyId = careCompany.Id;
+            deleteVM.CompanyName = careCompany.CompanyName;
+            deleteVM.OrganisationNumber = careCompany.OrganisationNumber;
+            deleteVM.StreetAddress = careCompany.StreetAddress;
+            deleteVM.Postcode = careCompany.Postcode;
+            deleteVM.City = careCompany.City;
+            deleteVM.AccountNumber = careCompany.AccountNumber;
+            deleteVM.CompanyPhoneNumber = careCompany.CompanyPhoneNumber;
+
+            CollectiveAgreementHeader collectiveAgreement = db.CollectiveAgreementHeaders.Where(c => c.Id == careCompany.SelectedCollectiveAgreementId).SingleOrDefault();
+            if (collectiveAgreement != null)
+            {
+                deleteVM.CollectiveAgreementName = collectiveAgreement.Name;
+            }
+
+            deleteVM.CollectiveAgreementSpecName = careCompany.CollectiveAgreementSpecName;
+
+            return View(deleteVM);
         }
 
         // POST: CareCompanies/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [ValidateAntiForgeryToken]     
+        public ActionResult DeleteConfirmed(int id, string submitButton)
         {
-            CareCompany careCompany = db.CareCompanies.Find(id);
-            db.CareCompanies.Remove(careCompany);
-            db.SaveChanges();
+            if (submitButton == "Bekräfta")
+            {
+                CareCompany careCompany = db.CareCompanies.Find(id);
+                db.CareCompanies.Remove(careCompany);
+                db.SaveChanges();
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -425,7 +527,6 @@ namespace Sjuklöner.Controllers
                     db.Users.Remove(applicationUser);
                     db.SaveChanges();
                 }
-
             }
             return RedirectToAction("IndexOmbud");
         }

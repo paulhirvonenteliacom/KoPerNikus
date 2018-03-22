@@ -1,4 +1,4 @@
-﻿@model Sjuklöner.Models.CareCompany
+﻿@model Sjuklöner.Viewmodels.CareCompanyDetailsVM
 
 @{
     ViewBag.Title = "Details";
@@ -67,11 +67,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.SelectedCollectiveAgreementId)
+            @Html.DisplayNameFor(model => model.CollectiveAgreementName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.SelectedCollectiveAgreementId)
+            @Html.DisplayFor(model => model.CollectiveAgreementName)
         </dd>
 
         <dt>
@@ -81,10 +81,11 @@
         <dd>
             @Html.DisplayFor(model => model.CollectiveAgreementSpecName)
         </dd>
-
     </dl>
 </div>
-<p>
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
-    @Html.ActionLink("Tillbaka", "Index")
-</p>
+<div class="row">
+    <div class="col col-md-1 col-no-left-padding">
+        @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
+    </div>
+</div>
+
