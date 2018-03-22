@@ -1,11 +1,12 @@
-﻿@model Sjuklöner.Models.DetailsAdmOffVM
+﻿@model Sjuklöner.Models.AdmOffDeleteVM
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Delete";
 }
 <div class="row index-page-margin">
     <p class="col col-md-2"></p>
-    <p class="page-header8 col col-md-10">Detaljvy, handläggare</p>
+    <p class="page-header8 col col-md-10">Ta bort handläggaren</p>
+    <nl class="col-small-left-padding col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort denna handläggare</nl>
 </div>
 <hr class="claim-divider" />
 
@@ -45,16 +46,16 @@
         </div>
     </div>
 
-</div>
-<div class="row row-padding2">
-    <div class="col-small-left-padding col col-md-offset-2 col-md-1">
-        @if (User.IsInRole("Admin"))
-        {
-            @Html.ActionLink("Tillbaka", "IndexAdmOff", null, new { @class = "btn btn-primary btn-primary-small" })
-        }
-        else
-        {
-            @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
-        }
-    </div>
+    @using (Html.BeginForm("DeleteAdmOff", "Account", new { id = Model.Id }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row row-padding2">
+            <div class="col-small-left-padding col col-md-offset-2 col-md-1">
+                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-danger btn-danger-small" id="confirm" />
+            </div>
+            <div class="col-small-left-padding col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+            </div>
+        </div>
+    }
 </div>

@@ -84,11 +84,11 @@
                 <div class="blue-bar-filler" style="width:75%; margin-left: auto; margin-right: auto; float: none;">
                     <ul style="padding-left:4px;">
                         <li>@Html.ActionLink("Kollektivavtal", "Index", "CollectiveAgreements", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
-                        <li>@Html.ActionLink("Handläggare", "NewAdmOff", "Account", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        <li>@Html.ActionLink("Handläggare", "IndexAdmOff", "Account", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
                         <li>@Html.ActionLink("Ansökningar", "Index", "Claims", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
                         <li>@Html.ActionLink("Bolagsuppgifter", "Index", "CareCompanies", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
                         <li>@Html.ActionLink("Assistenter", "IndexAllCompanies", "Assistants", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
-                        <li>@Html.ActionLink("Ombud", "IndexOmbud", "CareCompanies", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
+                        <li>@Html.ActionLink("Ombud", "IndexAllOmbuds", "Account", null, new { @class = "navbar-actionlink li-a-no-padding-left" })</li>
                     </ul>
                     @Html.Partial("_LoginPartial")
                 </div>

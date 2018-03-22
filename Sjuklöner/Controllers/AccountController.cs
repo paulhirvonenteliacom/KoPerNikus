@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Data.Entity;
 using static Sjuklöner.Models.AdmOffIndexVM;
 using System.Net;
+using static Sjuklöner.Models.IndexAllOmbudsVM;
 
 namespace Sjuklöner.Controllers
 {
@@ -155,19 +156,15 @@ namespace Sjuklöner.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult IndexAdmOff()
         {
-            //var admOffs = UserManager.Users.Include("Roles").OrderBy(u => u.LastName).ToList();
             var role = db.Roles.SingleOrDefault(m => m.Name == "AdministrativeOfficial");
-            //List<ApplicationUser> admOffs = new List<ApplicationUser>();
-            //admOffs = null;
             AdmOffIndexVM admOffIndexVM = new AdmOffIndexVM();
             admOffIndexVM.AdmOffsExist = false;
             if (role != null)
             {
-                var admOffs = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id));
+                var admOffs = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).OrderBy(m => m.LastName);
 
                 if (admOffs.Count() > 0)
                 {
-
                     List<AdmOffForVM> admOffForVMList = new List<AdmOffForVM>();
                     foreach (var admOff in admOffs)
                     {
@@ -187,15 +184,12 @@ namespace Sjuklöner.Controllers
             return View("IndexAdmOff", admOffIndexVM);
         }
 
-
-        //
         // GET: /Account/NewAdmOff
         public ActionResult NewAdmOff()
         {
             return View();
         }
 
-        //
         // POST: /Account/NewAdmOff
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -285,7 +279,7 @@ namespace Sjuklöner.Controllers
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(user.Id, "AdministrativeOfficial");
-                    return RedirectToAction("Index", "Claims");
+                    return RedirectToAction("IndexAdmOff", "Account");
                 }
                 AddErrors(result);
             }
@@ -442,7 +436,83 @@ namespace Sjuklöner.Controllers
             return View("DetailsAdmOff", detailsAdmOffVM);
         }
 
-        //
+        // GET: Acount/DeleteAdmOff
+        public ActionResult DeleteAdmOff(string id)
+        {
+            if (id == null || id == User.Identity.GetUserId())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser applicationUser = db.Users.Find(id);
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            AdmOffDeleteVM admOffVM = new AdmOffDeleteVM();
+            admOffVM.Id = id;
+            admOffVM.FirstName = applicationUser.FirstName;
+            admOffVM.LastName = applicationUser.LastName;
+            admOffVM.SSN = applicationUser.SSN;
+            admOffVM.PhoneNumber = applicationUser.PhoneNumber;
+            admOffVM.Email = applicationUser.Email;
+            return View("DeleteAdmOff", admOffVM);
+        }
+
+        // POST: Account/DeleteAdmOff/5
+        [HttpPost, ActionName("DeleteAdmOff")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmedAdmOff(string id, string submitButton)
+        {
+            if (submitButton == "Bekräfta")
+            {
+                var myId = User.Identity.GetUserId();
+                var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
+                ApplicationUser applicationUser = db.Users.Find(id);
+                if (applicationUser != me)
+                {
+                    db.Users.Remove(applicationUser);
+                    db.SaveChanges();
+                }
+            }
+            return RedirectToAction("IndexAdmOff");
+        }
+
+        // GET: Ombud for all companies
+        [Authorize(Roles = "Admin")]
+        public ActionResult IndexAllOmbuds()
+        {
+            IndexAllOmbudsVM ombudIndexVM = new IndexAllOmbudsVM();
+
+            var role = db.Roles.SingleOrDefault(m => m.Name == "Ombud");
+            if (role != null)
+            {
+                var ombuds = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).OrderBy(m => m.LastName).ToList();
+
+                if (ombuds.Count() > 0)
+                {
+                    List<OmbudForVM> ombudForVMList = new List<OmbudForVM>();
+                    foreach (var ombud in ombuds)
+                    {
+                        OmbudForVM ombudForVM = new OmbudForVM();
+                        ombudForVM.Id = ombud.Id;
+                        ombudForVM.CareCompanyId = (int)ombud.CareCompanyId;
+                        ombudForVM.FirstName = ombud.FirstName;
+                        ombudForVM.LastName = ombud.LastName;
+                        ombudForVM.SSN = ombud.SSN;
+                        ombudForVM.Email = ombud.Email;
+                        ombudForVM.PhoneNumber = ombud.PhoneNumber;
+                        ombudForVMList.Add(ombudForVM);
+                    }
+                    ombudIndexVM.OmbudList = ombudForVMList;
+                }
+            }
+
+            var companies = db.CareCompanies.OrderBy(c => c.Id).ToList();
+            ombudIndexVM.CareCompanyList = companies;
+
+            return View(ombudIndexVM);
+        }
+
         // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
