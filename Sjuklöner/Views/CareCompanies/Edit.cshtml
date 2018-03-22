@@ -14,7 +14,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
         @Html.HiddenFor(model => model.CareCompany.Id)
@@ -91,25 +91,23 @@
                 @Html.ValidationMessageFor(model => model.CareCompany.CollectiveAgreementSpecName, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
-
-        @*<div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>*@
     </div>
-    <div class="row">
-        <div class="form-group">
-            <div class="col col-md-offset-2 col-md-1">
-                <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Spara" id="proceed" />
-            </div>
-            <div class="col col-md-1">
-                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
-            </div>
+    <div class="row row-padding2">
+        <div class="col col-md-offset-2 col-md-1">
+            <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Spara" id="proceed" />
         </div>
-    </div>
+        <div class="col col-md-2">
+        @if (User.IsInRole("Ombud"))
+        {
+            @Html.ActionLink("Avbryt", "IndexPageOmbud", "Claims", null, new { @class = "btn btn-secondary btn-secondary-small" })
+        }
+        else
+        {
+            @Html.ActionLink("Avbryt", "Index", "Carecompanies", null, new { @class = "btn btn-secondary btn-secondary-small" })
+        }
+
+        </div>
+    </div>   
 }
 
-@*<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>*@
+

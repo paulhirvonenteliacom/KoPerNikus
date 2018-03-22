@@ -12,11 +12,13 @@ using static Sjuklöner.Viewmodels.CollectiveAgreementEditVM;
 
 namespace Sjuklöner.Controllers
 {
+    [Authorize]
     public class CollectiveAgreementsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: CollectiveAgreements
+        [Authorize(Roles = "Admin, AdministrativeOfficial")]
         public ActionResult Index()
         {
             CollectiveAgreementIndexVM collectiveAgreementIndexVM = new CollectiveAgreementIndexVM();
@@ -417,6 +419,11 @@ namespace Sjuklöner.Controllers
         // GET: CollectiveAgreements/Delete/5
         public ActionResult Delete(string type, int? headerId, int? infoId)
         {
+            // It should not be possible to delete the last "Kollektivavtal"  
+            if (db.CollectiveAgreementHeaders.Count() < 2  && type == "header") {
+                return RedirectToAction("Index");
+            }
+
             if (headerId != null)
             {
                 CollectiveAgreementDeleteVM collectiveAgreementDeleteVM = new CollectiveAgreementDeleteVM();
@@ -425,6 +432,13 @@ namespace Sjuklöner.Controllers
                 CollAgreementHeader collAgreementHeader = new CollAgreementHeader();
                 collectiveAgreementDeleteVM.CollAgreementHeader = collAgreementHeader;
                 var collectiveAgreementHeader = db.CollectiveAgreementHeaders.Where(c => c.Id == headerId).FirstOrDefault();
+
+                // It should not be possible to delete the last Time Period in a "Kollektivavtal"  
+                if (collectiveAgreementHeader.Counter < 2 && type == "info")
+                {
+                    return RedirectToAction("Index");
+                }
+
                 collectiveAgreementDeleteVM.CollAgreementHeader.Id = collectiveAgreementHeader.Id;
                 collectiveAgreementDeleteVM.CollAgreementHeader.Name = collectiveAgreementHeader.Name;
                 collectiveAgreementDeleteVM.CollAgreementHeader.Counter = collectiveAgreementHeader.Counter;

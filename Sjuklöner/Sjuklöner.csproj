@@ -274,6 +274,9 @@
     <Compile Include="Viewmodels\AssistantCompanyEditVM.cs" />
     <Compile Include="Viewmodels\AssistantEditVM.cs" />
     <Compile Include="Viewmodels\AssistantIndexAllCompaniesVM.cs" />
+    <Compile Include="Viewmodels\CareCompanyCreateVM.cs" />
+    <Compile Include="Viewmodels\CareCompanyDeleteVM.cs" />
+    <Compile Include="Viewmodels\CareCompanyDetailsVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsOmbudVM.cs" />
     <Compile Include="Viewmodels\AssistantCreateVM.cs" />
     <Compile Include="Viewmodels\OmbudDeleteVM.cs" />

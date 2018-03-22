@@ -25,9 +25,12 @@
         <div class="col col-md-1">
             @Html.ActionLink("Uppdatera", "Edit", new { type = "header", headerId = Model.CollectiveAgreementHeader[i].Id }, new { @class = "btn btn-secondary btn-secondary-small" })
         </div>
-        <div class="col col col-md-1">
-            @Html.ActionLink("Ta bort", "Delete", new { type = "header", headerId = Model.CollectiveAgreementHeader[i].Id }, new { @class = "btn btn-danger btn-danger-small" })
-        </div>
+        @if (Model.NumberOfCollectiveAgreements > 1)
+        {
+            <div class="col col col-md-1">
+                @Html.ActionLink("Ta bort", "Delete", new { type = "header", headerId = Model.CollectiveAgreementHeader[i].Id }, new { @class = "btn btn-danger btn-danger-small" })
+            </div>
+        }
     </div>
     <table class="table">
         <tr>
@@ -110,9 +113,11 @@
                         @Html.DisplayFor(modelItem => item.ExtraHOurFactor)
                     </td>*@
                 <td>
-                    @Html.ActionLink("Uppdatera", "Edit", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-primary btn-primary-small" })
-                    @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |*@
-                    @Html.ActionLink("Ta bort", "Delete", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-danger btn-danger-small" })
+                    @Html.ActionLink("Uppdatera", "Edit", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-primary btn-primary-small" })        
+                    @if(Model.CollectiveAgreementHeader[i].Counter > 1)
+                    { 
+                        @Html.ActionLink("Ta bort", "Delete", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-danger btn-danger-small" })
+                    }
                 </td>
             </tr>
         }

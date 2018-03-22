@@ -1,4 +1,4 @@
-﻿@model Sjuklöner.Models.CareCompany
+﻿@model Sjuklöner.Viewmodels.CareCompanyDeleteVM
 
 @{
     ViewBag.Title = "Delete";
@@ -68,11 +68,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.SelectedCollectiveAgreementId)
+            @Html.DisplayNameFor(model => model.CollectiveAgreementName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.SelectedCollectiveAgreementId)
+            @Html.DisplayFor(model => model.CollectiveAgreementName)
         </dd>
 
         <dt>
@@ -85,13 +85,16 @@
 
     </dl>
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("Delete", "CareCompanies", new { id = Model.CareCompanyId }, FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+        <div class="row">
+            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-danger btn-danger-small" id="confirm" />
+            </div>
+            <div class="no-padding-left2 col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+            </div>
         </div>
     }
 </div>
