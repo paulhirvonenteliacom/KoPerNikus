@@ -1,0 +1,67 @@
+﻿@model Sjuklöner.Models.DetailsAdmOffVM
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="row index-page-margin">
+    <p class="col col-md-2"></p>
+    <p class="page-header8 col col-md-10">Detaljvy, handläggare</p>
+</div>
+<div>
+    <hr class="claim-divider" />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SSN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SSN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+
+    </dl>
+</div>
+<div class="row">
+    <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
+        @if (User.IsInRole("Admin"))
+        {
+            @Html.ActionLink("Tillbaka", "IndexAdmOff", null, new { @class = "btn btn-primary btn-primary-small" })
+        }
+        else
+        {
+            @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
+        }
+    </div>
+</div>

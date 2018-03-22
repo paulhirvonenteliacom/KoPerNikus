@@ -369,7 +369,7 @@ namespace Sjuklöner.Controllers
             //Check if there is an administrative official with the same SSN already.
             if (!errorFound)
             {
-                if (UserManager.Users.Where(u => u.SSN == admOffEditVM.SSN).Any())
+                if (UserManager.Users.Where(u => u.SSN == admOffEditVM.SSN).Where(u => u.Id != admOffEditVM.Id).Any())
                 {
                     ModelState.AddModelError("SSN", "Det finns redan en användare med det personnummret");
                     errorFound = true;
@@ -384,21 +384,31 @@ namespace Sjuklöner.Controllers
                 }
             }
 
-            if (UserManager.Users.Where(u => u.Email == admOffEditVM.Email).Any())
+            if (UserManager.Users.Where(u => u.Email == admOffEditVM.Email).Where(u => u.Id != admOffEditVM.Id).Any())
                 ModelState.AddModelError("Email", "Det finns redan en användare med den e-postaddressen");
             if (ModelState.IsValid) //&& admOffEditVM.SSN == admOffEditVM.ConfirmSSN
             {
-                var user = new ApplicationUser
-                {
-                    //UserName = $"{admOffEditVM.FirstName} {admOffEditVM.LastName}", //For use with BankID
-                    UserName = admOffEditVM.Email,
-                    Email = admOffEditVM.Email,
-                    FirstName = admOffEditVM.FirstName,
-                    LastName = admOffEditVM.LastName,
-                    PhoneNumber = admOffEditVM.PhoneNumber,
-                    LastLogon = DateTime.Now,
-                    SSN = admOffEditVM.SSN
-                };
+                var user = db.Users.Find(admOffEditVM.Id);
+                user.UserName = admOffEditVM.Email;
+                user.Email = admOffEditVM.Email;
+                user.FirstName = admOffEditVM.FirstName;
+                user.LastName = admOffEditVM.LastName;
+                user.PhoneNumber = admOffEditVM.PhoneNumber;
+                user.SSN = admOffEditVM.SSN;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+
+                //var user = new ApplicationUser
+                //{
+                //    //UserName = $"{admOffEditVM.FirstName} {admOffEditVM.LastName}", //For use with BankID
+                //    UserName = admOffEditVM.Email,
+                //    Email = admOffEditVM.Email,
+                //    FirstName = admOffEditVM.FirstName,
+                //    LastName = admOffEditVM.LastName,
+                //    PhoneNumber = admOffEditVM.PhoneNumber,
+                //    LastLogon = DateTime.Now,
+                //    SSN = admOffEditVM.SSN
+                //};
                 //var result = await UserManager.CreateAsync(user, admOffEditVM.Password);
                 //if (result.Succeeded)
                 //{
@@ -407,7 +417,29 @@ namespace Sjuklöner.Controllers
                 //}
                 //AddErrors(result);
             }
-            return View(admOffEditVM);
+            return RedirectToAction("IndexAdmOff");
+        }
+
+        // GET: Account/DetailsAdmOff
+        public ActionResult DetailsAdmOff(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            DetailsAdmOffVM detailsAdmOffVM = new DetailsAdmOffVM();
+            detailsAdmOffVM.FirstName = user.FirstName;
+            detailsAdmOffVM.LastName = user.LastName;
+            detailsAdmOffVM.SSN = user.SSN;
+            detailsAdmOffVM.Email = user.Email;
+            detailsAdmOffVM.PhoneNumber = user.PhoneNumber;
+
+            return View("DetailsAdmOff", detailsAdmOffVM);
         }
 
         //

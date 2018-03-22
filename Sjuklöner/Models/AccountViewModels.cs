@@ -138,6 +138,37 @@ namespace Sjuklöner.Models
         public string Type { get; set; }
     }
 
+    public class DetailsAdmOffVM
+    {
+        [Display(Name = "Personnummer")]
+        public string SSN { get; set; }
+
+        //[DataType(DataType.Password)]
+        //[Display(Name = "Lösenord")]
+        //public string Password { get; set; }
+
+        //[DataType(DataType.Password)]
+        //[Display(Name = "Bekräfta lösenord")]
+        //[Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
+        //public string ConfirmPassword { get; set; }
+
+        //[Required]        
+        //public string ConfirmSSN { get; set; }
+
+        [Display(Name = "Förnamn")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Efternamn")]
+        public string LastName { get; set; }
+
+        [EmailAddress]
+        [Display(Name = "E-post")]
+        public string Email { get; set; }
+
+        [Display(Name = "Tel. nr. (inkl. riktnr.)")]
+        public string PhoneNumber { get; set; }
+    }
+
     public class NewAdmOffVM
     {
         [Required]
