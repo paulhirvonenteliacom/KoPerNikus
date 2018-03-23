@@ -29,7 +29,16 @@ namespace Sjuklöner.Controllers
                 var companyId = currentUser.CareCompanyId;
                 return RedirectToAction("Edit", new { id = companyId });
             }
-            return View(db.CareCompanies.ToList());
+
+            CareCompanyIndexVM companyIndexVM = new CareCompanyIndexVM();
+
+            var companies = db.CareCompanies.ToList();
+            companyIndexVM.CareCompanyList = companies;
+
+            var users = db.Users.ToList();
+            companyIndexVM.UserList = users;
+
+            return View(companyIndexVM);          
         }
 
         // GET: CareCompanies/Details/5

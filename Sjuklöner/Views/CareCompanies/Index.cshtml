@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Sjuklöner.Models.CareCompany>
+﻿@model Sjuklöner.Viewmodels.CareCompanyIndexVM
 @{
     ViewBag.Title = "Index";
 }
@@ -18,58 +18,73 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CompanyName)
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].CompanyName)           
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.OrganisationNumber)
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].OrganisationNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StreetAddress)
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].StreetAddress)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Postcode)
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].Postcode)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.City)
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].City)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AccountNumber)
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].AccountNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CompanyPhoneNumber)
-        </th>        
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].CompanyPhoneNumber)
+        </th>
         <th></th>
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in Model.CareCompanyList)
     {
-        <tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OrganisationNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StreetAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Postcode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.City)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AccountNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyPhoneNumber)
+        </td>
+        @if (Model.UserList.Where(u => u.CareCompanyId == item.Id).Any())
+        {
             <td>
-                @Html.DisplayFor(modelItem => item.CompanyName)
+                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrganisationNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StreetAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Postcode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyPhoneNumber)
-            </td>           
+        }
+        else
+        {
             <td>
                 @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })                                
-            </td>          
-        </tr>
+                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+            </td>
+        }    
+    </tr>
     }
 </table>
+<div class="row row-padding2">
+    <div class="col-left-margin-6 col col-md-2">
+        @Html.ActionLink("Tillbaka", "Index", "Home", null, new { @class = "btn btn-primary btn-primary-small" })
+    </div>
+</div>
 
