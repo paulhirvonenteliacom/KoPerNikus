@@ -460,6 +460,7 @@
     <Content Include="Views\Account\DetailsAdmOff.cshtml" />
     <Content Include="Views\Account\DeleteAdmOff.cshtml" />
     <Content Include="Views\Account\IndexAllOmbuds.cshtml" />
+    <Content Include="Views\Claims\IndexPageAdmin.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

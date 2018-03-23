@@ -39,7 +39,11 @@ namespace Sjuklöner.Controllers
             {
                 return RedirectToAction("IndexPageAdmOff", "Claims");
             }
-            else
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("IndexPageAdmin", "Claims");
+            }            
+            else  // This should never happen     
             {
                 return View(db.Claims.ToList());
             }
@@ -109,6 +113,34 @@ namespace Sjuklöner.Controllers
             }
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
+        }
+
+        // GET: Claims
+        [Authorize(Roles = "Admin")]
+        public ActionResult IndexPageAdmin(string searchString, string searchBy = "Referensnummer")
+        {
+            IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
+
+            var me = db.Users.Find(User.Identity.GetUserId());
+
+            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.StatusDate).ToList();
+            if (claims.Count > 0)
+            {
+                var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
+                var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    decidedClaims = Search(decidedClaims, searchString, searchBy);
+                    inInboxClaims = Search(inInboxClaims, searchString, searchBy);
+                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                }
+                indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
+                indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
+                indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
+            }
+
+            return View("IndexPageAdmin", indexPageAdmOffVM);
         }
 
         private IEnumerable<Claim> Search(IEnumerable<Claim> Claims, string searchString, string searchBy)
