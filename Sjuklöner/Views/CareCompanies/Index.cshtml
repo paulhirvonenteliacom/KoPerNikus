@@ -11,14 +11,22 @@
         @Html.ActionLink("Nytt bolag", "Create", null, new { @class = "btn btn-primary btn-primary3" })
     </div>
 </div>
-
 <br />
-<hr class="claim-divider" />
-<br />
-<table class="table">
+@if (!Model.CareCompanyList.Any())
+{
+    <div class="left-margin-23 display-large-font">
+        Det finns inga assistansbolag.
+    </div>
+    <br />
+}
+else
+{
+    <hr class="claim-divider" />
+    <br />
+    <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CareCompanyList[0].CompanyName)           
+            @Html.DisplayNameFor(model => model.CareCompanyList[0].CompanyName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.CareCompanyList[0].OrganisationNumber)
@@ -42,46 +50,47 @@
     </tr>
     @foreach (var item in Model.CareCompanyList)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.CompanyName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrganisationNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StreetAddress)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Postcode)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AccountNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CompanyPhoneNumber)
-        </td>
-        @if (Model.UserList.Where(u => u.CareCompanyId == item.Id).Any())
-        {
+        <tr>
             <td>
-                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                @Html.DisplayFor(modelItem => item.CompanyName)
             </td>
-        }
-        else
-        {
             <td>
-                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                @Html.DisplayFor(modelItem => item.OrganisationNumber)
             </td>
-        }    
-    </tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StreetAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Postcode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyPhoneNumber)
+            </td>
+            @if (Model.UserList.Where(u => u.CareCompanyId == item.Id).Any())
+            {
+                <td>
+                    @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                </td>
+            }
+            else
+            {
+                <td>
+                    @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                </td>
+            }
+        </tr>
     }
 </table>
+}
 <div class="row row-padding2">
     <div class="col-left-margin-6 col col-md-2">
         @Html.ActionLink("Tillbaka", "Index", "Home", null, new { @class = "btn btn-primary btn-primary-small" })
