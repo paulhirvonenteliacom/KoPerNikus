@@ -14,8 +14,17 @@
     </div>
 </div>
 <br />
-@for (int i = 0; i < Model.NumberOfCollectiveAgreements; i++)
+@if (Model.NumberOfCollectiveAgreements == 0)
 {
+    <div class="left-margin-23 display-large-font">
+        Det finns inga kollektivavtal.
+    </div>
+    <br />
+}
+else
+{
+    for (int i = 0; i < Model.NumberOfCollectiveAgreements; i++)
+    {
     <hr class="claim-divider" />
     <p class="collective-agreement-header">@Model.CollectiveAgreementHeader[i].Name</p>
     <div class="row">
@@ -113,19 +122,20 @@
                         @Html.DisplayFor(modelItem => item.ExtraHOurFactor)
                     </td>*@
                 <td>
-                    @Html.ActionLink("Uppdatera", "Edit", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-primary btn-primary-small" })        
-                    @if(Model.CollectiveAgreementHeader[i].Counter > 1)
-                    { 
+                    @Html.ActionLink("Uppdatera", "Edit", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-primary btn-primary-small" })
+                    @if (Model.CollectiveAgreementHeader[i].Counter > 1)
+                    {
                         @Html.ActionLink("Ta bort", "Delete", new { type = "info", headerId = Model.CollectiveAgreementHeader[i].Id, infoId = Model.CollectiveAgreementInfo[infoIdx + j].Id }, new { @class = "btn btn-danger btn-danger-small" })
                     }
                 </td>
             </tr>
         }
     </table>
-    infoIdx = infoIdx + Model.CollectiveAgreementHeader[i].Counter;
+        infoIdx = infoIdx + Model.CollectiveAgreementHeader[i].Counter;
+    }
 }
-    <div class="row row-padding2">
-        <div class="col-left-margin-6 col col-md-2">
-            @Html.ActionLink("Tillbaka", "Index", "Home", null, new { @class = "btn btn-primary btn-primary-small" })
-        </div>
+<div class="row row-padding2">
+    <div class="col-left-margin-6 col col-md-2">
+        @Html.ActionLink("Tillbaka", "Index", "Home", null, new { @class = "btn btn-primary btn-primary-small" })
     </div>
+</div>
