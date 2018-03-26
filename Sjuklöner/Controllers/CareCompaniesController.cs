@@ -242,10 +242,12 @@ namespace Sjuklöner.Controllers
             }
 
             // It should not be possible to delete Assistansbolag with connected Users  
+            /*
             if (db.Users.Where(u => u.CareCompanyId == id).Any())
             {
                 return RedirectToAction("Index");
             }
+            */
 
             CareCompanyDeleteVM deleteVM = new CareCompanyDeleteVM();
             deleteVM.CareCompanyId = careCompany.Id;
@@ -275,6 +277,13 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Bekräfta")
             {
+                // All Users connected to this CareCompany should be deleted
+                var usersToDelete = db.Users.Where(u => u.CareCompanyId == id).ToList();
+                foreach(ApplicationUser user in usersToDelete)
+                {
+                    db.Users.Remove(user);                   
+                }               
+                
                 CareCompany careCompany = db.CareCompanies.Find(id);
                 db.CareCompanies.Remove(careCompany);
                 db.SaveChanges();
