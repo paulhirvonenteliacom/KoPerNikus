@@ -277,13 +277,53 @@ namespace Sjuklöner.Controllers
         {
             if (submitButton == "Bekräfta")
             {
+                // All Assistants connected to this CareCompany will be automatically deleted
+                // because of Cascade Delete in table dbo.Assistants
+
                 // All Users connected to this CareCompany should be deleted
                 var usersToDelete = db.Users.Where(u => u.CareCompanyId == id).ToList();
                 foreach(ApplicationUser user in usersToDelete)
                 {
                     db.Users.Remove(user);                   
-                }               
-                
+                }              
+
+                // All Unsent Claims(Claims with StatusId == 2) and connected to this company should be deleted
+                var unsentClaims = db.Claims.Where(c => (c.CareCompanyId == id && c.ClaimStatusId == 2)).ToList();
+                foreach(var claim in unsentClaims)
+                {
+                    if (claim.CompletionStage > 1)
+                    {
+                        db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                    }
+                    if (claim.CompletionStage >= 2)
+                    {
+                        db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                    }
+                    if (claim.CompletionStage >= 4)
+                    {
+                        if (claim.Documents.Count() > 0)
+                        {
+                            db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == claim.ReferenceNumber));
+                        }
+                    }
+                }
+               
+                // All other Claims connected to this CareCompany will be automatically deleted
+                // because of Cascade Delete in table dbo.Claims. Need to avoid Exceptions because of that
+                // TODO Need to save the data somewhere for all the Claims that has been sent 
+                var sentClaims = db.Claims.Where(c => (c.CareCompanyId == id && c.ClaimStatusId != 2)).ToList();
+                foreach(var claim in sentClaims)
+                {
+                    db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                    db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+
+                    // Delete all Documents connected to these Claims to avoid Exception when the Claim is automatically deleted  
+                    if (claim.Documents.Count() > 0)
+                    {
+                        db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == claim.ReferenceNumber));
+                    }
+                }
+
                 CareCompany careCompany = db.CareCompanies.Find(id);
                 db.CareCompanies.Remove(careCompany);
                 db.SaveChanges();
