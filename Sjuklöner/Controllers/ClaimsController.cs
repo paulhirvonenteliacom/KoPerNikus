@@ -21,7 +21,6 @@ using System.Text.RegularExpressions;
 namespace Sjuklöner.Controllers
 {
     [Authorize]
-
     public class ClaimsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -2570,20 +2569,55 @@ namespace Sjuklöner.Controllers
             if (submitButton == "Bekräfta")
             {
                 Claim claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
-                if (claim.CompletionStage > 1)
+
+                if (User.IsInRole("Admin"))
                 {
-                    db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
-                }
-                if (claim.CompletionStage >= 4)
-                {
-                    db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
-                    if (claim.Documents.Count() > 0)
+                    // Only Applications with StatusId == 1,3,5 can be removed by Admin
+                    if (claim.ClaimStatusId == 1 | claim.ClaimStatusId == 3 | claim.ClaimStatusId == 5)
                     {
-                        db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == refNumber));
+                        db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                        db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+
+                        if (claim.Documents.Count() > 0)
+                        {
+                            db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == refNumber));
+                        }
+
+                        db.Claims.Remove(claim);
+                        db.SaveChanges();
                     }
                 }
-                db.Claims.Remove(claim);
-                db.SaveChanges();
+
+                if (User.IsInRole("Ombud"))
+                {
+                    // Only Applications with StatusId == 2 can be removed by Ombud
+                    if (claim.ClaimStatusId == 2)
+                    {
+                        var me = db.Users.Find(User.Identity.GetUserId());
+                        // Only Applications from same Company can be removed by Ombud
+                        if (claim.CareCompanyId == me.CareCompanyId)
+                        {
+                            if (claim.CompletionStage > 1)
+                            {
+                                db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                            }
+                            if (claim.CompletionStage >= 2)
+                            {
+                                db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                            }
+                            if (claim.CompletionStage >= 4)
+                            {
+                                if (claim.Documents.Count() > 0)
+                                {
+                                    db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == refNumber));
+                                }
+                            }
+                            db.Claims.Remove(claim);
+                            db.SaveChanges();
+                        }
+                    }                    
+                }             
+                                
             }
             return RedirectToAction("Index");
         }
