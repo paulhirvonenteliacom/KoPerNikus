@@ -68,27 +68,59 @@ sql query ‴UPDATE dbo.Claims SET IVOCheck = '♥ivovalid' WHERE ReferenceNumbe
 program name ‴♥appdata\Bitoreq AB\KoPerNikus\Procapita.exe‴
 window title ‴✱Stödsystem✱‴
 
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
 -Click Mina Brukare. ? czy to bedzie dzialac w nowym skärm?
 --Laptop screen (1920x1080)
 mouse.click position (point)152,969 relative true
 --Desktop screen (1920x1200)
 ---mouse.click position (point)110,1091 relative true
 delay milliseconds 600
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
 -Click the search field.
 --Laptop screen (1920x1080)
 mouse.click position (point)155,122 relative true
 --Desktop screen (1920x1200)
 ---mouse.click position (point)154,115 relative true
 delay milliseconds 600
+
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
 -Type the SSN to search for into search field.
 keyboard ♥SSN keydelay 10
 delay milliseconds 600
 -Click the search button.
 --Laptop screen (1920x1080)
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
 mouse.click position (point)247,120 relative true
 --Desktop screen (1920x1200)
 ---mouse.click position (point)249,124 relative true
 delay seconds 6
+
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
+
 keyboard ⋘ALT+F4⋙
 
 ♥procapitavalid = true
@@ -100,10 +132,26 @@ jump ➜procapitacheckdone
 -Update database to reflect results of ProCapita check
 sql query ‴UPDATE dbo.Claims SET ProCapitaCheck = '♥procapitavalid' WHERE ReferenceNumber = '♥ReferenceNumber'‴
 
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
+
+
 window title ‴Inloggning✱‴
 ie.attach phrase ‴Inloggning‴
 
 delay milliseconds 400
+
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
+
 ie.setattribute search ‴Email‴ by ‴id‴ name ‴value‴ value ‴henrik.signell@helsingborg.se‴
 delay milliseconds 400
 ie.setattribute search ‴Password‴ by ‴id‴ name ‴value‴ value ‴sjukLÖN123!‴
@@ -111,6 +159,14 @@ ie.setattribute search ‴Password‴ by ‴id‴ name ‴value‴ value ‴sjuk
 delay milliseconds 400
 
 ie.click search ‴login‴ by ‴id‴
+
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
+
 
 ➜logoff
 ♥timeout = 99999999
@@ -135,6 +191,14 @@ delay milliseconds 300
 ie.attach ‴StodSystem‴
 ie.seturl ‴♥url/Claims/StodsystemLogin‴
 window title ‴✱Stodsystem✱‴ style ‴Maximize‴
+
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
+
 ie.attach ‴StodSystemLogin‴
 delay 1
 ie.setattribute name ‴value‴ value ♥ReferenceNumber search ‴referencenumber‴ by ‴id‴
@@ -142,6 +206,15 @@ ie.setattribute name ‴value‴ value ‴henrik.signell@helsingborg.se‴ searc
 delay milliseconds 500
 ie.setattribute name ‴value‴ value ‴sjukLÖN123!‴ search ‴lösenord‴ by ‴id‴
 delay milliseconds 500
+
+
+---------------------------------------------
+dialog message ‴press enter‴
+pause key ⋘ENTER⋙
+---------------------------------------------
+
+
+
 ie.click search ‴login‴ by ‴id‴
 
 ➜finallogoff
