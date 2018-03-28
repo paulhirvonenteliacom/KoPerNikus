@@ -106,7 +106,8 @@ ie.attach phrase ‴Inloggning‴
 delay milliseconds 400
 ie.setattribute search ‴Email‴ by ‴id‴ name ‴value‴ value ‴henrik.signell@helsingborg.se‴
 delay milliseconds 400
-ie.setattribute search ‴Password‴ by ‴id‴ name ‴value‴ value ♥credentials⟦pass⟧
+ie.setattribute search ‴Password‴ by ‴id‴ name ‴value‴ value ‴sjukLÖN123!‴
+--♥credentials⟦pass⟧
 delay milliseconds 400
 
 ie.click search ‴login‴ by ‴id‴
@@ -139,7 +140,7 @@ delay 1
 ie.setattribute name ‴value‴ value ♥ReferenceNumber search ‴referencenumber‴ by ‴id‴
 ie.setattribute name ‴value‴ value ‴henrik.signell@helsingborg.se‴ search ‴användarnamn‴ by ‴id‴
 delay milliseconds 500
-ie.setattribute name ‴value‴ value ♥credentials⟦pass⟧ search ‴lösenord‴ by ‴id‴
+ie.setattribute name ‴value‴ value ‴sjukLÖN123!‴ search ‴lösenord‴ by ‴id‴
 delay milliseconds 500
 ie.click search ‴login‴ by ‴id‴
 
@@ -158,7 +159,7 @@ ie.attach ‴Inloggning‴
 delay milliseconds 400
 ie.setattribute search ‴Email‴ by ‴id‴ name ‴value‴ value ‴ombud.ombudsson@assistans.se‴
 delay milliseconds 400
-ie.setattribute search ‴Password‴ by ‴id‴ name ‴value‴ value ♥credentials⟦pass⟧
+ie.setattribute search ‴Password‴ by ‴id‴ name ‴value‴ value ‴sjukLÖN123!‴
 delay milliseconds 400
 
 ie.click search ‴login‴ by ‴id‴
