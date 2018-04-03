@@ -69,6 +69,16 @@ namespace Sjuklöner.Controllers
                     draftClaims = Search(draftClaims, searchString, searchBy);
                     underReviewClaims = Search(underReviewClaims, searchString, searchBy);
                 }
+
+                // Saved Claims should not be listed in this View
+                int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+                if (fakeCompanyId != null)
+                {
+                    decidedClaims = decidedClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                    draftClaims = draftClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                    underReviewClaims = underReviewClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                }
+
                 indexPageOmbudVM.DecidedClaims = decidedClaims.ToList(); //Old "Rejected
                 indexPageOmbudVM.DraftClaims = draftClaims.ToList();
                 indexPageOmbudVM.UnderReviewClaims = underReviewClaims.ToList();
@@ -100,15 +110,28 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                var savedClaims = claims.Where(c => false);      // Start Value for savedClaims is "No saved Claims" 
+                
+                int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+                if (fakeCompanyId != null)
+                {                      
+                    savedClaims = claims.Where(c => c.CareCompanyId == fakeCompanyId);
+                    decidedClaims = decidedClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                    inInboxClaims = inInboxClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                    underReviewClaims = underReviewClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                }
+
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
                     inInboxClaims = Search(inInboxClaims, searchString, searchBy);
                     underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                    savedClaims = Search(savedClaims, searchString, searchBy);
                 }
                 indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
                 indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
                 indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
+                indexPageAdmOffVM.SavedClaims = savedClaims.ToList();
             }
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
@@ -118,7 +141,7 @@ namespace Sjuklöner.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult IndexPageAdmin(string searchString, string searchBy = "Referensnummer")
         {
-            IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
+            IndexPageAdmOffVM indexPageAdmin = new IndexPageAdmOffVM();
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
@@ -128,18 +151,31 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                var savedClaims = claims.Where(c => false);      // Start Value for savedClaims is "No saved Claims" 
+
+                int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+                if (fakeCompanyId != null)
+                {
+                    savedClaims = claims.Where(c => c.CareCompanyId == fakeCompanyId);
+                    decidedClaims = decidedClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                    inInboxClaims = inInboxClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                    underReviewClaims = underReviewClaims.Where(c => c.CareCompanyId != fakeCompanyId);
+                }
+
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
                     inInboxClaims = Search(inInboxClaims, searchString, searchBy);
                     underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                    savedClaims = Search(savedClaims, searchString, searchBy);
                 }
-                indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
-                indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
-                indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
+                indexPageAdmin.DecidedClaims = decidedClaims.ToList();
+                indexPageAdmin.InInboxClaims = inInboxClaims.ToList();
+                indexPageAdmin.UnderReviewClaims = underReviewClaims.ToList();
+                indexPageAdmin.SavedClaims = savedClaims.ToList();
             }
 
-            return View("IndexPageAdmin", indexPageAdmOffVM);
+            return View("IndexPageAdmin", indexPageAdmin);
         }
 
         private IEnumerable<Claim> Search(IEnumerable<Claim> Claims, string searchString, string searchBy)
@@ -3027,6 +3063,9 @@ namespace Sjuklöner.Controllers
 
             if (smtpHost == "smtp.gmail.com")
                 smtpClient.EnableSsl = true;
+
+
+
             smtpClient.Send(message);
             return;
         }

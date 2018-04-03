@@ -33,6 +33,15 @@ namespace Sjuklöner.Controllers
             CareCompanyIndexVM companyIndexVM = new CareCompanyIndexVM();
 
             var companies = db.CareCompanies.ToList();
+
+            // The "Fake Company" should not be listed in the Index View
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+
+            if (fakeCompanyId != null)
+            {
+                companies = db.CareCompanies.Where(c => c.Id != fakeCompanyId).ToList();
+            }
+
             companyIndexVM.CareCompanyList = companies;
 
             var users = db.Users.ToList();
@@ -53,6 +62,17 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
+
+            // Details should not be shown for the "Fake Company"
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;             
+            if (fakeCompanyId != null)
+            {
+                if (id == fakeCompanyId)
+                {
+                    return RedirectToAction("Index");
+                }
+            }          
+
             CareCompanyDetailsVM detailsVM = new CareCompanyDetailsVM();
             detailsVM.CompanyName = careCompany.CompanyName;
             detailsVM.OrganisationNumber = careCompany.OrganisationNumber;
@@ -155,6 +175,17 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
+           
+            // It should not be possible to update the "Fake Company"
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+            if (fakeCompanyId != null)
+            {
+                if (id == fakeCompanyId)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
             CareCompanyEditVM careCompanyEditVM = new CareCompanyEditVM();
             careCompanyEditVM.CareCompany = careCompany;
             careCompanyEditVM.CareCompanyId = (int)id;
@@ -241,6 +272,16 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
 
+            // It should not be possible to delete the "Fake Company"
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+            if (fakeCompanyId != null)
+            {
+                if (id == fakeCompanyId)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
             // It should not be possible to delete Assistansbolag with connected Users  
             /*
             if (db.Users.Where(u => u.CareCompanyId == id).Any())
@@ -307,22 +348,22 @@ namespace Sjuklöner.Controllers
                         }
                     }
                 }
+                db.SaveChanges();
                
-                // All other Claims connected to this CareCompany will be automatically deleted
-                // because of Cascade Delete in table dbo.Claims. Need to avoid Exceptions because of that
-                // TODO Need to save the data somewhere for all the Claims that has been sent 
+                // All the Claims that has been sent should be saved  
                 var sentClaims = db.Claims.Where(c => (c.CareCompanyId == id && c.ClaimStatusId != 2)).ToList();
-                foreach(var claim in sentClaims)
-                {
-                    db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
-                    db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
 
-                    // Delete all Documents connected to these Claims to avoid Exception when the Claim is automatically deleted  
-                    if (claim.Documents.Count() > 0)
+                // Temporary solution: Let the saved Claims CareCompanyId point to a Fake Company that is stored in dbo.CareCompanies
+                CareCompany savedClaimsCompany = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault(); 
+                if (savedClaimsCompany != null)
+                {
+                    foreach (var claim in sentClaims)
                     {
-                        db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == claim.ReferenceNumber));
+                        claim.CareCompanyId = savedClaimsCompany.Id;
+                        db.Entry(claim).State = EntityState.Modified;
+                        db.SaveChanges();
                     }
-                }
+                }              
 
                 CareCompany careCompany = db.CareCompanies.Find(id);
                 db.CareCompanies.Remove(careCompany);
