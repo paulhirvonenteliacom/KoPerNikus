@@ -301,6 +301,12 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
             AssistantEditVM assistantEditVM = new AssistantEditVM();
+            CareCompany company = db.CareCompanies.Find(assistant.CareCompanyId);
+            if (company != null)
+            {
+                assistantEditVM.CompanyName = company.CompanyName;
+            }
+           
             assistantEditVM.FirstName = assistant.FirstName;
             assistantEditVM.LastName = assistant.LastName;
             assistantEditVM.AssistantSSN = assistant.AssistantSSN;
@@ -435,6 +441,14 @@ namespace Sjuklöner.Controllers
             assistantEditVM.PensionAndInsuranceRate = assistant.PensionAndInsuranceRate;
             assistantEditVM.Id = (int)id;
             assistantEditVM.CompanyId = assistant.CareCompanyId;
+
+            CareCompany company = db.CareCompanies.Find(assistant.CareCompanyId);
+            if (company != null)
+            {
+                assistantEditVM.CompanyId = assistant.CareCompanyId;
+                assistantEditVM.CompanyName = company.CompanyName;
+            }
+
 
             return View(assistantEditVM);
         }
