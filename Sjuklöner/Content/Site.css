@@ -185,6 +185,20 @@ li a {
     margin-bottom: 6px;
 }
 
+.black-bar {
+    height: 65px;
+    width: 100%;
+    background-color: black;
+}
+
+.black-bar-filler {
+    width: 158px;
+    height: 65px;
+    background-color: black;
+    float: left;
+    margin-bottom: 6px;
+}
+
 .blue-bar {
     height: 65px;
     width: 100%;
