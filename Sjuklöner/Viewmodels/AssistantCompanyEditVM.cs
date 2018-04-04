@@ -13,6 +13,8 @@ namespace Sjuklöner.Viewmodels
         [Required]
         public int CompanyId { get; set; }
 
+        public string CompanyName { get; set; }
+
         [Required]
         [Display(Name = "Förnamn")]
         public string FirstName { get; set; }

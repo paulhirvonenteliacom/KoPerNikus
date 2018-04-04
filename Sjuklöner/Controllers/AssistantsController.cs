@@ -46,8 +46,16 @@ namespace Sjuklöner.Controllers
             var assistants = db.Assistants.OrderBy(a => a.LastName).ToList();
             assistantIndexVM.AssistantList = assistants;
 
-            var companies = db.CareCompanies.OrderBy(c => c.Id).ToList();         
-            assistantIndexVM.CareCompanyList = companies;
+            var companies = db.CareCompanies.OrderBy(c => c.Id);
+
+            // Fake Company should not be in the List
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+            if (fakeCompanyId != null)
+            {
+                companies = db.CareCompanies.Where(c => c.Id != fakeCompanyId).OrderBy(c => c.Id);
+            }
+
+            assistantIndexVM.CareCompanyList = companies.ToList();
 
             return View(assistantIndexVM);
         }
@@ -180,11 +188,26 @@ namespace Sjuklöner.Controllers
             assistantCreateVM.PensionAndInsuranceRate = "6,00";
 
             List<SelectListItem> careCompanies = new List<SelectListItem>();
-            careCompanies = new ApplicationDbContext().CareCompanies.ToList().ConvertAll(c => new SelectListItem
+
+            // Fake Company should not be in the SelectList
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+            if (fakeCompanyId != null)
             {
-                Value = $"{c.Id}",
-                Text = c.CompanyName
-            });
+                careCompanies = new ApplicationDbContext().CareCompanies.Where(c => c.Id != fakeCompanyId).ToList().ConvertAll(c => new SelectListItem
+                {
+                    Value = $"{c.Id}",
+                    Text = c.CompanyName
+                });
+            }
+            else
+            {
+                careCompanies = new ApplicationDbContext().CareCompanies.ToList().ConvertAll(c => new SelectListItem
+                {
+                    Value = $"{c.Id}",
+                    Text = c.CompanyName
+                });
+            }
+
             assistantCreateVM.Companies = new SelectList(careCompanies, "Value", "Text");
             return View(assistantCreateVM);
         }
@@ -279,11 +302,26 @@ namespace Sjuklöner.Controllers
             }
 
             List<SelectListItem> careCompanies = new List<SelectListItem>();
-            careCompanies = new ApplicationDbContext().CareCompanies.ToList().ConvertAll(c => new SelectListItem
+
+            // Fake Company should not be in the SelectList
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+            if (fakeCompanyId != null)
             {
-                Value = $"{c.Id}",
-                Text = c.CompanyName
-            });
+                careCompanies = new ApplicationDbContext().CareCompanies.Where(c => c.Id != fakeCompanyId).ToList().ConvertAll(c => new SelectListItem
+                {
+                    Value = $"{c.Id}",
+                    Text = c.CompanyName
+                });
+            }
+            else
+            {
+                careCompanies = new ApplicationDbContext().CareCompanies.ToList().ConvertAll(c => new SelectListItem
+                {
+                    Value = $"{c.Id}",
+                    Text = c.CompanyName
+                });
+            }
+
             assistantCreateVM.Companies = new SelectList(careCompanies, "Value", "Text");
             return View(assistantCreateVM);
         }
@@ -301,6 +339,12 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
             AssistantEditVM assistantEditVM = new AssistantEditVM();
+            CareCompany company = db.CareCompanies.Find(assistant.CareCompanyId);
+            if (company != null)
+            {
+                assistantEditVM.CompanyName = company.CompanyName;
+            }
+           
             assistantEditVM.FirstName = assistant.FirstName;
             assistantEditVM.LastName = assistant.LastName;
             assistantEditVM.AssistantSSN = assistant.AssistantSSN;
@@ -435,6 +479,14 @@ namespace Sjuklöner.Controllers
             assistantEditVM.PensionAndInsuranceRate = assistant.PensionAndInsuranceRate;
             assistantEditVM.Id = (int)id;
             assistantEditVM.CompanyId = assistant.CareCompanyId;
+
+            CareCompany company = db.CareCompanies.Find(assistant.CareCompanyId);
+            if (company != null)
+            {
+                assistantEditVM.CompanyId = assistant.CareCompanyId;
+                assistantEditVM.CompanyName = company.CompanyName;
+            }
+
 
             return View(assistantEditVM);
         }

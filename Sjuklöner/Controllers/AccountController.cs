@@ -509,6 +509,14 @@ namespace Sjuklöner.Controllers
             }
 
             var companies = db.CareCompanies.OrderBy(c => c.Id).ToList();
+
+            // Fake Company should not be in the List
+            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
+            if (fakeCompanyId != null)
+            {
+                companies = db.CareCompanies.Where(c => c.Id != fakeCompanyId).OrderBy(c => c.Id).ToList();
+            }
+
             ombudIndexVM.CareCompanyList = companies;
 
             return View(ombudIndexVM);
