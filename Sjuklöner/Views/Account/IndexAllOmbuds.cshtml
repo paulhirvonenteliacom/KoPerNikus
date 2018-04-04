@@ -6,11 +6,22 @@
     <p class="page-header5 col col-md-12">Ombudlista</p>
 </div>
 <br />
-<div class="row">
-    <div class="col col-md-1">
-        @Html.ActionLink("Nytt ombud", "CreateOmbud", null, new { @class = "btn btn-primary btn-primary3" })
+@if (Model.CareCompanyList.Count > 0)
+{
+    <div class="row">
+        <div class="col col-md-1">
+            @Html.ActionLink("Nytt ombud", "CreateOmbud", null, new { @class = "btn btn-primary btn-primary3" })
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="row">
+        <div class="col col-md-10">
+            <p>Det måste finnas minst ett assistansbolag för att kunna skapa ett nytt ombud.</p>
+        </div>
+    </div>
+}
 <br />
 @for (int i = 0; i < Model.CareCompanyList.Count; i++)
 {
@@ -21,20 +32,21 @@
         <p class="collective-agreement-header">@Model.CareCompanyList[i].CompanyName</p>
         <table class="table">
             <tr>
-                <th>
+                <th class="medium-col-admin">
                     @Html.DisplayNameFor(model => model.OmbudList[0].FirstName)
                 </th>
-                <th>
+                <th class="slarge-col-admin">
                     @Html.DisplayNameFor(model => model.OmbudList[0].LastName)
                 </th>
-                <th>
+                <th class="small-col-admin">
                     @Html.DisplayNameFor(model => model.OmbudList[0].SSN)
                 </th>
-                <th>
+                <th class="large-col-admin">
                     @Html.DisplayNameFor(model => model.OmbudList[0].Email)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.OmbudList[0].PhoneNumber)
+                <th class="small-col-admin">
+                    Telefonnummer
+                    @*@Html.DisplayNameFor(model => model.OmbudList[0].PhoneNumber)*@
                 </th>
                 <th></th>
             </tr>
@@ -57,8 +69,9 @@
                         @Html.DisplayFor(modelItem => item.PhoneNumber)
                     </td>
                     <td>
-                        @Html.ActionLink("Uppdatera", "EditOmbud", new { id = item.Id }) |
-                        @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                        @*@Html.ActionLink("Uppdatera", "EditOmbud", new { id = item.Id }) |*@
+                        @Html.ActionLink("Uppdatera", "EditOmbud", "CareCompanies", new { id = item.Id }, null) |
+                        @Html.ActionLink("Detaljer", "DetailsOmbud", "CareCompanies", new { id = item.Id }, null) |
                         @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
                     </td>
                 </tr>
@@ -68,9 +81,9 @@
 }
 @if (Model.CareCompanyList.Count == 0)
 {
-<div class="left-margin-23 font-size-16">
-    Det finns inga assistansbolag och ombud.
-</div>
+    <div class="left-margin-23 font-size-16">
+        Det finns inga assistansbolag och ombud.
+    </div>
 }
 
 <div class="row row-padding2">

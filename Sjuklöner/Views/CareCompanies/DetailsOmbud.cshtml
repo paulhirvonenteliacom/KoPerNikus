@@ -10,6 +10,17 @@
 <div>
     <hr class="claim-divider" />
     <dl class="dl-horizontal">
+        @if (User.IsInRole("Admin"))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.CareCompanyName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CareCompanyName)
+            </dd>
+        }
+
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
@@ -51,12 +62,19 @@
         </dd>
     </dl>
 </div>
-<div class="row">
-    <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
-        @Html.ActionLink("Tillbaka", "IndexOmbud", null, new { @class = "btn btn-primary btn-primary-small" })
+@if (User.IsInRole("Ombud"))
+{
+    <div class="row">
+        <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
+            @Html.ActionLink("Tillbaka", "IndexOmbud", null, new { @class = "btn btn-primary btn-primary-small" })
+        </div>
     </div>
-</div>
-@*<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Tillbaka", "IndexOmbud")
-</p>*@
+}
+@if (User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
+            @Html.ActionLink("Tillbaka", "IndexAllOmbuds", "Account", new { @class = "btn btn-primary btn-primary-small" }, null)
+        </div>
+    </div>
+}

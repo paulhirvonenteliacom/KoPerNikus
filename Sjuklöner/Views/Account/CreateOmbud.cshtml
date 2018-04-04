@@ -18,6 +18,18 @@
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
 
+        @*If role is admin then a company has to be selected for the ombud.*@
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.CareCompanies, htmlAttributes: new { @class = "control-label col-md-2 display-right-align3" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.SelectedCareCompanyId, new SelectList(Model.CareCompanies, "Value", "Text", Model.SelectedCareCompanyId), "- ingen vald -", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CareCompanies, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+        }
+
         <div class="form-group">
             @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -71,9 +83,18 @@
             <div class="col col-md-offset-2 col-md-1">
                 <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Spara" id="proceed" />
             </div>
-            <div>
-                @Html.ActionLink("Avbryt", "IndexOmbud", "CareCompanies", null, new { @class = "btn btn-secondary btn-secondary-small" })
-            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    @Html.ActionLink("Avbryt", "IndexAllOmbuds", "Account", null, new { @class = "btn btn-secondary btn-secondary-small" })
+                </div>
+            }
+            else
+            {
+                <div>
+                    @Html.ActionLink("Avbryt", "IndexOmbud", "CareCompanies", null, new { @class = "btn btn-secondary btn-secondary-small" })
+                </div>
+            }
         </div>
     </div>
 }

@@ -13,31 +13,31 @@
     </div>
     <hr class="claim-divider" />
     <div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera handläggare", "IndexAdmOff", "Account")</p>
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera handläggare", "IndexAdmOff", "Account") (@Model.NumberOfAdmOffs st)</p>
     </div>
 
     <div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera kollektivavtal", "Index", "CollectiveAgreements")</p>
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera kollektivavtal", "Index", "CollectiveAgreements") (@Model.NumberOfCollectiveAgreements st)</p>
     </div>
 
     <div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera ansökningar", "Index", "Claims")</p>
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera ansökningar", "Index", "Claims") (@Model.NumberOfClaims st)</p>
     </div>
 
     <div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistansbolag", "Index", "CareCompanies")</p>
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistansbolag", "Index", "CareCompanies") (@Model.NumberOfCareCompanies st)</p>
     </div>
 
     <div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera ombud", "IndexAllOmbuds", "Account")</p>
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera ombud", "IndexAllOmbuds", "Account") (@Model.NumberOfOmbuds st)</p>
     </div>
 
     <div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistenter", "IndexAllCompanies", "Assistants")</p>
+        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistenter", "IndexAllCompanies", "Assistants") (@Model.NumberOfAssistants st)</p>
     </div>    
 
-    <div class="row">
+    @*<div class="row">
         <p class="col col-md-10 left-margin-12">@Html.ActionLink("Konfigurera e-tjänsten", "Index", "Home")</p>
-    </div>
+    </div>*@
 }
 

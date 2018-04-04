@@ -1,9 +1,9 @@
 ﻿@model Sjuklöner.Viewmodels.Create3VM
 @using Newtonsoft.Json
 @{
-                /**/
+    /**/
 
-                ViewBag.Title = "Create3";
+    ViewBag.Title = "Create3";
 }
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
@@ -30,15 +30,24 @@
     </div>
     <div class="row">
         <p class="col col-md-2"></p>
-        <p class="col col-md-4 second-page-header2">Steg 3 av 4: Ange belopp</p>
-        @if (Model.ShowCalculatedValues == true)
-        {
-            <p class="col col-md-6 second-page-header2">Dom förifyllda beloppen är kontrollbelopp baserade på antal timmar och gällande kollektivavtal</p>
-        }    
-    </div>   
-
+        <p class="col col-md-4 second-page-header3">Steg 3 av 4: Ange belopp</p>
+    </div>
+    if (Model.ShowCalculatedValues == true)
+    {
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col-small-left-padding2 col col-md-8">De förifyllda beloppen är förslag beräknade utifrån antal timmar, timlön och angivet kollektivavtal.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row height-14">
+        </div>
+    }
     <div class="row">
         <div class="form-horizontal">
+            @*<div class="col col-md-6">*@
+
             @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
             <div class="form-group">
                 @Html.LabelFor(model => model.SickPay, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -70,58 +79,60 @@
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
-                <div class="col-md-10 align-bottom3 display-large-font1" id="claimamount">
+                <div class="col-md-4 align-bottom3 display-large-font1" id="claimamount">
                     @Html.DisplayFor(model => Model.ClaimSum)
                     @Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
         </div>
+    </div>
+    @*</div>*@
 
-        @*@if (Model.Rejected)
-            {
-                <div class="row">
-                    <p class="col col-md-2"></p>
-                    <p class="col col-md-10">@Model.RejectReason</p>
-                </div>
-            }*@
-
-        @*<div>
-                @Html.ActionLink("Spara", "SaveAmounts", "Claims", new { sickPay = parSickPay, parHolidayPay = Model.HolidayPay,
-                                parSocialFees = Model.SocialFees, parPensionAndInsurance = Model.PensionAndInsurance, parClaimSum = Model.ClaimSum,
-                                parClaimReference = Model.ReferenceNumber }, new { @class = "btn btn-default" })
-            </div>*@
-        <div>
+    @*@if (Model.Rejected)
+        {
             <div class="row">
-                <div class="small-padding-left3 col col-md-offset-2 col-md-1">
-                    @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
-                    <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Till steg 4" id="proceed" />
-                </div>
-                <div class="small-padding-left3 col col-md-1">
-                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
-                </div>
-                <div class="small-padding-left3 col col-md-1">
-                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
-                    @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
-                </div>
-                <div class="small-padding-left3 col col-md-1">
-                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
-                </div>
-                @*<div id="AJAXContainer"></div>*@
-                <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
-                <div id='myModal' class='modal' style="text-align:left;">
-                    <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
-                        <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
-                            <button type="button" id="closbtn" float="right"> Stäng </button>
-                            <div style="height:10px;">
-                            </div>
-                            <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
-                            </div>
+                <p class="col col-md-2"></p>
+                <p class="col col-md-10">@Model.RejectReason</p>
+            </div>
+        }*@
+
+    @*<div>
+            @Html.ActionLink("Spara", "SaveAmounts", "Claims", new { sickPay = parSickPay, parHolidayPay = Model.HolidayPay,
+                            parSocialFees = Model.SocialFees, parPensionAndInsurance = Model.PensionAndInsurance, parClaimSum = Model.ClaimSum,
+                            parClaimReference = Model.ReferenceNumber }, new { @class = "btn btn-default" })
+        </div>*@
+    <div>
+        <div class="row">
+            <div class="small-padding-left3 col col-md-offset-2 col-md-1">
+                @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
+                <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Till steg 4" id="proceed" />
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+            </div>
+            @*<div id="AJAXContainer"></div>*@
+            <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn" float="right"> Stäng </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     @*</body>*@
 }
 @section Scripts {

@@ -57,11 +57,11 @@ namespace Sjuklöner.Controllers
             if (collectiveAgreement != null)
             {
                 detailsVM.CollectiveAgreementName = collectiveAgreement.Name;
-            }          
+            }
 
             detailsVM.CollectiveAgreementSpecName = careCompany.CollectiveAgreementSpecName;
 
-            return View(detailsVM);           
+            return View(detailsVM);
         }
 
         // GET: CareCompanies/Create
@@ -76,7 +76,7 @@ namespace Sjuklöner.Controllers
             });
             vm.CollectiveAgreements = new SelectList(collectiveAgreements, "Value", "Text");
             return View(vm);
-           
+
         }
 
         // POST: CareCompanies/Create
@@ -89,7 +89,7 @@ namespace Sjuklöner.Controllers
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.OrganisationNumber).Any())
             {
                 ModelState.AddModelError("OrganisationNumber", "Det finns redan ett bolag med det organisationsnumret.");
-            }                
+            }
 
             if (ModelState.IsValid)
             {
@@ -170,10 +170,10 @@ namespace Sjuklöner.Controllers
         {
             //ModelState.Remove(nameof(CareCompany.CollectiveAgreementSpecName));
             if (db.CareCompanies.Where(c => (c.OrganisationNumber == careCompanyEditVM.CareCompany.OrganisationNumber && c.Id != careCompanyEditVM.CareCompany.Id)).Any())
-            {               
+            {
                 ModelState.AddModelError("", "Det finns redan ett bolag med det organisationsnumret.");
             }
-            
+
             careCompanyEditVM.SelectedCollectiveAgreementId = careCompanyEditVM.CareCompany.SelectedCollectiveAgreementId;
             List<SelectListItem> collectiveAgreements = new List<SelectListItem>();
             if (ModelState.IsValid)
@@ -233,10 +233,10 @@ namespace Sjuklöner.Controllers
             }
 
             // It should not be possible to delete Assistansbolag with connected Users  
-            if (db.Users.Where(u => u.CareCompanyId == id).Any())
-            {
-                return RedirectToAction("Index");
-            }
+            //if (db.Users.Where(u => u.CareCompanyId == id).Any())
+            //{
+            //    return RedirectToAction("Index");
+            //}
 
             CareCompanyDeleteVM deleteVM = new CareCompanyDeleteVM();
             deleteVM.CareCompanyId = careCompany.Id;
@@ -261,11 +261,54 @@ namespace Sjuklöner.Controllers
 
         // POST: CareCompanies/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]     
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id, string submitButton)
         {
             if (submitButton == "Bekräfta")
             {
+                ////Check if there are any claims in draft status. These claims shall be deleted prior to deleting the company.
+                //var claims = db.Claims.Where(c => c.CareCompanyId == id).Where(c => c.ClaimStatusId == 2).ToList();
+                //foreach (var claim in claims)
+                //{
+                //    if (claim.CompletionStage > 1)
+                //    {
+                //        db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                //    }
+                //    if (claim.CompletionStage >= 2)
+                //    {
+                //        db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                //        if (claim.Documents.Count() > 0)
+                //        {
+                //            db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == claim.ReferenceNumber));
+                //            //db.SaveChanges();
+                //        }
+                //    }
+                //    db.Claims.Remove(claim);
+                //    db.SaveChanges();
+                //}
+
+                //db.Assistants.RemoveRange(db.Assistants.Where(a => a.CareCompanyId == id));
+                //db.SaveChanges();
+
+                //var role = db.Roles.SingleOrDefault(m => m.Name == "Ombud");
+                //if (role != null)
+                //{
+                //    var ombuds = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).Where(o => o.CareCompanyId == id).ToList();
+                //    foreach (var ombud in ombuds)
+                //    {
+                //        db.Users.Remove(ombud);
+                //    }
+                //}
+                //db.SaveChanges();
+
+                //claims = db.Claims.Where(c => c.CareCompanyId == id).ToList();
+                //foreach (var claim in claims)
+                //{
+                //    claim.CareCompanyId = 99999;
+                //    db.Entry(claim).State = EntityState.Modified;
+                //}
+                //db.SaveChanges();
+
                 CareCompany careCompany = db.CareCompanies.Find(id);
                 db.CareCompanies.Remove(careCompany);
                 db.SaveChanges();
@@ -319,7 +362,13 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
+            //var currentId = User.Identity.GetUserId();
+            //ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+            var companyId = ombud.CareCompanyId;
+            var companyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
+
             OmbudEditVM ombudVM = new OmbudEditVM();
+            ombudVM.CareCompanyName = companyName;
             ombudVM.FirstName = ombud.FirstName;
             ombudVM.LastName = ombud.LastName;
             ombudVM.SSN = ombud.SSN;
@@ -484,8 +533,24 @@ namespace Sjuklöner.Controllers
                     editedOmbud.SSN = ombudEditVM.SSN;
                     db.Entry(editedOmbud).State = EntityState.Modified;
                     db.SaveChanges();
+                    if (User.IsInRole("Ombud"))
+                    {
+                        return RedirectToAction("IndexOmbud");
+                    }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("IndexAllOmbuds", "Account");
+                    }
                     return RedirectToAction("IndexOmbud");
                 }
+            }
+            if (User.IsInRole("Ombud"))
+            {
+                return View();
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("IndexAllOmbuds", "Account");
             }
             return View();
         }
@@ -522,7 +587,7 @@ namespace Sjuklöner.Controllers
                 var myId = User.Identity.GetUserId();
                 var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
                 ApplicationUser applicationUser = db.Users.Find(id);
-                if(applicationUser != me && applicationUser.CareCompanyId == me.CareCompanyId)
+                if (applicationUser != me && applicationUser.CareCompanyId == me.CareCompanyId)
                 {
                     db.Users.Remove(applicationUser);
                     db.SaveChanges();

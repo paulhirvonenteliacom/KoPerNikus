@@ -403,13 +403,14 @@ namespace Sjuklöner.Controllers
                 //    LastLogon = DateTime.Now,
                 //    SSN = admOffEditVM.SSN
                 //};
-                //var result = await UserManager.CreateAsync(user, admOffEditVM.Password);
+                //var result = await UserManager.UpdateAsync(user);
                 //if (result.Succeeded)
                 //{
                 //    UserManager.AddToRole(user.Id, "AdministrativeOfficial");
-                //    return RedirectToAction("Index", "Claims");
+                //    return RedirectToAction("IndexAdmOff", "Account");
                 //}
                 //AddErrors(result);
+                //return View(admOffEditVM);
             }
             return RedirectToAction("IndexAdmOff");
         }
@@ -483,7 +484,7 @@ namespace Sjuklöner.Controllers
         {
             IndexAllOmbudsVM ombudIndexVM = new IndexAllOmbudsVM();
 
-            var role = db.Roles.SingleOrDefault(m => m.Name == "Ombud");
+            var role = db.Roles.SingleOrDefault(r => r.Name == "Ombud");
             if (role != null)
             {
                 var ombuds = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).OrderBy(m => m.LastName).ToList();
@@ -702,7 +703,7 @@ namespace Sjuklöner.Controllers
                 string errorMessagePassword = "";
                 foreach (var error in result.Errors)
                 {
-                    if(error.Contains("Passwords must have at least one digit ('0'-'9')."))
+                    if (error.Contains("Passwords must have at least one digit ('0'-'9')."))
                     {
                         errorMessagePassword = errorMessagePassword + "Lösenordet behöver innehålla åtminstone en siffra.";
                     }
@@ -714,7 +715,7 @@ namespace Sjuklöner.Controllers
                     {
                         errorMessagePassword = errorMessagePassword + " Lösenordet måste innehålla åtminstone en stor bokstav.";
                     }
-                    if(error.Contains("Passwords must have at least one lowercase ('a'-'z')."))
+                    if (error.Contains("Passwords must have at least one lowercase ('a'-'z')."))
                     {
                         errorMessagePassword = errorMessagePassword + " Lösenordet måste innehålla åtminstone en liten bokstav.";
                     }
@@ -739,7 +740,23 @@ namespace Sjuklöner.Controllers
         // GET: Ombud/Create
         public ActionResult CreateOmbud()
         {
-            return View("CreateOmbud");
+            OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
+
+            if (User.IsInRole("Admin"))
+            {
+                var carecompanies = db.CareCompanies.ToList();
+                //List<int> carecompanyIds = new List<int>(); //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
+                var carecompanyDdlString = new List<SelectListItem>();
+                for (int i = 0; i < carecompanies.Count(); i++)
+                {
+                    carecompanyDdlString.Add(new SelectListItem() { Text = carecompanies[i].CompanyName, Value = carecompanies[i].Id.ToString() });
+                    //carecompanyIds.Add(carecompanies[i].Id);
+                }
+                ombudCreateVM.CareCompanies = carecompanyDdlString;
+                //ombudCreateVM.CareCompanyIds = carecompanyIds;
+            }
+
+            return View("CreateOmbud", ombudCreateVM);
         }
 
         // POST: Ombud/Create
@@ -817,6 +834,12 @@ namespace Sjuklöner.Controllers
                 }
             }
 
+            //Check if a carecompany has been selected
+            if (!errorFound && vm.SelectedCareCompanyId == null && User.IsInRole("Admin"))
+            {
+                ModelState.AddModelError("CareCompanies", "Assistansbolag måste väljas.");
+            }
+
             if (UserManager.Users.Where(u => u.Email == vm.Email).Any())
                 ModelState.AddModelError("Email", "Det finns redan en användare med den e-postadressen");
 
@@ -824,24 +847,61 @@ namespace Sjuklöner.Controllers
             {
                 //var currentUserId = User.Identity.GetUserId();
                 //var currentUser = UserManager.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
-                ApplicationUser newOmbud = new ApplicationUser
+                if (User.IsInRole("Ombud"))
                 {
-                    UserName = vm.Email,
-                    FirstName = vm.FirstName,
-                    LastName = vm.LastName,
-                    CareCompanyId = currentUser.CareCompanyId,
-                    Email = vm.Email,
-                    PhoneNumber = vm.PhoneNumber,
-                    SSN = vm.SSN,
-                    LastLogon = DateTime.Now
-                };
-                var result = await UserManager.CreateAsync(newOmbud, vm.Password);
-                if (result.Succeeded)
-                {
-                    UserManager.AddToRole(newOmbud.Id, "Ombud");
-                    return RedirectToAction("IndexOmbud", "CareCompanies");
+                    ApplicationUser newOmbud = new ApplicationUser
+                    {
+                        UserName = vm.Email,
+                        FirstName = vm.FirstName,
+                        LastName = vm.LastName,
+                        CareCompanyId = currentUser.CareCompanyId,
+                        Email = vm.Email,
+                        PhoneNumber = vm.PhoneNumber,
+                        SSN = vm.SSN,
+                        LastLogon = DateTime.Now
+                    };
+                    var result = await UserManager.CreateAsync(newOmbud, vm.Password);
+                    if (result.Succeeded)
+                    {
+                        UserManager.AddToRole(newOmbud.Id, "Ombud");
+                        return RedirectToAction("IndexOmbud", "CareCompanies");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                else if (User.IsInRole("Admin"))
+                {
+                    ApplicationUser newOmbud = new ApplicationUser
+                    {
+                        UserName = vm.Email,
+                        FirstName = vm.FirstName,
+                        LastName = vm.LastName,
+                        CareCompanyId = vm.SelectedCareCompanyId,
+                        Email = vm.Email,
+                        PhoneNumber = vm.PhoneNumber,
+                        SSN = vm.SSN,
+                        LastLogon = DateTime.Now
+                    };
+                    var result = await UserManager.CreateAsync(newOmbud, vm.Password);
+                    if (result.Succeeded)
+                    {
+                        UserManager.AddToRole(newOmbud.Id, "Ombud");
+                        return RedirectToAction("IndexAllOmbuds", "Account");
+                    }
+                    AddErrors(result);
+                }
+            }
+            if (User.IsInRole("Admin"))
+            {
+                var carecompanies = db.CareCompanies.ToList();
+                //List<int> carecompanyIds = new List<int>(); //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
+                var carecompanyDdlString = new List<SelectListItem>();
+                for (int i = 0; i < carecompanies.Count(); i++)
+                {
+                    carecompanyDdlString.Add(new SelectListItem() { Text = carecompanies[i].CompanyName, Value = carecompanies[i].Id.ToString() });
+                    //carecompanyIds.Add(carecompanies[i].Id);
+                }
+                vm.CareCompanies = carecompanyDdlString;
+                //ombudCreateVM.CareCompanyIds = carecompanyIds;
             }
             return View(vm);
         }

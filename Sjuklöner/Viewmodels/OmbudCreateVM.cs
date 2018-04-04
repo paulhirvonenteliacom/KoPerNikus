@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using Sjuklöner.Models;
 using static Sjuklöner.Viewmodels.OmbudIndexVM;
+using System.Web.Mvc;
 
 namespace Sjuklöner.Viewmodels
 {
@@ -22,7 +23,7 @@ namespace Sjuklöner.Viewmodels
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Bekräfta lösenord")]
-        [Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Lösenordet och det bekräftade lösenordet är inte lika.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -45,5 +46,14 @@ namespace Sjuklöner.Viewmodels
         [Required]
         [Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
+
+        [Range(typeof(int), "1", "999999", ErrorMessage = "Ett assistansbolag måste väljas")]
+        public int? SelectedCareCompanyId { get; set; }
+
+        //[Required]
+        [Display(Name = "Assistansbolag")]
+        public IEnumerable<SelectListItem> CareCompanies { get; set; }
+
+        public List<int> CareCompanyIds { get; set; } //This list is required in order to be able to map the selected ddl ids to CareCompany records in the db.
     }
 }

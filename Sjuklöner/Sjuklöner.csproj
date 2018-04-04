@@ -272,6 +272,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Viewmodels\AssistantCompanyCreateVM.cs" />
     <Compile Include="Viewmodels\AssistantCompanyEditVM.cs" />
+    <Compile Include="Viewmodels\AdminIndexVM.cs" />
     <Compile Include="Viewmodels\AssistantEditVM.cs" />
     <Compile Include="Viewmodels\AssistantIndexAllCompaniesVM.cs" />
     <Compile Include="Viewmodels\CareCompanyCreateVM.cs" />
