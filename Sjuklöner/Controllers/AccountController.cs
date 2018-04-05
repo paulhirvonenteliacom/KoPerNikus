@@ -620,7 +620,7 @@ namespace Sjuklöner.Controllers
             }
 
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.CompanyOrganisationNumber).Any())
-                ModelState.AddModelError("CompanyOrganisationError", "Det finns redan ett bolag med det organisationsnumret.");
+                ModelState.AddModelError("CompanyOrganisationNumber", "Det finns redan ett bolag med det organisationsnumret.");
             if (UserManager.Users.Where(u => u.Email == model.Email).Any())
                 ModelState.AddModelError("Email", "Det finns redan ett konto med den e-postadressen.");
 
