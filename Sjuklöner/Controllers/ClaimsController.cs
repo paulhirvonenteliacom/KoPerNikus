@@ -2907,6 +2907,18 @@ namespace Sjuklöner.Controllers
                     //Hours for qualifying day
                     claimCalculation.HoursQD = claimDays[0].Hours;
 
+                    //Sickpay for qualifying day for hours exceeding 8 (oncall hours not considered)
+                    if (Convert.ToDecimal(claimCalculation.HoursQD) > 8)
+                    {
+                        claimCalculation.PaidHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) - 8);
+                    }
+                    else
+                    {
+                        claimCalculation.PaidHoursQD = "0,00";
+                    }
+                    claimCalculation.SalaryQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidHoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
+                    claimCalculation.SalaryCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidHoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
+
                     //Holiday pay for qualifying day
                     claimCalculation.HolidayPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.HolidayPayCalcQD = claim.HolidayPayRateAsString + " % x " + claimCalculation.HoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";

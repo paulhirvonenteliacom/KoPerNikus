@@ -32,7 +32,6 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kundens för- och efternamn")]
         public string CustomerName { get; set; }
 
-        [Required]
         [Display(Name = "Kundens adress")]
         public string CustomerAddress { get; set; }
 

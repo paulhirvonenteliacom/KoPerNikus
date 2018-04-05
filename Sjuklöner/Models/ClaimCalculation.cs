@@ -110,6 +110,18 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HoursQD { get; set; }
 
+        [Display(Name = "Antal timmar överstigande 8,00:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidHoursQD { get; set; }
+
+        [Display(Name = "Lön, 80% av ordinarie timlön:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryQD { get; set; }
+
+        [Display(Name = "Lön, 80% av ordinarie timlön:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryCalcQD { get; set; }
+
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HolidayPayQD { get; set; }
