@@ -34,14 +34,6 @@ namespace Sjuklöner.Controllers
 
             var companies = db.CareCompanies.ToList();
 
-            // The "Fake Company" should not be listed in the Index View
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
-
-            if (fakeCompanyId != null)
-            {
-                companies = db.CareCompanies.Where(c => c.Id != fakeCompanyId).ToList();
-            }
-
             companyIndexVM.CareCompanyList = companies;
 
             var users = db.Users.ToList();
@@ -61,17 +53,7 @@ namespace Sjuklöner.Controllers
             if (careCompany == null)
             {
                 return HttpNotFound();
-            }
-
-            // Details should not be shown for the "Fake Company"
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;             
-            if (fakeCompanyId != null)
-            {
-                if (id == fakeCompanyId)
-                {
-                    return RedirectToAction("Index");
-                }
-            }          
+            }      
 
             CareCompanyDetailsVM detailsVM = new CareCompanyDetailsVM();
             detailsVM.CompanyName = careCompany.CompanyName;
@@ -124,6 +106,7 @@ namespace Sjuklöner.Controllers
             {
                 CareCompany company = new CareCompany()
                 {
+                    IsActive = true,
                     CompanyPhoneNumber = model.CompanyPhoneNumber,
                     Postcode = model.Postcode,
                     City = model.City,
@@ -174,17 +157,7 @@ namespace Sjuklöner.Controllers
             if (careCompany == null)
             {
                 return HttpNotFound();
-            }
-           
-            // It should not be possible to update the "Fake Company"
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
-            if (fakeCompanyId != null)
-            {
-                if (id == fakeCompanyId)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
+            }          
 
             CareCompanyEditVM careCompanyEditVM = new CareCompanyEditVM();
             careCompanyEditVM.CareCompany = careCompany;
@@ -272,24 +245,6 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
 
-            // It should not be possible to delete the "Fake Company"
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
-            if (fakeCompanyId != null)
-            {
-                if (id == fakeCompanyId)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-
-            // It should not be possible to delete Assistansbolag with connected Users  
-            /*
-            if (db.Users.Where(u => u.CareCompanyId == id).Any())
-            {
-                return RedirectToAction("Index");
-            }
-            */
-
             CareCompanyDeleteVM deleteVM = new CareCompanyDeleteVM();
             deleteVM.CareCompanyId = careCompany.Id;
             deleteVM.CompanyName = careCompany.CompanyName;
@@ -320,7 +275,7 @@ namespace Sjuklöner.Controllers
             {
                 // All Assistants connected to this CareCompany will be automatically deleted
                 // because of Cascade Delete in table dbo.Assistants
-
+                
                 // All Users connected to this CareCompany should be deleted
                 var usersToDelete = db.Users.Where(u => u.CareCompanyId == id).ToList();
                 foreach(ApplicationUser user in usersToDelete)
@@ -349,25 +304,41 @@ namespace Sjuklöner.Controllers
                     }
                 }
                 db.SaveChanges();
-               
-                // All the Claims that has been sent should be saved  
+
+                // We don't want sent Claims to be deleted when the Company is deleted
+                // Because of that we create a new CareCompany with status Passive, and copy all the other properties
+                // to this passive Company from the Company that will be deleted  
+                CareCompany companyToDelete = db.CareCompanies.Find(id);
+
+                CareCompany passiveCompany = new CareCompany()
+                {
+                    IsActive = false,
+                    CompanyPhoneNumber = companyToDelete.CompanyPhoneNumber,
+                    Postcode = companyToDelete.Postcode,
+                    City = companyToDelete.City,
+                    OrganisationNumber = companyToDelete.OrganisationNumber,
+                    StreetAddress = companyToDelete.StreetAddress,
+                    SelectedCollectiveAgreementId = companyToDelete.SelectedCollectiveAgreementId,
+                    CollectiveAgreementName = companyToDelete.CollectiveAgreementName,
+                    CollectiveAgreementSpecName = companyToDelete.CollectiveAgreementSpecName,
+                    AccountNumber = companyToDelete.AccountNumber,
+                    CompanyName = companyToDelete.CompanyName
+                };
+                db.CareCompanies.Add(passiveCompany);
+                db.SaveChanges();               
+                
+                // All the Claims that has been sent should point to the passive Company when the active Company has been deleted 
                 var sentClaims = db.Claims.Where(c => (c.CareCompanyId == id && c.ClaimStatusId != 2)).ToList();
 
-                // Temporary solution: Let the saved Claims CareCompanyId point to a Fake Company that is stored in dbo.CareCompanies
-                CareCompany savedClaimsCompany = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault(); 
-                if (savedClaimsCompany != null)
+                foreach (var claim in sentClaims)
                 {
-                    foreach (var claim in sentClaims)
-                    {
-                        claim.CareCompanyId = savedClaimsCompany.Id;
-                        db.Entry(claim).State = EntityState.Modified;
-                        db.SaveChanges();
-                    }
-                }              
+                    claim.CareCompanyId = passiveCompany.Id;
+                    db.Entry(claim).State = EntityState.Modified;
+                    db.SaveChanges();                
+                }                                
 
-                CareCompany careCompany = db.CareCompanies.Find(id);
-                db.CareCompanies.Remove(careCompany);
-                db.SaveChanges();
+                db.CareCompanies.Remove(companyToDelete);
+                db.SaveChanges();                
             }
 
             return RedirectToAction("Index");

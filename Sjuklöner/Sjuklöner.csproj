@@ -248,6 +248,10 @@
     <Compile Include="Migrations\201804050728412_customerAddressOptionalAndClaimCalculationMaxEightHours.Designer.cs">
       <DependentUpon>201804050728412_customerAddressOptionalAndClaimCalculationMaxEightHours.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804051227267_activeandpassiveCareCompanies.cs" />
+    <Compile Include="Migrations\201804051227267_activeandpassiveCareCompanies.Designer.cs">
+      <DependentUpon>201804051227267_activeandpassiveCareCompanies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -501,6 +505,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804050728412_customerAddressOptionalAndClaimCalculationMaxEightHours.resx">
       <DependentUpon>201804050728412_customerAddressOptionalAndClaimCalculationMaxEightHours.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804051227267_activeandpassiveCareCompanies.resx">
+      <DependentUpon>201804051227267_activeandpassiveCareCompanies.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
