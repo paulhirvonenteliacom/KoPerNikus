@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 60px;
     padding-bottom: 20px;
 }
 footer 
@@ -80,6 +80,10 @@ li a {
     padding: 0 36px 0 0;
 }
 
+.li-a-no-padding-left-less-padding-right {
+    padding: 0 10px 0 0;
+}
+
 .nav > li > a:hover, .nav > li > a:focus {
     color: #ffffff;
     text-decoration: none;
@@ -90,7 +94,7 @@ li a {
     font-weight: normal;
     color: #ffffff;
     font-size: 18px;
-    margin-top: 18px;
+    margin-top: 18px;    
     text-decoration: none;
 }
 
@@ -157,7 +161,7 @@ li a {
 .helsingborg-logo {
     width: 20%;
     height: 20%;
-    margin: 15px 5px 0 5px;
+    margin: 15px 5px 10px 5px;
 }
 
 .bitoreq-logo {
@@ -199,7 +203,7 @@ li a {
     margin-bottom: 6px;
 }
 
-.blue-bar {
+.blue-bar {    
     height: 65px;
     width: 100%;
     background-color: #005c86;
