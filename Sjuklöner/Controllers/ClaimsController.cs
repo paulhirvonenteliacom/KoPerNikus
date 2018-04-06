@@ -63,7 +63,13 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5);
-                if (!string.IsNullOrWhiteSpace(searchString))
+                if (searchBy == "Mine")
+                {
+                    decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
+                    draftClaims = draftClaims.Where(c => c.OmbudEmail == me.Email);
+                    underReviewClaims = underReviewClaims.Where(c => c.OmbudEmail == me.Email);
+                }
+                else if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
                     draftClaims = Search(draftClaims, searchString, searchBy);
@@ -1307,7 +1313,7 @@ namespace Sjuklöner.Controllers
             {
                 create3VM = LoadClaimCreate3VM(claim);
             }
-            else if (!demoMode)    // Död kod ?
+            else if (!demoMode)    // This option was used before calculated amounts were filled in in the view
             {
                 create3VM = LoadNewClaimCreate3VM(claim);
             }
@@ -1365,6 +1371,7 @@ namespace Sjuklöner.Controllers
                     if (i == 0)
                     {
                         //QUALIFYING DAY
+                        totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SalaryQD);
                         totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayQD);
                         totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
                         totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
@@ -1675,6 +1682,8 @@ namespace Sjuklöner.Controllers
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
 
                 //These check results are hardcoded for the demo. Need to be changed for the real solution.
+                //recommendationVM.IvoCheck = true;  //Remove line after test 
+
                 recommendationVM.IvoCheck = false;
                 recommendationVM.IvoCheck = claim.IVOCheck;
                 if (!recommendationVM.IvoCheck)
@@ -1716,10 +1725,10 @@ namespace Sjuklöner.Controllers
                 else //There is a decision about personal assistance. Now it needs to be checked if it is valid for the whole sickleave period or parts of it or not at all.
                 {
                     DateTime endOfAssistance = new DateTime();
-                    if (claim.LastAssistanceDate != null)
+                    if (!string.IsNullOrEmpty(claim.LastAssistanceDate))
                     {
                         //Check if claim.LastAssistanceDate is in the format YYYYMMDD
-                        string tempDate = claim.LastAssistanceDate.Trim();
+                        string tempDate = claim.LastAssistanceDate.Substring(0, 10);
                         Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
                         Match match1 = regex1.Match(tempDate);
                         Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
@@ -1755,10 +1764,10 @@ namespace Sjuklöner.Controllers
                     }
 
                     DateTime startOfAssistance = new DateTime();
-                    if (claim.FirstAssistanceDate != null)
+                    if (!string.IsNullOrEmpty(claim.FirstAssistanceDate))
                     {
                         //Check if claim.FirstAssistanceDate is in the format YYYYMMDD
-                        string tempDate = claim.FirstAssistanceDate.Trim();
+                        string tempDate = claim.FirstAssistanceDate.Substring(0, 10);
                         Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
                         Match match1 = regex1.Match(tempDate);
                         Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
@@ -2025,6 +2034,10 @@ namespace Sjuklöner.Controllers
 
                         //Hours for qualifying day
                         claimCalc.HoursQD = claimCalculations[i].HoursQD;
+
+                        //Sickpay for qualifying day (only if more than 8,00 hours on that day)
+                        claimCalc.SalaryQD = claimCalculations[i].SalaryQD;
+                        claimCalc.SalaryCalcQD = claimCalculations[i].SalaryCalcQD;
 
                         //Holiday pay for qualifying day
                         claimCalc.HolidayPayQD = claimCalculations[i].HolidayPayQD;
@@ -2492,7 +2505,7 @@ namespace Sjuklöner.Controllers
                 message.Body = "Beslut om ansökan med referensnummer " + claim.ReferenceNumber + " har fattats." + "\n" + "\n" +
                                 "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                SendEmail(message);
+                //SendEmail(message);
             }
 
             string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
@@ -2899,8 +2912,8 @@ namespace Sjuklöner.Controllers
                     claimCalculation.PensionAndInsuranceCalcQD = claim.PensionAndInsuranceRateAsString + " % x " + claimCalculation.HolidayPayQD + " Kr";
 
                     //Sum for qualifying day (sum of the three previous items)
-                    claimCalculation.CostQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HolidayPayQD) + Convert.ToDecimal(claimCalculation.SocialFeesQD) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceQD)));
-                    claimCalculation.CostCalcQD = claimCalculation.HolidayPayQD + " Kr + " + claimCalculation.SocialFeesQD + " Kr + " + claimCalculation.PensionAndInsuranceQD + " Kr";
+                    claimCalculation.CostQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryQD) + Convert.ToDecimal(claimCalculation.HolidayPayQD) + Convert.ToDecimal(claimCalculation.SocialFeesQD) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceQD)));
+                    claimCalculation.CostCalcQD = claimCalculation.SalaryQD + " Kr + " + claimCalculation.HolidayPayQD + " Kr + " + claimCalculation.SocialFeesQD + " Kr + " + claimCalculation.PensionAndInsuranceQD + " Kr";
                 }
 
                 //DAY 2 TO DAY 14
