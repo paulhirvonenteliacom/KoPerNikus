@@ -23,6 +23,10 @@ namespace Sjuklöner.Models
         //public string OmbudPhoneNumber { get; set; }
 
         [Required]
+        [Display(Name = "Status")]
+        public bool IsActive  { get; set; }
+
+        [Required]
         [Display(Name = "Bolagets namn")]
         public string CompanyName { get; set; }
 

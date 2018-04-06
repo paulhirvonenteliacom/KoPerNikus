@@ -391,6 +391,7 @@ namespace Sjuklöner.Controllers
                 user.SSN = admOffEditVM.SSN;
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
+                return RedirectToAction("IndexAdmOff");
 
                 //var user = new ApplicationUser
                 //{
@@ -412,7 +413,7 @@ namespace Sjuklöner.Controllers
                 //AddErrors(result);
                 //return View(admOffEditVM);
             }
-            return RedirectToAction("IndexAdmOff");
+            return View("EditAdmOff", admOffEditVM);          
         }
 
         // GET: Account/DetailsAdmOff
@@ -509,13 +510,6 @@ namespace Sjuklöner.Controllers
             }
 
             var companies = db.CareCompanies.OrderBy(c => c.Id).ToList();
-
-            // Fake Company should not be in the List
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
-            if (fakeCompanyId != null)
-            {
-                companies = db.CareCompanies.Where(c => c.Id != fakeCompanyId).OrderBy(c => c.Id).ToList();
-            }
 
             ombudIndexVM.CareCompanyList = companies;
 
@@ -669,6 +663,7 @@ namespace Sjuklöner.Controllers
 
                 CareCompany company = new CareCompany()
                 {
+                    IsActive = true,
                     CompanyPhoneNumber = model.CompanyPhoneNumber,
                     Postcode = model.Postcode,
                     City = model.City,
@@ -752,7 +747,7 @@ namespace Sjuklöner.Controllers
 
             if (User.IsInRole("Admin"))
             {
-                var carecompanies = db.CareCompanies.ToList();
+                var carecompanies = db.CareCompanies.Where(c => c.IsActive == true).ToList();
                 //List<int> carecompanyIds = new List<int>(); //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
                 var carecompanyDdlString = new List<SelectListItem>();
                 for (int i = 0; i < carecompanies.Count(); i++)
@@ -900,7 +895,7 @@ namespace Sjuklöner.Controllers
             }
             if (User.IsInRole("Admin"))
             {
-                var carecompanies = db.CareCompanies.ToList();
+                var carecompanies = db.CareCompanies.Where(c => c.IsActive == true).ToList();              
                 //List<int> carecompanyIds = new List<int>(); //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
                 var carecompanyDdlString = new List<SelectListItem>();
                 for (int i = 0; i < carecompanies.Count(); i++)
@@ -1091,8 +1086,6 @@ namespace Sjuklöner.Controllers
                     var user = UserManager.Users.Where(u => u.SSN == model.ssn).FirstOrDefault();
                     await SignInManager.SignInAsync(user, true, true);
                 }
-
-
 
                 if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
                     return Redirect(model.ReturnUrl);
