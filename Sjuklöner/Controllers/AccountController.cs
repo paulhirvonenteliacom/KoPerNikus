@@ -391,6 +391,7 @@ namespace Sjuklöner.Controllers
                 user.SSN = admOffEditVM.SSN;
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
+                return RedirectToAction("IndexAdmOff");
 
                 //var user = new ApplicationUser
                 //{
@@ -412,7 +413,7 @@ namespace Sjuklöner.Controllers
                 //AddErrors(result);
                 //return View(admOffEditVM);
             }
-            return RedirectToAction("IndexAdmOff");
+            return View("EditAdmOff", admOffEditVM);          
         }
 
         // GET: Account/DetailsAdmOff
