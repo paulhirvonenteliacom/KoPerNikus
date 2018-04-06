@@ -188,25 +188,11 @@ namespace Sjuklöner.Controllers
             assistantCreateVM.PensionAndInsuranceRate = "6,00";
 
             List<SelectListItem> careCompanies = new List<SelectListItem>();
-
-            // Fake Company should not be in the SelectList
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
-            if (fakeCompanyId != null)
+            careCompanies = new ApplicationDbContext().CareCompanies.Where(c => c.IsActive == true).ToList().ConvertAll(c => new SelectListItem
             {
-                careCompanies = new ApplicationDbContext().CareCompanies.Where(c => c.Id != fakeCompanyId).ToList().ConvertAll(c => new SelectListItem
-                {
-                    Value = $"{c.Id}",
-                    Text = c.CompanyName
-                });
-            }
-            else
-            {
-                careCompanies = new ApplicationDbContext().CareCompanies.ToList().ConvertAll(c => new SelectListItem
-                {
-                    Value = $"{c.Id}",
-                    Text = c.CompanyName
-                });
-            }
+                Value = $"{c.Id}",
+                Text = c.CompanyName
+            });
 
             assistantCreateVM.Companies = new SelectList(careCompanies, "Value", "Text");
             return View(assistantCreateVM);
@@ -302,26 +288,12 @@ namespace Sjuklöner.Controllers
             }
 
             List<SelectListItem> careCompanies = new List<SelectListItem>();
-
-            // Fake Company should not be in the SelectList
-            int? fakeCompanyId = db.CareCompanies.Where(c => c.OrganisationNumber == "000000-0000").FirstOrDefault()?.Id;
-            if (fakeCompanyId != null)
+            careCompanies = new ApplicationDbContext().CareCompanies.Where(c => c.IsActive == true).ToList().ConvertAll(c => new SelectListItem
             {
-                careCompanies = new ApplicationDbContext().CareCompanies.Where(c => c.Id != fakeCompanyId).ToList().ConvertAll(c => new SelectListItem
-                {
-                    Value = $"{c.Id}",
-                    Text = c.CompanyName
-                });
-            }
-            else
-            {
-                careCompanies = new ApplicationDbContext().CareCompanies.ToList().ConvertAll(c => new SelectListItem
-                {
-                    Value = $"{c.Id}",
-                    Text = c.CompanyName
-                });
-            }
-
+                Value = $"{c.Id}",
+                Text = c.CompanyName
+            });
+        
             assistantCreateVM.Companies = new SelectList(careCompanies, "Value", "Text");
             return View(assistantCreateVM);
         }
