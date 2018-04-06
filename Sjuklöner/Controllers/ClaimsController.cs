@@ -3052,7 +3052,7 @@ namespace Sjuklöner.Controllers
 
 
 
-            //smtpClient.Send(message);  Uncomment after test
+            smtpClient.Send(message);
             return;
         }
 
