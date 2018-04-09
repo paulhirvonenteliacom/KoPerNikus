@@ -196,7 +196,6 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("IndexAllOmbuds");
         }               
 
-
         // GET: /Account/IndexAdmOff
         [Authorize(Roles = "Admin")]
         public ActionResult IndexAdmOff()
