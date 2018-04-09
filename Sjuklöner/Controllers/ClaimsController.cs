@@ -63,7 +63,13 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5);
-                if (!string.IsNullOrWhiteSpace(searchString))
+                if (searchBy == "Mine")
+                {
+                    decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
+                    draftClaims = draftClaims.Where(c => c.OmbudEmail == me.Email);
+                    underReviewClaims = underReviewClaims.Where(c => c.OmbudEmail == me.Email);
+                }
+                else if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
                     draftClaims = Search(draftClaims, searchString, searchBy);
