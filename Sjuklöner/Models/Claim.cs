@@ -151,14 +151,43 @@ namespace Sjuklöner.Models
         public string SubPhoneNumber { get; set; }
 
         public bool IVOCheck { get; set; }
+        public string IVOCheckMsg { get; set; }
 
         public bool ProCapitaCheck { get; set; }
+        public string AssistanceCheckMsg { get; set; }
 
         public string LastAssistanceDate { get; set; } //Last date of personal assistance according to current decision. Wanted format from Robin: YYYY-MM-DD
 
         public string FirstAssistanceDate { get; set; } //First date of personal assistance according to current decision. Wanted format from Robin: YYYY-MM-DD
 
         public bool ProxyCheck { get; set; }
+        public string ProxyCheckMsg { get; set; }
+
+        public bool SalarySpecRegAssistantCheck { get; set; }
+        public string SalarySpecRegAssistantCheckMsg { get; set; }
+
+        public bool SalarySpecSubAssistantCheck { get; set; }
+        public string SalarySpecSubAssistantCheckMsg { get; set; }
+
+        public bool SickleaveNotificationCheck { get; set; }
+        public string SickleaveNotificationCheckMsg { get; set; }
+
+        public bool MedicalCertificateCheck { get; set; }
+        public string MedicalCertificateCheckMsg { get; set; }
+
+        public bool FKRegAssistantCheck { get; set; }
+        public string FKRegAssistantCheckMsg { get; set; }
+
+        public bool FKSubAssistantCheck { get; set; }
+        public string FKSubAssistantCheckMsg { get; set; }
+
+        public bool BasisForDecision { get; set; }
+        public string BasisForDecisionMsg { get; set; }
+
+        public bool Decision { get; set; }
+        public string DecisionMsg { get; set; }
+
+        public string RejectReason { get; set; }
 
         //[Required]
         [Display(Name = "Vikarierande assistents personnummer")]
@@ -254,7 +283,6 @@ namespace Sjuklöner.Models
         [Display(Name = "Pensioner/försäkringar (%):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal PensionAndInsuranceRate { get; set; }
-
 
         [Display(Name = "Ordinarie timlön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

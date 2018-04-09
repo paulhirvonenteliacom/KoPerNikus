@@ -252,6 +252,22 @@
     <Compile Include="Migrations\201804051227267_activeandpassiveCareCompanies.Designer.cs">
       <DependentUpon>201804051227267_activeandpassiveCareCompanies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804061646482_AddResultsFromChecksToClaim.cs" />
+    <Compile Include="Migrations\201804061646482_AddResultsFromChecksToClaim.Designer.cs">
+      <DependentUpon>201804061646482_AddResultsFromChecksToClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804080833377_AddAttachmentCheckPropertiesInClaim.cs" />
+    <Compile Include="Migrations\201804080833377_AddAttachmentCheckPropertiesInClaim.Designer.cs">
+      <DependentUpon>201804080833377_AddAttachmentCheckPropertiesInClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804081425382_AddedTransferPropertiesToClaim.cs" />
+    <Compile Include="Migrations\201804081425382_AddedTransferPropertiesToClaim.Designer.cs">
+      <DependentUpon>201804081425382_AddedTransferPropertiesToClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804090807148_AddedPropertiesInClaimForChecks.cs" />
+    <Compile Include="Migrations\201804090807148_AddedPropertiesInClaimForChecks.Designer.cs">
+      <DependentUpon>201804090807148_AddedPropertiesInClaimForChecks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -508,6 +524,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804051227267_activeandpassiveCareCompanies.resx">
       <DependentUpon>201804051227267_activeandpassiveCareCompanies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804061646482_AddResultsFromChecksToClaim.resx">
+      <DependentUpon>201804061646482_AddResultsFromChecksToClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804080833377_AddAttachmentCheckPropertiesInClaim.resx">
+      <DependentUpon>201804080833377_AddAttachmentCheckPropertiesInClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804081425382_AddedTransferPropertiesToClaim.resx">
+      <DependentUpon>201804081425382_AddedTransferPropertiesToClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804090807148_AddedPropertiesInClaimForChecks.resx">
+      <DependentUpon>201804090807148_AddedPropertiesInClaimForChecks.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

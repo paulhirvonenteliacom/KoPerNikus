@@ -265,6 +265,16 @@ namespace Sjuklöner.Viewmodels
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string TotalCostCalcD1T14 { get; set; }
 
+        [Display(Name = "Kontroll av organisationsnummer:")]
+        public string IVOCheck { get; set; }
+
+        [Display(Name = "Kontroll av fullmakt:")]
+        public string ProxyCheck { get; set; }
+
+        [Display(Name = "Kontroll av beslut om personlig assistans:")]
+        public string AssistanceCheck { get; set; }
+
+
         public List<ClaimDay> ClaimDays { get; set; }
 
         public List<ClaimCalculation> ClaimCalculations { get; set; }

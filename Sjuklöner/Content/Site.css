@@ -151,7 +151,7 @@ li a {
 .check-result-img {
     width: 15px;
     height: 15px;
-    margin: 0 4px 3px 0;
+    margin: 0 4px 4px 0;
 }
 
 .helsingborg-logo {
@@ -417,6 +417,22 @@ li a {
     border: none;
 }
 
+.second-page-header4 {
+    font-size: 26px;
+    /*line-height: 34px;*/
+    padding: 0 30px 0 5px;
+    margin-top: 5px;
+    margin-bottom: 0;
+    margin-left: 18px;
+    /*margin-bottom: 40px;*/
+    /*font-family: "caslonno224ef-blackregular", "Whitney SSm A", "Whitney SSm B", Arial, sans-serif;
+    font-family: 'Chonburi', cursive;
+    color: #202020;*/
+    font-weight: bold;
+    border: none;
+    text-align: right;
+}
+
 .second-page-header-large {
     font-size: 36px;
     /*line-height: 34px;*/
@@ -609,6 +625,14 @@ li a {
     width: 220px;
 }
 
+.btn-primary-wide2 {
+    margin-left: 10px;
+    font-size: 16px;
+    width: 180px;
+    padding: 6px 6px;
+    margin-left: 29px;
+}
+
 .btn-primary-extra-wide {
     margin-left: 18px;
     font-size: 22px;
@@ -664,6 +688,13 @@ li a {
     margin-left: 0;
     font-size: 22px;
     width: 130px;
+}
+
+.btn-secondary2 {
+    margin-left: 0;
+    font-size: 16px;
+    width: 120px;
+    padding: 4px 0 8px 2px;
 }
 
 .btn-secondary-small {
@@ -904,9 +935,9 @@ special-left-margin {
     height: 22px;
 }
 
-/*.margin-bottom-4 {
+.margin-bottom-small {
     margin-bottom: 8px;
-}*/
+}
 
 
 .height-38 {
@@ -1389,12 +1420,25 @@ special-left-margin {
     font-weight: normal;
 }
 
+.control-label-large2 {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.display-result {
+    font-size: 16px;
+}
+
 .display-large-font {
     font-size: 22px;
 }
 
 .display-large-font1 {
     font-size: 19px;
+}
+
+.display-large-font2 {
+    font-size: 16px;
 }
 
 .align-bottom1 {
@@ -1418,6 +1462,18 @@ special-left-margin {
 
 .align-bottom5 {
     margin-top: 38px;
+}
+
+.align-bottom6 {
+    margin-top: 3px;
+}
+
+.align-bottom7 {
+    margin-top: 7px;
+}
+
+.align-bottom8 {
+    margin-top: 4px;
 }
 
 .breadcrumb {
@@ -1534,13 +1590,35 @@ a:hover, a:focus {
     font-size: 22px;
 }
 
+.large-form-control2 {
+    font-size: 16px;
+}
+
 .decision-padding-left {
     padding-left: 28px;
+}
+
+.decision-padding-left2 {
+    padding-left: 48px;
 }
 
 .control-width-small {
     width: 130px;
     height: 45px;
+}
+
+.control-width-small2 {
+    width: 100px;
+    height: 26px;
+    margin-top: 2px;
+    margin-left: 19px;
+}
+
+.control-width2 {
+    width: 400px;
+    height: 26px;
+    margin-top: 2px;
+    margin-left: 19px;
 }
 
 .float-right {

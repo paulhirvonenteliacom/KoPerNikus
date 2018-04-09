@@ -41,7 +41,7 @@ namespace Sjuklöner.Controllers
             else if (User.IsInRole("Admin"))
             {
                 return RedirectToAction("IndexPageAdmin", "Claims");
-            }            
+            }
             else  // This should never happen     
             {
                 return View(db.Claims.ToList());
@@ -69,7 +69,7 @@ namespace Sjuklöner.Controllers
                     draftClaims = Search(draftClaims, searchString, searchBy);
                     underReviewClaims = Search(underReviewClaims, searchString, searchBy);
                 }
-                                            
+
                 indexPageOmbudVM.DecidedClaims = decidedClaims.ToList(); //Old "Rejected
                 indexPageOmbudVM.DraftClaims = draftClaims.ToList();
                 indexPageOmbudVM.UnderReviewClaims = underReviewClaims.ToList();
@@ -100,7 +100,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);               
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
@@ -110,7 +110,7 @@ namespace Sjuklöner.Controllers
                 }
                 indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
                 indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
-                indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();               
+                indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
             }
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
@@ -129,17 +129,17 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);                
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
                     inInboxClaims = Search(inInboxClaims, searchString, searchBy);
-                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);                   
+                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
                 }
                 indexPageAdmin.DecidedClaims = decidedClaims.ToList();
                 indexPageAdmin.InInboxClaims = inInboxClaims.ToList();
-                indexPageAdmin.UnderReviewClaims = underReviewClaims.ToList();               
+                indexPageAdmin.UnderReviewClaims = underReviewClaims.ToList();
             }
 
             return View("IndexPageAdmin", indexPageAdmin);
@@ -1574,6 +1574,41 @@ namespace Sjuklöner.Controllers
                         {
                             claim.ClaimStatusId = 4;
                             claim.StatusDate = DateTime.Now;
+
+                            //Set default values for ivo and Procapita checks
+                            claim.IVOCheck = false;
+                            claim.IVOCheckMsg = "Kontroll ej utförd";
+                            claim.ProxyCheck = false;
+                            claim.ProxyCheckMsg = "Kontroll ej utförd";
+                            claim.ProCapitaCheck = false;
+                            claim.AssistanceCheckMsg = "Kontroll ej utförd";
+
+                            //Set default values for attachment checks
+                            claim.SalarySpecRegAssistantCheck = false;
+                            claim.SalarySpecRegAssistantCheckMsg = "Kontroll ej utförd";
+
+                            claim.SalarySpecSubAssistantCheck = false;
+                            claim.SalarySpecSubAssistantCheckMsg = "Kontroll ej utförd";
+
+                            claim.SickleaveNotificationCheck = false;
+                            claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
+
+                            claim.MedicalCertificateCheck = false;
+                            claim.MedicalCertificateCheckMsg = "Kontroll ej utförd";
+
+                            claim.FKRegAssistantCheck = false;
+                            claim.FKRegAssistantCheckMsg = "Kontroll ej utförd";
+
+                            claim.FKSubAssistantCheck = false;
+                            claim.FKSubAssistantCheckMsg = "Kontroll ej utförd";
+
+                            //Set default values for transfers
+                            claim.BasisForDecision = false;
+                            claim.BasisForDecisionMsg = "Överföring ej utförd";
+
+                            claim.Decision = false;
+                            claim.DecisionMsg = "Överföring ej utförd";
+
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
                             return RedirectToAction("ShowReceipt", new { model.ClaimNumber });
@@ -1644,7 +1679,7 @@ namespace Sjuklöner.Controllers
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                SendEmail(message);
+                //SendEmail(message); Remove comment after test
             }
 
             using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + claim.ReferenceNumber + ".xml")))
@@ -1676,17 +1711,16 @@ namespace Sjuklöner.Controllers
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
 
                 //These check results are hardcoded for the demo. Need to be changed for the real solution.
-                //recommendationVM.IvoCheck = true;  //Remove line after test 
 
                 recommendationVM.IvoCheck = false;
                 recommendationVM.IvoCheck = claim.IVOCheck;
                 if (!recommendationVM.IvoCheck)
                 {
-                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i IVO";
+                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i Vårdgivarregistret på www.ivo.se";
                 }
                 else
                 {
-                    recommendationVM.IvoCheckMsg = "Verksamheten finns i IVO";
+                    recommendationVM.IvoCheckMsg = "Verksamheten finns i Vårdgivarregistret på www.ivo.se";
                 }
 
                 recommendationVM.CompleteCheck = true; //All attachments will be included by default since the claim cannot be submitted without attachements
@@ -1722,7 +1756,16 @@ namespace Sjuklöner.Controllers
                     if (!string.IsNullOrEmpty(claim.LastAssistanceDate))
                     {
                         //Check if claim.LastAssistanceDate is in the format YYYYMMDD
-                        string tempDate = claim.LastAssistanceDate.Substring(0, 10);
+                        string tempDate = "";
+                        if (claim.LastAssistanceDate.Length >= 10)
+                        {
+                            tempDate = claim.LastAssistanceDate.Substring(0, 10);
+                        }
+                        else
+                        {
+                            tempDate = claim.LastAssistanceDate;
+                        }
+
                         Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
                         Match match1 = regex1.Match(tempDate);
                         Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
@@ -1745,14 +1788,14 @@ namespace Sjuklöner.Controllers
                         }
                         else
                         {
-                            //Set a default value for endOfAsssitance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                            //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                             //decision about personal assistance covers the whole sickleave period.
                             endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
                         }
                     }
                     else
                     {
-                        //Set a default value for endOfAsssitance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                        //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
                         endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
                     }
@@ -1761,7 +1804,16 @@ namespace Sjuklöner.Controllers
                     if (!string.IsNullOrEmpty(claim.FirstAssistanceDate))
                     {
                         //Check if claim.FirstAssistanceDate is in the format YYYYMMDD
-                        string tempDate = claim.FirstAssistanceDate.Substring(0, 10);
+                        string tempDate = "";
+                        if (claim.FirstAssistanceDate.Length >= 10)
+                        {
+                            tempDate = claim.FirstAssistanceDate.Substring(0, 10);
+                        }
+                        else
+                        {
+                            tempDate = claim.FirstAssistanceDate;
+                        }
+
                         Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
                         Match match1 = regex1.Match(tempDate);
                         Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
@@ -1814,7 +1866,7 @@ namespace Sjuklöner.Controllers
                         {
                             CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
                         }
-                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate;
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate + ", vilket endast täcker en del av sjukperioden";
                     }
                     else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
                     {
@@ -1828,7 +1880,7 @@ namespace Sjuklöner.Controllers
                         {
                             CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
                         }
-                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate;
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate + ", vilket endast täcker en del av sjukperioden";
                     }
                     //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
                     else if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date) //CHECK THIS OUT
@@ -1841,25 +1893,82 @@ namespace Sjuklöner.Controllers
                     }
                 }
 
+                //Results of attachment checks
+                recommendationVM.SalarySpecRegAssistantCheck = claim.SalarySpecRegAssistantCheck;
+                recommendationVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
+
+                recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
+                recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+
+                recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
+                recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+
+                recommendationVM.MedicalCertificateCheck = claim.MedicalCertificateCheck;
+                recommendationVM.MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg;
+
+                recommendationVM.FKRegAssistantCheck = claim.FKRegAssistantCheck;
+                recommendationVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
+
+                recommendationVM.FKSubAssistantCheck = claim.FKSubAssistantCheck;
+                recommendationVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
+
+                recommendationVM.NumberOfSickDays = claim.NumberOfSickDays;
+
+                //Results of transfers
+                recommendationVM.BasisForDecision = claim.BasisForDecision;
+                recommendationVM.BasisForDecisionMsg = claim.BasisForDecisionMsg;
+
+                recommendationVM.Decision = claim.Decision;
+                recommendationVM.DecisionMsg = claim.DecisionMsg;
+
                 recommendationVM.ClaimNumber = claim.ReferenceNumber;
                 recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-                recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
-                if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
+                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck)
                 {
-                    recommendationVM.RejectedSum = "0,00";
+                    recommendationVM.ApprovedSum = "0,00";
+                    recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
                 }
                 else
                 {
-                    recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
-                }
+                    recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
 
+                    if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
+                    {
+                        recommendationVM.RejectedSum = "0,00";
+                    }
+                    else
+                    {
+                        recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                    }
+                }
+                claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
+                claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
+                claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
+
+                recommendationVM.RejectReason = RejectReason(claim, recommendationVM);
+
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
                 return View("Recommend", recommendationVM);
             }
             else
             {
                 return View();
             }
+        }
+
+        private string RejectReason(Claim claim, RecommendationVM recommendationVM)
+        {
+            if (claim.ClaimedSum > claim.ModelSum + 100)
+            {
+                return "Det yrkade beloppet överstiger det beräknade beloppet.";
+            }
+            if (!claim.IVOCheck)
+            {
+
+            }
+            return "";
         }
 
         public ActionResult _Message(Message message)
@@ -1896,7 +2005,7 @@ namespace Sjuklöner.Controllers
         }
 
         [HttpGet]
-        public ActionResult _ShowClaim(string refNumber)
+        public ActionResult _ShowClaim(string refNumber, int? startIndex, int? numberOfDaysToRemove)
         {
             var claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
             var currentId = User.Identity.GetUserId();
@@ -1998,14 +2107,20 @@ namespace Sjuklöner.Controllers
 
             if (claim.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
             {
+                //Add results from automated checks
+                claimDetailsOmbudVM.IVOCheck = claim.IVOCheckMsg;
+                claimDetailsOmbudVM.ProxyCheck = claim.ProxyCheckMsg;
+                claimDetailsOmbudVM.AssistanceCheck = claim.AssistanceCheckMsg;
+
+                //Add calculation and results from calculation
                 List<ClaimDay> claimDays = new List<ClaimDay>();
                 claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.SickDayNumber).ToList();
 
                 //Calculate the model sum
-                if (claimDays.Count() > 0)
-                {
-                    CalculateModelSum(claim, claimDays, null, null);
-                }
+                //if (claimDays.Count() > 0)
+                //{
+                //    CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
+                //}
 
                 var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
                 List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
@@ -2625,9 +2740,9 @@ namespace Sjuklöner.Controllers
                             db.Claims.Remove(claim);
                             db.SaveChanges();
                         }
-                    }                    
-                }             
-                                
+                    }
+                }
+
             }
             return RedirectToAction("Index");
         }
@@ -3049,8 +3164,6 @@ namespace Sjuklöner.Controllers
 
             if (smtpHost == "smtp.gmail.com")
                 smtpClient.EnableSsl = true;
-
-
 
             smtpClient.Send(message);
             return;

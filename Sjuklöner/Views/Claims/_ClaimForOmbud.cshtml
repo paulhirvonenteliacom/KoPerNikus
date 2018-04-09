@@ -823,6 +823,60 @@
     @if (Model.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
     {
 
+        <div class="row">
+            <div class="col col-md-2">
+            </div>
+            <div class="col col-md-9 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Automatiserade kontroller
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.IVOCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.IVOCheck)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            </div>
+                            <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.ProxyCheck)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.AssistanceCheck)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @*@Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })*@
+                            </div>
+                            <div class="row display-padding6">
+                                @*@Html.DisplayFor(m => m.PensionAndInsurance)*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
         <div class="row">
@@ -979,7 +1033,7 @@
                             <div class="col col-md-8">
                                 <div class="row">
                                     <div class="col col-md-12 col-small-left-padding2 bold-16">
-                                        OB- och jour-ersättningar enligt kollektivavtalet @Model.CollectiveAgreement 
+                                        OB- och jour-ersättningar enligt kollektivavtalet @Model.CollectiveAgreement
                                     </div>
                                 </div>
                             </div>
