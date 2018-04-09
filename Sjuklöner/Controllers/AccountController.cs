@@ -535,8 +535,8 @@ namespace Sjuklöner.Controllers
             {
                 var ombuds = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).OrderBy(m => m.LastName).ToList();
 
-                if (ombuds.Count() > 0)
-                {
+                //if (ombuds.Count() > 0)
+                //{
                     List<OmbudForVM> ombudForVMList = new List<OmbudForVM>();
                     foreach (var ombud in ombuds)
                     {
@@ -551,7 +551,7 @@ namespace Sjuklöner.Controllers
                         ombudForVMList.Add(ombudForVM);
                     }
                     ombudIndexVM.OmbudList = ombudForVMList;
-                }
+                //}
             }
 
             var companies = db.CareCompanies.OrderBy(c => c.Id).ToList();

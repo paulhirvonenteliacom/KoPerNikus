@@ -23,60 +23,72 @@ else
     </div>
 }
 <br />
-@for (int i = 0; i < Model.CareCompanyList.Count; i++)
+
+@if (!Model.OmbudList.Any())
 {
-    var ombuds = Model.OmbudList.Where(o => o.CareCompanyId == @Model.CareCompanyList[i].Id);
-    if (ombuds.Any())
+    <div class="left-margin-23 display-large-font">
+        Det finns inga ombud.
+    </div>
+    <br />
+}
+else
+{
+
+    for (int i = 0; i < Model.CareCompanyList.Count; i++)
     {
-        <hr class="claim-divider" />
-        <p class="collective-agreement-header">@Model.CareCompanyList[i].CompanyName</p>
-        <table class="table">
-            <tr>
-                <th class="medium-col-admin">
-                    @Html.DisplayNameFor(model => model.OmbudList[0].FirstName)
-                </th>
-                <th class="slarge-col-admin">
-                    @Html.DisplayNameFor(model => model.OmbudList[0].LastName)
-                </th>
-                <th class="small-col-admin">
-                    @Html.DisplayNameFor(model => model.OmbudList[0].SSN)
-                </th>
-                <th class="large-col-admin">
-                    @Html.DisplayNameFor(model => model.OmbudList[0].Email)
-                </th>
-                <th class="small-col-admin">
-                    Telefonnummer
-                    @*@Html.DisplayNameFor(model => model.OmbudList[0].PhoneNumber)*@
-                </th>
-                <th></th>
-            </tr>
-            @foreach (var item in ombuds)
-            {
+        var ombuds = Model.OmbudList.Where(o => o.CareCompanyId == @Model.CareCompanyList[i].Id);
+        if (ombuds.Any())
+        {
+            <hr class="claim-divider" />
+            <p class="collective-agreement-header">@Model.CareCompanyList[i].CompanyName</p>
+            <table class="table">
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SSN)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PhoneNumber)
-                    </td>
-                    <td>
-                        @*@Html.ActionLink("Uppdatera", "EditOmbud", new { id = item.Id }) |*@
-                        @Html.ActionLink("Uppdatera", "EditOmbud", "CareCompanies", new { id = item.Id }, null) |
-                        @Html.ActionLink("Detaljer", "DetailsOmbud", "CareCompanies", new { id = item.Id }, null) |
-                        @Html.ActionLink("Ta bort", "DeleteOmbud", new { id = item.Id })
-                    </td>
+                    <th class="medium-col-admin">
+                        @Html.DisplayNameFor(model => model.OmbudList[0].FirstName)
+                    </th>
+                    <th class="slarge-col-admin">
+                        @Html.DisplayNameFor(model => model.OmbudList[0].LastName)
+                    </th>
+                    <th class="small-col-admin">
+                        @Html.DisplayNameFor(model => model.OmbudList[0].SSN)
+                    </th>
+                    <th class="large-col-admin">
+                        @Html.DisplayNameFor(model => model.OmbudList[0].Email)
+                    </th>
+                    <th class="small-col-admin">
+                        Telefonnummer
+                        @*@Html.DisplayNameFor(model => model.OmbudList[0].PhoneNumber)*@
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </table>
+                @foreach (var item in ombuds)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Uppdatera", "EditOmbud", new { id = item.Id }) |*@
+                            @Html.ActionLink("Uppdatera", "EditOmbud", "CareCompanies", new { id = item.Id }, null) |
+                            @Html.ActionLink("Detaljer", "DetailsOmbud", "CareCompanies", new { id = item.Id }, null) |
+                            @Html.ActionLink("Ta bort", "DeleteOmbud", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
     }
 }
 @if (Model.CareCompanyList.Count == 0)
