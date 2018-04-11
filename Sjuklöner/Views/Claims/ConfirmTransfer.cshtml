@@ -1,0 +1,95 @@
+﻿@model Sjuklöner.Models.Claim
+
+@{
+    ViewBag.Title = "ConfirmTransfer";
+}
+<div class="row index-page-margin">
+    <p class="col col-md-2"></p>
+    <p class="page-header8 col col-md-10">För över till Procapita</p>
+    <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att föra över beslutsunderlaget till Procapita</nl>
+</div>
+<div>
+    <hr class="claim-divider" />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerSSN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CustomerSSN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.QualifyingDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.QualifyingDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastDayOfSicknessDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastDayOfSicknessDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClaimedSum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClaimedSum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModelSum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModelSum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApprovedSum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApprovedSum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RejectedSum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RejectedSum)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm("Transfer", "Claims", new { id = Model.Id }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        <div class="row">
+            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-primary btn-primary-small" id="confirm" />
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                @Html.ActionLink("Avbryt", "Recommend", new { id = Model.Id }, new { @class = "btn btn-secondary btn-secondary-small" })
+            </div>
+            @*<div class="no-padding-left2 col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+            </div>*@
+        </div>
+    }
+</div>

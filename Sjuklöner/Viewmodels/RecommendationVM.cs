@@ -57,9 +57,14 @@ namespace Sjuklöner.Viewmodels
         public bool BasisForDecision { get; set; }
         public string BasisForDecisionMsg { get; set; }
 
+        public DateTime BasisForDecisionTransferStartTimeStamp { get; set; }
+        public DateTime BasisForDecisionTransferFinishTimeStamp { get; set; }
+
         [Display(Name = "Beslut från Procapita:")]
         public bool Decision { get; set; }
         public string DecisionMsg { get; set; }
+
+        public DateTime DecisionTransferTimeStamp { get; set; }
 
         [Display(Name = "Yrkat belopp (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

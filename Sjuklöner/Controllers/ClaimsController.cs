@@ -1948,6 +1948,11 @@ namespace Sjuklöner.Controllers
                         recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
                     }
                 }
+                if (claim.ClaimStatusId == 3)
+                {
+                    recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
+                }
+
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
                 claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
@@ -2539,6 +2544,44 @@ namespace Sjuklöner.Controllers
                 writer.WriteEndDocument();
             }
             return View("RecommendationReceipt", recommendationVM);
+        }
+
+        // GET: Claims/Transfer
+        [HttpGet]
+        public ActionResult Transfer(string refNumber)
+        {
+            var claim = db.Claims.Where(rn => rn.ReferenceNumber == refNumber).FirstOrDefault();
+
+            return View("ConfirmTransfer", claim);
+        }
+
+        // POST: Claims/ConfirmTransfer
+        [HttpPost, ActionName("Transfer")]
+        public ActionResult ConfirmTransfer(int id, string submitButton)
+        {
+            var claim = db.Claims.Find(id);
+            string refNumber = claim.ReferenceNumber;
+            if (submitButton == "Bekräfta")
+            {
+
+                //using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
+                //{
+                //    writer.WriteStartDocument();
+                //    writer.WriteStartElement("claiminformation");
+                //    //writer.WriteElementString("SSN", claim.CustomerSSN.Substring(2));
+                //    //writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
+                //    writer.WriteElementString("ReferenceNumber", refNumber);
+                //    //writer.WriteElementString("ClaimId", claim.Id.ToString());
+                //    //writer.WriteElementString("OmbudName", $"{claim.OmbudFirstName} {claim.OmbudLastName}");
+                //    writer.WriteEndElement();
+                //    writer.WriteEndDocument();
+                //}
+                claim.ClaimStatusId = 3;
+                claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Recommend", new { id });
         }
 
         // GET: Claims/StodSystemLogin

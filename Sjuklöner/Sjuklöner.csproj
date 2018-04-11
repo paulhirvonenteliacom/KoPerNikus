@@ -268,6 +268,10 @@
     <Compile Include="Migrations\201804090807148_AddedPropertiesInClaimForChecks.Designer.cs">
       <DependentUpon>201804090807148_AddedPropertiesInClaimForChecks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.cs" />
+    <Compile Include="Migrations\201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.Designer.cs">
+      <DependentUpon>201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -486,6 +490,7 @@
     <Content Include="Views\Account\DeleteAdmOff.cshtml" />
     <Content Include="Views\Account\IndexAllOmbuds.cshtml" />
     <Content Include="Views\Claims\IndexPageAdmin.cshtml" />
+    <Content Include="Views\Claims\ConfirmTransfer.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -536,6 +541,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804090807148_AddedPropertiesInClaimForChecks.resx">
       <DependentUpon>201804090807148_AddedPropertiesInClaimForChecks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.resx">
+      <DependentUpon>201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

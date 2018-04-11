@@ -168,13 +168,15 @@ namespace Sjuklöner.Controllers
                     List<AdmOffForVM> admOffForVMList = new List<AdmOffForVM>();
                     foreach (var admOff in admOffs)
                     {
-                        AdmOffForVM AdmOffForVM = new AdmOffForVM();
-                        AdmOffForVM.Id = admOff.Id;
-                        AdmOffForVM.FirstName = admOff.FirstName;
-                        AdmOffForVM.LastName = admOff.LastName;
-                        AdmOffForVM.SSN = admOff.SSN;
-                        AdmOffForVM.Email = admOff.Email;
-                        AdmOffForVM.PhoneNumber = admOff.PhoneNumber;
+                        AdmOffForVM AdmOffForVM = new AdmOffForVM
+                        {
+                            Id = admOff.Id,
+                            FirstName = admOff.FirstName,
+                            LastName = admOff.LastName,
+                            SSN = admOff.SSN,
+                            Email = admOff.Email,
+                            PhoneNumber = admOff.PhoneNumber
+                        };
                         admOffForVMList.Add(AdmOffForVM);
                     }
                     admOffIndexVM.AdmOffForVMList = admOffForVMList;

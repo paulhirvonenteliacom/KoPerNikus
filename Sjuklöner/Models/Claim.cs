@@ -183,9 +183,12 @@ namespace Sjuklöner.Models
 
         public bool BasisForDecision { get; set; }
         public string BasisForDecisionMsg { get; set; }
+        public DateTime BasisForDecisionTransferStartTimeStamp { get; set; }
+        public DateTime BasisForDecisionTransferFinishTimeStamp { get; set; }
 
         public bool Decision { get; set; }
         public string DecisionMsg { get; set; }
+        public DateTime DecisionTransferTimeStamp { get; set; }
 
         public string RejectReason { get; set; }
 
