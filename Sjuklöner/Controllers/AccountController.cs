@@ -152,6 +152,50 @@ namespace Sjuklöner.Controllers
             }
         }
 
+        // GET: Acount/DeleteOmbud
+        public ActionResult DeleteOmbud(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            ApplicationUser applicationUser = db.Users.Find(id);
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+
+            OmbudDeleteVM ombudVM = new OmbudDeleteVM();
+            ombudVM.Id = id;
+            ombudVM.FirstName = applicationUser.FirstName;
+            ombudVM.LastName = applicationUser.LastName;
+            ombudVM.SSN = applicationUser.SSN;
+            ombudVM.PhoneNumber = applicationUser.PhoneNumber;
+            ombudVM.Email = applicationUser.Email;
+            return View("DeleteOmbud", ombudVM);
+        }
+
+        
+        // POST: Account/DeleteOmbud/5
+        [HttpPost, ActionName("DeleteOmbud")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteOmbud(string id, string submitButton)
+        {
+            if (submitButton == "Bekräfta")
+            {
+                var myId = User.Identity.GetUserId();
+                var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
+                ApplicationUser applicationUser = db.Users.Find(id);
+                if (applicationUser != me)
+                {
+                    db.Users.Remove(applicationUser);
+                    db.SaveChanges();
+                }
+            }
+            return RedirectToAction("IndexAllOmbuds");
+        }               
+
         // GET: /Account/IndexAdmOff
         [Authorize(Roles = "Admin")]
         public ActionResult IndexAdmOff()
@@ -492,8 +536,8 @@ namespace Sjuklöner.Controllers
             {
                 var ombuds = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).OrderBy(m => m.LastName).ToList();
 
-                if (ombuds.Count() > 0)
-                {
+                //if (ombuds.Count() > 0)
+                //{
                     List<OmbudForVM> ombudForVMList = new List<OmbudForVM>();
                     foreach (var ombud in ombuds)
                     {
@@ -508,7 +552,7 @@ namespace Sjuklöner.Controllers
                         ombudForVMList.Add(ombudForVM);
                     }
                     ombudIndexVM.OmbudList = ombudForVMList;
-                }
+                //}
             }
 
             var companies = db.CareCompanies.OrderBy(c => c.Id).ToList();

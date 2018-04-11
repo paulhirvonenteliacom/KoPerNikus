@@ -12,6 +12,8 @@
                 <option value="Referensnummer">Referensnummer</option>
                 <option value="CSSN">Kundens Personnummer</option>
                 <option value="ASSN">Assistentens Personnummer</option>
+                <option value="Ombud">Ombudets Efternamn</option>
+                <option value="Bolag">Asistansbolagets Namn</option>
             </select>
             <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom5" />
             <div class="col col-md-1 col-no-left-padding col-no-right-padding">
@@ -39,7 +41,7 @@
                         <th class="small-col">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        @*<th class="small-col">
                             Assistentens personnummer
                         </th>
                         <th class="small-col">
@@ -57,7 +59,7 @@
                         <th class="medium-col">
                             Yrkat belopp (Kr)
                         </th>
-                        @*<th></th>*@
+                        <th></th>*@
                     </tr>
 
                     @foreach (var item in Model.InInboxClaims)
@@ -72,7 +74,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.CompanyName)
                             </td>
-                            <td>
+                            @*<td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
                             </td>
                             <td>
@@ -114,7 +116,7 @@
     <div class="row">
         <div class="col">
             <div class="second-page-header">
-                Under bearbetning
+                Överförda till Procapita
             </div>
             @if (Model.UnderReviewClaims?.Count() > 0)
             {
@@ -193,7 +195,7 @@
             else
             {
                 <div class="left-margin-23 font-size-16">
-                    Det finns inga ansökningar under bearbetning.
+                    Det finns inga ansökningar som är överförda till Procapita. 
                 </div>
                 <br />
             }

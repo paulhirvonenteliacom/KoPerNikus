@@ -155,20 +155,29 @@ namespace Sjuklöner.Controllers
         {
             if (searchBy == "Referensnummer")
                 Claims = Claims.Where(c => c.ReferenceNumber.Contains(searchString));
-            else if (searchBy == "CSSN")
+            else if (searchBy == "CSSN")    // Sökning på Kundens personnummer
             {
                 searchString = searchString.Replace("-", "");
                 if (searchString.Length > 10)
                     searchString = searchString.Substring(2);
                 Claims = Claims.Where(c => c.CustomerSSN.Replace("-", "").Contains(searchString));
             }
-            else if (searchBy == "ASSN")
+            else if (searchBy == "ASSN")    // Sökning på Assistentens personnummer
             {
                 searchString = searchString.Replace("-", "");
                 if (searchString.Length > 10)
                     searchString = searchString.Substring(1);
                 Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
             }
+            else if (searchBy == "Ombud")             // Sökning på Ombudets efternamn
+            {
+                Claims = Claims.Where(c => c.OmbudLastName.Contains(searchString));
+            }       
+            else if (searchBy == "Bolag")             // Sökning på Bolagsnamn
+            {
+                Claims = Claims.Where(c => c.CareCompany.CompanyName.Contains(searchString));
+            }
+            // else if (searchBy == "Kontaktperson")     // TODO Later. Change DB first           
 
             return Claims;
         }
