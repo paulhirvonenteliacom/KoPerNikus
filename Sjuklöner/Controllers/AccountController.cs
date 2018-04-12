@@ -26,7 +26,7 @@ namespace Sjuklöner.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext db = new ApplicationDbContext();       
 
         public AccountController()
         {
@@ -175,7 +175,6 @@ namespace Sjuklöner.Controllers
             ombudVM.Email = applicationUser.Email;
             return View("DeleteOmbud", ombudVM);
         }
-
         
         // POST: Account/DeleteOmbud/5
         [HttpPost, ActionName("DeleteOmbud")]
@@ -188,11 +187,30 @@ namespace Sjuklöner.Controllers
                 var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
                 ApplicationUser applicationUser = db.Users.Find(id);
                 if (applicationUser != me)
-                {
-                    db.Users.Remove(applicationUser);
+                {                 
+                    var claimsForOmbud = db.Claims.Where(c => c.OwnerId == applicationUser.Id).ToList();
+
+                    foreach (var claim in claimsForOmbud)
+                    {
+                        // All Unsent Claims (Claims with StatusId == 2) for the deleted Ombud should be moved to a "Dummy ombud"
+                        if (claim.ClaimStatusId == 2)
+                        {
+                            claim.OwnerId = "";
+                            claim.OmbudFirstName = "-";
+                            claim.OmbudLastName = "-";
+                            claim.OmbudPhoneNumber = "-";
+                            claim.OmbudEmail = "-";
+
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                        }
+                    }
+
+                    db.Users.Remove(applicationUser); 
                     db.SaveChanges();
                 }
             }
+
             return RedirectToAction("IndexAllOmbuds");
         }               
 

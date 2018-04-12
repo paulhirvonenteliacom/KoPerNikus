@@ -142,6 +142,9 @@
                         <th class="small-col-ombud">
                             Skapad datum
                         </th>
+                        <th class="small-col-ombud">
+                            Ombud
+                        </th>
                         <th class="xsmall-col-ombud">
                             Steg
                         </th>
@@ -155,8 +158,8 @@
                             Sista sjukdag
                         </th>
                         @*<th class="ssmall-col-ombud">
-                            Antal sjukdagar
-                        </th>*@
+            Antal sjukdagar
+        </th>*@
                         <th class="medium-col">
                             Yrkat belopp (Kr)
                         </th>
@@ -176,6 +179,9 @@
                             @Html.DisplayFor(modelItem => item.StatusDate)
                         </td>
                         <td>
+                            @Html.DisplayFor(modelItem => item.OmbudEmail)
+                        </td>
+                        <td>
                             @Html.DisplayFor(modelItem => item.CompletionStage)
                         </td>
                         <td>
@@ -188,7 +194,7 @@
                             @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                         </td>
                         @*<td>
-                            @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        @Html.DisplayFor(modelItem => item.NumberOfSickDays)
                         </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.ClaimedSum)
