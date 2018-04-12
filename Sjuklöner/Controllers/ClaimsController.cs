@@ -662,6 +662,12 @@ namespace Sjuklöner.Controllers
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
             claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+
+            // Need to set start values for theses 3 properties to avoid DbUpdateException
+            claim.BasisForDecisionTransferFinishTimeStamp = DateTime.Now;
+            claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
+            claim.DecisionTransferTimeStamp = DateTime.Now;
+
             db.Claims.Add(claim);
             db.SaveChanges();
             return claim.ReferenceNumber;
