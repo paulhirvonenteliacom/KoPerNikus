@@ -10,10 +10,11 @@
             <p class="page-header col col-md-7">Ansökningar</p>
             <select name="searchBy" class="col-md-2 input-sm align-bottom5">
                 <option value="Referensnummer">Referensnummer</option>
-                <option value="CSSN">Kundens Personnummer</option>
-                <option value="ASSN">Assistentens Personnummer</option>
-                <option value="Ombud">Ombudets Efternamn</option>
-                <option value="Bolag">Asistansbolagets Namn</option>
+                <option value="CSSN">Kundens personnummer</option>
+                <option value="ASSN">Assistentens personnummer</option>
+                <option value="Ombud">Ombudets efternamn</option>
+                <option value="Bolag">Assistansbolagets namn</option>
+                <option value="Handl">Handläggarens efternamn</option>
             </select>
             <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom5" />
             <div class="col col-md-1 col-no-left-padding col-no-right-padding">
@@ -41,65 +42,71 @@
                         <th class="small-col">
                             Assistansbolag
                         </th>
+                        <th class="small-col">
+                            Handläggare
+                        </th>
                         @*<th class="small-col">
-            Assistentens personnummer
-        </th>
-        <th class="small-col">
-            Kundens personnummer
-        </th>
-        <th class="small-col">
-            Första sjukdag
-        </th>
-        <th class="small-col">
-            Sista sjukdag
-        </th>
-        <th class="small-col">
-            Antal sjukdagar
-        </th>
-        <th class="medium-col">
-            Yrkat belopp (Kr)
-        </th> *@
-       <th></th>
-        </tr>
+                                Assistentens personnummer
+                            </th>
+                            <th class="small-col">
+                                Kundens personnummer
+                            </th>
+                            <th class="small-col">
+                                Första sjukdag
+                            </th>
+                            <th class="small-col">
+                                Sista sjukdag
+                            </th>
+                            <th class="small-col">
+                                Antal sjukdagar
+                            </th>
+                            <th class="medium-col">
+                                Yrkat belopp (Kr)
+                            </th>*@
+                            <th class="small-col"></th>
+                    </tr>
 
-        @foreach (var item in Model.InInboxClaims)
-        {
-            <tr>
-                <td>
-                    @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StatusDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CompanyName)
-                </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustomerSSN)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.QualifyingDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ClaimedSum)
-                    </td>
-                    @*<td>
-                            @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                            @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
-                            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
-                        </td>*@
+                    @foreach (var item in Model.InInboxClaims)
+                    {
+                    <tr>
                         <td>
-                            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                            @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                         </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompanyName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AdmOffName)
+                        </td>
+                        @*<td>
+                @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerSSN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QualifyingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClaimedSum)
+            </td>*@
+             <td>
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+        </td>
+            @*<td>
+                    @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                </td>*@
                     </tr>
                     }
 
@@ -138,6 +145,9 @@
                             Assistentens personnummer
                         </th>
                         <th class="small-col">
+                            Handläggare
+                        </th>
+                        <th class="small-col">
                             Kundens personnummer
                         </th>
                         <th class="small-col">
@@ -169,6 +179,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdmOffName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
@@ -231,6 +244,9 @@
                             Assistentens personnummer
                         </th>
                         <th class="small-col">
+                            Handläggare
+                        </th>
+                        <th class="small-col">
                             Kundens personnummer
                         </th>
                         <th class="small-col">
@@ -268,6 +284,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdmOffName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)

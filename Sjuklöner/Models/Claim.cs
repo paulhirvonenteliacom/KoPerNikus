@@ -59,6 +59,12 @@ namespace Sjuklöner.Models
         [Display(Name = "Kollektivavtalets branschbeteckning")]
         public string CollectiveAgreementSpecName { get; set; }
 
+        //HANDLÄGGARE INFORMATION
+        public string AdmOffId { get; set; }
+
+        [Display(Name = "Handläggarens namn")]
+        public string AdmOffName { get; set; }
+
         //OMBUD INFORMATION
         public string OwnerId { get; set; }
 

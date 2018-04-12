@@ -272,6 +272,10 @@
     <Compile Include="Migrations\201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.Designer.cs">
       <DependentUpon>201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804121130147_AdmOffClaims.cs" />
+    <Compile Include="Migrations\201804121130147_AdmOffClaims.Designer.cs">
+      <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -545,6 +549,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.resx">
       <DependentUpon>201804111334242_newPropertiesForClaimTransferToProcapitaTimeStamps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804121130147_AdmOffClaims.resx">
+      <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
