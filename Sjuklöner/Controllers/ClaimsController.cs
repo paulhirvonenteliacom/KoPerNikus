@@ -673,9 +673,9 @@ namespace Sjuklöner.Controllers
             claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
 
             // Need to set start values for theses 3 properties to avoid DbUpdateException
-            claim.BasisForDecisionTransferFinishTimeStamp = DateTime.Now;
-            claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
-            claim.DecisionTransferTimeStamp = DateTime.Now;
+            claim.BasisForDecisionTransferFinishTimeStamp = new DateTime(1900, 1, 1);
+            claim.BasisForDecisionTransferStartTimeStamp = new DateTime(1900, 1, 1);
+            claim.DecisionTransferTimeStamp = new DateTime(1900, 1, 1);
 
             // No AdmOfficial assigned to the Claim when it is created
             claim.AdmOffId = null;
