@@ -533,9 +533,21 @@ namespace Sjuklöner.Controllers
             {
                 var myId = User.Identity.GetUserId();
                 var me = db.Users.Where(u => u.Id == myId).FirstOrDefault();
+
                 ApplicationUser applicationUser = db.Users.Find(id);
+               
                 if (applicationUser != me)
                 {
+                    var claimsForAdmOff = db.Claims.Where(c => c.AdmOffId == id).ToList();
+                    foreach (var claim in claimsForAdmOff)
+                    {
+                        claim.AdmOffId = null;
+                        claim.AdmOffName = "-";
+
+                        db.Entry(claim).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+
                     db.Users.Remove(applicationUser);
                     db.SaveChanges();
                 }
