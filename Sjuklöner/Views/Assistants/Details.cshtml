@@ -7,99 +7,90 @@
     <p class="col col-md-2"></p>
     <p class="page-header8 col col-md-10">Detaljvy, assistent</p>
 </div>
+<hr class="claim-divider" />
+
 <div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CareCompany.CompanyName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.CareCompany.CompanyName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CareCompany.CompanyName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.FirstName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.LastName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AssistantSSN)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.AssistantSSN, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.AssistantSSN)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.Email)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.HourlySalary)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.HourlySalary, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.HourlySalary)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.HolidayPayRate)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.HolidayPayRate, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.HolidayPayRate)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PayrollTaxRate)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.PayrollTaxRate, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.PayrollTaxRate)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PensionAndInsuranceRate)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.PensionAndInsuranceRate, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.PensionAndInsuranceRate)
-        </dd>
-    </dl>
-</div>
-<div class="row">
-    <div class="col col-md-1 col-no-left-padding">
-    @if (User.IsInRole("Admin"))
-    {
-        @Html.ActionLink("Tillbaka", "IndexAllCompanies", null, new { @class = "btn btn-primary btn-primary-small" })
-    }
-    else
-    {
-        @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
-    }
+        </div>
     </div>
 </div>
+
+<div class="row row-padding2">
+    <div class="col-small-left-padding col col-md-offset-2 col-md-1">
+        @if (User.IsInRole("Admin"))
+        {
+        @Html.ActionLink("Tillbaka", "IndexAllCompanies", null, new { @class = "btn btn-primary btn-primary-small" })       
+        }
+        else
+        {
+        @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
+        }
+    </div>
+</div>
+
