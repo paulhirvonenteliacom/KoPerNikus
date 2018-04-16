@@ -27,9 +27,9 @@
         {
             <select name="searchBy" class="col-md-2 input-sm align-bottom4">
                 <option value="Referensnummer">Referensnummer</option>
-                <option value="CSSN">Kundens Personnummer</option>
-                <option value="ASSN">Assistentens Personnummer</option>
-                <option value="Mine">Mina Ansökningar</option>
+                <option value="CSSN">Kundens personnummer</option>
+                <option value="ASSN">Assistentens personnummer</option>
+                <option value="Mine">Mina ansökningar</option>
             </select>
             <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom4" />
             <div class="col col-md-1 col-no-left-padding col-no-right-padding">
@@ -142,6 +142,9 @@
                         <th class="small-col-ombud">
                             Skapad datum
                         </th>
+                        <th class="small-col-ombud">
+                            Ombud
+                        </th>
                         <th class="xsmall-col-ombud">
                             Steg
                         </th>
@@ -154,9 +157,9 @@
                         <th class="ssmall-col-ombud">
                             Sista sjukdag
                         </th>
-                        <th class="ssmall-col-ombud">
-                            Antal sjukdagar
-                        </th>
+                        @*<th class="ssmall-col-ombud">
+            Antal sjukdagar
+        </th>*@
                         <th class="medium-col">
                             Yrkat belopp (Kr)
                         </th>
@@ -176,6 +179,9 @@
                             @Html.DisplayFor(modelItem => item.StatusDate)
                         </td>
                         <td>
+                            @Html.DisplayFor(modelItem => item.OmbudEmail)
+                        </td>
+                        <td>
                             @Html.DisplayFor(modelItem => item.CompletionStage)
                         </td>
                         <td>
@@ -187,9 +193,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                        </td>
+                        @*<td>
+                        @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.ClaimedSum)
                         </td>
@@ -234,6 +240,9 @@
                             Referensnummer
                         </th>
                         <th class="small-col-ombud">
+                            Handläggare
+                        </th>
+                        <th class="small-col-ombud">
                             Inskickad datum
                         </th>
                         <th class="small-col-ombud">
@@ -253,35 +262,38 @@
 
                     @foreach (var item in Model.UnderReviewClaims)
                     {
-                        <tr>
-                            <td>
-                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
-                                @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.QualifyingDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ClaimedSum)
-                            </td>
-                            <td>
-                                @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" }) |
-                                    @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
-                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                            @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AdmOffName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" }) |
+            @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                            @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                        </td>
+                    </tr>
                     }
                 </table>
             }

@@ -92,7 +92,6 @@ namespace Sjuklöner.Controllers
             return View("IndexPageOmbud", indexPageOmbudVM);
         }
 
-
         // GET: Claims
         [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult IndexPageAdmOff(string searchString, string searchBy = "Referensnummer")
@@ -107,8 +106,13 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
-
-                if (!string.IsNullOrWhiteSpace(searchString))
+                if (searchBy == "Mine")
+                {
+                    decidedClaims = decidedClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
+                    inInboxClaims = inInboxClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
+                    underReviewClaims = underReviewClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
+                }
+                else if (!string.IsNullOrWhiteSpace(searchString))
                 {
                     decidedClaims = Search(decidedClaims, searchString, searchBy);
                     inInboxClaims = Search(inInboxClaims, searchString, searchBy);
@@ -121,6 +125,7 @@ namespace Sjuklöner.Controllers
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
         }
+    
 
         // GET: Claims
         [Authorize(Roles = "Admin")]
@@ -169,18 +174,22 @@ namespace Sjuklöner.Controllers
                     searchString = searchString.Substring(1);
                 Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
             }
+            else if (searchBy == "Handl")             // Sökning på Handläggarens efternamn
+            {
+                Claims = Claims.Where(c => c.AdmOffName.Contains(searchString));
+            }
             else if (searchBy == "Ombud")             // Sökning på Ombudets efternamn
             {
                 Claims = Claims.Where(c => c.OmbudLastName.Contains(searchString));
-            }       
+            }
             else if (searchBy == "Bolag")             // Sökning på Bolagsnamn
             {
                 Claims = Claims.Where(c => c.CareCompany.CompanyName.Contains(searchString));
             }
-            // else if (searchBy == "Kontaktperson")     // TODO Later. Change DB first           
 
             return Claims;
         }
+        
 
         // GET: Claims/Details/5
         public ActionResult Details(int? id)
@@ -662,6 +671,16 @@ namespace Sjuklöner.Controllers
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
             claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+
+            // Need to set start values for theses 3 properties to avoid DbUpdateException
+            claim.BasisForDecisionTransferFinishTimeStamp = new DateTime(1900, 1, 1);
+            claim.BasisForDecisionTransferStartTimeStamp = new DateTime(1900, 1, 1);
+            claim.DecisionTransferTimeStamp = new DateTime(1900, 1, 1);
+
+            // No AdmOfficial assigned to the Claim when it is created
+            claim.AdmOffId = null;
+            claim.AdmOffName = "-";
+
             db.Claims.Add(claim);
             db.SaveChanges();
             return claim.ReferenceNumber;
@@ -1971,6 +1990,15 @@ namespace Sjuklöner.Controllers
 
                 recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
                 claim.RejectReason = recommendationVM.RejectReason;
+
+                // Assign this Claim to the current Administrative Official               
+                if (User.IsInRole("AdministrativeOfficial"))
+                {
+                    var me = db.Users.Find(User.Identity.GetUserId());
+
+                    claim.AdmOffId = me.Id;
+                    claim.AdmOffName = me.FirstName + " " + me.LastName;
+                }
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();

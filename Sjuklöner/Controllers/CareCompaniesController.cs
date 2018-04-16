@@ -602,7 +602,7 @@ namespace Sjuklöner.Controllers
             ombudVM.PhoneNumber = applicationUser.PhoneNumber;
             ombudVM.Email = applicationUser.Email;
             return View("DeleteOmbud", ombudVM);
-        }
+        }       
 
         // POST: Ombud/Delete/5
         [HttpPost, ActionName("DeleteOmbud")]
@@ -616,9 +616,26 @@ namespace Sjuklöner.Controllers
                 ApplicationUser applicationUser = db.Users.Find(id);
                 if (applicationUser != me && applicationUser.CareCompanyId == me.CareCompanyId)
                 {
+                    var claimsForOmbud = db.Claims.Where(c => c.OwnerId == applicationUser.Id).ToList();
+
+                    foreach (var claim in claimsForOmbud)
+                    {
+                        // All Unsent Claims (Claims with StatusId == 2) for the deleted Ombud should be moved to a "Dummy ombud"
+                        if (claim.ClaimStatusId == 2)
+                        {
+                            claim.OwnerId = "";
+                            claim.OmbudFirstName = "-";
+                            claim.OmbudLastName = "-";
+                            claim.OmbudPhoneNumber = "-";
+                            claim.OmbudEmail = "-";
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                        }
+                    }
+
                     db.Users.Remove(applicationUser);
                     db.SaveChanges();
-                }
+                }                            
             }
             return RedirectToAction("IndexOmbud");
         }
