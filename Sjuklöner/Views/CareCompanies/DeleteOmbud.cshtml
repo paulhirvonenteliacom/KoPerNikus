@@ -6,60 +6,54 @@
 <div class="row index-page-margin">
     <p class="col col-md-2"></p>
     <p class="page-header8 col col-md-10">Ta bort ombudet</p>
-    <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort detta ombud</nl>
+    <nl class="col-small-left-padding col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort detta ombud</nl>
 </div>
+<hr class="claim-divider" />
+
 <div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.FirstName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.LastName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.SSN)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.SSN, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.SSN)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.Email)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-    </dl>
+        </div>
+    </div>
 
-@using (Html.BeginForm("DeleteOmbud", "CareCompanies", new { id = Model.Id }, FormMethod.Post))
-{
+    @using (Html.BeginForm("DeleteOmbud", "CareCompanies", new { id = Model.Id }, FormMethod.Post))
+    {
         @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+        <div class="row row-padding2">
+            <div class="col-small-left-padding col col-md-offset-2 col-md-1">
                 <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-danger btn-danger-small" id="confirm" />
             </div>
-            <div class="no-padding-left2 col col-md-1">
+            <div class="col-small-left-padding col col-md-1">
                 <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
             </div>
         </div>
