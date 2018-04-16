@@ -271,6 +271,12 @@ var assistants = new List<Assistant>
                 LatestReferenceNumber = 00000
             });
 
+            context.AppAdmins.AddOrUpdate(c => c.Id, new AppAdmin
+            {
+                Id = 1,
+                AutomaticTransferToProcapita = false
+            });
+
             context.SaveChanges();
         }
     }

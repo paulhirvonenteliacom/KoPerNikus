@@ -276,10 +276,19 @@
     <Compile Include="Migrations\201804121130147_AdmOffClaims.Designer.cs">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804160742333_AddedAppAdminClass.cs" />
+    <Compile Include="Migrations\201804160742333_AddedAppAdminClass.Designer.cs">
+      <DependentUpon>201804160742333_AddedAppAdminClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.cs" />
+    <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.Designer.cs">
+      <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdministrativeOfficial.cs" />
+    <Compile Include="Models\AppAdmin.cs" />
     <Compile Include="Models\Assistant.cs" />
     <Compile Include="Models\ClaimCalculation.cs" />
     <Compile Include="Models\Claim.cs" />
@@ -552,6 +561,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804121130147_AdmOffClaims.resx">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804160742333_AddedAppAdminClass.resx">
+      <DependentUpon>201804160742333_AddedAppAdminClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804161208085_AddedSeedForAppAdmin.resx">
+      <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

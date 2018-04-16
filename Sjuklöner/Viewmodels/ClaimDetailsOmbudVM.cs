@@ -274,6 +274,30 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kontroll av beslut om personlig assistans:")]
         public string AssistanceCheck { get; set; }
 
+        public bool SalarySpecRegAssistantCheck { get; set; }
+        [Display(Name = "Kontroll av lönespecifikation, ordinarie assistent:")]
+        public string SalarySpecRegAssistantCheckMsg { get; set; }
+
+        public bool SalarySpecSubAssistantCheck { get; set; }
+        [Display(Name = "Kontroll av lönespecifikation, vikarierande assistent:")]
+        public string SalarySpecSubAssistantCheckMsg { get; set; }
+
+        public bool SickleaveNotificationCheck { get; set; }
+        [Display(Name = "Kontroll av sjufrånvaroanmälan:")]
+        public string SickleaveNotificationCheckMsg { get; set; }
+
+        public bool MedicalCertificateCheck { get; set; }
+        [Display(Name = "Kontroll av läkarintyg:")]
+        public string MedicalCertificateCheckMsg { get; set; }
+
+        public bool FKRegAssistantCheck { get; set; }
+        [Display(Name = "Kontroll av tidsredovisning Försäkringskassan, ordinarie assistent:")]
+        public string FKRegAssistantCheckMsg { get; set; }
+
+        public bool FKSubAssistantCheck { get; set; }
+        [Display(Name = "Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent:")]
+        public string FKSubAssistantCheckMsg { get; set; }
+
         [Display(Name = "Motivering för avslag:")]
         public string RejectReason { get; set; }
 

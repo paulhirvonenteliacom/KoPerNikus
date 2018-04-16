@@ -56,6 +56,7 @@ namespace Sjuklöner.Models
         public DbSet<CareCompany> CareCompanies { get; set; }
         public DbSet<ClaimCalculation> ClaimCalculations { get; set; }
         public DbSet<Assistant> Assistants { get; set; }
+        public DbSet<AppAdmin> AppAdmins { get; set; }
 
         //Only needed for demo
         public DbSet<ClaimDaySeed> ClaimDaySeeds { get; set; }

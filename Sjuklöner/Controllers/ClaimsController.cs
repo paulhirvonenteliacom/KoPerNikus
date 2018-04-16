@@ -1627,8 +1627,16 @@ namespace Sjuklöner.Controllers
                             claim.SickleaveNotificationCheck = false;
                             claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
 
-                            claim.MedicalCertificateCheck = false;
-                            claim.MedicalCertificateCheckMsg = "Kontroll ej utförd";
+                            if (claim.NumberOfSickDays > 7)
+                            {
+                                claim.MedicalCertificateCheck = false;
+                                claim.MedicalCertificateCheckMsg = "Kontroll ej utförd";
+                            }
+                            else
+                            {
+                                claim.MedicalCertificateCheck = true;
+                                claim.MedicalCertificateCheckMsg = "Intyget ej obligatoriskt. Kontroll ej utförd.";
+                            }
 
                             claim.FKRegAssistantCheck = false;
                             claim.FKRegAssistantCheckMsg = "Kontroll ej utförd";
@@ -2176,6 +2184,12 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.IVOCheck = claim.IVOCheckMsg;
                 claimDetailsOmbudVM.ProxyCheck = claim.ProxyCheckMsg;
                 claimDetailsOmbudVM.AssistanceCheck = claim.AssistanceCheckMsg;
+                claimDetailsOmbudVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
+                claimDetailsOmbudVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+                claimDetailsOmbudVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
+                claimDetailsOmbudVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
+                claimDetailsOmbudVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+                claimDetailsOmbudVM.MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg;
                 claimDetailsOmbudVM.RejectReason = claim.RejectReason;
 
                 //Add calculation and results from calculation

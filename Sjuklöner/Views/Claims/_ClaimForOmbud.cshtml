@@ -864,15 +864,103 @@
                         </div>
                     </div>
                     <div class="col col-md-5">
+                        @*<div class="form-group line-height-12">
+                    <div class="row label-padding">
+                        @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                    </div>
+                    <div class="row display-padding6">
+                        @Html.DisplayFor(m => m.RejectReason)
+                    </div>
+                </div>*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row label-padding">
-                                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                                @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.SalarySpecRegAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.SalarySpecSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
                             </div>
                             <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.SalarySpecSubAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.FKRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.FKRegAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.FKSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            </div>
+                            <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.SickleaveNotificationCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.SickleaveNotificationCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            </div>
+                            <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
                                 @Html.DisplayFor(m => m.RejectReason)
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col col-md-5">
+                    @*<div class="form-group line-height-12">
+                        <div class="row label-padding">
+                            @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                        </div>
+                        <div class="row display-padding">
+                            @Html.DisplayFor(m => m.AssistanceCheck)
+                        </div>
+                    </div>*@
                 </div>
             </div>
         </div>
