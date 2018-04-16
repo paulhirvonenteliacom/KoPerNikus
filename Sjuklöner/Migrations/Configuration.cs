@@ -13,7 +13,7 @@ namespace Sjuklöner.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Sjuklöner.Models.ApplicationDbContext context)
