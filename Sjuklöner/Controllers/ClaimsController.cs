@@ -1731,39 +1731,40 @@ namespace Sjuklöner.Controllers
                 recommendationVM.IvoCheck = claim.IVOCheck;
                 if (!recommendationVM.IvoCheck)
                 {
-                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i Vårdgivarregistret på www.ivo.se";
+                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i Vårdgivarregistret på www.ivo.se.";
                 }
                 else
                 {
-                    recommendationVM.IvoCheckMsg = "Verksamheten finns i Vårdgivarregistret på www.ivo.se";
+                    recommendationVM.IvoCheckMsg = "Verksamheten finns i Vårdgivarregistret på www.ivo.se.";
                 }
 
                 recommendationVM.CompleteCheck = true; //All attachments will be included by default since the claim cannot be submitted without attachements
                 if (!recommendationVM.CompleteCheck)
                 {
-                    recommendationVM.CompleteCheckMsg = "Bilaga saknas";
+                    recommendationVM.CompleteCheckMsg = "Bilaga saknas.";
                 }
                 else
                 {
-                    recommendationVM.CompleteCheckMsg = "Alla bilagor är med";
+                    recommendationVM.CompleteCheckMsg = "Alla bilagor är med.";
                 }
 
                 recommendationVM.ProxyCheck = false;
                 recommendationVM.ProxyCheck = claim.ProxyCheck;
                 if (!recommendationVM.ProxyCheck)
                 {
-                    recommendationVM.ProxyCheckMsg = "Ombudet saknar giltig fullmakt";
+                    recommendationVM.ProxyCheckMsg = "Ombudet saknar giltig fullmakt.";
                 }
                 else
                 {
-                    recommendationVM.ProxyCheckMsg = "Ombudet har giltig fullmakt";
+                    recommendationVM.ProxyCheckMsg = "Ombudet har giltig fullmakt.";
                 }
 
+                bool partiallyCovered = false; //This variable is set to true if the decision about personal assistance only covers part of the sickleave period.
                 recommendationVM.AssistanceCheck = false;
                 recommendationVM.AssistanceCheck = claim.ProCapitaCheck;
                 if (!recommendationVM.AssistanceCheck)
                 {
-                    recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas";
+                    recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas.";
                 }
                 else //There is a decision about personal assistance. Now it needs to be checked if it is valid for the whole sickleave period or parts of it or not at all.
                 {
@@ -1882,6 +1883,7 @@ namespace Sjuklöner.Controllers
                             CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
                         }
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate + ", vilket endast täcker en del av sjukperioden";
+                        partiallyCovered = true;
                     }
                     else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
                     {
@@ -1896,15 +1898,16 @@ namespace Sjuklöner.Controllers
                             CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
                         }
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate + ", vilket endast täcker en del av sjukperioden";
+                        partiallyCovered = true;
                     }
                     //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
                     else if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date) //CHECK THIS OUT
                     {
-                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns";
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns.";
                     }
                     else
                     {
-                        recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas för sjukperioden";
+                        recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas för sjukperioden.";
                     }
                 }
 
@@ -1966,7 +1969,8 @@ namespace Sjuklöner.Controllers
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
                 claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
 
-                recommendationVM.RejectReason = RejectReason(claim, recommendationVM);
+                recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
+                claim.RejectReason = recommendationVM.RejectReason;
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -1978,17 +1982,30 @@ namespace Sjuklöner.Controllers
             }
         }
 
-        private string RejectReason(Claim claim, RecommendationVM recommendationVM)
+        private string RejectReason(Claim claim, RecommendationVM recommendationVM, bool partiallyCoveredSickleave)
         {
+            string resultMsg = "";
             if (claim.ClaimedSum > claim.ModelSum + 100)
             {
-                return "Det yrkade beloppet överstiger det beräknade beloppet.";
+                resultMsg += "Det yrkade beloppet överstiger det beräknade beloppet. ";
             }
             if (!claim.IVOCheck)
             {
-
+                resultMsg += "Verksamheten saknas i Vårdgivarregistret på www.ivo.se. ";
             }
-            return "";
+            if (!claim.ProxyCheck)
+            {
+                resultMsg += "Ombudet saknar giltig fullmakt. ";
+            }
+            if (partiallyCoveredSickleave)
+            {
+                resultMsg += "Beslut om assistans finns för bara en del av sjukperioden. ";
+            }
+            else if (!claim.ProCapitaCheck)
+            {
+                resultMsg += "Beslut om assistans saknas. ";
+            }
+            return resultMsg;
         }
 
         public ActionResult _Message(Message message)
@@ -2131,6 +2148,7 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.IVOCheck = claim.IVOCheckMsg;
                 claimDetailsOmbudVM.ProxyCheck = claim.ProxyCheckMsg;
                 claimDetailsOmbudVM.AssistanceCheck = claim.AssistanceCheckMsg;
+                claimDetailsOmbudVM.RejectReason = claim.RejectReason;
 
                 //Add calculation and results from calculation
                 List<ClaimDay> claimDays = new List<ClaimDay>();

@@ -104,6 +104,7 @@ namespace Sjuklöner.Viewmodels
         [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format eller för stort belopp.")]
         public string RejectedSum { get; set; }
 
+        [DataType(DataType.MultilineText)]
         [Display(Name = "Motivering för avslag:")]
         public string RejectReason { get; set; }
 

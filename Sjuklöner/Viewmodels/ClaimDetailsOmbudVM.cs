@@ -274,6 +274,8 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kontroll av beslut om personlig assistans:")]
         public string AssistanceCheck { get; set; }
 
+        [Display(Name = "Motivering för avslag:")]
+        public string RejectReason { get; set; }
 
         public List<ClaimDay> ClaimDays { get; set; }
 
