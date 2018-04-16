@@ -276,6 +276,14 @@
     <Compile Include="Migrations\201804121130147_AdmOffClaims.Designer.cs">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804160750176_Introduced_WatchLog.cs" />
+    <Compile Include="Migrations\201804160750176_Introduced_WatchLog.Designer.cs">
+      <DependentUpon>201804160750176_Introduced_WatchLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804160800408_seeding_watchlogs.cs" />
+    <Compile Include="Migrations\201804160800408_seeding_watchlogs.Designer.cs">
+      <DependentUpon>201804160800408_seeding_watchlogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -340,6 +348,7 @@
     <Compile Include="Viewmodels\IndexPageOmbudVM.cs" />
     <Compile Include="Viewmodels\StodSystemLoginVM.cs" />
     <Compile Include="Viewmodels\ScheduleVM.cs" />
+    <Compile Include="Models\WatchLog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\BankIDService\configuration91.svcinfo" />
@@ -552,6 +561,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804121130147_AdmOffClaims.resx">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804160750176_Introduced_WatchLog.resx">
+      <DependentUpon>201804160750176_Introduced_WatchLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804160800408_seeding_watchlogs.resx">
+      <DependentUpon>201804160800408_seeding_watchlogs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

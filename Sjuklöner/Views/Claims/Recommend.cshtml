@@ -369,8 +369,8 @@
         <div class="form-horizontal">
             <div class="form-group margin-bottom-small col line-height-10">
                 @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4 highlight-red" })
-                <div class="col col-md-1">
-                    @Html.EditorFor(model => model.RejectReason, new { htmlAttributes = new { @class = "form-control large-form-control2 control-width2 highlight-red", id = "rejectedsum", onblur = "calculateSum(2)" } })
+                <div class="col col-md-8">
+                    @Html.EditorFor(model => model.RejectReason, new { htmlAttributes = new { @style = "max-width:100% !important;", @class = "control-width2 form-control large-form-control2 highlight-red", rows = 3, id = "rejectedsum", onblur = "calculateSum(2)" } })
                     @Html.ValidationMessageFor(model => model.RejectReason, null, new { @class = "text-danger" }, null)
                 </div>
             </div>
@@ -395,7 +395,7 @@
             <div class="form-group margin-bottom-small col line-height-06">
                 @Html.LabelFor(model => model.BasisForDecision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
                 @if (!Model.BasisForDecision)
-                {
+                    {
                     <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
                         <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
                     </div>
@@ -411,7 +411,7 @@
             <div class="form-group margin-bottom-small col line-height-06">
                 @Html.LabelFor(model => model.Decision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
                 @if (!Model.Decision)
-                {
+                    {
                     <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
                         <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.DecisionMsg)
                     </div>

@@ -271,6 +271,10 @@ var assistants = new List<Assistant>
                 LatestReferenceNumber = 00000
             });
 
+            context.WatchLogs.AddOrUpdate(w => w.Id, new WatchLog {
+                LogDate = System.DateTime.Now, LogCode=0, LogMsg="Initial status", Robot="A001325"
+            });
+
             context.SaveChanges();
         }
     }
