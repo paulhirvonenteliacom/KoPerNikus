@@ -276,6 +276,10 @@
     <Compile Include="Migrations\201804121130147_AdmOffClaims.Designer.cs">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804160800408_seeding_watchlogs.cs" />
+    <Compile Include="Migrations\201804160800408_seeding_watchlogs.Designer.cs">
+      <DependentUpon>201804160800408_seeding_watchlogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.cs" />
     <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.Designer.cs">
       <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
@@ -558,6 +562,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804121130147_AdmOffClaims.resx">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804160800408_seeding_watchlogs.resx">
+      <DependentUpon>201804160800408_seeding_watchlogs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804161208085_AddedSeedForAppAdmin.resx">
       <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
