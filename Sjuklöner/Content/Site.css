@@ -623,6 +623,13 @@ li a {
     padding: 6px 6px;
 }
 
+.btn-primary-configuration {
+    margin-left: 0;
+    font-size: 14px;
+    width: 130px;
+    padding: 0 0;
+}
+
 .btn-primary-wide {
     margin-left: 18px;
     font-size: 22px;

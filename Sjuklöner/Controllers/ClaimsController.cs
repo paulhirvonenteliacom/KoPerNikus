@@ -1696,7 +1696,7 @@ namespace Sjuklöner.Controllers
             var document = new Document();
             document.DateUploaded = DateTime.Now;
             document.Filename = $"{title}_{Path.GetFileName(file.FileName)}";
-            document.FilePath = Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}");
+            document.FilePath = Path.Combine(path, $"{title}_{claim.ReferenceNumber}");
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
             document.Title = title;

@@ -2,6 +2,7 @@
 using Sjuklöner.Viewmodels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -51,10 +52,21 @@ namespace Sjuklöner.Controllers
                 adminIndexVM.NumberOfCareCompanies = db.CareCompanies.Count();
                 adminIndexVM.NumberOfClaims = db.Claims.Where(c => c.ClaimStatusId >= 5).Count(); //Claims that have been submitted and where Robin has done its checks.
                 adminIndexVM.NumberOfCollectiveAgreements = db.CollectiveAgreementHeaders.Count();
+                adminIndexVM.AutomaticTransferToProcapita = db.AppAdmins.FirstOrDefault().AutomaticTransferToProcapita;
 
                 return View("Index", adminIndexVM);
             }
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveAdminSetting(AdminIndexVM adminIndexVM)
+        {
+            var appAdmin = db.AppAdmins.FirstOrDefault();
+            appAdmin.AutomaticTransferToProcapita = adminIndexVM.AutomaticTransferToProcapita;
+            db.Entry(appAdmin).State = EntityState.Modified;
+            db.SaveChanges();
+            return View("Index", adminIndexVM);
         }
 
         public ActionResult About()
