@@ -1704,7 +1704,7 @@ namespace Sjuklöner.Controllers
             db.Documents.Add(document);
             claim.Documents.Add(document);
             db.SaveChanges();
-            file.SaveAs(Path.Combine(path, $"{title}_{Path.GetFileName(file.FileName)}"));
+            file.SaveAs(Path.Combine(path, $"{title}_{claim.ReferenceNumber}.pdf"));
             return;
         }
 
