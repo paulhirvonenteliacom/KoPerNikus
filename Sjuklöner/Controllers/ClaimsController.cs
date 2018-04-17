@@ -1969,7 +1969,8 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ClaimNumber = claim.ReferenceNumber;
                 recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck)
+                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || recommendationVM.SalarySpecRegAssistantCheck ||
+                    recommendationVM.SalarySpecSubAssistantCheck || recommendationVM.SickleaveNotificationCheck || recommendationVM.MedicalCertificateCheck || recommendationVM.FKRegAssistantCheck || recommendationVM.FKSubAssistantCheck)
                 {
                     recommendationVM.ApprovedSum = "0,00";
                     recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
@@ -2040,6 +2041,30 @@ namespace Sjuklöner.Controllers
             else if (!claim.ProCapitaCheck)
             {
                 resultMsg += "Beslut om assistans saknas. ";
+            }
+            if (!claim.SalarySpecRegAssistantCheck)
+            {
+                resultMsg += "Kontroll av ordinarie assistents lönespecifikation gav negativt resultat. ";
+            }
+            if (!claim.SalarySpecSubAssistantCheck)
+            {
+                resultMsg += "Kontroll av vikarierande assistents lönespecifikation gav negativt resultat. ";
+            }
+            if (!claim.SickleaveNotificationCheck)
+            {
+                resultMsg += "Kontroll av sjukfrånvaroanmälan gav negativt resultat. ";
+            }
+            if (!claim.MedicalCertificateCheck)
+            {
+                resultMsg += "Kontroll av sjukintyg gav negativt resultat. ";
+            }
+            if (!claim.FKRegAssistantCheck)
+            {
+                resultMsg += "Kontroll av ordinarie assistents tidsredovisning (FK) gav negativt resultat. ";
+            }
+            if (!claim.FKSubAssistantCheck)
+            {
+                resultMsg += "Kontroll av vikarierande assistents tidsredovsning (FK) gav negativt resultat. ";
             }
             return resultMsg;
         }
