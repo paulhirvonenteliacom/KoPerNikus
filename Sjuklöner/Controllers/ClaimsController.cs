@@ -1695,7 +1695,7 @@ namespace Sjuklöner.Controllers
         {
             var document = new Document();
             document.DateUploaded = DateTime.Now;
-            document.Filename = $"{title}_{Path.GetFileName(file.FileName)}";
+            document.Filename = $"{title}__{claim.ReferenceNumber}.pdf";
             document.FilePath = Path.Combine(path, $"{title}_{claim.ReferenceNumber}.pdf");
             document.FileSize = file.ContentLength;
             document.FileType = file.ContentType;
