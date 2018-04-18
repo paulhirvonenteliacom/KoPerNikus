@@ -75,6 +75,11 @@ namespace Sjuklöner.Controllers
             {
                 return RedirectToAction("Index", "Claims");
             }
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
