@@ -2614,6 +2614,7 @@ namespace Sjuklöner.Controllers
             var claim = db.Claims.Where(c => c.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
             claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
             claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
+            claim.RejectReason = recommendationVM.RejectReason;
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
