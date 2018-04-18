@@ -94,7 +94,9 @@ li a {
     font-weight: normal;
     color: #ffffff;
     font-size: 18px;
-    margin-top: 18px;    
+    /*margin-top: 18px; */
+    margin-top: 7px;
+    margin-bottom: auto;
     text-decoration: none;
 }
 
@@ -112,18 +114,20 @@ li a {
 .logoff {
     padding-top: 0;
     font-weight: normal;
-    color: #ffffff;
-    font-size: 16px;
-    margin-top: 6px;
+    color: red;
+    font-size: 20px;    
     padding-right: 15px;
+    margin-top: -4px;
+   
+    
 }
 
 .user-id {
     padding-top: 0;
     font-weight: normal;
     color: #ffffff;
-    font-size: 16px;
-    margin-top: 6px;
+    font-size: 20px;
+    margin-top: -4px;
 }
 
 #loginLink {
@@ -176,42 +180,42 @@ li a {
 }
 
 .red-bar {
-    height: 65px;
+    height: 50px;
     width: 100%;
     background-color: #ae0b05;
 }
 
 .red-bar-filler {
     width: 158px;
-    height: 65px;
+    height: 50px;
     background-color: #ae0b05;
     float: left;
     margin-bottom: 6px;
 }
 
 .black-bar {
-    height: 65px;
+    height: 50px;
     width: 100%;
     background-color: black;
 }
 
 .black-bar-filler {
     width: 158px;
-    height: 65px;
+    height: 50px;
     background-color: black;
     float: left;
     margin-bottom: 6px;
 }
 
 .blue-bar {    
-    height: 65px;
+    height: 50px;
     width: 100%;
     background-color: #005c86;
 }
 
 .blue-bar-filler {
     width: 158px;
-    height: 65px;
+    height: 50px;
     background-color: #005c86;
     float: left;
     margin-bottom: 6px;
