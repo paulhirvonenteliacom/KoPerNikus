@@ -20,6 +20,7 @@ namespace Sjuklöner.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: CareCompanies
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult Index()
         {
             if (User.IsInRole("Ombud"))
@@ -43,6 +44,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: CareCompanies/Details/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -76,6 +78,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: CareCompanies/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             var vm = new CareCompanyCreateVM();
@@ -95,6 +98,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(CareCompanyCreateVM model)
         {
             if (db.CareCompanies.Where(c => c.OrganisationNumber == model.OrganisationNumber).Any())
@@ -147,6 +151,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: CareCompanies/Edit/5
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -179,6 +184,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult Edit([Bind(Include = "CareCompanyId,CareCompany,SelectedCollectiveAgreementId,CollectiveAgreement")] CareCompanyEditVM careCompanyEditVM, string submitButton)
         {
             //ModelState.Remove(nameof(CareCompany.CollectiveAgreementSpecName));
@@ -233,6 +239,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: CareCompanies/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -269,6 +276,7 @@ namespace Sjuklöner.Controllers
         // POST: CareCompanies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id, string submitButton)
         {
             if (submitButton == "Bekräfta")
@@ -345,39 +353,37 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Ombud
+        [Authorize(Roles = "Ombud")]
         public ActionResult IndexOmbud()
-        {
-            if (User.IsInRole("Ombud"))
-            {
-                var currentId = User.Identity.GetUserId();
-                ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
-                var companyId = currentUser.CareCompanyId;
-                var companyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
-                var ombuds = db.Users.Where(u => u.CareCompanyId == companyId).OrderBy(u => u.LastName).ToList();
+        {           
+            var currentId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
+            var companyId = currentUser.CareCompanyId;
+            var companyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
+            var ombuds = db.Users.Where(u => u.CareCompanyId == companyId).OrderBy(u => u.LastName).ToList();
 
-                OmbudIndexVM ombudIndexVM = new OmbudIndexVM();
-                List<OmbudForVM> ombudForVMList = new List<OmbudForVM>();
-                foreach (var ombud in ombuds)
-                {
-                    OmbudForVM ombudForVM = new OmbudForVM();
-                    ombudForVM.Id = ombud.Id;
-                    ombudForVM.FirstName = ombud.FirstName;
-                    ombudForVM.LastName = ombud.LastName;
-                    ombudForVM.SSN = ombud.SSN;
-                    ombudForVM.Email = ombud.Email;
-                    ombudForVM.PhoneNumber = ombud.PhoneNumber;
-                    ombudForVMList.Add(ombudForVM);
-                }
-                ombudIndexVM.OmbudForVMList = ombudForVMList;
-                ombudIndexVM.CareCompanyId = (int)companyId;
-                ombudIndexVM.CareCompanyName = companyName;
-                ombudIndexVM.CurrentUserId = currentId;
-                return View("IndexOmbud", ombudIndexVM);
+            OmbudIndexVM ombudIndexVM = new OmbudIndexVM();
+            List<OmbudForVM> ombudForVMList = new List<OmbudForVM>();
+            foreach (var ombud in ombuds)
+            {
+                OmbudForVM ombudForVM = new OmbudForVM();
+                ombudForVM.Id = ombud.Id;
+                ombudForVM.FirstName = ombud.FirstName;
+                ombudForVM.LastName = ombud.LastName;
+                ombudForVM.SSN = ombud.SSN;
+                ombudForVM.Email = ombud.Email;
+                ombudForVM.PhoneNumber = ombud.PhoneNumber;
+                ombudForVMList.Add(ombudForVM);
             }
-            return View();
+            ombudIndexVM.OmbudForVMList = ombudForVMList;
+            ombudIndexVM.CareCompanyId = (int)companyId;
+            ombudIndexVM.CareCompanyName = companyName;
+            ombudIndexVM.CurrentUserId = currentId;
+            return View("IndexOmbud", ombudIndexVM);           
         }
 
         // GET: Ombud/Details/5
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult DetailsOmbud(string id)
         {
             if (id == null)
@@ -405,6 +411,7 @@ namespace Sjuklöner.Controllers
         }
 
         /*// GET: Ombud/Create
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult CreateOmbud()
         {
             OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
@@ -420,6 +427,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudCreateVM ombudCreateVM, string submitButton)
         {
             if (submitButton == "Spara")
@@ -445,6 +453,7 @@ namespace Sjuklöner.Controllers
         }
         */
         // GET: Ombud/Edit/5
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult EditOmbud(string id)
         {
             if (id == null)
@@ -474,6 +483,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         //public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         public ActionResult EditOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudEditVM ombudEditVM, string submitButton)
         {
@@ -583,6 +593,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Ombud/Delete/5
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult DeleteOmbud(string id)
         {
             if (id == null || id == User.Identity.GetUserId())
@@ -607,6 +618,7 @@ namespace Sjuklöner.Controllers
         // POST: Ombud/Delete/5
         [HttpPost, ActionName("DeleteOmbud")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult DeleteConfirmedOmbud(string id, string submitButton)
         {
             if (submitButton == "Bekräfta")

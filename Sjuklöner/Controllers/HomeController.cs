@@ -60,6 +60,7 @@ namespace Sjuklöner.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult SaveAdminSetting(AdminIndexVM adminIndexVM)
         {
             var appAdmin = db.AppAdmins.FirstOrDefault();
