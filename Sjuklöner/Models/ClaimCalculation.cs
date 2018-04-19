@@ -106,13 +106,29 @@ namespace Sjuklöner.Models
         public string PerHourOnCallNightAsString { get; set; }
 
         //Qualifying day, if hours only given as input by the ombud
-        [Display(Name = "Antal timmar:")]
+        [Display(Name = "Antal arbetstimmar:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HoursQD { get; set; }
 
-        [Display(Name = "Antal timmar överstigande 8,00:")]
+        [Display(Name = "Antal jourtimmar, dag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallDayHoursQD { get; set; }
+
+        [Display(Name = "Antal jourtimmar, helg/natt:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallNightHoursQD { get; set; }
+
+        [Display(Name = "Antal arbetstimmar efter avdrag för karensdag:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string PaidHoursQD { get; set; }
+
+        [Display(Name = "Antal jourtimmar, dag, efter avdrag för karensdag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidOnCallDayHoursQD { get; set; }
+
+        [Display(Name = "Antal jourtimmar, helg/natt, efter avdrag för karensdag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidOnCallNightHoursQD { get; set; }
 
         [Display(Name = "Lön, 80% av ordinarie timlön:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
