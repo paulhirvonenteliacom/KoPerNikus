@@ -1969,8 +1969,8 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ClaimNumber = claim.ReferenceNumber;
                 recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || recommendationVM.SalarySpecRegAssistantCheck ||
-                    recommendationVM.SalarySpecSubAssistantCheck || recommendationVM.SickleaveNotificationCheck || recommendationVM.MedicalCertificateCheck || recommendationVM.FKRegAssistantCheck || recommendationVM.FKSubAssistantCheck)
+                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                 {
                     recommendationVM.ApprovedSum = "0,00";
                     recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
