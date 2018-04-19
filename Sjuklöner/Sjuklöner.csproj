@@ -284,6 +284,10 @@
     <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.Designer.cs">
       <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.cs" />
+    <Compile Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.Designer.cs">
+      <DependentUpon>201804190843488_StartedOnCalculationForQualifyingDay.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -570,6 +574,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804161208085_AddedSeedForAppAdmin.resx">
       <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.resx">
+      <DependentUpon>201804190843488_StartedOnCalculationForQualifyingDay.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

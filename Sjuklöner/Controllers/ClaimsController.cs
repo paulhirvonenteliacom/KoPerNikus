@@ -1980,8 +1980,8 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ClaimNumber = claim.ReferenceNumber;
                 recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || recommendationVM.SalarySpecRegAssistantCheck ||
-                    recommendationVM.SalarySpecSubAssistantCheck || recommendationVM.SickleaveNotificationCheck || recommendationVM.MedicalCertificateCheck || recommendationVM.FKRegAssistantCheck || recommendationVM.FKSubAssistantCheck)
+                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                 {
                     recommendationVM.ApprovedSum = "0,00";
                     recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
@@ -2033,7 +2033,7 @@ namespace Sjuklöner.Controllers
         private string RejectReason(Claim claim, RecommendationVM recommendationVM, bool partiallyCoveredSickleave)
         {
             string resultMsg = "";
-            if (claim.ClaimedSum > claim.ModelSum + 100)
+            if (claim.ClaimedSum > Convert.ToDecimal(claim.TotalCostD1T14))
             {
                 resultMsg += "Det yrkade beloppet överstiger det beräknade beloppet. ";
             }
@@ -3153,16 +3153,38 @@ namespace Sjuklöner.Controllers
 
                     //Hours for qualifying day
                     claimCalculation.HoursQD = claimDays[0].Hours;
+                    claimCalculation.OnCallDayHoursQD = claimDays[0].OnCallDay;
+                    claimCalculation.OnCallNightHoursQD = claimDays[0].OnCallNight;
+
+                    //Set defaults
+                    claimCalculation.PaidHoursQD = "0,00";
+                    claimCalculation.PaidOnCallDayHoursQD = "0,00";
+                    claimCalculation.PaidOnCallNightHoursQD = "0,00";
 
                     //Sickpay for qualifying day for hours exceeding 8 (oncall hours not considered)
                     if (Convert.ToDecimal(claimCalculation.HoursQD) > 8)
                     {
                         claimCalculation.PaidHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) - 8);
+                        if (Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) > 0)
+                        {
+                            claimCalculation.PaidOnCallDayHoursQD = claimCalculation.OnCallDayHoursQD;
+                            claimCalculation.PaidOnCallNightHoursQD = claimCalculation.OnCallNightHoursQD;
+                        }
                     }
-                    else
+                    else if (Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) > 8)
                     {
-                        claimCalculation.PaidHoursQD = "0,00";
+                        claimCalculation.PaidOnCallDayHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) - 8);
+                        if (Convert.ToDecimal(claimCalculation.OnCallNightHoursQD) > 0)
+                        {
+                            claimCalculation.PaidOnCallNightHoursQD = claimCalculation.OnCallNightHoursQD;
+                        }
                     }
+                    else if (Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) + Convert.ToDecimal(claimCalculation.OnCallNightHoursQD) > 8)
+                    {
+                        claimCalculation.PaidOnCallNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) + Convert.ToDecimal(claimCalculation.OnCallNightHoursQD) - 8);
+                    }
+                   
+                    //Sickpay for qualifying day
                     claimCalculation.SalaryQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidHoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.SalaryCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidHoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
 
