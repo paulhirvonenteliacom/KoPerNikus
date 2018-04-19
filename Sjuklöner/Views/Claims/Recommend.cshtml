@@ -375,84 +375,87 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div>          
+    
     <div class="row">
         <div class="col col-md-offset-4">
+        @if (User.IsInRole("AdministrativeOfficial"))
+        {
             @Html.ActionLink("För över till Procapita", "Transfer", new { refNumber = Model.ClaimNumber }, new { @class = "btn btn-primary btn-primary-wide2" })
+        }
         </div>
     </div>
-
-    <div class="row">
-        <p class="col col-md-4 second-page-header4">Automatiserade överföringar</p>
-    </div>
-
-    <div class="row">
-        <div class="form-horizontal">
-
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-            <div class="form-group margin-bottom-small col line-height-06">
-                @Html.LabelFor(model => model.BasisForDecision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                @if (!Model.BasisForDecision)
-                    {
-                    <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
-                    </div>
-                }
-            </div>
-
-            <div class="form-group margin-bottom-small col line-height-06">
-                @Html.LabelFor(model => model.Decision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                @if (!Model.Decision)
-                    {
-                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.DecisionMsg)
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.DecisionMsg)
-                    </div>
-                }
-            </div>
-
+      
+        <div class="row">
+            <p class="col col-md-4 second-page-header4">Automatiserade överföringar</p>
         </div>
-    </div>
 
-    <div class="row line-height-10">
-        @*<div class="col col-md-offset-6 col-md-1">
-                <input class="btn btn-primary" type="submit" value="Nästa steg" style="margin-left: 0px;"/>
+        <div class="row">
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.BasisForDecision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.BasisForDecision)
+                    {
+                        <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.Decision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.Decision)
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.DecisionMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.DecisionMsg)
+                        </div>
+                    }
+                </div>
+
             </div>
-            <div class="col col-md-1">
+        </div>
 
-                @*Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })*
-            </div>*@
-        <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
-        <div id='myModal' class='modal' style="text-align:left;">
-            <div class="modal-dialog" style="width:85%; height:400px; padding:10px;">
-                <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
-                    <button type="button" id="closbtn" float="right"> Stäng </button>
-                    <div style="height:10px;">
-                    </div>
-                    <div id='myModalContent' style="width:1200px; height:400px; padding:10px;">
+        <div class="row line-height-10">
+            @*<div class="col col-md-offset-6 col-md-1">
+                    <input class="btn btn-primary" type="submit" value="Nästa steg" style="margin-left: 0px;"/>
+                </div>
+                <div class="col col-md-1">
+
+                    @*Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })*
+                </div>*@
+            <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:85%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn" float="right"> Stäng </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1200px; height:400px; padding:10px;">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
 
 
-}
+    }
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
