@@ -11,6 +11,8 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Referensnummer:")]
         public string ClaimNumber { get; set; }
 
+        public bool InInbox { get; set; }
+
         [Display(Name = "Komplett ansökan")]
         public bool CompleteCheck { get; set; }
         public string CompleteCheckMsg { get; set; }
