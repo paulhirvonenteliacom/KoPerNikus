@@ -379,7 +379,7 @@
     
     <div class="row">
         <div class="col col-md-offset-4">
-        @if (User.IsInRole("AdministrativeOfficial"))
+        @if (User.IsInRole("AdministrativeOfficial") && Model.InInbox == true)
         {
             @Html.ActionLink("För över till Procapita", "Transfer", new { refNumber = Model.ClaimNumber }, new { @class = "btn btn-primary btn-primary-wide2" })
         }

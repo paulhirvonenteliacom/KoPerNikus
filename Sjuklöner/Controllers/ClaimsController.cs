@@ -2004,6 +2004,11 @@ namespace Sjuklöner.Controllers
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
                 }
 
+                if (claim.ClaimStatusId == 5)
+                {
+                    recommendationVM.InInbox = true;
+                }                  
+
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
                 claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
@@ -2620,7 +2625,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, AdministrativeOfficial")]
+        [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult Recommend(RecommendationVM recommendationVM)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
