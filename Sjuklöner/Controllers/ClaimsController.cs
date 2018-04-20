@@ -2635,7 +2635,7 @@ namespace Sjuklöner.Controllers
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
-            return RedirectToAction("ShowRecommendationReceipt", recommendationVM);
+            return View("ConfirmTransfer", claim);                    
         }
 
         // GET: Claims/ShowRecommendationReceipt
