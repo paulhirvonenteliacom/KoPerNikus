@@ -2625,7 +2625,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, AdministrativeOfficial")]
+        [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult Recommend(RecommendationVM recommendationVM)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
