@@ -162,7 +162,13 @@ namespace Sjuklöner.Controllers
             if (careCompany == null)
             {
                 return HttpNotFound();
-            }          
+            }
+
+            // It should not be possible to update passive Companies
+            if (User.IsInRole("Admin") && careCompany.IsActive == false)
+            {
+                return RedirectToAction("Index");
+            }
 
             CareCompanyEditVM careCompanyEditVM = new CareCompanyEditVM();
             careCompanyEditVM.CareCompany = careCompany;
@@ -250,6 +256,12 @@ namespace Sjuklöner.Controllers
             if (careCompany == null)
             {
                 return HttpNotFound();
+            }
+
+            // It should not be possible to delete passive Companies
+            if (careCompany.IsActive == false)
+            {
+                return RedirectToAction("Index");
             }
 
             CareCompanyDeleteVM deleteVM = new CareCompanyDeleteVM();
