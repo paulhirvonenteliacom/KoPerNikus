@@ -58,6 +58,7 @@ namespace Sjuklöner.Controllers
             }      
 
             CareCompanyDetailsVM detailsVM = new CareCompanyDetailsVM();
+            detailsVM.IsActive = careCompany.IsActive;
             detailsVM.CompanyName = careCompany.CompanyName;
             detailsVM.OrganisationNumber = careCompany.OrganisationNumber;
             detailsVM.StreetAddress = careCompany.StreetAddress;

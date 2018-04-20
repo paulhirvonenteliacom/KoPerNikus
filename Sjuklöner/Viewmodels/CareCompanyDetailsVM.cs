@@ -8,6 +8,9 @@ namespace Sjuklöner.Viewmodels
 {  
     public class CareCompanyDetailsVM
     {       
+        [Display(Name = "Status")]
+        public bool IsActive { get; set; }
+
         [Display(Name = "Bolagets namn")]
         public string CompanyName { get; set; }       
         
