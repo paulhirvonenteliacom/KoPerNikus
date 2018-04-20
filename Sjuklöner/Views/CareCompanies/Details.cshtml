@@ -18,6 +18,14 @@
     </div>
 
     <div class="row">
+        @Html.LabelFor(model => model.IsActive, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
+            @{ string status = Model.IsActive ? "Aktivt bolag" : "Passivt bolag"; }
+            @Html.DisplayFor(model => status)
+        </div>
+    </div>
+
+    <div class="row">
         @Html.LabelFor(model => model.OrganisationNumber, new { @class = "col-md-2 display-right-align control-label" })
         <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.OrganisationNumber)
