@@ -94,9 +94,7 @@ li a {
     font-weight: normal;
     color: #ffffff;
     font-size: 18px;
-    /*margin-top: 18px; */
-    margin-top: 7px;
-    margin-bottom: auto;
+    margin-top: 8px;
     text-decoration: none;
 }
 
@@ -180,42 +178,42 @@ li a {
 }
 
 .red-bar {
-    height: 50px;
+    height: 45px;
     width: 100%;
     background-color: #ae0b05;
 }
 
 .red-bar-filler {
     width: 158px;
-    height: 50px;
+    height: 45px;
     background-color: #ae0b05;
     float: left;
     margin-bottom: 6px;
 }
 
 .black-bar {
-    height: 50px;
+    height: 45px;
     width: 100%;
     background-color: black;
 }
 
 .black-bar-filler {
     width: 158px;
-    height: 50px;
+    height: 45px;
     background-color: black;
     float: left;
     margin-bottom: 6px;
 }
 
 .blue-bar {    
-    height: 50px;
+    height: 45px;
     width: 100%;
     background-color: #005c86;
 }
 
 .blue-bar-filler {
     width: 158px;
-    height: 50px;
+    height: 45px;
     background-color: #005c86;
     float: left;
     margin-bottom: 6px;
