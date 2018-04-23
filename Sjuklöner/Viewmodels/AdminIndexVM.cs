@@ -20,5 +20,6 @@ namespace Sjuklöner.Viewmodels
 
         public int NumberOfCollectiveAgreements { get; set; }
 
+        public bool AutomaticTransferToProcapita { get; set; }
     }
 }

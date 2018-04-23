@@ -7,85 +7,85 @@
     <p class="col col-md-2"></p>
     <p class="page-header8 col col-md-10">Detaljvy, assistansbolag</p>
 </div>
+<hr class="claim-divider" />
+
 <div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CompanyName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CompanyName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OrganisationNumber)
-        </dt>
+    <div class="row">
+        @Html.LabelFor(model => model.IsActive, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
+            @{ string status = Model.IsActive ? "Aktivt bolag" : "Passivt bolag"; }
+            @Html.DisplayFor(model => status)
+        </div>
+    </div>
 
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.OrganisationNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.OrganisationNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StreetAddress)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.StreetAddress, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.StreetAddress)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Postcode)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.Postcode, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.Postcode)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.City, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.City)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AccountNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.AccountNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.AccountNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyPhoneNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CompanyPhoneNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CompanyPhoneNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CollectiveAgreementName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CollectiveAgreementName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CollectiveAgreementName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CollectiveAgreementSpecName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CollectiveAgreementSpecName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CollectiveAgreementSpecName)
-        </dd>
-    </dl>
-</div>
-<div class="row">
-    <div class="col col-md-1 col-no-left-padding">
-        @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
+        </div>
     </div>
 </div>
+
+<div class="row row-padding2">
+    <div class="col-small-left-padding col col-md-offset-2 col-md-1">
+        @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })   
+    </div>
+</div>
+
 

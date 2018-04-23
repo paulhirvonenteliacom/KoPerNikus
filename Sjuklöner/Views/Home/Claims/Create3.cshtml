@@ -1,0 +1,275 @@
+﻿@model Sjuklöner.Viewmodels.Create3VM
+@using Newtonsoft.Json
+@{
+    /**/
+
+    ViewBag.Title = "Create3";
+}
+<div class="row margin-breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Personuppgifter och sjukperiod", "Create1", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Timmar", "Create2", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Belopp</li>
+        </ol>
+    </nav>
+</div>
+@using (Html.BeginForm("Create3", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ClaimNumber)
+
+    @*<body class="assistant-claim">*@
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
+        @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
+        <br>
+        @*<p class="col col-md-offset-2 col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>*@
+    </div>
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-4 second-page-header3">Steg 3 av 4: Ange belopp</p>
+    </div>
+    if (Model.ShowCalculatedValues == true)
+    {
+        <div class="row">
+            <p class="col col-md-2"></p>
+            <p class="col-small-left-padding2 col col-md-8">De förifyllda beloppen är förslag beräknade utifrån antal timmar, timlön och angivet kollektivavtal.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row height-14">
+        </div>
+    }
+    <div class="row">
+        <div class="form-horizontal">
+            @*<div class="col col-md-6">*@
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.SickPay, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.SickPay, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.SickPay, id = "sickpay", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.ValidationMessageFor(model => model.SickPay, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.HolidayPay, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.HolidayPay, id = "holidaypay", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.ValidationMessageFor(model => model.HolidayPay, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.SocialFees, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.SocialFees, id = "socialfees", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.ValidationMessageFor(model => model.SocialFees, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.PensionAndInsurance, new { htmlAttributes = new { @class = "form-control align-bottom2", @placeholder = Model.PensionAndInsurance, id = "pensionandinsurance", onchange = "calculateSum()", onblur = "calculateSum()" } })
+                    @Html.ValidationMessageFor(model => model.PensionAndInsurance, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
+                <div class="col-md-4 align-bottom3 display-large-font1" id="claimamount">
+                    @Html.DisplayFor(model => Model.ClaimSum)
+                    @Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+        </div>
+    </div>
+    @*</div>*@
+
+    @*@if (Model.Rejected)
+        {
+            <div class="row">
+                <p class="col col-md-2"></p>
+                <p class="col col-md-10">@Model.RejectReason</p>
+            </div>
+        }*@
+
+    @*<div>
+            @Html.ActionLink("Spara", "SaveAmounts", "Claims", new { sickPay = parSickPay, parHolidayPay = Model.HolidayPay,
+                            parSocialFees = Model.SocialFees, parPensionAndInsurance = Model.PensionAndInsurance, parClaimSum = Model.ClaimSum,
+                            parClaimReference = Model.ReferenceNumber }, new { @class = "btn btn-default" })
+        </div>*@
+    <div>
+        <div class="row">
+            <div class="small-padding-left3 col col-md-offset-2 col-md-1">
+                @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
+                <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Till steg 4" id="proceed" />
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
+            </div>
+            <div class="small-padding-left3 col col-md-1">
+                @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+            </div>
+            @*<div id="AJAXContainer"></div>*@
+            <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn" float="right"> Stäng </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*</body>*@
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type='text/javascript'>
+    function calculateSum() {
+
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        var claimSum = document.getElementById("claimamount");
+        var sickPay = document.getElementById("sickpay").value;
+        var holidayPay = document.getElementById("holidaypay").value;
+        var socialFees = document.getElementById("socialfees").value;
+        var pensionAndInsurance = document.getElementById("pensionandinsurance").value;
+
+        var sickPayInt = 0;
+        var sickPayDec = 0;
+
+        var holidayPayInt = 0;
+        var holidayPayDec = 0;
+
+        var socialFeesInt = 0;
+        var socialFeesDec = 0;
+
+        var pensionAndInsuranceInt = 0;
+        var pensionAndInsuranceDec = 0;
+
+        var claimSumInt = 0;
+        var claimSumDec = 0;
+
+        var extraInt = 0;
+
+        var pos = sickPay.search(",");
+        if (pos === -1 || pos === sickPay.length - 1) {
+            //No comma char in the string or if the comma is the last char
+            sickPayInt = parseInt(sickPay);
+        }
+        else {
+            sickPayInt = parseInt(sickPay.substring(0, pos));
+            sickPayDec = parseInt(sickPay.substring(pos + 1));
+        }
+
+        pos = holidayPay.search(",");
+        if (pos === -1 || pos === holidayPay.length - 1) {
+            //No comma char in the string or if the comma is the last char
+            holidayPayInt = parseInt(holidayPay);
+        }
+        else {
+            holidayPayInt = parseInt(holidayPay.substring(0, pos));
+            holidayPayDec = parseInt(holidayPay.substring(pos + 1));
+        }
+
+        pos = socialFees.search(",");
+        if (pos === -1 || pos === socialFees.length - 1) {
+            //No comma char in the string or if the comma is the last char
+            socialFeesInt = parseInt(socialFees);
+        }
+        else {
+            socialFeesInt = parseInt(socialFees.substring(0, pos));
+            socialFeesDec = parseInt(socialFees.substring(pos + 1));
+        }
+
+        pos = pensionAndInsurance.search(",");
+        if (pos === -1 || pos === pensionAndInsurance.length - 1) {
+            //No comma char in the string or if the comma is the last char
+            pensionAndInsuranceInt = parseInt(pensionAndInsurance);
+        }
+        else {
+            pensionAndInsuranceInt = parseInt(pensionAndInsurance.substring(0, pos));
+            pensionAndInsuranceDec = parseInt(pensionAndInsurance.substring(pos + 1));
+        }
+
+        claimSumDec = sickPayDec + holidayPayDec + socialFeesDec + pensionAndInsuranceDec;
+        if (!isNaN(claimSumDec)) {
+            if (claimSumDec > 99) {
+                extraInt = parseInt(claimSumDec.toString().substring(0, 1));
+                claimSumDec = parseInt(claimSumDec.toString().substring(1));
+            }
+        }
+
+        claimSumInt = sickPayInt + holidayPayInt + socialFeesInt + pensionAndInsuranceInt + extraInt;
+
+        if (isNaN(claimSumInt) || isNaN(claimSumDec)) {
+            claimSum.innerHTML = "00,00";
+        }
+        else {
+            if (claimSumDec === 0) {
+                claimSum.innerHTML = claimSumInt.toString() + ",00";
+            }
+            else if (claimSumDec < 10) {
+                claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+            }
+            else {
+                claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+            }
+        }
+    }
+
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
+
+    //$('#loadPartialActionLink').on('click', function (e) {
+    //    e.preventDefault();
+    //    var claimNumber = document.getElementById("claimnumber");
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '/Claims/_ShowClaim',
+    //        data: {
+    //            refNumber: claimNumber.innerHTML
+    //        },
+    //        success: function (data, textStatus, jqXHR) {
+    //            $('#AJAXContainer').html(data);
+    //        }
+    //    });
+    //});
+</script>

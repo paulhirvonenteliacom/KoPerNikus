@@ -1,0 +1,81 @@
+﻿@model Sjuklöner.Viewmodels.SendMessageVM
+
+<div id="commentDiv">
+
+    <hr />
+    @Html.HiddenFor(model => model.Name)
+
+    @using (Html.BeginForm()) {
+    <div class="form-actions no-color">
+        @Html.DisplayNameFor(model => model.Comment)
+
+        @Html.TextBoxFor(model => model.Comment)
+        @Html.HiddenFor(model => model.ClaimId)
+        <input type="submit" value="Send" class="btn btn-default" onclick="NewComment()"/>
+    </div>
+    }
+</div>
+
+<script type="text/javascript">
+    NewComment = function ()
+    {
+        var firstDiv = document.createElement("DIV");
+        firstDiv.setAttribute('class', 'row form-group');
+        var insertableDiv = document.getElementById('commentDiv');
+
+        dateDiv = document.createElement("DIV");
+        dateDiv.setAttribute('class', 'col col-md-2');
+        dateP = document.createElement("P");
+        var d = new Date();
+        var month;
+        if (d.getMonth() + 1 < 10) {
+            month = "0" + (d.getMonth() + 1)
+        }
+        else {
+            month = d.getMonth() + 1
+        }
+        var date;
+        if (d.getDate() < 10) {
+            date = "0" + (d.getDate())
+        }
+        else {
+            date = d.getDate()
+        }
+        var horus;
+        if (d.getHours() < 10) {
+            hours = "0" + (d.getHours())
+        }
+        else {
+            hours = d.getHours()
+        }
+        var minutes;
+        if (d.getMinutes() < 10) {
+            minutes = "0" + (d.getMinutes())
+        }
+        else {
+            minutes = d.getMinutes()
+        }
+        var seconds;
+        if (d.getSeconds() < 10) {
+            seconds = "0" + (d.getSeconds())
+        }
+        else {
+            seconds = d.getSeconds()
+        }
+        dateDiv.appendChild(dateP.appendChild(document.createTextNode(d.getFullYear().toString() + '-' + month + '-' + date + " " + hours + ":" + minutes + ":" + seconds)));
+        firstDiv.appendChild(dateDiv);
+
+        nameDiv = document.createElement("DIV");
+        nameDiv.setAttribute('class', 'col col-md-2');
+        nameP = document.createElement("P")
+        nameDiv.appendChild(nameP.appendChild(document.createTextNode(document.getElementById('Name').value)))
+        firstDiv.appendChild(nameDiv)
+
+        commentDiv = document.createElement("DIV");
+        commentDiv.setAttribute('class', 'col col-md-8');
+        commentP = document.createElement("P");
+        commentDiv.appendChild(commentP.appendChild(document.createTextNode(document.getElementById('Comment').value)));
+
+        insertableDiv.insertBefore(firstDiv, insertableDiv.getElementsByTagName('hr')[0]);
+    }
+</script>

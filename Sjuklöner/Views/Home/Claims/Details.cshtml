@@ -1,0 +1,274 @@
+﻿@model Sjuklöner.Models.Claim
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Claim</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StatusId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StatusId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StatusDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StatusDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeadlineDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeadlineDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerFirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CustomerFirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerLastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CustomerLastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerSSN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CustomerSSN)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayNameFor(model => model.HourlySalary)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HourlySalary)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HolidayPayRate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HolidayPayRate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PayrollTaxRate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayrollTaxRate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InsuranceRate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InsuranceRate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PensionRate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PensionRate)
+        </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.QualifyingDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.QualifyingDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastDayOfSicknessDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastDayOfSicknessDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HoursQualifyingDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HoursQualifyingDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HolidayPayQualDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HolidayPayQualDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PayrollTaxQualDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayrollTaxQualDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InsuranceQualDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InsuranceQualDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PensionQualDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PensionQualDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClaimQualDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClaimQualDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HoursDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HoursDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HourlySickPay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HourlySickPay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SickPayDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SickPayDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HolidayPayDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HolidayPayDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UnsocialHoursBonusDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnsocialHoursBonusDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OnCallDutyDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OnCallDutyDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PayrollTaxDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayrollTaxDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InsuranceDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InsuranceDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PensionDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PensionDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClaimDay2To14)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClaimDay2To14)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClaimSum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClaimSum)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

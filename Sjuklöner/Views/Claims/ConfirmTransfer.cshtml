@@ -8,88 +8,82 @@
     <p class="page-header8 col col-md-10">För över till Procapita</p>
     <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att föra över beslutsunderlaget till Procapita</nl>
 </div>
-<div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ReferenceNumber)
-        </dt>
+<hr class="claim-divider" />
 
-        <dd>
-            @Html.DisplayFor(model => model.ReferenceNumber)
-        </dd>
+<div class="row">
+    @Html.LabelFor(m => m.ReferenceNumber, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.ReferenceNumber)
+    </div>
+</div>
+<div class="row">
+    @Html.LabelFor(m => m.CustomerSSN, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.CustomerSSN)
+    </div>
+</div>
+<div class="row">
+    @Html.LabelFor(m => m.QualifyingDate, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.QualifyingDate)
+    </div>
+</div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CustomerSSN)
-        </dt>
+<div class="row">
+    @Html.LabelFor(m => m.LastDayOfSicknessDate, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.LastDayOfSicknessDate)
+    </div>
+</div>
 
-        <dd>
-            @Html.DisplayFor(model => model.CustomerSSN)
-        </dd>
+<div class="row">
+    @Html.LabelFor(m => m.ClaimedSum, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.ClaimedSum)
+    </div>
+</div>
+<div class="row">
+    @Html.LabelFor(m => m.ModelSum, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.ModelSum)
+    </div>
+</div>
+<div class="row">
+    @Html.LabelFor(m => m.ApprovedSum, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.ApprovedSum)
+    </div>
+</div>
+<div class="row">
+    @Html.LabelFor(m => m.RejectedSum, new { @class = "col-md-2 display-right-align control-label" })
+    <div class="col-small-left-padding col-md-10">
+        @Html.DisplayFor(m => m.RejectedSum)
+    </div>
+</div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.QualifyingDate)
-        </dt>
+@if (true)
+{
 
-        <dd>
-            @Html.DisplayFor(model => model.QualifyingDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LastDayOfSicknessDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LastDayOfSicknessDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ClaimedSum)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ClaimedSum)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ModelSum)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ModelSum)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ApprovedSum)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ApprovedSum)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RejectedSum)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RejectedSum)
-        </dd>
-    </dl>
-
+}
+    <div class="row">
+        @Html.LabelFor(m => m.RejectReason, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
+            @Html.DisplayFor(m => m.RejectReason)
+        </div>
+    </div>
+    <br />
     @using (Html.BeginForm("Transfer", "Claims", new { id = Model.Id }, FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Id)
         <div class="row">
+
             <div class="no-padding-left2 col col-md-offset-2 col-md-1">
                 <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-primary btn-primary-small" id="confirm" />
             </div>
-            <div class="small-padding-left3 col col-md-1">
-                @Html.ActionLink("Avbryt", "Recommend", new { id = Model.Id }, new { @class = "btn btn-secondary btn-secondary-small" })
-            </div>
-            @*<div class="no-padding-left2 col col-md-1">
+            <div class="no-padding-left2 col col-md-1">
                 <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
-            </div>*@
+            </div>
         </div>
     }
-</div>
+

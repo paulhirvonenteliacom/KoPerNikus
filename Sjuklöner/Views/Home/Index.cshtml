@@ -1,11 +1,15 @@
-﻿@*@model Sjuklöner.Viewmodels.AssistantClaimVM*@
+﻿@model Sjuklöner.Viewmodels.AdminIndexVM
 
 @{
     ViewBag.Title = "Administration";
 }
 
-@using (Html.BeginForm())
+@*@using (Html.BeginForm())
+    {*@
+
+@using (Ajax.BeginForm("SaveAdminSetting", "Home", new AjaxOptions { HttpMethod = "POST" }))
 {
+
     @Html.AntiForgeryToken()
 
     <div class="row">
@@ -34,10 +38,62 @@
 
     <div class="row">
         <p class="col col-md-10 left-margin-12">@Html.ActionLink("Administrera assistenter", "IndexAllCompanies", "Assistants") (@Model.NumberOfAssistants st)</p>
-    </div>    
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @*<div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-7">
+                    Aktivera automatisk överföring av ansökan till Procapita
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.AutomaticTransferToProcapita)
+                        @Html.ValidationMessageFor(model => model.AutomaticTransferToProcapita, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-2">
+                    <input type="submit" value="Spara" class="btn btn-primary btn-primary-small" />
+                </div>
+            </div>
+        </div>*@
+
+    <div class="row">
+        <div class="col-md-5">
+            Aktivera automatisk överföring av ansökan till Procapita
+            <div class="col col-md-1 left-margin-12 checkbox-inline">
+                @Html.EditorFor(model => model.AutomaticTransferToProcapita)
+                @Html.ValidationMessageFor(model => model.AutomaticTransferToProcapita, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col col-md-2 no-padding-left2">
+            <input type="submit" value="Spara inställning" class="btn btn-primary btn-primary-configuration" onclick="DoAjaxPost(this)" />
+        </div>
+    </div>
 
     @*<div class="row">
-        <p class="col col-md-10 left-margin-12">@Html.ActionLink("Konfigurera e-tjänsten", "Index", "Home")</p>
-    </div>*@
+            <p class="col col-md-10 left-margin-12">@Html.ActionLink("Konfigurera e-tjänsten", "Index", "Home")</p>
+        </div>*@
 }
+
+<script type="text/javascript">
+    function DoAjaxPost(btnClicked) {
+        var $form = $(btnClicked).parents('form');
+
+        $.ajax({
+            type: "POST",
+            url: $form.attr('action'),
+            data: $form.serialize(),
+            error: function (xhr, status, error) {
+                //do something about the error
+            },
+            success: function (response) {
+                //do something with response
+            }
+        });
+
+        return false;// if it's a link to prevent post
+    }
+</script>
 

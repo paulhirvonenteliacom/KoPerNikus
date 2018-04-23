@@ -5,91 +5,82 @@
 }
 <div class="row index-page-margin">
     <p class="col col-md-2"></p>
-    <p class="page-header8 col col-md-10">Ta bort assistansbolaget</p>    
-    <p class="second-page-header col col-md-10">Observera att alla ombud och assistenter som hör till detta bolag kommer att tas bort !</p>
-    <p class="second-page-header col col-md-10">Dessutom kommer alla påbörjade ansökningar som inte har skickats in att tas bort !</p>
-    <br />
-    <br />
-    <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort detta assistansbolag</nl>
+    <p class="page-header8 col col-md-10">Ta bort assistansbolaget</p>
+    <p class="col-small-left-padding col col-md-offset-2 font-size-16 highlight-red-bold">
+        Observera att alla ombud och assistenter som hör till detta bolag kommer att tas bort !
+    </p>
+    <p class="col-small-left-padding col col-md-offset-2 font-size-16 highlight-red-bold">
+        Dessutom kommer alla påbörjade ansökningar som inte har skickats in att tas bort !
+    </p>     
+    <nl class="col-small-left-padding col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort detta assistansbolag</nl>
 </div>
+<hr class="claim-divider" />
+
 <div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CompanyName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CompanyName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OrganisationNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.OrganisationNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.OrganisationNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StreetAddress)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.StreetAddress, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.StreetAddress)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Postcode)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.Postcode, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.Postcode)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.City, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.City)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AccountNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.AccountNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.AccountNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyPhoneNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CompanyPhoneNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CompanyPhoneNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CollectiveAgreementName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CollectiveAgreementName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CollectiveAgreementName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CollectiveAgreementSpecName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(model => model.CollectiveAgreementSpecName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CollectiveAgreementSpecName)
-        </dd>
+        </div>
+    </div>
 
-    </dl>
-
-    @using (Html.BeginForm("Delete", "CareCompanies", new { id = Model.CareCompanyId }, FormMethod.Post))
+    @using (Html.BeginForm("Delete", "CareCompanies", new { id = Model.CareCompanyId}, FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <div class="row">

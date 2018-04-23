@@ -13,7 +13,7 @@ namespace Sjuklöner.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Sjuklöner.Models.ApplicationDbContext context)
@@ -273,6 +273,12 @@ var assistants = new List<Assistant>
 
             context.WatchLogs.AddOrUpdate(w => w.Id, new WatchLog {
                 LogDate = System.DateTime.Now, LogCode=0, LogMsg="Initial status", Robot="A001325"
+            });
+
+            context.AppAdmins.AddOrUpdate(c => c.Id, new AppAdmin
+            {
+                Id = 1,
+                AutomaticTransferToProcapita = false
             });
 
             context.SaveChanges();

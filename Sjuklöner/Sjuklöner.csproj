@@ -277,18 +277,35 @@
     <Compile Include="Migrations\201804121130147_AdmOffClaims.Designer.cs">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201804160750176_Introduced_WatchLog.cs" />
-    <Compile Include="Migrations\201804160750176_Introduced_WatchLog.Designer.cs">
-      <DependentUpon>201804160750176_Introduced_WatchLog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201804160800408_seeding_watchlogs.cs" />
     <Compile Include="Migrations\201804160800408_seeding_watchlogs.Designer.cs">
       <DependentUpon>201804160800408_seeding_watchlogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.cs" />
+    <Compile Include="Migrations\201804161208085_AddedSeedForAppAdmin.Designer.cs">
+      <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.cs" />
+    <Compile Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.Designer.cs">
+      <DependentUpon>201804190843488_StartedOnCalculationForQualifyingDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.cs" />
+    <Compile Include="Migrations\201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.Designer.cs">
+      <DependentUpon>201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.cs" />
+    <Compile Include="Migrations\201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.Designer.cs">
+      <DependentUpon>201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs" />
+    <Compile Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.Designer.cs">
+      <DependentUpon>201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\AdministrativeOfficial.cs" />
+    <Compile Include="Models\AppAdmin.cs" />
     <Compile Include="Models\Assistant.cs" />
     <Compile Include="Models\ClaimCalculation.cs" />
     <Compile Include="Models\Claim.cs" />
@@ -401,6 +418,8 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -564,11 +583,23 @@
     <EmbeddedResource Include="Migrations\201804121130147_AdmOffClaims.resx">
       <DependentUpon>201804121130147_AdmOffClaims.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201804160750176_Introduced_WatchLog.resx">
-      <DependentUpon>201804160750176_Introduced_WatchLog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804160800408_seeding_watchlogs.resx">
       <DependentUpon>201804160800408_seeding_watchlogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804161208085_AddedSeedForAppAdmin.resx">
+      <DependentUpon>201804161208085_AddedSeedForAppAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.resx">
+      <DependentUpon>201804190843488_StartedOnCalculationForQualifyingDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.resx">
+      <DependentUpon>201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.resx">
+      <DependentUpon>201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.resx">
+      <DependentUpon>201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

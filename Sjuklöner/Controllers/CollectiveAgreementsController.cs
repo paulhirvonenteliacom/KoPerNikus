@@ -11,14 +11,14 @@ using Sjuklöner.Viewmodels;
 using static Sjuklöner.Viewmodels.CollectiveAgreementEditVM;
 
 namespace Sjuklöner.Controllers
-{
-    [Authorize]
+{   
+    [Authorize(Roles = "Admin, AdministrativeOfficial")]
     public class CollectiveAgreementsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: CollectiveAgreements
-        [Authorize(Roles = "Admin, AdministrativeOfficial")]
+      
         public ActionResult Index()
         {
             CollectiveAgreementIndexVM collectiveAgreementIndexVM = new CollectiveAgreementIndexVM();

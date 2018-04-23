@@ -7,13 +7,13 @@ namespace Sjuklöner.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Introduced_WatchLog : IMigrationMetadata
+    public sealed partial class AddedSeedForAppAdmin : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Introduced_WatchLog));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedSeedForAppAdmin));
         
         string IMigrationMetadata.Id
         {
-            get { return "201804160750176_Introduced_WatchLog"; }
+            get { return "201804161208085_AddedSeedForAppAdmin"; }
         }
         
         string IMigrationMetadata.Source

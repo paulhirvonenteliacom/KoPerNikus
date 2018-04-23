@@ -57,6 +57,7 @@ namespace Sjuklöner.Models
         public DbSet<ClaimCalculation> ClaimCalculations { get; set; }
         public DbSet<Assistant> Assistants { get; set; }
         public DbSet<WatchLog> WatchLogs { get; set; }
+        public DbSet<AppAdmin> AppAdmins { get; set; }
 
         //Only needed for demo
         public DbSet<ClaimDaySeed> ClaimDaySeeds { get; set; }

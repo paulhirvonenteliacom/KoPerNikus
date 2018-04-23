@@ -75,6 +75,11 @@ namespace Sjuklöner.Controllers
             {
                 return RedirectToAction("Index", "Claims");
             }
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -153,6 +158,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Acount/DeleteOmbud
+        [Authorize(Roles = "Admin, Ombud")]       
         public ActionResult DeleteOmbud(string id)
         {
             if (id == null)
@@ -175,10 +181,11 @@ namespace Sjuklöner.Controllers
             ombudVM.Email = applicationUser.Email;
             return View("DeleteOmbud", ombudVM);
         }
-        
+     
         // POST: Account/DeleteOmbud/5
         [HttpPost, ActionName("DeleteOmbud")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult DeleteOmbud(string id, string submitButton)
         {
             if (submitButton == "Bekräfta")
@@ -249,6 +256,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: /Account/NewAdmOff
+        [Authorize(Roles = "Admin, AdministrativeOfficial")]
         public ActionResult NewAdmOff()
         {
             return View();
@@ -257,6 +265,7 @@ namespace Sjuklöner.Controllers
         // POST: /Account/NewAdmOff
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, AdministrativeOfficial")]
         public async Task<ActionResult> NewAdmOff(NewAdmOffVM vm)
         {
             var currentId = User.Identity.GetUserId();
@@ -351,6 +360,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: AdmOff/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult EditAdmOff(string id)
         {
             if (id == null)
@@ -375,6 +385,7 @@ namespace Sjuklöner.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> EditAdmOff(AdmOffEditVM admOffEditVM)
         {
             var currentId = User.Identity.GetUserId();
@@ -481,6 +492,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Account/DetailsAdmOff
+        [Authorize(Roles = "Admin")]
         public ActionResult DetailsAdmOff(string id)
         {
             if (id == null)
@@ -503,6 +515,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Acount/DeleteAdmOff
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteAdmOff(string id)
         {
             if (id == null || id == User.Identity.GetUserId())
@@ -527,6 +540,7 @@ namespace Sjuklöner.Controllers
         // POST: Account/DeleteAdmOff/5
         [HttpPost, ActionName("DeleteAdmOff")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmedAdmOff(string id, string submitButton)
         {
             if (submitButton == "Bekräfta")
@@ -817,6 +831,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Ombud/Create
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult CreateOmbud()
         {
             OmbudCreateVM ombudCreateVM = new OmbudCreateVM();
@@ -843,6 +858,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         //public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,LastLogon,CareCompanyId,SSN,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] ApplicationUser applicationUser)
         //public ActionResult CreateOmbud([Bind(Include = "Id,FirstName,LastName,CareCompanyId,CareCompanyName,SSN,Email,PhoneNumber")] OmbudCreateVM ombudCreateVM)
         public async Task<ActionResult> CreateOmbud(OmbudCreateVM vm)

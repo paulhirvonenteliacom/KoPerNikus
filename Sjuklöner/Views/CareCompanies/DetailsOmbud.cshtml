@@ -7,76 +7,66 @@
     <p class="col col-md-2"></p>
     <p class="page-header8 col col-md-10">Detaljvy, ombud</p>
 </div>
+<hr class="claim-divider" />
 <div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        @if (User.IsInRole("Admin"))
-        {
-            <dt>
-                @Html.DisplayNameFor(model => model.CareCompanyName)
-            </dt>
-
-            <dd>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="row">
+            @Html.LabelFor(m => m.CareCompanyName, new { @class = "col-md-2 display-right-align control-label" })
+            <div class="col-small-left-padding col-md-10">
                 @Html.DisplayFor(model => model.CareCompanyName)
-            </dd>
-        }
+            </div>
+        </div>
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.FirstName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.LastName)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.SSN)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.SSN, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.SSN)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.Email)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-    </dl>
+        </div>
+    </div>
 </div>
-@if (User.IsInRole("Ombud"))
-{
-    <div class="row">
-        <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
-            @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })
-            @*Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-primary btn-primary-small" })*@
+    <div class="row row-padding2">
+        <div class="col-small-left-padding col col-md-offset-2 col-md-1">
+            @if (User.IsInRole("Admin"))
+            {
+                 @Html.ActionLink("Tillbaka", "IndexAllOmbuds", "Account", null, new { @class = "btn btn-primary btn-primary-small" })
+            }
+            @if (User.IsInRole("Ombud"))   
+            {
+                @Html.ActionLink("Tillbaka", "IndexOmbud", "CareCompanies", null, new { @class = "btn btn-primary btn-primary-small" })
+            }
         </div>
     </div>
-}
-@if (User.IsInRole("Admin"))
-{
-    <div class="row">
-        <div class="col col-md-offset-2 col-md-1 col-no-left-padding">
-            @Html.ActionLink("Tillbaka", "IndexAllOmbuds", "Account", null, new { @class = "btn btn-primary btn-primary-small" })         
-            @*Html.ActionLink("Tillbaka", "IndexAllOmbuds", "Account", new { @class = "btn btn-primary btn-primary-small" }, null)*@
-        </div>
-    </div>
-}
+
+
+
+    

@@ -1,0 +1,61 @@
+﻿@model Sjuklöner.Viewmodels.Create3VM
+
+@{
+    ViewBag.Title = "Amount";
+}
+@*@section RobinRevealed
+    {
+    <script>
+        window.onload = function (){
+                document.getElementById("divRobin").style.top = "200px";
+            };
+    </script>
+    <style type="text/css">
+        body {
+            overflow:hidden;
+        }
+    </style>   
+}*@
+
+
+@*<div class="row margin-breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font breadcrumb-padding">Organisationsnummer</li>
+            <li class="breadcrumb-item breadcrumb-font breadcrumb-padding">Arbetstid</li>
+            <li class="breadcrumb-item breadcrumb-font breadcrumb-padding">Belopp</li>
+            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Bekräftelse</li>
+        </ol>
+    </nav>
+</div>*@
+
+@*@using (Html.BeginForm("AddHours", "Claims", FormMethod.Get))*@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ClaimNumber)
+
+    @*<body class="assistant-claim">*@
+    <div class="row">
+        @*<p class="col col-md-2"></p>*@
+        <p class="page-header5 col col-md-10">Tack för din ansökan!</p>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p class="left-margin-18">Handläggningstiden är normalt tre arbetsdagar. Utbetalning av godkänt belopp görs till angivet konto en eller två bankdagar efter beslut.
+            <br class="left-margin-18"/>Vid avslag har du möjlighet att överklaga senast inom tre veckor efter beslut.</p>
+            <p></p>
+            <p class="bold-14 left-margin-18">Referensnummer: @Model.ClaimNumber</p>
+            <p class="bold-14 left-margin-18">Yrkat belopp (kr): @Model.ClaimSum</p>
+            <p class="left-margin-18">Med vänliga hälsningar,<br class="left-margin-18"/>Vård- och omsorgsförvaltningen i Helsingborgs kommun</p>
+        </div>
+    </div>
+    <div id="divRobin">
+        <img src="~/Content/Robin_color.png" width="250" height="185" />
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

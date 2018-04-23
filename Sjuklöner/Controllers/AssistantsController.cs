@@ -54,6 +54,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Assistants/Details/5
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -69,6 +70,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Assistants/Create
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create()
         {
             AssistantCreateVM assistantCreateVM = new AssistantCreateVM();
@@ -83,6 +85,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create([Bind(Include = "FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] AssistantCreateVM assistantCreateVM)
         {
             var currentId = User.Identity.GetUserId();
@@ -173,6 +176,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Assistants/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult CreateAssistantCompany()
         {
             AssistantCompanyCreateVM assistantCreateVM = new AssistantCompanyCreateVM();
@@ -196,6 +200,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult CreateAssistantCompany([Bind(Include = "SelectedCompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] AssistantCompanyCreateVM assistantCreateVM)
         {
             bool errorFound = false;
@@ -292,6 +297,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Assistants/Edit/5
+        [Authorize(Roles = "Ombud")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -329,6 +335,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] AssistantEditVM assistantEditVM)
         {
             var currentId = User.Identity.GetUserId();
@@ -421,6 +428,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Assistants/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult EditAssistantCompany(int? id)
         {
             if (id == null)
@@ -461,6 +469,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult EditAssistantCompany([Bind(Include = "Id,CompanyId,FirstName,LastName,AssistantSSN,Email,PhoneNumber,HourlySalary,HolidayPayRate,PayrollTaxRate,PensionAndInsuranceRate")] AssistantCompanyEditVM assistantEditVM)
         {
             bool errorFound = false;
@@ -550,6 +559,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Assistants/Delete/5
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -567,6 +577,7 @@ namespace Sjuklöner.Controllers
         // POST: Assistants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Ombud")]
         public ActionResult DeleteConfirmed(int id, string submitButton)
         {
             if (submitButton == "Bekräfta")
