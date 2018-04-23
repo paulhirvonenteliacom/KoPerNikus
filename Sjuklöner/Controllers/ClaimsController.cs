@@ -49,6 +49,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Claims
+        [Authorize(Roles = "Ombud")]
         public ActionResult IndexPageOmbud(string searchString, string searchBy = "Referensnummer")
         {
             IndexPageOmbudVM indexPageOmbudVM = new IndexPageOmbudVM();
@@ -188,9 +189,9 @@ namespace Sjuklöner.Controllers
             }
 
             return Claims;
-        }
+        }        
 
-
+        /*
         // GET: Claims/Details/5
         public ActionResult Details(int? id)
         {
@@ -205,9 +206,11 @@ namespace Sjuklöner.Controllers
             }
             return View(claim);
         }
+        */
 
         // GET: Claims/Create1
         [HttpGet]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create1(string refNumber)
         {
             Create1VM create1VM = new Create1VM();
@@ -323,6 +326,7 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Create1
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create1(Create1VM create1VM, string refNumber, string submitButton)
         {
             bool errorFound = false;
@@ -867,6 +871,7 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims/Create2
         [HttpGet]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create2(string refNumber)
         {
             Create2VM create2VM = new Create2VM();
@@ -991,6 +996,7 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Create2
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
             int idx = 0;
@@ -1332,6 +1338,7 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims/Create3
         [HttpGet]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create3(string refNumber)
         {
             Create3VM create3VM = new Create3VM();
@@ -1470,6 +1477,7 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Create3
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create3(Create3VM create3VM, string refNumber, string submitButton)
         {
             if (Convert.ToDecimal(create3VM.SickPay) == 0 && Convert.ToDecimal(create3VM.HolidayPay) == 0 && Convert.ToDecimal(create3VM.SocialFees) == 0 && Convert.ToDecimal(create3VM.PensionAndInsurance) == 0)
@@ -1533,6 +1541,7 @@ namespace Sjuklöner.Controllers
 
         //
         // GET: Claims/Create4
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create4(string ClaimNumber)
         {
             //This get action needs to be updated to handle the case where attachments have been added to the claim but the claim was only saved with attachments, not submitted.
@@ -1546,6 +1555,7 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Create4
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud")]
         public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SalaryAttachmentStandIn, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model, string submitButton)
         {
             if (submitButton == "Skicka in" || submitButton == "Spara")
@@ -1708,6 +1718,7 @@ namespace Sjuklöner.Controllers
             return;
         }
 
+        [Authorize(Roles = "Ombud")]
         public ActionResult ShowReceipt(string ClaimNumber)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
@@ -1743,6 +1754,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Claims/Decide/5
+        [Authorize(Roles = "Admin, AdministrativeOfficial")]
         public ActionResult Recommend(int? id)
         {
             RecommendationVM recommendationVM = new RecommendationVM();
@@ -1996,6 +2008,11 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
                 }
+
+                if (claim.ClaimStatusId == 5)
+                {
+                    recommendationVM.InInbox = true;
+                }                  
 
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
@@ -2649,6 +2666,7 @@ namespace Sjuklöner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult Recommend(RecommendationVM recommendationVM)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
@@ -2658,13 +2676,12 @@ namespace Sjuklöner.Controllers
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
-            return RedirectToAction("ShowRecommendationReceipt", recommendationVM);
+            return View("ConfirmTransfer", claim);                    
         }
 
         // GET: Claims/ShowRecommendationReceipt
         public ActionResult ShowRecommendationReceipt(RecommendationVM recommendationVM)
         {
-
             var claim = db.Claims.Where(rn => rn.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
 
             string appdataPath = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\KoPerNikus");
@@ -2683,6 +2700,7 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims/Transfer
         [HttpGet]
+        [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult Transfer(string refNumber)
         {
             var claim = db.Claims.Where(rn => rn.ReferenceNumber == refNumber).FirstOrDefault();
@@ -2692,6 +2710,7 @@ namespace Sjuklöner.Controllers
 
         // POST: Claims/ConfirmTransfer
         [HttpPost, ActionName("Transfer")]
+        [Authorize(Roles = "AdministrativeOfficial")]
         public ActionResult ConfirmTransfer(int id, string submitButton)
         {
             var claim = db.Claims.Find(id);
@@ -2855,6 +2874,7 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Claims/Delete/5
+        [Authorize(Roles = "Ombud, Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -2872,6 +2892,7 @@ namespace Sjuklöner.Controllers
         // POST: Claims/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Ombud, Admin")]
         public ActionResult DeleteConfirmed(string refNumber, string submitButton)
         {
             if (submitButton == "Bekräfta")
