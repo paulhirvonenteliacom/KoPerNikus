@@ -288,6 +288,18 @@
     <Compile Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.Designer.cs">
       <DependentUpon>201804190843488_StartedOnCalculationForQualifyingDay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.cs" />
+    <Compile Include="Migrations\201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.Designer.cs">
+      <DependentUpon>201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.cs" />
+    <Compile Include="Migrations\201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.Designer.cs">
+      <DependentUpon>201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs" />
+    <Compile Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.Designer.cs">
+      <DependentUpon>201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -577,6 +589,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804190843488_StartedOnCalculationForQualifyingDay.resx">
       <DependentUpon>201804190843488_StartedOnCalculationForQualifyingDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.resx">
+      <DependentUpon>201804200553557_AddedPropertiesForQualifyingDayInClaimCalculationClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.resx">
+      <DependentUpon>201804200801452_AddedMorePropertiesForQualifyingDayToClaimCalculationClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.resx">
+      <DependentUpon>201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -764,6 +764,11 @@ li a {
     font-weight: bold;
 }
 
+.bold-20 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .bold-18 {
     font-size: 18px;
     font-weight: bold;
@@ -891,6 +896,10 @@ li a {
 
 special-left-margin {
     margin-left: 0;
+}
+
+negative-left-margin {
+    margin-left: -6px;
 }
 
 .calc-padding-top {
@@ -1556,6 +1565,10 @@ a:hover, a:focus {
 
 .xsmall-col-ombud {
     width: 5%;
+}
+
+.medium-col-ombud {
+    width: 12%;
 }
 
 .medium-col {
