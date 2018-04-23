@@ -1553,6 +1553,10 @@ a:hover, a:focus {
     width: 5%;
 }
 
+.medium-col-ombud {
+    width: 12%;
+}
+
 .medium-col {
     width: 90px;
 }
