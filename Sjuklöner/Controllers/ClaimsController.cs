@@ -125,7 +125,8 @@ namespace Sjuklöner.Controllers
             }
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
-        }    
+        }
+
 
         // GET: Claims
         [Authorize(Roles = "Admin")]
@@ -1405,14 +1406,14 @@ namespace Sjuklöner.Controllers
                     if (i == 0)
                     {
                         //QUALIFYING DAY
-                        totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SalaryQD);
+                        totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayQD);
                         totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayQD);
                         totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
                         totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
                     }
                     //DAY 2 TO DAY 14
-                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
                     totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
+                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
                     totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
                     totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
                 }
@@ -1949,6 +1950,9 @@ namespace Sjuklöner.Controllers
                     }
                 }
 
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+
                 //Results of attachment checks
                 recommendationVM.SalarySpecRegAssistantCheck = claim.SalarySpecRegAssistantCheck;
                 recommendationVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
@@ -1978,7 +1982,8 @@ namespace Sjuklöner.Controllers
                 recommendationVM.DecisionMsg = claim.DecisionMsg;
 
                 recommendationVM.ClaimNumber = claim.ReferenceNumber;
-                recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
+                recommendationVM.ModelSum = claim.ModelSum;
+                //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
                 if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
                     !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
@@ -2038,7 +2043,7 @@ namespace Sjuklöner.Controllers
         private string RejectReason(Claim claim, RecommendationVM recommendationVM, bool partiallyCoveredSickleave)
         {
             string resultMsg = "";
-            if (claim.ClaimedSum > Convert.ToDecimal(claim.TotalCostD1T14))
+            if (claim.ClaimedSum > claim.ModelSum)
             {
                 resultMsg += "Det yrkade beloppet överstiger det beräknade beloppet. ";
             }
@@ -2273,6 +2278,42 @@ namespace Sjuklöner.Controllers
                         claimCalc.HolidayPayQD = claimCalculations[i].HolidayPayQD;
                         claimCalc.HolidayPayCalcQD = claimCalculations[i].HolidayPayCalcQD;
 
+                        //Unsocial evening pay for qualifying day
+                        claimCalc.UnsocialEveningPayQD = claimCalculations[i].UnsocialEveningPayQD;
+                        claimCalc.UnsocialEveningPayCalcQD = claimCalculations[i].UnsocialEveningPayCalcQD;
+
+                        //Unsocial night pay for qualifying day
+                        claimCalc.UnsocialNightPayQD = claimCalculations[i].UnsocialNightPayQD;
+                        claimCalc.UnsocialNightPayCalcQD = claimCalculations[i].UnsocialNightPayCalcQD;
+
+                        //Unsocial weekend pay for qualifying day
+                        claimCalc.UnsocialWeekendPayQD = claimCalculations[i].UnsocialWeekendPayQD;
+                        claimCalc.UnsocialWeekendPayCalcQD = claimCalculations[i].UnsocialWeekendPayCalcQD;
+
+                        //Unsocial grand weekend pay for qualifying day
+                        claimCalc.UnsocialGrandWeekendPayQD = claimCalculations[i].UnsocialGrandWeekendPayQD;
+                        claimCalc.UnsocialGrandWeekendPayCalcQD = claimCalculations[i].UnsocialGrandWeekendPayCalcQD;
+
+                        //Unsocial sum pay for qualifying day
+                        claimCalc.UnsocialSumPayQD = claimCalculations[i].UnsocialSumPayQD;
+                        claimCalc.UnsocialSumPayCalcQD = claimCalculations[i].UnsocialSumPayCalcQD;
+
+                        //On call day pay for qualifying day
+                        claimCalc.OnCallDayPayQD = claimCalculations[i].OnCallDayPayQD;
+                        claimCalc.OnCallDayPayCalcQD = claimCalculations[i].OnCallDayPayCalcQD;
+
+                        //On call night pay for qualifying day
+                        claimCalc.OnCallNightPayQD = claimCalculations[i].OnCallNightPayQD;
+                        claimCalc.OnCallNightPayCalcQD = claimCalculations[i].OnCallNightPayCalcQD;
+
+                        //On call sum pay for qualifying day
+                        claimCalc.OnCallSumPayQD = claimCalculations[i].OnCallSumPayQD;
+                        claimCalc.OnCallSumPayCalcQD = claimCalculations[i].OnCallSumPayCalcQD;
+
+                        //Sick pay for qualifying day
+                        claimCalc.SickPayQD = claimCalculations[i].SickPayQD;
+                        claimCalc.SickPayCalcQD = claimCalculations[i].SickPayCalcQD;
+        
                         //Social fees for qualifying day
                         claimCalc.SocialFeesQD = claimCalculations[i].SocialFeesQD;
                         claimCalc.SocialFeesCalcQD = claimCalculations[i].SocialFeesCalcQD;
@@ -3156,39 +3197,66 @@ namespace Sjuklöner.Controllers
                 {
                     // QUALIFYING DAY
 
-                    //Hours for qualifying day
-                    claimCalculation.HoursQD = claimDays[0].Hours;
-                    claimCalculation.OnCallDayHoursQD = claimDays[0].OnCallDay;
-                    claimCalculation.OnCallNightHoursQD = claimDays[0].OnCallNight;
-
                     //Set defaults
                     claimCalculation.PaidHoursQD = "0,00";
                     claimCalculation.PaidOnCallDayHoursQD = "0,00";
                     claimCalculation.PaidOnCallNightHoursQD = "0,00";
+                    claimCalculation.PaidUnsocialEveningHoursQD = "0,00";
+                    claimCalculation.PaidUnsocialNightHoursQD = "0,00";
+                    claimCalculation.PaidUnsocialWeekendHoursQD = "0,00";
+                    claimCalculation.PaidUnsocialGrandWeekendHoursQD = "0,00";
 
-                    //Sickpay for qualifying day for hours exceeding 8 (oncall hours not considered)
+                    //Format hours for qualifying day
+                    claimCalculation.HoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].Hours));
+                    claimCalculation.OnCallDayHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].OnCallDay));
+                    claimCalculation.OnCallNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].OnCallNight));
+                    claimCalculation.UnsocialEveningHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialEvening));
+                    claimCalculation.UnsocialNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialNight));
+                    claimCalculation.UnsocialWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialWeekend));
+                    claimCalculation.UnsocialGrandWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend));
+
+                    //Calculate number of hours exceeding 8. Only those hours shall be paid.
                     if (Convert.ToDecimal(claimCalculation.HoursQD) > 8)
                     {
                         claimCalculation.PaidHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) - 8);
-                        if (Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) > 0)
-                        {
-                            claimCalculation.PaidOnCallDayHoursQD = claimCalculation.OnCallDayHoursQD;
-                            claimCalculation.PaidOnCallNightHoursQD = claimCalculation.OnCallNightHoursQD;
-                        }
+                        claimCalculation.PaidOnCallDayHoursQD = claimCalculation.OnCallDayHoursQD;
+                        claimCalculation.PaidOnCallNightHoursQD = claimCalculation.OnCallNightHoursQD;
                     }
                     else if (Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) > 8)
                     {
                         claimCalculation.PaidOnCallDayHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) - 8);
-                        if (Convert.ToDecimal(claimCalculation.OnCallNightHoursQD) > 0)
-                        {
-                            claimCalculation.PaidOnCallNightHoursQD = claimCalculation.OnCallNightHoursQD;
-                        }
+                        claimCalculation.PaidOnCallNightHoursQD = claimCalculation.OnCallNightHoursQD;
                     }
                     else if (Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) + Convert.ToDecimal(claimCalculation.OnCallNightHoursQD) > 8)
                     {
                         claimCalculation.PaidOnCallNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.OnCallDayHoursQD) + Convert.ToDecimal(claimCalculation.OnCallNightHoursQD) - 8);
                     }
-                   
+
+                    //Calculate number of unsocial hours exceeding 8. Only those hours shall be paid.
+                    if (Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) > 8)
+                    {
+                        claimCalculation.PaidUnsocialEveningHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) - 8);
+                        claimCalculation.PaidUnsocialNightHoursQD = claimCalculation.UnsocialNightHoursQD;
+                        claimCalculation.PaidUnsocialWeekendHoursQD = claimCalculation.UnsocialWeekendHoursQD;
+                        claimCalculation.PaidUnsocialGrandWeekendHoursQD = claimCalculation.UnsocialGrandWeekendHoursQD;
+                    }
+                    else if (Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialNightHoursQD) > 8)
+                    {
+                        claimCalculation.PaidUnsocialNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialNightHoursQD) - 8);
+                        claimCalculation.PaidUnsocialWeekendHoursQD = claimCalculation.UnsocialWeekendHoursQD;
+                        claimCalculation.PaidUnsocialGrandWeekendHoursQD = claimCalculation.UnsocialGrandWeekendHoursQD;
+                    }
+                    else if (Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialNightHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialWeekendHoursQD) > 8)
+                    {
+                        claimCalculation.PaidUnsocialWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialNightHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialWeekendHoursQD) - 8);
+                        claimCalculation.PaidUnsocialGrandWeekendHoursQD = claimCalculation.UnsocialGrandWeekendHoursQD;
+                    }
+                    else if (Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialNightHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialWeekendHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendHoursQD) > 8)
+                    {
+                        claimCalculation.PaidUnsocialGrandWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal(claimCalculation.UnsocialEveningHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialNightHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialWeekendHoursQD) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendHoursQD) - 8);
+
+                    }
+
                     //Sickpay for qualifying day
                     claimCalculation.SalaryQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidHoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.SalaryCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidHoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
@@ -3197,17 +3265,53 @@ namespace Sjuklöner.Controllers
                     claimCalculation.HolidayPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.HolidayPayCalcQD = claim.HolidayPayRateAsString + " % x " + claimCalculation.HoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
 
+                    //Unsocial evening pay for qualifying day
+                    claimCalculation.UnsocialEveningPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidUnsocialEveningHoursQD) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
+                    claimCalculation.UnsocialEveningPayCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidUnsocialEveningHoursQD + " timmar x " + claimCalculation.PerHourUnsocialEveningAsString + " Kr";
+
+                    //Unsocial night pay for qualifying day
+                    claimCalculation.UnsocialNightPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidUnsocialNightHoursQD) * Convert.ToDecimal(claimCalculation.PerHourUnsocialNightAsString) / 100));
+                    claimCalculation.UnsocialNightPayCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidUnsocialNightHoursQD + " timmar x " + claimCalculation.PerHourUnsocialNightAsString + " Kr";
+
+                    //Unsocial weekend pay for qualifying day
+                    claimCalculation.UnsocialWeekendPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidUnsocialWeekendHoursQD) * Convert.ToDecimal(claimCalculation.PerHourUnsocialWeekendAsString) / 100));
+                    claimCalculation.UnsocialWeekendPayCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidUnsocialWeekendHoursQD + " timmar x " + claimCalculation.PerHourUnsocialWeekendAsString + " Kr";
+
+                    //Unsocial grand weekend pay for qualifying day
+                    claimCalculation.UnsocialGrandWeekendPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidUnsocialGrandWeekendHoursQD) * Convert.ToDecimal(claimCalculation.PerHourUnsocialHolidayAsString) / 100));
+                    claimCalculation.UnsocialGrandWeekendPayCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidUnsocialGrandWeekendHoursQD + " timmar x " + claimCalculation.PerHourUnsocialHolidayAsString + " Kr";
+
+                    //Unsocial sum pay for qualifying day
+                    claimCalculation.UnsocialSumPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningPayQD) + Convert.ToDecimal(claimCalculation.UnsocialNightPayQD) + Convert.ToDecimal(claimCalculation.UnsocialWeekendPayQD) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendPayQD)));
+                    claimCalculation.UnsocialSumPayCalcQD = claimCalculation.UnsocialEveningPayQD + " Kr + " + claimCalculation.UnsocialNightPayQD + " Kr + " + claimCalculation.UnsocialWeekendPayQD + " Kr + " + claimCalculation.UnsocialGrandWeekendPayQD + " Kr";
+
+                    //On call day pay for qualifying day
+                    claimCalculation.OnCallDayPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidOnCallDayHoursQD) * Convert.ToDecimal(claimCalculation.PerHourOnCallDayAsString) / 100));
+                    claimCalculation.OnCallDayPayCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidOnCallDayHoursQD + " timmar x " + claimCalculation.PerHourOnCallDayAsString + " Kr";
+
+                    //On call night pay for qualifying day
+                    claimCalculation.OnCallNightPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidOnCallNightHoursQD) * Convert.ToDecimal(claimCalculation.PerHourOnCallNightAsString) / 100));
+                    claimCalculation.OnCallNightPayCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidOnCallNightHoursQD + " timmar x " + claimCalculation.PerHourOnCallNightAsString + " Kr";
+
+                    //On call sum pay for qualifying day
+                    claimCalculation.OnCallSumPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayPayQD) + Convert.ToDecimal(claimCalculation.OnCallNightPayQD)));
+                    claimCalculation.OnCallSumPayCalcQD = claimCalculation.OnCallDayPayQD + " Kr + " + claimCalculation.OnCallNightPayQD + " Kr";
+
+                    //Sick pay for qualifying day
+                    claimCalculation.SickPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryQD) + Convert.ToDecimal(claimCalculation.UnsocialSumPayQD) + Convert.ToDecimal(claimCalculation.OnCallSumPayQD)));
+                    claimCalculation.SickPayCalcQD = claimCalculation.SalaryQD + " Kr + " + claimCalculation.UnsocialSumPayQD + " Kr + " + claimCalculation.OnCallSumPayQD + " Kr";
+
                     //Social fees for qualifying day
-                    claimCalculation.SocialFeesQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * Convert.ToDecimal(claimCalculation.HolidayPayQD) / 100));
-                    claimCalculation.SocialFeesCalcQD = claim.SocialFeeRateAsString + " % x " + claimCalculation.HolidayPayQD + " Kr";
+                    claimCalculation.SocialFeesQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayQD) + Convert.ToDecimal(claimCalculation.HolidayPayQD)) / 100));
+                    claimCalculation.SocialFeesCalcQD = claim.SocialFeeRateAsString + " % x (" + claimCalculation.SickPayQD + " + " + claimCalculation.HolidayPayQD + ") Kr";
 
                     //Pension and insurance for qualifying day
-                    claimCalculation.PensionAndInsuranceQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * Convert.ToDecimal(claimCalculation.HolidayPayQD) / 100));
-                    claimCalculation.PensionAndInsuranceCalcQD = claim.PensionAndInsuranceRateAsString + " % x " + claimCalculation.HolidayPayQD + " Kr";
+                    claimCalculation.PensionAndInsuranceQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayQD) + Convert.ToDecimal(claimCalculation.HolidayPayQD)) / 100));
+                    claimCalculation.PensionAndInsuranceCalcQD = claim.PensionAndInsuranceRateAsString + " % x (" + claimCalculation.SickPayQD + " + " + claimCalculation.HolidayPayQD + ") Kr";
 
                     //Sum for qualifying day (sum of the three previous items)
-                    claimCalculation.CostQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryQD) + Convert.ToDecimal(claimCalculation.HolidayPayQD) + Convert.ToDecimal(claimCalculation.SocialFeesQD) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceQD)));
-                    claimCalculation.CostCalcQD = claimCalculation.SalaryQD + " Kr + " + claimCalculation.HolidayPayQD + " Kr + " + claimCalculation.SocialFeesQD + " Kr + " + claimCalculation.PensionAndInsuranceQD + " Kr";
+                    claimCalculation.CostQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SickPayQD) + Convert.ToDecimal(claimCalculation.HolidayPayQD) + Convert.ToDecimal(claimCalculation.SocialFeesQD) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceQD)));
+                    claimCalculation.CostCalcQD = claimCalculation.SickPayQD + " Kr + " + claimCalculation.HolidayPayQD + " Kr + " + claimCalculation.SocialFeesQD + " Kr + " + claimCalculation.PensionAndInsuranceQD + " Kr";
                 }
 
                 //DAY 2 TO DAY 14
@@ -3299,16 +3403,18 @@ namespace Sjuklöner.Controllers
                 claimCalculation.SickPayCalcD2T14 = claimCalculation.SalaryD2T14 + " Kr + " + claimCalculation.UnsocialSumPayD2T14 + " Kr + " + claimCalculation.OnCallSumPayD2T14 + " Kr";
 
                 //Social fees for day 2 to day 14
-                claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)) / 100));
-                claimCalculation.SocialFeesCalcD2T14 = claim.SocialFeeRateAsString + " % x (" + claimCalculation.SalaryD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.UnsocialSumPayD2T14 + " Kr + " + claimCalculation.OnCallSumPayD2T14 + " Kr)";
+                claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
+                //claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
+                claimCalculation.SocialFeesCalcD2T14 = claim.SocialFeeRateAsString + " % x (" + claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr)";
 
                 //Pensions and insurances for day 2 to day 14
-                claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)) / 100));
-                claimCalculation.PensionAndInsuranceCalcD2T14 = claim.PensionAndInsuranceRateAsString + " % x (" + claimCalculation.SalaryD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.UnsocialSumPayD2T14 + " Kr + " + claimCalculation.OnCallSumPayD2T14 + " Kr)";
+                claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
+                //claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)) / 100));
+                claimCalculation.PensionAndInsuranceCalcD2T14 = claim.PensionAndInsuranceRateAsString + " % x (" + claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr)";
 
                 //Sum for day 2 to day 14
-                claimCalculation.CostD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14) + Convert.ToDecimal(claimCalculation.SocialFeesD2T14) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceD2T14)));
-                claimCalculation.CostCalcD2T14 = claimCalculation.SalaryD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.UnsocialSumPayD2T14 + " Kr + " + claimCalculation.OnCallSumPayD2T14 + " Kr + " + claimCalculation.SocialFeesD2T14 + " Kr + " + claimCalculation.PensionAndInsuranceD2T14 + " Kr";
+                claimCalculation.CostD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.SocialFeesD2T14) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceD2T14)));
+                claimCalculation.CostCalcD2T14 = claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.SocialFeesD2T14 + " Kr + " + claimCalculation.PensionAndInsuranceD2T14 + " Kr";
 
                 //Total sum for day 1 to day 14
                 claimCalculation.TotalCostD1T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.CostQD) + Convert.ToDecimal(claimCalculation.CostD2T14)));
@@ -3318,6 +3424,7 @@ namespace Sjuklöner.Controllers
                 //claim.StatusDate = DateTime.Now;
                 prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 db.ClaimCalculations.Add(claimCalculation);
+                db.SaveChanges();
                 totalCostD1D14 = totalCostD1D14 + Convert.ToDecimal(claimCalculation.TotalCostD1T14);
                 if (adjustedNumberOfSickdays == 1)
                 {
@@ -3332,6 +3439,7 @@ namespace Sjuklöner.Controllers
                     totalCostCalcD1D14 = totalCostCalcD1D14 + " Kr " + claimCalculation.CostD2T14;
                 }
             }
+            claim.ModelSum = totalCostD1D14;
             claim.TotalCostD1T14 = String.Format("{0:0.00}", totalCostD1D14);
             claim.TotalCostCalcD1T14 = totalCostCalcD1D14;
             db.Entry(claim).State = EntityState.Modified;

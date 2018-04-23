@@ -48,7 +48,6 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal PensionAndInsuranceRate { get; set; }
 
-
         [Display(Name = "Ordinarie timlön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal HourlySalary { get; set; }
@@ -110,6 +109,22 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HoursQD { get; set; }
 
+        [Display(Name = "Antal OB-timmar, kväll:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialEveningHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, natt:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialNightHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, helg:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialWeekendHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, storhelg:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialGrandWeekendHoursQD { get; set; }
+
         [Display(Name = "Antal jourtimmar, dag:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string OnCallDayHoursQD { get; set; }
@@ -121,6 +136,22 @@ namespace Sjuklöner.Models
         [Display(Name = "Antal arbetstimmar efter avdrag för karensdag:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string PaidHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, kväll, efter avdrag för karensdag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidUnsocialEveningHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, natt, efter avdrag för karensdag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidUnsocialNightHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, helg, efter avdrag för karensdag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidUnsocialWeekendHoursQD { get; set; }
+
+        [Display(Name = "Antal OB-timmar, storhelg, efter avdrag för karensdag:")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string PaidUnsocialGrandWeekendHoursQD { get; set; }
 
         [Display(Name = "Antal jourtimmar, dag, efter avdrag för karensdag:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
@@ -138,6 +169,14 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string SalaryCalcQD { get; set; }
 
+        [Display(Name = "Sjuklön (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SickPayQD { get; set; }
+
+        [Display(Name = "Sjuklön (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SickPayCalcQD { get; set; }
+
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HolidayPayQD { get; set; }
@@ -145,6 +184,70 @@ namespace Sjuklöner.Models
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HolidayPayCalcQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialEveningPayQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialEveningPayCalcQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialNightPayQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialNightPayCalcQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialWeekendPayQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialWeekendPayCalcQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialGrandWeekendPayQD { get; set; }
+
+        [Display(Name = "OB-ersättning, kväll (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialGrandWeekendPayCalcQD { get; set; }
+
+        [Display(Name = "Summa OB-ersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialSumPayQD { get; set; }
+
+        [Display(Name = "Summa OB-ersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string UnsocialSumPayCalcQD { get; set; }
+
+        [Display(Name = "Jour-ersättning, dag (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallDayPayQD { get; set; }
+
+        [Display(Name = "Jour-ersättning, dag (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallDayPayCalcQD { get; set; }
+
+        [Display(Name = "Jour-ersättning, natt/helg (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallNightPayQD { get; set; }
+
+        [Display(Name = "Jour-ersättning, natt/helg (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallNightPayCalcQD { get; set; }
+
+        [Display(Name = "Summa Jour-ersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallSumPayQD { get; set; }
+
+        [Display(Name = "Summa Jour-ersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string OnCallSumPayCalcQD { get; set; }
 
         [Display(Name = "Sociala avgifter enligt lag (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
@@ -230,7 +333,6 @@ namespace Sjuklöner.Models
         [Display(Name = "OB-ersättning, helg (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialWeekendPayD2T14 { get; set; }
-
 
         [Display(Name = "OB-ersättning, helg (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
