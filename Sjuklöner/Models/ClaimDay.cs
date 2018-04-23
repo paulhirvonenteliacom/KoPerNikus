@@ -26,93 +26,46 @@ namespace Sjuklöner.Models
 
         public int SickDayNumber { get; set; }
 
-        //public string StartHour { get; set; }
-
-        //public string StartMinute { get; set; }
-
-        //public string StopHour { get; set; }
-
-        //public string StopMinute { get; set; }
-
-        //public float NumberOfHours { get; set; }
-
-        //public float NumberOfUnsocialHours { get; set; }
-
-        //public float NumberOfUnsocialHoursNight { get; set; }
-
-        //public float NumberOfUnsocialHoursEvening { get; set; }
-
-        //public string StartHourOnCall { get; set; }
-
-        //public string StartMinuteOnCall { get; set; }
-
-        //public string StopHourOnCall { get; set; }
-
-        //public string StopMinuteOnCall { get; set; }
-
-        //public float NumberOfOnCallHours { get; set; }
-
-        //public float NumberOfOnCallHoursNight { get; set; }
-
-        //public float NumberOfOnCallHoursEvening { get; set; }
-
-
-        //public string StartHourSI { get; set; }
-
-        //public string StartMinuteSI { get; set; }
-
-        //public string StopHourSI { get; set; }
-
-        //public string StopMinuteSI { get; set; }
-
-        //public float NumberOfHoursSI { get; set; }
-
-        //public float NumberOfUnsocialHoursSI { get; set; }
-
-        //public float NumberOfUnsocialHoursNightSI { get; set; }
-
-        //public float NumberOfUnsocialHoursEveningSI { get; set; }
-
-        //public string StartHourOnCallSI { get; set; }
-
-        //public string StartMinuteOnCallSI { get; set; }
-
-        //public string StopHourOnCallSI { get; set; }
-
-        //public string StopMinuteOnCallSI { get; set; }
-
-        //public float NumberOfOnCallHoursSI { get; set; }
-
-        //public float NumberOfOnCallHoursNightSI { get; set; }
-
-        //public float NumberOfOnCallHoursEveningSI { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string Hours { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialEvening { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialNight { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialWeekend { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialGrandWeekend { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string OnCallDay { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string OnCallNight { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HoursSI { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialEveningSI { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialNightSI { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialWeekendSI { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string UnsocialGrandWeekendSI { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string OnCallDaySI { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string OnCallNightSI { get; set; }
 
         [Display(Name = "OB-ersättning, kväll (Kr):")]
