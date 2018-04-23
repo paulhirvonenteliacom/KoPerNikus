@@ -651,8 +651,13 @@ li a {
     font-size: 22px;
     width: 270px;
 }
+.btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
 
-.btn-success {
+    .btn-success {
     margin-left: 0;
     font-size: 22px;
     width: 130px;

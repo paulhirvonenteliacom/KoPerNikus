@@ -1,0 +1,62 @@
+﻿@using Sjuklöner.Models
+@model Sjuklöner.Viewmodels.StodSystemLoginVM
+@{
+    ViewBag.Title = "StodSystemLogin";
+}
+
+
+<div class="row" style="background-color:lightgrey; padding:300px; border-radius: 10px;">
+    <section id="loginForm">
+        @*@using (Html.BeginForm("StodSystemLogin", "Claims", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))*@
+
+        @using (Html.BeginForm("StodSystemLogin", "Claims", FormMethod.Post))
+            {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="frame-procapita-login">
+
+                <div class="grey-filler bold-14">
+                    Inloggning: Stödsystem
+                </div>
+
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-offset-1 col-md-3" })
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", autofocus = "autofocus", id = "användarnamn" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Lösenord, new { @class = "control-label col-md-offset-1 col-md-3" })
+                        <div class="col-md-7">
+                            @Html.PasswordFor(m => m.Lösenord, new { @class = "form-control", id = "lösenord" })
+                            @Html.ValidationMessageFor(m => m.Lösenord, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    @Html.HiddenFor(m => m.ReferenceNumber, new { id = "referencenumber" })
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-7">
+                        @*Html.ActionLink("Logga in", "Decide", "Claims", new { referenceNumber = Model.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+
+
+                        <input type="submit" value="Logga in" class="btn btn-secondary btn-secondary-small" id="login" />
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

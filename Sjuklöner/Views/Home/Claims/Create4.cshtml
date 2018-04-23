@@ -1,0 +1,183 @@
+﻿@model Sjuklöner.Viewmodels.Create4VM
+@{
+    ViewBag.Title = "Bilagor";
+}
+
+<div class="row margin-breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Personuppgifter och sjukperiod", "Create1", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Timmar", "Create2", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Belopp", "Create3", new { refNumber = Model.ClaimNumber }, new { @class = "breadcrumb-padding" })</li>
+            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Bilagor</li>
+        </ol>
+    </nav>
+</div>
+
+@using (Html.BeginForm("Create4", "Claims", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(c => c.ClaimNumber)
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
+        <br>
+    </div>
+    <div class="row">
+        <p class="col col-md-2"></p>
+        <p class="col col-md-10 second-page-header2">Steg 4 av 4: Ladda upp bilagor och skicka in ansökan</p>
+    </div>
+    <div class="row">
+        <div class="form-horizontal">
+            @*@Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })*@
+
+            <div class="row row-height-26">
+                @Html.LabelFor(model => model.SalaryAttachment, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14">
+                <div class="col col-md-offset-2 col-md-10">
+                    @Html.ValidationMessageFor(model => model.SalaryAttachment, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-height-26">
+                @Html.LabelFor(model => model.SalaryAttachmentStandIn, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="SalaryAttachmentStandIn" id="SalaryAttachmentStandIn" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14">
+                <div class="col col-md-offset-2 col-md-10">
+                    @Html.ValidationMessageFor(model => model.SalaryAttachmentStandIn, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-height-26">
+                @Html.LabelFor(model => model.DoctorsCertificate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14">
+                <div class="col col-md-offset-2 col-md-10">
+                    @Html.ValidationMessageFor(model => model.DoctorsCertificate, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-height-26">
+                @Html.LabelFor(model => model.SickLeaveNotification, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="SickLeaveNotification" id="SickLeaveNotification" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14">
+                <div class="col col-md-offset-2 col-md-10">
+                    @Html.ValidationMessageFor(model => model.SickLeaveNotification, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-height-26">
+                @Html.LabelFor(model => model.TimeReport, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14">
+                <div class="col col-md-offset-2 col-md-10">
+                    @Html.ValidationMessageFor(model => model.TimeReport, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-height-26">
+                @Html.LabelFor(model => model.TimeReportStandIn, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="TimeReportStandIn" id="TimeReportStandIn" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14">
+                <div class="col col-md-offset-2 col-md-10">
+                    @Html.ValidationMessageFor(model => model.TimeReportStandIn, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="small-padding-left3 col col-md-offset-2 col-md-1">
+                    <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                    @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+                </div>
+                @*<div id="AJAXContainer"></div>*@
+                <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+                <div id='myModal' class='modal' style="text-align:left;">
+                    <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                        <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                            <button type="button" id="closbtn" float="right"> Stäng </button>
+                            <div style="height:10px;">
+                            </div>
+                            <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
+
+    //$('#loadPartialActionLink').on('click', function (e) {
+    //    e.preventDefault();
+    //    var claimNumber = document.getElementById("claimnumber");
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '/Claims/_ShowClaim',
+    //        data: {
+    //            refNumber: claimNumber.innerHTML
+    //        },
+    //        success: function (data, textStatus, jqXHR) {
+    //            $('#AJAXContainer').html(data);
+    //        }
+    //    });
+    //});
+</script>

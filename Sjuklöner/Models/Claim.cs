@@ -196,6 +196,7 @@ namespace Sjuklöner.Models
         public string DecisionMsg { get; set; }
         public DateTime DecisionTransferTimeStamp { get; set; }
 
+        [Display(Name = "Motivering för avslag")]
         public string RejectReason { get; set; }
 
         //[Required]

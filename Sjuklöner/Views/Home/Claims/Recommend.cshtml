@@ -1,0 +1,619 @@
+﻿@model Sjuklöner.Viewmodels.RecommendationVM
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "View";
+}
+
+@using (Html.BeginForm("Recommend", "Claims", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.ClaimNumber)
+    @Html.HiddenFor(model => model.ClaimSum)
+    @Html.HiddenFor(model => model.CompleteCheck)
+    @Html.HiddenFor(model => model.IvoCheck)
+    @Html.HiddenFor(model => model.AssistanceCheck)
+    @Html.HiddenFor(model => model.ProxyCheck)
+
+    @*<div class="row no-breadcrumb-top">
+            <div class="form-horizontal">
+                <div class="form-group col line-height-10">
+                    @Html.LabelFor(model => model.ClaimNumber, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                    <div class="col-md-6 display-large-font" id="referencenumber">
+                        @Html.HiddenFor(model => Model.ClaimNumber, null)
+                        @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @style = "margin-left:10px;", @class = "btn-sm js-show-view-btn btn btn-secondary" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p class="col col-md-6 second-page-header-large">Automatiserade kontroller</p>
+        </div>
+
+        <div class="row">
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group col line-height-06">
+                    @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                    @if (!Model.IvoCheck)
+                    {
+                        <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group col line-height-06">
+                    @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                    @if (!Model.AssistanceCheck)
+                    {
+                        <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
+                        </div>
+                    }
+                </div>
+                <div class="form-group col line-height-06">
+                    @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                    @if (!Model.ProxyCheck)
+                    {
+                        <div class="col-md-6 align-bottom3 control-label-large decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-6 align-bottom3 control-label-large decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <p class="col col-md-6 second-page-header-large">Ersättningsbedömning</p>
+        </div>
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group col line-height-06">
+                    @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                    <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="claimsum">
+                        @Html.DisplayFor(model => Model.ClaimSum)
+                    </div>
+                </div>
+
+                <div class="form-group col line-height-06">
+                    @Html.LabelFor(model => model.ModelSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6" })
+                    <div class="col-md-6 align-bottom3 display-large-font decision-padding-left" id="modelsum">
+                        @Html.DisplayFor(model => model.ModelSum)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group col line-height-10">
+                    @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-green" })
+                    <div class="col col-md-1">
+                        @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-green", id = "approvedsum", onblur = "calculateSum(1)" } })
+                        @Html.ValidationMessageFor(model => model.ApprovedSum, null, new { @class = "text-danger" }, null)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group col line-height-10">
+                    @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large col-md-6 highlight-red" })
+                    <div class="col col-md-1">
+                        @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control control-width-small highlight-red", id = "rejectedsum", onblur = "calculateSum(2)" } })
+                        @Html.ValidationMessageFor(model => model.RejectedSum, null, new { @class = "text-danger" }, null)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row line-height-10">
+            <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:85%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn" float="right"> Stäng </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1200px; height:400px; padding:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+
+    @*2.0*@
+
+
+    <div class="row no-breadcrumb-top2">
+        <div class="form-horizontal">
+            <div class="form-group margin-bottom-small col line-height-10">
+                @Html.LabelFor(model => model.ClaimNumber, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                <div class="col-md-8" id="referencenumber">
+                    @Html.HiddenFor(model => Model.ClaimNumber, null)
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @style = "margin-left:10px;", @class = "js-show-view-btn btn btn-secondary2" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <p class="col col-md-4 second-page-header4">Automatiserade kontroller</p>
+    </div>
+
+    <div class="row">
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.IvoCheck)
+                {
+                    <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.AssistanceCheck)
+                {
+                    <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.AssistanceCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.ProxyCheck)
+                {
+                    <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.ProxyCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.SalarySpecRegAssistantCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.SalarySpecRegAssistantCheck)
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.SalarySpecRegAssistantCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.SalarySpecRegAssistantCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.SalarySpecSubAssistantCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.SalarySpecSubAssistantCheck)
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.SalarySpecSubAssistantCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.SalarySpecSubAssistantCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.SickleaveNotificationCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.SickleaveNotificationCheck)
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.SickleaveNotificationCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.SickleaveNotificationCheckMsg)
+                    </div>
+                }
+            </div>
+
+            @if (Model.NumberOfSickDays > 7)
+            {
+
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.MedicalCertificateCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.MedicalCertificateCheck)
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.MedicalCertificateCheckMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.MedicalCertificateCheckMsg)
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.FKRegAssistantCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.FKRegAssistantCheck)
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.FKRegAssistantCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.FKRegAssistantCheckMsg)
+                    </div>
+                }
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.FKSubAssistantCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                @if (!Model.FKSubAssistantCheck)
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.FKSubAssistantCheckMsg)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.FKSubAssistantCheckMsg)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <p class="col col-md-4 second-page-header4">Ersättningsbedömning</p>
+    </div>
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="claimsum">
+                    @Html.DisplayFor(model => Model.ClaimSum)
+                </div>
+            </div>
+
+            <div class="form-group margin-bottom-small col line-height-06">
+                @Html.LabelFor(model => model.ModelSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="modelsum">
+                    @Html.DisplayFor(model => model.ModelSum)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group margin-bottom-small col line-height-10">
+                @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4 highlight-green" })
+                <div class="col col-md-1">
+                    @Html.EditorFor(model => model.ApprovedSum, new { htmlAttributes = new { @class = "form-control large-form-control2 control-width-small2 highlight-green", id = "approvedsum", onblur = "calculateSum(1)" } })
+                    @Html.ValidationMessageFor(model => model.ApprovedSum, null, new { @class = "text-danger" }, null)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group margin-bottom-small col line-height-10">
+                @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4 highlight-red" })
+                <div class="col col-md-1">
+                    @Html.EditorFor(model => model.RejectedSum, new { htmlAttributes = new { @class = "form-control large-form-control2 control-width-small2 highlight-red", id = "rejectedsum", onblur = "calculateSum(2)" } })
+                    @Html.ValidationMessageFor(model => model.RejectedSum, null, new { @class = "text-danger" }, null)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group margin-bottom-small col line-height-10">
+                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4 highlight-red" })
+                <div class="col col-md-8">
+                    @Html.EditorFor(model => model.RejectReason, new { htmlAttributes = new { @style = "max-width:100% !important;", @class = "control-width2 form-control large-form-control2 highlight-red", rows = 3, id = "rejectedsum", onblur = "calculateSum(2)" } })
+                    @Html.ValidationMessageFor(model => model.RejectReason, null, new { @class = "text-danger" }, null)
+                </div>
+            </div>
+        </div>
+    </div>          
+    
+    <div class="row">
+        <div class="col col-md-offset-4">
+            @if (User.IsInRole("AdministrativeOfficial") && Model.InInbox == true)
+           {      
+               <input type="submit" value="För över till Procapita" name="submitButton" class="btn btn-primary btn-primary-extra-wide" id="confirm" />      
+           }
+        </div>
+    </div>
+      
+        <div class="row">
+            <p class="col col-md-4 second-page-header4">Automatiserade överföringar</p>
+        </div>
+
+        <div class="row">
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.BasisForDecision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.BasisForDecision)
+                    {
+                        <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.BasisForDecisionMsg)
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.Decision, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.Decision)
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.DecisionMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.DecisionMsg)
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row line-height-10">
+            @*<div class="col col-md-offset-6 col-md-1">
+                    <input class="btn btn-primary" type="submit" value="Nästa steg" style="margin-left: 0px;"/>
+                </div>
+                <div class="col col-md-1">
+
+                    @*Html.ActionLink("Detaljer", "ShowClaimDetails", "Claims", new { referenceNumber = Model.ClaimNumber }, new { @class = "btn btn-primary" })*
+                </div>*@
+            <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:85%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn" float="right"> Stäng </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1200px; height:400px; padding:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    }
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type='text/javascript'>
+    function calculateSum(id) {
+        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        var claimSum = document.getElementById("claimsum");
+        var approvedSum = document.getElementById("approvedsum");
+        var rejectedSum = document.getElementById("rejectedsum");
+
+        var claimSumString = claimSum.innerHTML.trim();
+        var approvedSumString = approvedSum.value;
+        var rejectedSumString = rejectedSum.value;
+
+        var approvedSumInt = 0;
+        var approvedSumDec = 0;
+
+        var rejectedSumInt = 0;
+        var rejectedSumDec = 0;
+
+        var pos = claimSumString.search(",");
+        var claimSumInt = 0;
+        var claimSumDec = 0;
+
+        if (approvedSumString === "") {
+            approvedSumString = "0"
+        }
+
+        if (rejectedSumString === "") {
+            rejectedSumString = "0"
+        }
+
+        if (pos === -1 || pos === claimSumString.length - 1) {
+            //No comma char in the string or if the comma is the last char
+            claimSumInt = parseInt(claimSumString);
+        }
+        else {
+            claimSumInt = parseInt(claimSumString.substring(0, pos));
+            claimSumDec = parseInt(claimSumString.substring(pos + 1));
+        }
+
+        if (id === 1) {
+            //Find out where the decimal comma is
+            var n = approvedSumString.search(",");
+            if (n === -1 || n === approvedSumString.length - 1) {
+                //No comma char in the string or if the comma is the last char
+                approvedSumInt = parseInt(approvedSumString);
+            }
+            else {
+                approvedSumInt = parseInt(approvedSumString.substring(0, n));
+                approvedSumDec = parseInt(approvedSumString.substring(n + 1));
+            }
+
+            if (isNaN(approvedSumInt) || isNaN(approvedSumDec)) {
+                rejectedSum.value = "0,00";
+            }
+            else {
+                if (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)) {
+                    rejectedSum.value = "0,00";
+                }
+                else {
+                    rejectedSumInt = claimSumInt - approvedSumInt;
+                    rejectedSumDec = claimSumDec - approvedSumDec;
+
+                    if (!isNaN(rejectedSumInt) && !isNaN(rejectedSumDec)) {
+                        if (rejectedSumDec < 0) {
+                            rejectedSumInt = rejectedSumInt - 1;
+                            rejectedSumDec = 100 - approvedSumDec + claimSumDec;
+                        }
+                        if (rejectedSumInt < 0) {
+                            rejectedSum.value = "0,00";
+                        }
+                        else {
+                            if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                                rejectedSum.value = claimSumString;
+                            }
+                            else {
+                            rejectedSum.value = rejectedSumInt.toString() + "," + rejectedSumDec.toString();
+                            }
+                        }
+                    }
+                    else {
+                        approvedSum.value = "0,00";
+                    }
+                }
+            }
+        }
+
+        var p = approvedSumString.search(",");
+        if (p === -1 || p === approvedSumString.length - 1) {
+            //No comma char in the string or if the comma is the last char
+            approvedSumInt = parseInt(approvedSumString);
+        }
+        else {
+            approvedSumInt = parseInt(approvedSumString.substring(0, p));
+            approvedSumDec = parseInt(approvedSumString.substring(p + 1));
+        }
+
+        if (id === 2) {
+            //Find out where the decimal comma is
+            var n = rejectedSumString.search(",");
+            if (n === -1 || n === rejectedSumString.length - 1) {
+                //No comma char in the string or if the comma is the last char
+                rejectedSumInt = parseInt(rejectedSumString);
+            }
+            else {
+                rejectedSumInt = parseInt(rejectedSumString.substring(0, n));
+                rejectedSumDec = parseInt(rejectedSumString.substring(n + 1));
+            }
+            if (isNaN(rejectedSumInt) || isNaN(rejectedSumDec)) {
+                approvedSum.value = "0,00";
+            }
+            else {
+                if (!(rejectedSum.value === "0,00" && (approvedSumInt > claimSumInt || (approvedSumInt === claimSumInt && approvedSumDec > claimSumDec)))) {
+                    approvedSumInt = claimSumInt - rejectedSumInt;
+                    approvedSumDec = claimSumDec - rejectedSumDec;
+                    if (approvedSumDec < 0) {
+                        approvedSumInt = approvedSumInt - 1;
+                        approvedSumDec = 100 - rejectedSumDec + claimSumDec;
+                    }
+                    if (approvedSumInt < 0) {
+                        approvedSum.value = "0,00";
+                    }
+                    else {
+                        approvedSum.value = approvedSumInt.toString() + "," + approvedSumDec.toString();
+                    }
+                }
+                if (rejectedSumInt > claimSumInt || (rejectedSumInt === claimSumInt && rejectedSumDec > claimSumDec)) {
+                    rejectedSum.value = claimSumString;
+                }
+            }
+        }
+    }
+
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
+</script>

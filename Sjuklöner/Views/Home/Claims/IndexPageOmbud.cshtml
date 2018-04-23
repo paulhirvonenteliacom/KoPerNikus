@@ -1,0 +1,354 @@
+﻿@model Sjuklöner.Viewmodels.IndexPageOmbudVM
+
+@{
+    ViewBag.Title = "Index";
+}
+<body>
+    <div class="row index-page-margin">
+        <p class="page-header col col-md-10">Ansökningar</p>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        @if (Model.AssistantsExist)
+        {
+            <div class="col col-md-7 no-padding-left2">
+                @Html.ActionLink("Skapa ny ansökan", "Create1", new { claimExists = 1 }, new { @class = "btn btn-primary btn-primary-wide" })
+            </div>
+        }
+        else
+        {
+            <div class="col col-md-6 left-margin-12 font-size-16">
+                Välkommen! Du är nu registrerad som ombud för @Model.CompanyName. För att kunna skapa en ansökan krävs information om två assistenter. Den ena är den insjuknade ordinarie assistenten och den andra är den vikarierande assistenten. 
+                <p class="col-no-left-padding">@Html.ActionLink("Klicka här ", "Create", "Assistants", null, null)för att skapa assistenter.</p>
+            </div>
+        }
+        @using (Html.BeginForm("IndexPageOmbud", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <select name="searchBy" class="col-md-2 input-sm align-bottom4">
+                <option value="Referensnummer">Referensnummer</option>
+                <option value="CSSN">Kundens personnummer</option>
+                <option value="ASSN">Assistentens personnummer</option>
+                <option value="Mine">Mina ansökningar</option>
+            </select>
+            <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom4" />
+            <div class="col col-md-1 col-no-left-padding col-no-right-padding">
+                <input type="submit" value="Sök" class="btn btn-secondary btn-secondary-xsmall input-height align-bottom4" />
+            </div>
+        }
+    </div>
+    <hr class="claim-divider" />
+    <div class="row">
+        <div class="col">
+            <div class="second-page-header">
+                Beslutade
+            </div>
+            @if (Model.DecidedClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col-ombud">
+                            Referensnummer
+                        </th>
+                        <th class="small-col-ombud">
+                            Beslutsdatum
+                        </th>
+                        <th class="small-col-ombud">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col-ombud">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col-ombud">
+                            Sista sjukdag
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th class="small-col">
+                            Godkänt belopp (Kr)
+                        </th>
+                        <th class="medium-col">
+                            Avslaget belopp (Kr)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.DecidedClaims)
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                                @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StatusDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
+                            </td>
+                            <td class="highlight-green-bold">
+                                @Html.DisplayFor(modelItem => item.ApprovedSum)
+                            </td>
+                            <td class="highlight-red-bold">
+                                @Html.DisplayFor(modelItem => item.RejectedSum)
+                            </td>
+                            <td>
+                                @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success-small" }) |*@
+                                @*@Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })*@
+                                @*@if (item.RejectedSum > 1)
+                                    {
+                                        @Html.ActionLink("Överklaga", "Create", null, new { @class = "btn btn-warning btn-warning-small" })
+                                    }*@
+                                @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary-small" })*@
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="left-margin-23 font-size-16">
+                    Du har inga beslutade ansökningar.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <hr class="claim-divider" />
+
+    <div class="row">
+        <div class="col">
+            <div class="second-page-header">
+                Utkast
+            </div>
+            @if (Model.DraftClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col-ombud">
+                            Referensnummer
+                        </th>
+                        <th class="small-col-ombud">
+                            Skapad datum
+                        </th>
+                        <th class="small-col-ombud">
+                            Ombud
+                        </th>
+                        <th class="xsmall-col-ombud">
+                            Steg
+                        </th>
+                        <th class="small-col-ombud">
+                            Kundens personnummer
+                        </th>
+                        <th class="ssmall-col-ombud">
+                            Första sjukdag
+                        </th>
+                        <th class="ssmall-col-ombud">
+                            Sista sjukdag
+                        </th>
+                        @*<th class="ssmall-col-ombud">
+            Antal sjukdagar
+        </th>*@
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th class="table-button-cell"></th>
+                        <th class="table-button-cell"></th>
+                        <th class="table-button-cell"></th>
+                    </tr>
+
+                    @foreach (var item in Model.DraftClaims)
+                    {
+                    <tr>
+                        <td>
+                            @*@Html.ActionLink(item.ReferenceNumber, "_ShowClaim", "Claims", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OmbudEmail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompletionStage)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        @*<td>
+                        @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Uppdatera", "Create1", new { refNumber = item.ReferenceNumber }, new { @role = "button", @class = "btn btn-secondary btn-secondary-small" })
+                        </td>
+                        <td>
+                            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                            @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                        </td>
+                    </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="left-margin-23 font-size-16">
+                    Du har inga utkast.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <hr class="claim-divider" />
+
+    <div class="row">
+        <div class="col">
+            <div class="second-page-header">
+                Under handläggning
+            </div>
+            @if (Model.UnderReviewClaims?.Count() > 0)
+            {
+                <table class="table">
+                    <tr>
+                        <th class="small-col-ombud">
+                            Referensnummer
+                        </th>
+                        <th class="small-col-ombud">
+                            Handläggare
+                        </th>
+                        <th class="small-col-ombud">
+                            Inskickad datum
+                        </th>
+                        <th class="small-col-ombud">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col-ombud">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col-ombud">
+                            Sista sjukdag
+                        </th>
+                        <th class="medium-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.UnderReviewClaims)
+                    {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                            @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AdmOffName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" }) |
+            @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                            @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                        </td>
+                    </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <div class="left-margin-23 font-size-16">
+                    Du har inga ansökningar under handläggning.
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <div id='myModal' class='modal' style="text-align:left;">
+        <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+            @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#d2f5f4;">*@
+            @*<div class="modal-content" style="overflow: auto; padding:10px; background-color:#f5f1dc;">*@
+            <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                <button type="button" id="closbtn" float="right"> Stäng </button>
+                <div style="height:10px;">
+                </div>
+                <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="claim-divider" />
+</body>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
+</script>
