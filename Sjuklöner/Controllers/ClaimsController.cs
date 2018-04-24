@@ -2675,8 +2675,21 @@ namespace Sjuklöner.Controllers
             claim.RejectReason = recommendationVM.RejectReason;
             claim.StatusDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
-            db.SaveChanges();
-            return View("ConfirmTransfer", claim);                    
+            db.SaveChanges();           
+           
+            ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
+            confirmTransferVM.ClaimId = claim.Id;
+            confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
+            confirmTransferVM.CustomerSSN = claim.CustomerSSN;
+            confirmTransferVM.QualifyingDate = claim.QualifyingDate;
+            confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+            confirmTransferVM.ClaimedSum = claim.ClaimedSum;
+            confirmTransferVM.ModelSum = claim.ModelSum;
+            confirmTransferVM.ApprovedSum = claim.ApprovedSum;
+            confirmTransferVM.RejectedSum = claim.RejectedSum;
+            confirmTransferVM.RejectReason = claim.RejectReason;
+
+            return View("ConfirmTransfer", confirmTransferVM);                           
         }
 
         // GET: Claims/ShowRecommendationReceipt
@@ -2704,8 +2717,19 @@ namespace Sjuklöner.Controllers
         public ActionResult Transfer(string refNumber)
         {
             var claim = db.Claims.Where(rn => rn.ReferenceNumber == refNumber).FirstOrDefault();
+            ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
+            confirmTransferVM.ClaimId = claim.Id;
+            confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
+            confirmTransferVM.CustomerSSN = claim.CustomerSSN;
+            confirmTransferVM.QualifyingDate = claim.QualifyingDate;
+            confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+            confirmTransferVM.ClaimedSum = claim.ClaimedSum;
+            confirmTransferVM.ModelSum = claim.ModelSum;
+            confirmTransferVM.ApprovedSum = claim.ApprovedSum;
+            confirmTransferVM.RejectedSum = claim.RejectedSum;
+            confirmTransferVM.RejectReason = claim.RejectReason;
 
-            return View("ConfirmTransfer", claim);
+            return View("ConfirmTransfer", confirmTransferVM);
         }
 
         // POST: Claims/ConfirmTransfer

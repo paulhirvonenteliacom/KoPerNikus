@@ -1,4 +1,4 @@
-﻿@model Sjuklöner.Models.Claim
+﻿@model Sjuklöner.Viewmodels.ConfirmTransferVM
 
 @{
     ViewBag.Title = "ConfirmTransfer";
@@ -72,10 +72,10 @@
         </div>
     </div>
     <br />
-    @using (Html.BeginForm("Transfer", "Claims", new { id = Model.Id }, FormMethod.Post))
+    @using (Html.BeginForm("Transfer", "Claims", new { id = Model.ClaimId }, FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ClaimId)
         <div class="row">
 
             <div class="no-padding-left2 col col-md-offset-2 col-md-1">

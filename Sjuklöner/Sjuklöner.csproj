@@ -339,6 +339,7 @@
     <Compile Include="Viewmodels\CareCompanyIndexVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsOmbudVM.cs" />
     <Compile Include="Viewmodels\AssistantCreateVM.cs" />
+    <Compile Include="Viewmodels\ConfirmTransferVM.cs" />
     <Compile Include="Viewmodels\OmbudDeleteVM.cs" />
     <Compile Include="Viewmodels\OmbudEditVM.cs" />
     <Compile Include="Viewmodels\OmbudCreateVM.cs" />
