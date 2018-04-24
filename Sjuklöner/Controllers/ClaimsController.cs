@@ -2758,7 +2758,8 @@ namespace Sjuklöner.Controllers
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
             }
-            return RedirectToAction("Recommend", new { id });
+            //return RedirectToAction("Recommend", new { id });
+            return RedirectToAction("IndexPageAdmOff", "Claims");
         }
 
         // GET: Claims/StodSystemLogin
