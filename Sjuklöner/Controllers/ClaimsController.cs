@@ -2757,9 +2757,12 @@ namespace Sjuklöner.Controllers
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
+                //return RedirectToAction("IndexPageAdmOff", "Claims");
+                return RedirectToAction("Recommend", new { id });
+
             }
-            //return RedirectToAction("Recommend", new { id });
-            return RedirectToAction("IndexPageAdmOff", "Claims");
+            return RedirectToAction("Recommend", new { id }); 
+           
         }
 
         // GET: Claims/StodSystemLogin
