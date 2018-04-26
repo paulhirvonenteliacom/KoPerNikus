@@ -58,7 +58,7 @@ namespace Sjuklöner.Controllers
             int companyId = (int)me.CareCompanyId;
             indexPageOmbudVM.CompanyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
 
-            var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.StatusDate).ToList();
+            var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.CreationDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -101,7 +101,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
-            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.StatusDate).ToList();
+            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.SentInDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -136,7 +136,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
-            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.StatusDate).ToList();
+            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.SentInDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -671,6 +671,7 @@ namespace Sjuklöner.Controllers
             //Save substitute assistant information
             SaveSubAssistantInformation(create1VM, claim);
 
+            claim.CreationDate = DateTime.Now;
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
@@ -817,6 +818,7 @@ namespace Sjuklöner.Controllers
             //    claim.SelectedSubAssistantId = assistantId;
             //}
 
+            claim.CreationDate = DateTime.Now;
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
@@ -1618,6 +1620,7 @@ namespace Sjuklöner.Controllers
                         {
                             claim.ClaimStatusId = 4;
                             claim.StatusDate = DateTime.Now;
+                            claim.SentInDate = DateTime.Now;
 
                             //Set default values for ivo and Procapita checks
                             claim.IVOCheck = false;
@@ -1668,6 +1671,7 @@ namespace Sjuklöner.Controllers
                         else
                         {
                             claim.StatusDate = DateTime.Now;
+                            claim.CreationDate = DateTime.Now;
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
                             return View("Create4", model);
@@ -2447,8 +2451,7 @@ namespace Sjuklöner.Controllers
 
             ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
 
-            claimDetailsVM.ReferenceNumber = referenceNumber;
-            //claimDetailsVM.StatusName = claim.ClaimStatus.Name;
+            claimDetailsVM.ReferenceNumber = referenceNumber;            
             claimDetailsVM.StatusName = claim.ClaimStatus.Name;
             claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
 
@@ -2837,6 +2840,7 @@ namespace Sjuklöner.Controllers
             claim.ApprovedSum = Convert.ToDecimal(decisionVM.ApprovedSum);
             claim.RejectedSum = Convert.ToDecimal(decisionVM.RejectedSum);
             claim.StatusDate = DateTime.Now;
+            claim.DecisionDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
 
@@ -3467,7 +3471,7 @@ namespace Sjuklöner.Controllers
                 claimCalculation.TotalCostCalcD1T14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
 
                 //claim.ClaimStatusId = 5;
-                //claim.StatusDate = DateTime.Now;
+                claim.StatusDate = DateTime.Now;
                 prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 db.ClaimCalculations.Add(claimCalculation);
                 db.SaveChanges();

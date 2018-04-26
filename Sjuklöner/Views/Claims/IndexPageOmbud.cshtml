@@ -82,7 +82,7 @@
                                 @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
+                                @Html.DisplayFor(modelItem => item.DecisionDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
@@ -176,7 +176,7 @@
                                 @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
+                                @Html.DisplayFor(modelItem => item.CreationDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.OmbudEmail)
@@ -271,7 +271,7 @@
                                 @Html.DisplayFor(modelItem => item.AdmOffName)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
+                                @Html.DisplayFor(modelItem => item.SentInDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
