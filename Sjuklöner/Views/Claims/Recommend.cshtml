@@ -338,27 +338,29 @@
                     @Html.DisplayFor(model => model.ModelSum)
                 </div>
             </div>
-            @if (Model.InInbox == false)
+        @if (User.IsInRole("Admin") || Model.InInbox == false)
+        {
+
+        <div class="form-group margin-bottom-small col line-height-06">
+            @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+            <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="approvedsum">
+                @Html.DisplayFor(model => model.ApprovedSum)
+            </div>
+        </div>
+        <div class="form-group margin-bottom-small col line-height-06">
+            @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+            <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedsum">
+                @Html.DisplayFor(model => model.RejectedSum)
+            </div>
+        </div>
+            if (Decimal.Parse(Model.RejectedSum) > 0)
             {
-
-                <div class="form-group margin-bottom-small col line-height-06">
-                    @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                    <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="approvedsum">
-                        @Html.DisplayFor(model => model.ApprovedSum)
-                    </div>
-                </div>
-                <div class="form-group margin-bottom-small col line-height-06">
-                    @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                    <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedsum">
-                        @Html.DisplayFor(model => model.RejectedSum)
-                    </div>
-                </div>
-                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedreason">
-                    @Html.DisplayFor(model => model.RejectReason)
-                </div>
-
+               @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+               <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedreason">
+                   @Html.DisplayFor(model => model.RejectReason)
+               </div>
             }
+        }
         </div>
     </div>
     if (User.IsInRole("AdministrativeOfficial") && Model.InInbox == true)

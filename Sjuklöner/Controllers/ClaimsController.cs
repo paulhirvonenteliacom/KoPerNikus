@@ -1985,41 +1985,52 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ModelSum = claim.ModelSum;
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                    !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
-                {
-                    recommendationVM.ApprovedSum = "0,00";
-                    recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
-                }
-                else
-                {
-                    recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
-
-                    if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
-                    {
-                        recommendationVM.RejectedSum = "0,00";
-                    }
-                    else
-                    {
-                        recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
-                    }
-                }
+               
                 if (claim.ClaimStatusId == 3)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
                 }
 
-                if (claim.ClaimStatusId == 5)
-                {
-                    recommendationVM.InInbox = true;
-                }                  
-
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
                 claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
 
-                recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
-                claim.RejectReason = recommendationVM.RejectReason;
+                if (claim.ClaimStatusId == 5)   // Claim is in Inbox
+                {
+                    recommendationVM.InInbox = true;
+
+                    if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                   !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                    {
+                        recommendationVM.ApprovedSum = "0,00";
+                        recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
+                    }
+                    else
+                    {
+                        recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
+
+                        if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
+                        {
+                            recommendationVM.RejectedSum = "0,00";
+                        }
+                        else
+                        {
+                            recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                        }
+                    }
+
+                    recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
+                    claim.RejectReason = recommendationVM.RejectReason;
+                }
+                else
+                {
+                    recommendationVM.InInbox = false;
+
+                    recommendationVM.ApprovedSum = claim.ApprovedSum.ToString();
+                    recommendationVM.RejectedSum = claim.RejectedSum.ToString();
+
+                    recommendationVM.RejectReason = claim.RejectReason;
+                }
 
                 // Assign this Claim to the current Administrative Official               
                 if (User.IsInRole("AdministrativeOfficial"))
@@ -2670,26 +2681,31 @@ namespace Sjuklöner.Controllers
         public ActionResult Recommend(RecommendationVM recommendationVM)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
-            claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
-            claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
-            claim.RejectReason = recommendationVM.RejectReason;
-            claim.StatusDate = DateTime.Now;
-            db.Entry(claim).State = EntityState.Modified;
-            db.SaveChanges();           
-           
-            ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
-            confirmTransferVM.ClaimId = claim.Id;
-            confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
-            confirmTransferVM.CustomerSSN = claim.CustomerSSN;
-            confirmTransferVM.QualifyingDate = claim.QualifyingDate;
-            confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
-            confirmTransferVM.ClaimedSum = claim.ClaimedSum;
-            confirmTransferVM.ModelSum = claim.ModelSum;
-            confirmTransferVM.ApprovedSum = claim.ApprovedSum;
-            confirmTransferVM.RejectedSum = claim.RejectedSum;
-            confirmTransferVM.RejectReason = claim.RejectReason;
+            if (claim != null)
+            {
+                claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
+                claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
+                claim.RejectReason = recommendationVM.RejectReason;
+               
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();             
 
-            return View("ConfirmTransfer", confirmTransferVM);                           
+                ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
+                confirmTransferVM.ClaimId = claim.Id;
+                confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
+                confirmTransferVM.CustomerSSN = claim.CustomerSSN;
+                confirmTransferVM.QualifyingDate = claim.QualifyingDate;
+                confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+                confirmTransferVM.ClaimedSum = claim.ClaimedSum;
+                confirmTransferVM.ModelSum = claim.ModelSum;
+                confirmTransferVM.ApprovedSum = claim.ApprovedSum;
+                confirmTransferVM.RejectedSum = claim.RejectedSum;
+                confirmTransferVM.RejectReason = claim.RejectReason;
+
+                return View("ConfirmTransfer", confirmTransferVM);
+            }
+            return RedirectToAction("IndexPageAdmOff", "Claims");
+
         }
 
         // GET: Claims/ShowRecommendationReceipt
@@ -2755,6 +2771,8 @@ namespace Sjuklöner.Controllers
                 //}
                 claim.ClaimStatusId = 3;
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
+                claim.StatusDate = DateTime.Now;
+              
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
                 //return RedirectToAction("IndexPageAdmOff", "Claims");
