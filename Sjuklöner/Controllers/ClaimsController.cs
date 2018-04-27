@@ -2335,6 +2335,8 @@ namespace Sjuklöner.Controllers
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
+                string sentInDate = claim.SentInDate.ToString().Substring(2, 8).Replace("-", "");
+
                 using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
                 {
                     writer.WriteStartDocument();
@@ -2356,6 +2358,8 @@ namespace Sjuklöner.Controllers
                     writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
                     writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
                     writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
+                    writer.WriteElementString("SentInDate", sentInDate);
+                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
@@ -3077,6 +3081,8 @@ namespace Sjuklöner.Controllers
             string refNumber = claim.ReferenceNumber;
             if (submitButton == "Bekräfta")
             {
+                string sentInDate = claim.SentInDate.ToString().Substring(2, 8).Replace("-", "");
+
                 using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
                 {
                     writer.WriteStartDocument();
@@ -3098,6 +3104,8 @@ namespace Sjuklöner.Controllers
                     writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
                     writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
                     writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
+                    writer.WriteElementString("SentInDate", sentInDate);
+                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
