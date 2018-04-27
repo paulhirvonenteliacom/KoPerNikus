@@ -73,7 +73,7 @@
                                 @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
+                                @Html.DisplayFor(modelItem => item.SentInDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CompanyName)
@@ -172,7 +172,7 @@
                                 @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
+                                @Html.DisplayFor(modelItem => item.SentInDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CompanyName)
@@ -277,7 +277,7 @@
                                 @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StatusDate)
+                                @Html.DisplayFor(modelItem => item.DecisionDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CompanyName)

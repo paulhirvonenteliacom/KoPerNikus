@@ -301,6 +301,10 @@
     <Compile Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.Designer.cs">
       <DependentUpon>201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.cs" />
+    <Compile Include="Migrations\201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.Designer.cs">
+      <DependentUpon>201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -339,6 +343,7 @@
     <Compile Include="Viewmodels\CareCompanyIndexVM.cs" />
     <Compile Include="Viewmodels\ClaimDetailsOmbudVM.cs" />
     <Compile Include="Viewmodels\AssistantCreateVM.cs" />
+    <Compile Include="Viewmodels\ConfirmTransferVM.cs" />
     <Compile Include="Viewmodels\OmbudDeleteVM.cs" />
     <Compile Include="Viewmodels\OmbudEditVM.cs" />
     <Compile Include="Viewmodels\OmbudCreateVM.cs" />
@@ -602,6 +607,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.resx">
       <DependentUpon>201804201539189_AddedDataAnnotationsToPropertiesInClaimDaysClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.resx">
+      <DependentUpon>201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

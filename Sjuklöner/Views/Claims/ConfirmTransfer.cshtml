@@ -1,4 +1,4 @@
-﻿@model Sjuklöner.Models.Claim
+﻿@model Sjuklöner.Viewmodels.ConfirmTransferVM
 
 @{
     ViewBag.Title = "ConfirmTransfer";
@@ -61,29 +61,29 @@
     </div>
 </div>
 
-@if (true)
+@if (Model.RejectedSum > 0)
 {
-
-}
     <div class="row">
         @Html.LabelFor(m => m.RejectReason, new { @class = "col-md-2 display-right-align control-label" })
         <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(m => m.RejectReason)
         </div>
     </div>
-    <br />
-    @using (Html.BeginForm("Transfer", "Claims", new { id = Model.Id }, FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.Id)
-        <div class="row">
+}
 
-            <div class="no-padding-left2 col col-md-offset-2 col-md-1">
-                <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-primary btn-primary-small" id="confirm" />
-            </div>
-            <div class="no-padding-left2 col col-md-1">
-                <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
-            </div>
+<br />
+@using (Html.BeginForm("Transfer", "Claims", new { id = Model.ClaimId }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ClaimId)
+    <div class="row">
+
+        <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+            <input type="submit" value="Bekräfta" name="submitButton" class="btn btn-primary btn-primary-small" id="confirm" />
         </div>
-    }
+        <div class="no-padding-left2 col col-md-1">
+            <input class="btn btn-secondary btn-secondary-small" type="submit" name="submitButton" value="Avbryt" id="cancel" />
+        </div>
+    </div>
+}
 
