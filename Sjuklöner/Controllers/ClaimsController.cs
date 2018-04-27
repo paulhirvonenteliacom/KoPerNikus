@@ -2040,6 +2040,323 @@ namespace Sjuklöner.Controllers
             }
         }
 
+        // GET: Claims/RobotRecommend
+        //This action is used by the robot when automatic transfer of claims is switched on by the admin.
+        public ActionResult RobotRecommend(string refNumber)
+        {
+            RecommendationVM recommendationVM = new RecommendationVM();
+            var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+            if (claim != null)
+            {
+                //Find ClaimDay records for the claim
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+
+                //These check results are hardcoded for the demo. Need to be changed for the real solution.
+
+                recommendationVM.IvoCheck = false;
+                recommendationVM.IvoCheck = claim.IVOCheck;
+                if (!recommendationVM.IvoCheck)
+                {
+                    recommendationVM.IvoCheckMsg = "Verksamheten saknas i Vårdgivarregistret på www.ivo.se.";
+                }
+                else
+                {
+                    recommendationVM.IvoCheckMsg = "Verksamheten finns i Vårdgivarregistret på www.ivo.se.";
+                }
+
+                recommendationVM.CompleteCheck = true; //All attachments will be included by default since the claim cannot be submitted without attachements
+                if (!recommendationVM.CompleteCheck)
+                {
+                    recommendationVM.CompleteCheckMsg = "Bilaga saknas.";
+                }
+                else
+                {
+                    recommendationVM.CompleteCheckMsg = "Alla bilagor är med.";
+                }
+
+                recommendationVM.ProxyCheck = false;
+                recommendationVM.ProxyCheck = claim.ProxyCheck;
+                if (!recommendationVM.ProxyCheck)
+                {
+                    recommendationVM.ProxyCheckMsg = "Ombudet saknar giltig fullmakt.";
+                }
+                else
+                {
+                    recommendationVM.ProxyCheckMsg = "Ombudet har giltig fullmakt.";
+                }
+
+                bool partiallyCovered = false; //This variable is set to true if the decision about personal assistance only covers part of the sickleave period.
+                recommendationVM.AssistanceCheck = false;
+                recommendationVM.AssistanceCheck = claim.ProCapitaCheck;
+                if (!recommendationVM.AssistanceCheck)
+                {
+                    recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas.";
+                }
+                else //There is a decision about personal assistance. Now it needs to be checked if it is valid for the whole sickleave period or parts of it or not at all.
+                {
+                    DateTime endOfAssistance = new DateTime();
+                    if (!string.IsNullOrEmpty(claim.LastAssistanceDate))
+                    {
+                        //Check if claim.LastAssistanceDate is in the format YYYYMMDD
+                        string tempDate = "";
+                        if (claim.LastAssistanceDate.Length >= 10)
+                        {
+                            tempDate = claim.LastAssistanceDate.Substring(0, 10);
+                        }
+                        else
+                        {
+                            tempDate = claim.LastAssistanceDate;
+                        }
+
+                        Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
+                        Match match1 = regex1.Match(tempDate);
+                        Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
+                        Match match2 = regex2.Match(tempDate);
+                        if (match1.Success)
+                        {
+                            claim.LastAssistanceDate = tempDate; //Ensures that there are no leading or trailing spaces in the string. 
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            endOfAssistance = new DateTime(int.Parse(tempDate.Substring(0, 4)), int.Parse(tempDate.Substring(4, 2)), int.Parse(tempDate.Substring(6, 2)));
+                        }
+                        //Check if claim.LastAssistanceDate is a date in the format MM/DD/YYYY.
+                        else if (match2.Success)
+                        {
+                            //Check if claim.LastAssistanceDate is a date in the format MM/DD/YYYY. In that case it must reformatted to YYYYMMDD.
+                            claim.LastAssistanceDate = tempDate.Substring(6, 4) + tempDate.Substring(0, 2) + tempDate.Substring(3, 2);
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            endOfAssistance = new DateTime(int.Parse(claim.LastAssistanceDate.Substring(0, 4)), int.Parse(claim.LastAssistanceDate.Substring(4, 2)), int.Parse(claim.LastAssistanceDate.Substring(6, 2)));
+                        }
+                        else
+                        {
+                            //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                            //decision about personal assistance covers the whole sickleave period.
+                            endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                        }
+                    }
+                    else
+                    {
+                        //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
+                        //decision about personal assistance covers the whole sickleave period.
+                        endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                    }
+
+                    DateTime startOfAssistance = new DateTime();
+                    if (!string.IsNullOrEmpty(claim.FirstAssistanceDate))
+                    {
+                        //Check if claim.FirstAssistanceDate is in the format YYYYMMDD
+                        string tempDate = "";
+                        if (claim.FirstAssistanceDate.Length >= 10)
+                        {
+                            tempDate = claim.FirstAssistanceDate.Substring(0, 10);
+                        }
+                        else
+                        {
+                            tempDate = claim.FirstAssistanceDate;
+                        }
+
+                        Regex regex1 = new Regex(@"^([1-9][0-9]{3})(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|[12][0-9])))$");
+                        Match match1 = regex1.Match(tempDate);
+                        Regex regex2 = new Regex(@"^(((0[13578]/|1[02]/)(0[1-9]/|[12][0-9]/|3[01]/))|((0[469]/|11/)(0[1-9]/|[12][0-9]/|30/))|(02/(0[1-9]/|[12][0-9]/)))([1-9][0-9]{3})$");
+                        Match match2 = regex2.Match(tempDate);
+                        if (match1.Success)
+                        {
+                            claim.FirstAssistanceDate = tempDate; //Ensures that there are no leading or trailing spaces in the string. 
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            startOfAssistance = new DateTime(int.Parse(tempDate.Substring(0, 4)), int.Parse(tempDate.Substring(4, 2)), int.Parse(tempDate.Substring(6, 2)));
+                        }
+                        //Check if claim.FirstAssistanceDate is a date in the format MM/DD/YYYY.
+                        else if (match2.Success)
+                        {
+                            //Check if claim.LastAssistanceDate is a date in the format MM/DD/YYYY. In that case it must reformatted to YYYYMMDD.
+                            claim.FirstAssistanceDate = tempDate.Substring(6, 4) + tempDate.Substring(0, 2) + tempDate.Substring(3, 2);
+                            db.Entry(claim).State = EntityState.Modified;
+                            db.SaveChanges();
+                            startOfAssistance = new DateTime(int.Parse(claim.FirstAssistanceDate.Substring(0, 4)), int.Parse(claim.FirstAssistanceDate.Substring(4, 2)), int.Parse(claim.FirstAssistanceDate.Substring(6, 2)));
+                        }
+                        else
+                        {
+                            //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
+                            //decision about personal assistance covers the whole sickleave period.
+                            startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                        }
+                    }
+                    else
+                    {
+                        //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
+                        //decision about personal assistance covers the whole sickleave period.
+                        startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                    }
+
+                    //Check if the last day of approved personal assistance is equal to or greater than the first day of the sickperiod and earlier than the last day of the sickleave period. 
+                    //In that case the model sum calculation which has been done prior to stage 3 in the claim process shall adjusted to only include those days for which personal assistance has been approved.
+                    //Two edge cases have been implemented:
+                    //1. The case where the last date of approved assistance is within the sickleave period 
+                    //2. The case where the first date of approved assistance is within the sickleave period. 
+                    //The case where both the qualifying date and last day of sickness are outside the approved personal assistance dates is not covered. It is a very unlikely case.
+                    if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
+                    {
+                        //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
+                        int numberOfDaysToRemove = (claim.LastDayOfSicknessDate.Date - endOfAssistance.Date).Days;
+                        int startIndex = claim.NumberOfSickDays - numberOfDaysToRemove;
+
+                        //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
+                        //does not cover the whole sickleave period.
+                        if (claimDays.Count() - numberOfDaysToRemove > 0)
+                        {
+                            CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
+                        }
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate + ", vilket endast täcker en del av sjukperioden";
+                        partiallyCovered = true;
+                    }
+                    else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
+                    {
+                        //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
+                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.QualifyingDate.Date).Days;
+                        int startIndex = 0;
+
+                        //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
+                        //does not cover the whole sickleave period.
+                        if (claimDays.Count() - numberOfDaysToRemove > 0)
+                        {
+                            CalculateModelSum(claim, claimDays, startIndex, numberOfDaysToRemove);
+                        }
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns fr. o. m. " + claim.FirstAssistanceDate + ", vilket endast täcker en del av sjukperioden";
+                        partiallyCovered = true;
+                    }
+                    //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
+                    else if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date) //CHECK THIS OUT
+                    {
+                        recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns.";
+                    }
+                    else
+                    {
+                        recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas för sjukperioden.";
+                    }
+                }
+
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+
+                //Results of attachment checks
+                recommendationVM.SalarySpecRegAssistantCheck = claim.SalarySpecRegAssistantCheck;
+                recommendationVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
+
+                recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
+                recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+
+                recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
+                recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+
+                recommendationVM.MedicalCertificateCheck = claim.MedicalCertificateCheck;
+                recommendationVM.MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg;
+
+                recommendationVM.FKRegAssistantCheck = claim.FKRegAssistantCheck;
+                recommendationVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
+
+                recommendationVM.FKSubAssistantCheck = claim.FKSubAssistantCheck;
+                recommendationVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
+
+                recommendationVM.NumberOfSickDays = claim.NumberOfSickDays;
+
+                //Results of transfers
+                recommendationVM.BasisForDecision = claim.BasisForDecision;
+                recommendationVM.BasisForDecisionMsg = claim.BasisForDecisionMsg;
+
+                recommendationVM.Decision = claim.Decision;
+                recommendationVM.DecisionMsg = claim.DecisionMsg;
+
+                recommendationVM.ClaimNumber = claim.ReferenceNumber;
+                recommendationVM.ModelSum = claim.ModelSum;
+                //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
+                recommendationVM.ClaimSum = claim.ClaimedSum;
+                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                {
+                    recommendationVM.ApprovedSum = "0,00";
+                    recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
+                }
+                else
+                {
+                    recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
+
+                    if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
+                    {
+                        recommendationVM.RejectedSum = "0,00";
+                    }
+                    else
+                    {
+                        recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                    }
+                }
+                if (claim.ClaimStatusId == 3)
+                {
+                    recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
+                }
+
+                if (claim.ClaimStatusId == 5)
+                {
+                    recommendationVM.InInbox = true;
+                }
+
+                claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
+                claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
+                claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
+
+                recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
+                claim.RejectReason = recommendationVM.RejectReason;
+
+                // Assign this Claim to the current Administrative Official               
+                if (User.IsInRole("AdministrativeOfficial"))
+                {
+                    var me = db.Users.Find(User.Identity.GetUserId());
+
+                    claim.AdmOffId = me.Id;
+                    claim.AdmOffName = me.FirstName + " " + me.LastName;
+                }
+
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+
+                using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("ReferenceNumber", refNumber);
+                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
+                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
+                    writer.WriteElementString("RejectReason", claim.RejectReason);
+                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
+                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
+                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
+                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
+                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
+                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
+                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
+                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
+                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
+                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
+                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
+                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
+                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                }
+                claim.ClaimStatusId = 6;
+                claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return View(); //Return the dummy view RobotRecommend
+            }
+            else
+            {
+                return View(); //Return the dummy view RobotRecommend
+            }
+        }
+
         private string RejectReason(Claim claim, RecommendationVM recommendationVM, bool partiallyCoveredSickleave)
         {
             string resultMsg = "";
@@ -2717,19 +3034,31 @@ namespace Sjuklöner.Controllers
             string refNumber = claim.ReferenceNumber;
             if (submitButton == "Bekräfta")
             {
-                //using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
-                //{
-                //    writer.WriteStartDocument();
-                //    writer.WriteStartElement("claiminformation");
-                //    //writer.WriteElementString("SSN", claim.CustomerSSN.Substring(2));
-                //    //writer.WriteElementString("OrgNumber", claim.OrganisationNumber);
-                //    writer.WriteElementString("ReferenceNumber", refNumber);
-                //    //writer.WriteElementString("ClaimId", claim.Id.ToString());
-                //    //writer.WriteElementString("OmbudName", $"{claim.OmbudFirstName} {claim.OmbudLastName}");
-                //    writer.WriteEndElement();
-                //    writer.WriteEndDocument();
-                //}
-                claim.ClaimStatusId = 3;
+                using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("ReferenceNumber", refNumber);
+                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
+                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
+                    writer.WriteElementString("RejectReason", claim.RejectReason);
+                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
+                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
+                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
+                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
+                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
+                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
+                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
+                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
+                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
+                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
+                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
+                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
+                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                }
+                claim.ClaimStatusId = 6;
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();

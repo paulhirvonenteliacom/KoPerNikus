@@ -525,6 +525,7 @@
     <Content Include="Views\Claims\IndexPageAdmin.cshtml" />
     <Content Include="Views\Claims\ConfirmTransfer.cshtml" />
     <Content Include="Views\Account\DeleteOmbud.cshtml" />
+    <Content Include="Views\Claims\RobotRecommend.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
