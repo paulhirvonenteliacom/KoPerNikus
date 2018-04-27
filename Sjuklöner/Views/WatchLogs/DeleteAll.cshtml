@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Sjuklöner.Models.WatchLog>
+
+@{
+    ViewBag.Title = "Rensa loggen?";
+    var logCount = Model==null? 0: Model.Count();
+}
+<div class="row index-page-margin">
+    <h2>Ta bort alla loggposterna? ( @logCount st )</h2>
+</div>
+
+<p class="text text-warnig">Varning: detta är oåterkalleligt.</p>
+@using (Html.BeginForm("DeleteAll", "WatchLogs", new {}, FormMethod.Get))
+{
+    <div class="row">
+        <div class="no-padding-left2 col col-md-offset-2 col-md-1">
+            @Html.ActionLink("Ta bort Alla", "DeleteAllConfirmed", new { }, new {@class="btn btn-danger btn-danger-small" })
+        </div>
+        <div class="no-padding-left2 col col-md-1">
+            @Html.ActionLink("Avbryt", "Index", new { }, new {@class= "btn btn-secondary btn-secondary-small" })
+        </div>
+    </div>
+}
