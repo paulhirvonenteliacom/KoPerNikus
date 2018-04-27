@@ -443,18 +443,20 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            AssistantCompanyEditVM assistantEditVM = new AssistantCompanyEditVM();
-            assistantEditVM.FirstName = assistant.FirstName;
-            assistantEditVM.LastName = assistant.LastName;
-            assistantEditVM.AssistantSSN = assistant.AssistantSSN;
-            assistantEditVM.PhoneNumber = assistant.PhoneNumber;
-            assistantEditVM.Email = assistant.Email;
-            assistantEditVM.HourlySalary = assistant.HourlySalary;
-            assistantEditVM.HolidayPayRate = assistant.HolidayPayRate;
-            assistantEditVM.PayrollTaxRate = assistant.PayrollTaxRate;
-            assistantEditVM.PensionAndInsuranceRate = assistant.PensionAndInsuranceRate;
-            assistantEditVM.Id = (int)id;
-            assistantEditVM.CompanyId = assistant.CareCompanyId;
+            AssistantCompanyEditVM assistantEditVM = new AssistantCompanyEditVM
+            {
+                FirstName = assistant.FirstName,
+                LastName = assistant.LastName,
+                AssistantSSN = assistant.AssistantSSN,
+                PhoneNumber = assistant.PhoneNumber,
+                Email = assistant.Email,
+                HourlySalary = assistant.HourlySalary,
+                HolidayPayRate = assistant.HolidayPayRate,
+                PayrollTaxRate = assistant.PayrollTaxRate,
+                PensionAndInsuranceRate = assistant.PensionAndInsuranceRate,
+                Id = (int)id,
+                CompanyId = assistant.CareCompanyId
+            };
 
             CareCompany company = db.CareCompanies.Find(assistant.CareCompanyId);
             if (company != null)

@@ -234,7 +234,8 @@ var assistants = new List<Assistant>
                 new ClaimStatus { Id = 2, Name = "Utkast" },
                 new ClaimStatus { Id = 3, Name = "Under handläggning" },
                 new ClaimStatus { Id = 4, Name = "Godkänd" }, //Not used
-                new ClaimStatus { Id = 5, Name = "Inkorgen" }
+                new ClaimStatus { Id = 5, Name = "Inkorgen" },
+                new ClaimStatus { Id = 6, Name = "Överförd till Procapita" }
             };
             foreach (var claimStatus in claimStatuses)
             {

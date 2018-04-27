@@ -106,7 +106,7 @@ namespace Sjuklöner.Controllers
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Ogiltigt användarnamn eller lösenord.");
@@ -173,13 +173,15 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
 
-            OmbudDeleteVM ombudVM = new OmbudDeleteVM();
-            ombudVM.Id = id;
-            ombudVM.FirstName = applicationUser.FirstName;
-            ombudVM.LastName = applicationUser.LastName;
-            ombudVM.SSN = applicationUser.SSN;
-            ombudVM.PhoneNumber = applicationUser.PhoneNumber;
-            ombudVM.Email = applicationUser.Email;
+            OmbudDeleteVM ombudVM = new OmbudDeleteVM
+            {
+                Id = id,
+                FirstName = applicationUser.FirstName,
+                LastName = applicationUser.LastName,
+                SSN = applicationUser.SSN,
+                PhoneNumber = applicationUser.PhoneNumber,
+                Email = applicationUser.Email
+            };
             return View("DeleteOmbud", ombudVM);
         }
      
@@ -227,8 +229,10 @@ namespace Sjuklöner.Controllers
         public ActionResult IndexAdmOff()
         {
             var role = db.Roles.SingleOrDefault(m => m.Name == "AdministrativeOfficial");
-            AdmOffIndexVM admOffIndexVM = new AdmOffIndexVM();
-            admOffIndexVM.AdmOffsExist = false;
+            AdmOffIndexVM admOffIndexVM = new AdmOffIndexVM
+            {
+                AdmOffsExist = false
+            };
             if (role != null)
             {
                 var admOffs = db.Users.Where(m => m.Roles.Any(r => r.RoleId == role.Id)).OrderBy(m => m.LastName);
@@ -375,13 +379,15 @@ namespace Sjuklöner.Controllers
                 return HttpNotFound();
             }
             ApplicationUser currentUser = db.Users.Where(u => u.Id == id).FirstOrDefault();
-            AdmOffEditVM admOffEditVM = new AdmOffEditVM();
-            admOffEditVM.Id = id;
-            admOffEditVM.FirstName = currentUser.FirstName;
-            admOffEditVM.LastName = currentUser.LastName;
-            admOffEditVM.PhoneNumber = currentUser.PhoneNumber;
-            admOffEditVM.Email = currentUser.Email;
-            admOffEditVM.SSN = currentUser.SSN;
+            AdmOffEditVM admOffEditVM = new AdmOffEditVM
+            {
+                Id = id,
+                FirstName = currentUser.FirstName,
+                LastName = currentUser.LastName,
+                PhoneNumber = currentUser.PhoneNumber,
+                Email = currentUser.Email,
+                SSN = currentUser.SSN
+            };
             return View("EditAdmOff", admOffEditVM);
         }
 
@@ -507,12 +513,14 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            DetailsAdmOffVM detailsAdmOffVM = new DetailsAdmOffVM();
-            detailsAdmOffVM.FirstName = user.FirstName;
-            detailsAdmOffVM.LastName = user.LastName;
-            detailsAdmOffVM.SSN = user.SSN;
-            detailsAdmOffVM.Email = user.Email;
-            detailsAdmOffVM.PhoneNumber = user.PhoneNumber;
+            DetailsAdmOffVM detailsAdmOffVM = new DetailsAdmOffVM
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                SSN = user.SSN,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
 
             return View("DetailsAdmOff", detailsAdmOffVM);
         }
@@ -531,13 +539,15 @@ namespace Sjuklöner.Controllers
             {
                 return HttpNotFound();
             }
-            AdmOffDeleteVM admOffVM = new AdmOffDeleteVM();
-            admOffVM.Id = id;
-            admOffVM.FirstName = applicationUser.FirstName;
-            admOffVM.LastName = applicationUser.LastName;
-            admOffVM.SSN = applicationUser.SSN;
-            admOffVM.PhoneNumber = applicationUser.PhoneNumber;
-            admOffVM.Email = applicationUser.Email;
+            AdmOffDeleteVM admOffVM = new AdmOffDeleteVM
+            {
+                Id = id,
+                FirstName = applicationUser.FirstName,
+                LastName = applicationUser.LastName,
+                SSN = applicationUser.SSN,
+                PhoneNumber = applicationUser.PhoneNumber,
+                Email = applicationUser.Email
+            };
             return View("DeleteAdmOff", admOffVM);
         }
 
@@ -589,15 +599,17 @@ namespace Sjuklöner.Controllers
                     List<OmbudForVM> ombudForVMList = new List<OmbudForVM>();
                     foreach (var ombud in ombuds)
                     {
-                        OmbudForVM ombudForVM = new OmbudForVM();
-                        ombudForVM.Id = ombud.Id;
-                        ombudForVM.CareCompanyId = (int)ombud.CareCompanyId;
-                        ombudForVM.FirstName = ombud.FirstName;
-                        ombudForVM.LastName = ombud.LastName;
-                        ombudForVM.SSN = ombud.SSN;
-                        ombudForVM.Email = ombud.Email;
-                        ombudForVM.PhoneNumber = ombud.PhoneNumber;
-                        ombudForVMList.Add(ombudForVM);
+                    OmbudForVM ombudForVM = new OmbudForVM
+                    {
+                        Id = ombud.Id,
+                        CareCompanyId = (int)ombud.CareCompanyId,
+                        FirstName = ombud.FirstName,
+                        LastName = ombud.LastName,
+                        SSN = ombud.SSN,
+                        Email = ombud.Email,
+                        PhoneNumber = ombud.PhoneNumber
+                    };
+                    ombudForVMList.Add(ombudForVM);
                     }
                     ombudIndexVM.OmbudList = ombudForVMList;
                 //}

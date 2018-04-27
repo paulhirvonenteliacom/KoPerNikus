@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Sjuklöner.Models.WatchLog>
+
+@{
+    ViewBag.Title = "Logg för BabySitter";
+}
+<div class="row index-page-margin">
+    <h1>Logg (senaste händelerna först)</h1>
+
+</div>
+<p>
+    @Html.ActionLink("Rensa", "DeleteAll", new { }, new {@class="btn btn-danger btn-danger-small" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LogCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LogDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Robot)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LogMsg)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    var className= item.LogCode == 0 ? "table-success": "table-warning";
+    <tr class="@className">
+        <td class="@className">
+            @Html.DisplayFor(modelItem => item.LogCode)
+        </td>
+        <td class="@className">
+            @Html.DisplayFor(modelItem => item.LogDate)
+        </td>
+        <td class="@className">
+            @Html.DisplayFor(modelItem => item.Robot)
+        </td>
+        <td class="@className">
+            @Html.DisplayFor(modelItem => item.LogMsg)
+        </td>
+        <td class="@className">
+            @Html.ActionLink("Ta Bort", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
