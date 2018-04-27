@@ -23,9 +23,23 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? StatusDate { get; set; }
 
+        /* DeadlineDate is Obsolete 
         [DisplayFormat(DataFormatString = "{0: yyyy-MM-dd}")]
         [DataType(DataType.DateTime)]
         public DateTime? DeadlineDate { get; set; }
+        */
+
+        [DisplayFormat(DataFormatString = "{0: yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        public DateTime? CreationDate { get; set; }
+        
+        [DisplayFormat(DataFormatString = "{0: yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DecisionDate { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0: yyyy-MM-dd}")]
+        [DataType(DataType.DateTime)]
+        public DateTime? SentInDate { get; set; }
 
         public bool DefaultCollectiveAgreement { get; set; }
 

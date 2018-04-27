@@ -1,0 +1,59 @@
+﻿@model Sjuklöner.Models.WatchLog
+
+@{
+    ViewBag.Title = "Ta bort logghändelse?";
+}
+<div class="row index-page-margin">
+    <h2>Ta bort logghändelse?</h2>
+</div>
+
+
+    <h3>Vill du verkligen ta bort denna?</h3>
+    <div>
+        <h4>Logghändelse</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.LogCode)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LogCode)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.LogDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LogDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Robot)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Robot)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.LogMsg)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LogMsg)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Ta Bort" class="btn btn-danger-small" /> |
+                @Html.ActionLink("Avbryt", "Index")
+            </div>
+        }
+    </div>

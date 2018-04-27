@@ -17,7 +17,7 @@ namespace Sjuklöner.Controllers
         // GET: WatchLogs
         public ActionResult Index()
         {
-            return View(db.WatchLogs.ToList());
+            return View(db.WatchLogs.OrderByDescending(l=>l.Id).ToList());
         }
 
         public ActionResult Status(string Robot)
@@ -26,8 +26,23 @@ namespace Sjuklöner.Controllers
             {
                 Robot = "A001325";
             }
-            var robot = db.WatchLogs.Where(r => r.Robot ==  Robot).FirstOrDefault();
+            var robot = db.WatchLogs.Where(r => r.Robot ==  Robot)
+                .OrderByDescending(r=>r.Id).Take(1).FirstOrDefault();
             return Json(robot, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize (Roles ="Admin")]
+        public ActionResult DeleteAll()
+        {
+            var logs = db.WatchLogs.ToList();
+            return View(logs);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult DeleteAllConfirmed()
+        {
+            db.Database.ExecuteSqlCommand("DELETE FROM WatchLogs;");
+            return RedirectToAction("Index");
         }
 
         // GET: WatchLogs/Details/5

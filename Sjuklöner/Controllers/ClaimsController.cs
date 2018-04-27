@@ -58,7 +58,7 @@ namespace Sjuklöner.Controllers
             int companyId = (int)me.CareCompanyId;
             indexPageOmbudVM.CompanyName = db.CareCompanies.Where(c => c.Id == companyId).FirstOrDefault().CompanyName;
 
-            var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.StatusDate).ToList();
+            var claims = db.Claims.Where(c => c.CareCompanyId == companyId).OrderByDescending(c => c.CreationDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -101,7 +101,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
-            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.StatusDate).ToList();
+            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.SentInDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -136,7 +136,7 @@ namespace Sjuklöner.Controllers
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
-            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.StatusDate).ToList();
+            var claims = db.Claims.Include(c => c.CareCompany).OrderByDescending(c => c.SentInDate).ToList();
             if (claims.Count > 0)
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
@@ -671,6 +671,7 @@ namespace Sjuklöner.Controllers
             //Save substitute assistant information
             SaveSubAssistantInformation(create1VM, claim);
 
+            claim.CreationDate = DateTime.Now;
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
@@ -817,6 +818,7 @@ namespace Sjuklöner.Controllers
             //    claim.SelectedSubAssistantId = assistantId;
             //}
 
+            claim.CreationDate = DateTime.Now;
             claim.StatusDate = DateTime.Now;
             claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
             claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
@@ -1618,6 +1620,7 @@ namespace Sjuklöner.Controllers
                         {
                             claim.ClaimStatusId = 4;
                             claim.StatusDate = DateTime.Now;
+                            claim.SentInDate = DateTime.Now;
 
                             //Set default values for ivo and Procapita checks
                             claim.IVOCheck = false;
@@ -1668,6 +1671,7 @@ namespace Sjuklöner.Controllers
                         else
                         {
                             claim.StatusDate = DateTime.Now;
+                            claim.CreationDate = DateTime.Now;
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
                             return View("Create4", model);
@@ -1985,41 +1989,52 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ModelSum = claim.ModelSum;
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                    !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
-                {
-                    recommendationVM.ApprovedSum = "0,00";
-                    recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
-                }
-                else
-                {
-                    recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
-
-                    if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
-                    {
-                        recommendationVM.RejectedSum = "0,00";
-                    }
-                    else
-                    {
-                        recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
-                    }
-                }
+               
                 if (claim.ClaimStatusId == 3)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
                 }
 
-                if (claim.ClaimStatusId == 5)
-                {
-                    recommendationVM.InInbox = true;
-                }                  
-
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
                 claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
 
-                recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
-                claim.RejectReason = recommendationVM.RejectReason;
+                if (claim.ClaimStatusId == 5)   // Claim is in Inbox
+                {
+                    recommendationVM.InInbox = true;
+
+                    if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                   !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                    {
+                        recommendationVM.ApprovedSum = "0,00";
+                        recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
+                    }
+                    else
+                    {
+                        recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
+
+                        if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
+                        {
+                            recommendationVM.RejectedSum = "0,00";
+                        }
+                        else
+                        {
+                            recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                        }
+                    }
+
+                    recommendationVM.RejectReason = RejectReason(claim, recommendationVM, partiallyCovered);
+                    claim.RejectReason = recommendationVM.RejectReason;
+                }
+                else
+                {
+                    recommendationVM.InInbox = false;
+
+                    recommendationVM.ApprovedSum = claim.ApprovedSum.ToString();
+                    recommendationVM.RejectedSum = claim.RejectedSum.ToString();
+
+                    recommendationVM.RejectReason = claim.RejectReason;
+                }
 
                 // Assign this Claim to the current Administrative Official               
                 if (User.IsInRole("AdministrativeOfficial"))
@@ -2753,8 +2768,7 @@ namespace Sjuklöner.Controllers
 
             ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
 
-            claimDetailsVM.ReferenceNumber = referenceNumber;
-            //claimDetailsVM.StatusName = claim.ClaimStatus.Name;
+            claimDetailsVM.ReferenceNumber = referenceNumber;            
             claimDetailsVM.StatusName = claim.ClaimStatus.Name;
             claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
 
@@ -2987,13 +3001,31 @@ namespace Sjuklöner.Controllers
         public ActionResult Recommend(RecommendationVM recommendationVM)
         {
             var claim = db.Claims.Where(c => c.ReferenceNumber == recommendationVM.ClaimNumber).FirstOrDefault();
-            claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
-            claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
-            claim.RejectReason = recommendationVM.RejectReason;
-            claim.StatusDate = DateTime.Now;
-            db.Entry(claim).State = EntityState.Modified;
-            db.SaveChanges();
-            return View("ConfirmTransfer", claim);                    
+            if (claim != null)
+            {
+                claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
+                claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
+                claim.RejectReason = recommendationVM.RejectReason;
+               
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();             
+
+                ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
+                confirmTransferVM.ClaimId = claim.Id;
+                confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
+                confirmTransferVM.CustomerSSN = claim.CustomerSSN;
+                confirmTransferVM.QualifyingDate = claim.QualifyingDate;
+                confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+                confirmTransferVM.ClaimedSum = claim.ClaimedSum;
+                confirmTransferVM.ModelSum = claim.ModelSum;
+                confirmTransferVM.ApprovedSum = claim.ApprovedSum;
+                confirmTransferVM.RejectedSum = claim.RejectedSum;
+                confirmTransferVM.RejectReason = claim.RejectReason;
+
+                return View("ConfirmTransfer", confirmTransferVM);
+            }
+            return RedirectToAction("IndexPageAdmOff", "Claims");
+
         }
 
         // GET: Claims/ShowRecommendationReceipt
@@ -3021,8 +3053,19 @@ namespace Sjuklöner.Controllers
         public ActionResult Transfer(string refNumber)
         {
             var claim = db.Claims.Where(rn => rn.ReferenceNumber == refNumber).FirstOrDefault();
+            ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
+            confirmTransferVM.ClaimId = claim.Id;
+            confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
+            confirmTransferVM.CustomerSSN = claim.CustomerSSN;
+            confirmTransferVM.QualifyingDate = claim.QualifyingDate;
+            confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+            confirmTransferVM.ClaimedSum = claim.ClaimedSum;
+            confirmTransferVM.ModelSum = claim.ModelSum;
+            confirmTransferVM.ApprovedSum = claim.ApprovedSum;
+            confirmTransferVM.RejectedSum = claim.RejectedSum;
+            confirmTransferVM.RejectReason = claim.RejectReason;
 
-            return View("ConfirmTransfer", claim);
+            return View("ConfirmTransfer", confirmTransferVM);
         }
 
         // POST: Claims/ConfirmTransfer
@@ -3060,10 +3103,16 @@ namespace Sjuklöner.Controllers
                 }
                 claim.ClaimStatusId = 6;
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
+                claim.StatusDate = DateTime.Now;
+              
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
+                //return RedirectToAction("IndexPageAdmOff", "Claims");
+                return RedirectToAction("Recommend", new { id });
+
             }
-            return RedirectToAction("Recommend", new { id });
+            return RedirectToAction("Recommend", new { id }); 
+           
         }
 
         // GET: Claims/StodSystemLogin
@@ -3120,6 +3169,7 @@ namespace Sjuklöner.Controllers
             claim.ApprovedSum = Convert.ToDecimal(decisionVM.ApprovedSum);
             claim.RejectedSum = Convert.ToDecimal(decisionVM.RejectedSum);
             claim.StatusDate = DateTime.Now;
+            claim.DecisionDate = DateTime.Now;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
 
@@ -3750,7 +3800,7 @@ namespace Sjuklöner.Controllers
                 claimCalculation.TotalCostCalcD1T14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
 
                 //claim.ClaimStatusId = 5;
-                //claim.StatusDate = DateTime.Now;
+                claim.StatusDate = DateTime.Now;
                 prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 db.ClaimCalculations.Add(claimCalculation);
                 db.SaveChanges();
