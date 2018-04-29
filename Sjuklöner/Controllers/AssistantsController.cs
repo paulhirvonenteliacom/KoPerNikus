@@ -59,7 +59,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Assistant assistant = db.Assistants.Include(a => a.CareCompany).FirstOrDefault(a => a.Id == id);
             if (assistant == null)
@@ -302,7 +303,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             Assistant assistant = db.Assistants.Find(id);
             if (assistant == null)
@@ -433,7 +435,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             Assistant assistant = db.Assistants.Find(id);
             if (assistant == null)
@@ -566,7 +569,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             Assistant assistant = db.Assistants.Find(id);
             if (assistant == null)

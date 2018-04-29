@@ -158,12 +158,13 @@ namespace Sjuklöner.Controllers
         }
 
         // GET: Acount/DeleteOmbud
-        [Authorize(Roles = "Admin, Ombud")]       
+        [Authorize(Roles = "Admin")]       
         public ActionResult DeleteOmbud(string id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");              
             }
 
             ApplicationUser applicationUser = db.Users.Find(id);
@@ -187,7 +188,7 @@ namespace Sjuklöner.Controllers
         // POST: Account/DeleteOmbud/5
         [HttpPost, ActionName("DeleteOmbud")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Ombud")]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteOmbud(string id, string submitButton)
         {
             if (submitButton == "Bekräfta")
@@ -369,7 +370,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             ApplicationUser admOff = db.Users.Where(u => u.Id == id).FirstOrDefault();
             if (admOff == null)
@@ -503,7 +505,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             var user = db.Users.Find(id);
             if (user == null)
@@ -528,7 +531,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null || id == User.Identity.GetUserId())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");              
             }
             ApplicationUser applicationUser = db.Users.Find(id);
             if (applicationUser == null)

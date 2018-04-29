@@ -49,7 +49,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             CareCompany careCompany = db.CareCompanies.Find(id);
             if (careCompany == null)
@@ -157,7 +158,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");              
             }
             CareCompany careCompany = db.CareCompanies.Find(id);
             if (careCompany == null)
@@ -233,6 +235,7 @@ namespace Sjuklöner.Controllers
                     return RedirectToAction("Index", "Claims");
                 }
 
+                // User is in role "Admin"
                 return RedirectToAction("Index");
             }
 
@@ -251,7 +254,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");              
             }
             CareCompany careCompany = db.CareCompanies.Find(id);
             if (careCompany == null)
@@ -401,7 +405,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");               
             }
             ApplicationUser ombud = db.Users.Where(u => u.Id == id).FirstOrDefault();
             if (ombud == null)
@@ -471,7 +476,8 @@ namespace Sjuklöner.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");                
             }
             ApplicationUser ombud = db.Users.Where(u => u.Id == id).FirstOrDefault();
             if (ombud == null)
@@ -583,35 +589,27 @@ namespace Sjuklöner.Controllers
                     editedOmbud.SSN = ombudEditVM.SSN;
                     db.Entry(editedOmbud).State = EntityState.Modified;
                     db.SaveChanges();
-                    if (User.IsInRole("Ombud"))
-                    {
-                        return RedirectToAction("IndexOmbud");
-                    }
-                    else if (User.IsInRole("Admin"))
+                    if (User.IsInRole("Admin"))
                     {
                         return RedirectToAction("IndexAllOmbuds", "Account");
                     }
+
+                    // User is in role "Ombud"                   
                     return RedirectToAction("IndexOmbud");
                 }
             }
-            if (User.IsInRole("Ombud"))
-            {
-                return View();
-            }
-            else if (User.IsInRole("Admin"))
-            {
-                return RedirectToAction("IndexAllOmbuds", "Account");
-            }
-            return View();
+
+            return View(ombudEditVM);
         }
 
         // GET: Ombud/Delete/5
-        [Authorize(Roles = "Admin, Ombud")]
+        [Authorize(Roles = "Ombud")]
         public ActionResult DeleteOmbud(string id)
         {
             if (id == null || id == User.Identity.GetUserId())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");             
             }
             ApplicationUser applicationUser = db.Users.Find(id);
             if (applicationUser == null)
@@ -631,7 +629,7 @@ namespace Sjuklöner.Controllers
         // POST: Ombud/Delete/5
         [HttpPost, ActionName("DeleteOmbud")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Ombud")]
+        [Authorize(Roles = "Ombud")]
         public ActionResult DeleteConfirmedOmbud(string id, string submitButton)
         {
             if (submitButton == "Bekräfta")
