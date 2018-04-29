@@ -1549,6 +1549,8 @@ namespace Sjuklöner.Controllers
             //This get action needs to be updated to handle the case where attachments have been added to the claim but the claim was only saved with attachments, not submitted.
             var VM = new Create4VM();
             VM.ClaimNumber = ClaimNumber;
+            var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
+            VM.NumberOfSickDays = claim.NumberOfSickDays;
 
             return View("Create4", VM);
         }
@@ -1648,7 +1650,7 @@ namespace Sjuklöner.Controllers
                             else
                             {
                                 claim.MedicalCertificateCheck = true;
-                                claim.MedicalCertificateCheckMsg = "Intyget ej obligatoriskt. Kontroll ej utförd.";
+                                claim.MedicalCertificateCheckMsg = "Intyget krävs ej eftersom antalet sjukdagar är lägre än 8. Kontroll ej utförd.";
                             }
 
                             claim.FKRegAssistantCheck = false;

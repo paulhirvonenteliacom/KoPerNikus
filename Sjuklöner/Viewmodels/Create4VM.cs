@@ -28,5 +28,7 @@ namespace Sjuklöner.Viewmodels
         
         [Display(Name = "Tidsredovisning, vikarierande assistent")]
         public HttpPostedFileBase TimeReportStandIn { get; set; }
+
+        public int NumberOfSickDays { get; set; }
     }
 }

@@ -56,17 +56,20 @@
                 </div>
             </div>
 
-            <div class="row row-height-26">
-                @Html.LabelFor(model => model.DoctorsCertificate, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" />
+            @if (Model.NumberOfSickDays > 7)
+            {
+                <div class="row row-height-26">
+                    @Html.LabelFor(model => model.DoctorsCertificate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" />
+                    </div>
                 </div>
-            </div>
-            <div class="row row-height-14">
-                <div class="col col-md-offset-2 col-md-10">
-                    @Html.ValidationMessageFor(model => model.DoctorsCertificate, "", new { @class = "text-danger font-size-11" })
+                <div class="row row-height-14">
+                    <div class="col col-md-offset-2 col-md-10">
+                        @Html.ValidationMessageFor(model => model.DoctorsCertificate, "", new { @class = "text-danger font-size-11" })
+                    </div>
                 </div>
-            </div>
+            }
 
             <div class="row row-height-26">
                 @Html.LabelFor(model => model.SickLeaveNotification, htmlAttributes: new { @class = "control-label col-md-2" })
