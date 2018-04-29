@@ -106,7 +106,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
@@ -1994,7 +1994,12 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
                 }
+                if (claim.ClaimStatusId == 6)
+                {
+                    recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString();
+                }
 
+                claim.BasisForDecisionMsg = recommendationVM.BasisForDecisionMsg;
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
                 claim.ProxyCheckMsg = recommendationVM.ProxyCheckMsg;
                 claim.AssistanceCheckMsg = recommendationVM.AssistanceCheckMsg;
@@ -2057,6 +2062,7 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims/RobotRecommend
         //This action is used by the robot when automatic transfer of claims is switched on by the admin.
+        [AllowAnonymous]
         public ActionResult RobotRecommend(string refNumber)
         {
             RecommendationVM recommendationVM = new RecommendationVM();
@@ -2291,19 +2297,25 @@ namespace Sjuklöner.Controllers
                     !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                 {
                     recommendationVM.ApprovedSum = "0,00";
+                    claim.ApprovedSum = 0;
                     recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
+                    claim.RejectedSum = recommendationVM.ClaimSum;
+
                 }
                 else
                 {
                     recommendationVM.ApprovedSum = recommendationVM.ModelSum.ToString();
+                    claim.ApprovedSum = recommendationVM.ModelSum;
 
                     if (recommendationVM.ModelSum > recommendationVM.ClaimSum)
                     {
                         recommendationVM.RejectedSum = "0,00";
+                        claim.RejectedSum = 0;
                     }
                     else
                     {
                         recommendationVM.RejectedSum = (recommendationVM.ClaimSum - recommendationVM.ModelSum).ToString();
+                        claim.RejectedSum = recommendationVM.ClaimSum - recommendationVM.ModelSum;
                     }
                 }
                 if (claim.ClaimStatusId == 3)
@@ -2363,7 +2375,7 @@ namespace Sjuklöner.Controllers
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
-                claim.ClaimStatusId = 6;
+                //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -2421,7 +2433,7 @@ namespace Sjuklöner.Controllers
             }
             if (!claim.FKSubAssistantCheck)
             {
-                resultMsg += "Kontroll av vikarierande assistents tidsredovsning (FK) gav negativt resultat. ";
+                resultMsg += "Kontroll av vikarierande assistents tidsredovisning (FK) gav negativt resultat. ";
             }
             return resultMsg;
         }
@@ -3109,7 +3121,7 @@ namespace Sjuklöner.Controllers
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
-                claim.ClaimStatusId = 6;
+                //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 claim.StatusDate = DateTime.Now;
               
