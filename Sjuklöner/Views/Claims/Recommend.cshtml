@@ -356,7 +356,7 @@
             if (Decimal.Parse(Model.RejectedSum) > 0)
             {
                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-               <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedreason">
+               <div class="col-md-8 align-bottom7 display-result decision-padding-left" id="rejectedreason">
                    @Html.DisplayFor(model => model.RejectReason)
                </div>
             }

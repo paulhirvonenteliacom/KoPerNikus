@@ -305,6 +305,10 @@
     <Compile Include="Migrations\201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.Designer.cs">
       <DependentUpon>201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805010717107_addedDecisionCandidateClass.cs" />
+    <Compile Include="Migrations\201805010717107_addedDecisionCandidateClass.Designer.cs">
+      <DependentUpon>201805010717107_addedDecisionCandidateClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -316,6 +320,7 @@
     <Compile Include="Models\ClaimDaySeed.cs" />
     <Compile Include="Models\ClaimDay.cs" />
     <Compile Include="Models\ClaimReferenceNumber.cs" />
+    <Compile Include="Models\DecisionCandidate.cs" />
     <Compile Include="Models\DefaultCollectiveAgreementInfo.cs" />
     <Compile Include="Models\DefaultCollectiveAgreementHeader.cs" />
     <Compile Include="Models\CollectiveAgreementInfo.cs" />
@@ -611,6 +616,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.resx">
       <DependentUpon>201804261239512_AddedThreePropertiesAndDeletedOnePropertyInClaimClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805010717107_addedDecisionCandidateClass.resx">
+      <DependentUpon>201805010717107_addedDecisionCandidateClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
