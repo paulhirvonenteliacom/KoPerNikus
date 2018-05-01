@@ -1996,9 +1996,13 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
                 }
-                if (claim.ClaimStatusId == 6)
+                if (claim.ClaimStatusId == 6 || claim.ClaimStatusId == 1)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString();
+                }
+                if (claim.ClaimStatusId == 1)
+                {
+                    recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString();
                 }
 
                 claim.BasisForDecisionMsg = recommendationVM.BasisForDecisionMsg;

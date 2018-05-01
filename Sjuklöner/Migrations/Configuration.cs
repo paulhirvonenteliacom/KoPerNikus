@@ -218,7 +218,7 @@ namespace Sjuklöner.Migrations
                 context.CareCompanies.AddOrUpdate(c => c.Id, careCompany);
             }
 
-var assistants = new List<Assistant>
+            var assistants = new List<Assistant>
             {
                 new Assistant{ Id = 1, CareCompanyId = 1, FirstName = "Astrid", LastName = "Assistentsson", AssistantSSN = "19730423-5076", Email = "astrid.assistentsson@smartassistans.se", PhoneNumber = "034-232 5678", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", PensionAndInsuranceRate = "6,00" },
                 new Assistant{ Id = 2, CareCompanyId = 1, FirstName = "Björn", LastName = "Björnsson", AssistantSSN = "19830423-5076", Email = "bjorn.bjornsson@smartassistans.se", PhoneNumber = "034-131 4578", HourlySalary = "120,00", HolidayPayRate = "12,00", PayrollTaxRate = "31,42", PensionAndInsuranceRate = "6,00" }
@@ -272,14 +272,24 @@ var assistants = new List<Assistant>
                 LatestReferenceNumber = 00000
             });
 
-            context.WatchLogs.AddOrUpdate(w => w.Id, new WatchLog {
-                LogDate = System.DateTime.Now, LogCode=0, LogMsg="Initial status", Robot="A001325"
+            context.WatchLogs.AddOrUpdate(w => w.Id, new WatchLog
+            {
+                LogDate = System.DateTime.Now,
+                LogCode = 0,
+                LogMsg = "Initial status",
+                Robot = "A001325"
             });
 
             context.AppAdmins.AddOrUpdate(c => c.Id, new AppAdmin
             {
                 Id = 1,
                 AutomaticTransferToProcapita = false
+            });
+
+            context.DecisionCandidates.AddOrUpdate(c => c.Id, new DecisionCandidate
+            {
+                Id = 1,
+                ReferenceNumber = "Dummy"
             });
 
             context.SaveChanges();
