@@ -1994,15 +1994,15 @@ namespace Sjuklöner.Controllers
                
                 if (claim.ClaimStatusId == 3)
                 {
-                    recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
+                    recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString() + ".";
                 }
                 if (claim.ClaimStatusId == 6 || claim.ClaimStatusId == 1)
                 {
-                    recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString();
+                    recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString() + ".";
                 }
                 if (claim.ClaimStatusId == 1)
                 {
-                    recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString();
+                    recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString() + ".";
                 }
 
                 claim.BasisForDecisionMsg = recommendationVM.BasisForDecisionMsg;
@@ -2394,6 +2394,7 @@ namespace Sjuklöner.Controllers
             }
         }
 
+        [AllowAnonymous]
         private string RejectReason(Claim claim, RecommendationVM recommendationVM, bool partiallyCoveredSickleave)
         {
             string resultMsg = "";
@@ -3395,6 +3396,7 @@ namespace Sjuklöner.Controllers
             return stream;
         }
 
+        [AllowAnonymous]
         private void CalculateModelSum(Claim claim, List<ClaimDay> claimDays, int? startIndex, int? numberOfDaysToRemove)
         {
             //The optional parameters startIndex and numberOfDaysToRemove are only needed if the decision about personal assistance does not cover the whole sickleave period.
