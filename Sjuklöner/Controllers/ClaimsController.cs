@@ -1763,6 +1763,11 @@ namespace Sjuklöner.Controllers
         [Authorize(Roles = "Admin, AdministrativeOfficial")]
         public ActionResult Recommend(int? id)
         {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             RecommendationVM recommendationVM = new RecommendationVM();
             var claim = db.Claims.Where(c => c.Id == id).FirstOrDefault();
             if (claim != null)
@@ -3252,8 +3257,9 @@ namespace Sjuklöner.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            {                
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Claim claim = db.Claims.Find(id);
             if (claim == null)
@@ -3284,8 +3290,9 @@ namespace Sjuklöner.Controllers
         public ActionResult Delete(int? id)
         {
             if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            {              
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Claim claim = db.Claims.Find(id);
             if (claim == null)
