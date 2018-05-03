@@ -2388,12 +2388,12 @@ namespace Sjuklöner.Controllers
                 };
 
                 XmlSerializer writer = new XmlSerializer(typeof(TriggerContent));
-                string path = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\OfficeDemo");
+                string path = Environment.ExpandEnvironmentVariables("\\sjukloner");
                 if (!System.IO.Directory.Exists(path))
                 {
                     System.IO.Directory.CreateDirectory(path);
                 }
-                path += "\\salesreport.xml";
+                path += "\\" + "transfer" + refNumber + ".xml";
 
                 using (System.IO.FileStream file = System.IO.File.Create(path))
                 {
