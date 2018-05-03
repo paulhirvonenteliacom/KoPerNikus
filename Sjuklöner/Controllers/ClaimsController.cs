@@ -1753,6 +1753,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("OmbudName", $"{claim.OmbudFirstName} {claim.OmbudLastName}");
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+                writer.Dispose();
             }
             var create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
@@ -2363,70 +2364,72 @@ namespace Sjuklöner.Controllers
                 string sentInDate = claim.SentInDate.ToString().Substring(2, 8).Replace("-", "");
 
                 //serialize to XML 
-                var triggerContent = new TriggerContent
-                {
-                    ClaimInfo = "claiminformation",
-                    ReferenceNumber = refNumber,
-                    QualifyingDate = claim.QualifyingDate.ToShortDateString(),
-                    LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString(),
-                    RejectReason = claim.RejectReason,
-                    ModelSum = String.Format("{0:0.00}", claim.ModelSum),
-                    ClaimedSum = String.Format("{0:0.00}", claim.ClaimedSum),
-                    ApprovedSum = String.Format("{0:0.00}", claim.ApprovedSum),
-                    RejectedSum = String.Format("{0:0.00}", claim.RejectedSum),
-                    IVOCheckMsg = claim.IVOCheckMsg,
-                    ProxyCheckMsg = claim.ProxyCheckMsg,
-                    AssistanceCheckMsg = claim.AssistanceCheckMsg,
-                    SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg,
-                    SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg,
-                    SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg,
-                    MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg,
-                    FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg,
-                    FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg,
-                    sentInDate = sentInDate,
-                    NumberOfSickDays = claim.NumberOfSickDays.ToString()
-                };
-
-                XmlSerializer writer = new XmlSerializer(typeof(TriggerContent));
-                string path = "\\sjukloner";
-                if (!System.IO.Directory.Exists(path))
-                {
-                    System.IO.Directory.CreateDirectory(path);
-                }
-                path += "\\" + "transfer" + refNumber + ".xml";
-
-                using (System.IO.FileStream file = System.IO.File.Create(path))
-                {
-                    writer.Serialize(file, triggerContent);
-                }
-                writer = null;
-
-                //using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
+                //var triggerContent = new TriggerContent
                 //{
-                //    writer.WriteStartDocument();
-                //    writer.WriteStartElement("claiminformation");
-                //    writer.WriteElementString("ReferenceNumber", refNumber);
-                //    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
-                //    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
-                //    writer.WriteElementString("RejectReason", claim.RejectReason);
-                //    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
-                //    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
-                //    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
-                //    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
-                //    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
-                //    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
-                //    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
-                //    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
-                //    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
-                //    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
-                //    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
-                //    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
-                //    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
-                //    writer.WriteElementString("SentInDate", sentInDate);
-                //    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
-                //    writer.WriteEndElement();
-                //    writer.WriteEndDocument();
+                //    ClaimInfo = "claiminformation",
+                //    ReferenceNumber = refNumber,
+                //    QualifyingDate = claim.QualifyingDate.ToShortDateString(),
+                //    LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString(),
+                //    RejectReason = claim.RejectReason,
+                //    ModelSum = String.Format("{0:0.00}", claim.ModelSum),
+                //    ClaimedSum = String.Format("{0:0.00}", claim.ClaimedSum),
+                //    ApprovedSum = String.Format("{0:0.00}", claim.ApprovedSum),
+                //    RejectedSum = String.Format("{0:0.00}", claim.RejectedSum),
+                //    IVOCheckMsg = claim.IVOCheckMsg,
+                //    ProxyCheckMsg = claim.ProxyCheckMsg,
+                //    AssistanceCheckMsg = claim.AssistanceCheckMsg,
+                //    SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg,
+                //    SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg,
+                //    SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg,
+                //    MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg,
+                //    FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg,
+                //    FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg,
+                //    sentInDate = sentInDate,
+                //    NumberOfSickDays = claim.NumberOfSickDays.ToString()
+                //};
+
+                //XmlSerializer writer = new XmlSerializer(typeof(TriggerContent));
+                //string path = "\\sjukloner";
+                //if (!System.IO.Directory.Exists(path))
+                //{
+                //    System.IO.Directory.CreateDirectory(path);
                 //}
+                //path += "\\" + "transfer" + refNumber + ".xml";
+
+                //using (System.IO.FileStream file = System.IO.File.Create(path))
+                //{
+                //    writer.Serialize(file, triggerContent);
+                //}
+                //writer = null;
+
+                using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("claiminformation");
+                    writer.WriteElementString("ReferenceNumber", refNumber);
+                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
+                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
+                    writer.WriteElementString("RejectReason", claim.RejectReason);
+                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
+                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
+                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
+                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
+                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
+                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
+                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
+                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
+                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
+                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
+                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
+                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
+                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
+                    writer.WriteElementString("SentInDate", sentInDate);
+                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
+                    writer.Dispose();
+                }
+
                 //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
@@ -3112,6 +3115,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+                writer.Dispose();
             }
             return View("RecommendationReceipt", recommendationVM);
         }
@@ -3283,6 +3287,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+                writer.Dispose();
             }
             return RedirectToAction("StodsystemLogout");
         }
