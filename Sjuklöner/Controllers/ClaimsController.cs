@@ -17,6 +17,7 @@ using System.Net.Mail;
 using System.Configuration;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace Sjuklöner.Controllers
 {
@@ -2360,6 +2361,45 @@ namespace Sjuklöner.Controllers
                 db.SaveChanges();
 
                 string sentInDate = claim.SentInDate.ToString().Substring(2, 8).Replace("-", "");
+
+                //serialize to XML 
+                var triggerContent = new TriggerContent
+                {
+                    ClaimInfo = "claiminformation",
+                    ReferenceNumber = refNumber,
+                    QualifyingDate = claim.QualifyingDate.ToShortDateString(),
+                    LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString(),
+                    RejectReason = claim.RejectReason,
+                    ModelSum = String.Format("{0:0.00}", claim.ModelSum),
+                    ClaimedSum = String.Format("{0:0.00}", claim.ClaimedSum),
+                    ApprovedSum = String.Format("{0:0.00}", claim.ApprovedSum),
+                    RejectedSum = String.Format("{0:0.00}", claim.RejectedSum),
+                    IVOCheckMsg = claim.IVOCheckMsg,
+                    ProxyCheckMsg = claim.ProxyCheckMsg,
+                    AssistanceCheckMsg = claim.AssistanceCheckMsg,
+                    SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg,
+                    SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg,
+                    SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg,
+                    MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg,
+                    FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg,
+                    FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg,
+                    sentInDate = sentInDate,
+                    NumberOfSickDays = claim.NumberOfSickDays.ToString()
+                };
+
+                XmlSerializer writer = new XmlSerializer(typeof(TriggerContent));
+                string path = Environment.ExpandEnvironmentVariables("%appdata%\\Bitoreq AB\\OfficeDemo");
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                }
+                path += "\\salesreport.xml";
+
+                using (System.IO.FileStream file = System.IO.File.Create(path))
+                {
+                    writer.Serialize(file, triggerContent);
+                }
+                writer = null;
 
                 //using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
                 //{

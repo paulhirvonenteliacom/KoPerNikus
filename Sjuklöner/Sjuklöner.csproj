@@ -354,6 +354,7 @@
     <Compile Include="Viewmodels\OmbudCreateVM.cs" />
     <Compile Include="Viewmodels\OmbudIndexVM.cs" />
     <Compile Include="Viewmodels\AssistantIndexVM.cs" />
+    <Compile Include="Viewmodels\TriggerContent.cs" />
     <Compile Include="Viewmodels\UserEditVM.cs" />
     <Compile Include="Viewmodels\CareCompanyEditVM.cs" />
     <Compile Include="Viewmodels\CollectiveAgreementEditVM.cs" />
