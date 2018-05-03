@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 
 namespace Sjuklöner.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ClaimsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -44,7 +44,7 @@ namespace Sjuklöner.Controllers
             }
             else  // This should never happen     
             {
-                return View(db.Claims.ToList());
+                return RedirectToAction("Login", "Account");
             }
         }
 
@@ -2073,6 +2073,7 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims/RobotRecommend
         //This action is used by the robot when automatic transfer of claims is switched on by the admin.
+        [HttpGet]
         [AllowAnonymous]
         public ActionResult RobotRecommend(string refNumber)
         {
