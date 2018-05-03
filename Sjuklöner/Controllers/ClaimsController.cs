@@ -2388,12 +2388,12 @@ namespace Sjuklöner.Controllers
                 };
 
                 XmlSerializer writer = new XmlSerializer(typeof(TriggerContent));
-                string path = Environment.ExpandEnvironmentVariables("\\sjukloner");
+                string path = Environment.ExpandEnvironmentVariables("");
                 if (!System.IO.Directory.Exists(path))
                 {
                     System.IO.Directory.CreateDirectory(path);
                 }
-                path += "\\" + "transfer" + refNumber + ".xml";
+                path += "\\sjukloner\\" + "transfer" + refNumber + ".xml";
 
                 using (System.IO.FileStream file = System.IO.File.Create(path))
                 {
