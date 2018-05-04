@@ -281,12 +281,6 @@ namespace Sjuklöner.Migrations
                 Robot = "A001325"
             });
 
-            context.AppAdmins.AddOrUpdate(c => c.Id, new AppAdmin
-            {
-                Id = 1,
-                AutomaticTransferToProcapita = false
-            });
-
             context.DecisionCandidates.AddOrUpdate(c => c.Id, new DecisionCandidate
             {
                 Id = 1,
