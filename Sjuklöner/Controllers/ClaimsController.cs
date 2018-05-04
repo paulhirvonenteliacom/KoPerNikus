@@ -397,9 +397,29 @@ namespace Sjuklöner.Controllers
                 ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
             }
             //Check that the last day in the sickleave period is not older than one year
-            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > 365)
+            //First check if one of the 3 previous years is a leap year
+            bool leapYearFound = false;
+            int yearIdx = 0;
+            if (DateTime.Now.Month < 3)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än ett år tillbaka i tiden.");
+                yearIdx = 1;
+            }
+            do
+            {
+                if (DateTime.Now.AddYears(-yearIdx).Year % 4 == 0)
+                {
+                    leapYearFound = true;
+                }
+                yearIdx++;
+            } while (!leapYearFound && yearIdx < 4);
+            int numberOfDays = 3 * 365;
+            if (leapYearFound)
+            {
+                numberOfDays++;
+            }
+            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > numberOfDays)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än tre år tillbaka i tiden.");
             }
             //Check if the regular assistant has been selected
             if (create1VM.SelectedRegAssistantId == null)
