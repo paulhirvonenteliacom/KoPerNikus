@@ -64,7 +64,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6);
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
@@ -142,7 +142,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita               
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
