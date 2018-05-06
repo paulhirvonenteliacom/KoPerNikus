@@ -2378,7 +2378,7 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
-                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDate.ToShortDateString() + "+" + claim.LastDayOfSicknessDate.ToShortDateString() + "+" + claim.RejectReason + "+" +
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDate.ToShortDateString().Remove('-') + "+" + claim.LastDayOfSicknessDate.ToShortDateString().Remove('-') + "+" + claim.RejectReason + "+" +
                     String.Format("{0:0.00}", claim.ClaimedSum) + "+" + String.Format("{0:0.00}", claim.ModelSum) + "+" + String.Format("{0:0.00}", claim.ApprovedSum) + "+" + String.Format("{0:0.00}", claim.RejectedSum) + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.SentInDate.ToString().Substring(2, 8) + "+" + claim.NumberOfSickDays.ToString() + "+" +
