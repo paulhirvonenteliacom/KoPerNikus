@@ -298,13 +298,13 @@ namespace Sjuklöner.Models
 
         public string SentInDateAsString { get; set; }
 
-        //public string ClaimedSumAsString { get; set; }
+        public string ClaimedSumAsString { get; set; }
 
-        //public string ModelSumAsString { get; set; }
+        public string ModelSumAsString { get; set; }
 
-        //public string ApprovedSumAsString { get; set; }
+        public string ApprovedSumAsString { get; set; }
 
-        //public string RejectedSumAsString { get; set; }
+        public string RejectedSumAsString { get; set; }
 
         public string TransferToProcapitaString { get; set; }
 
