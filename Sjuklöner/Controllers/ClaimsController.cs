@@ -2382,10 +2382,11 @@ namespace Sjuklöner.Controllers
                 claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
                 claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
                 claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
-                claim.SentInDateAsString = claim.SentInDate.ToString().Substring(2, 8);
+                claim.SentInDateAsString = claim.SentInDate.ToString().Remove(4, 1);
+                claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1).Substring(8);
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.RejectReason + "+" +
-                    String.Format("{0:0.00}", claim.ClaimedSum) + "+" + String.Format("{0:0.00}", claim.ModelSum) + "+" + String.Format("{0:0.00}", claim.ApprovedSum) + "+" + String.Format("{0:0.00}", claim.RejectedSum) + "+" +
+                    String.Format("{0:0,00}", claim.ClaimedSum) + "+" + String.Format("{0:0,00}", claim.ModelSum) + "+" + String.Format("{0:0,00}", claim.ApprovedSum) + "+" + String.Format("{0:0,00}", claim.RejectedSum) + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.SentInDateAsString + "+" + claim.NumberOfSickDays.ToString() + "+" +
                     claim.CustomerSSN + "+" + claim.CustomerName;
