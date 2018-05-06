@@ -2378,8 +2378,10 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
-                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove('-');
-                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove('-');
+                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
                 claim.SentInDateAsString = claim.SentInDate.ToString().Substring(2, 8);
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.RejectReason + "+" +
