@@ -2378,6 +2378,14 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
+                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString();
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString();
+                claim.SentInDateAsString = claim.SentInDate.ToString().Substring(2, 8);
+                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
+                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
+                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
+                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 

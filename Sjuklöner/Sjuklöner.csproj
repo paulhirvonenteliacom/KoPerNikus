@@ -309,6 +309,10 @@
     <Compile Include="Migrations\201805010717107_addedDecisionCandidateClass.Designer.cs">
       <DependentUpon>201805010717107_addedDecisionCandidateClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805060924072_AddedStringPropertiesForRobotInClaimsClass.cs" />
+    <Compile Include="Migrations\201805060924072_AddedStringPropertiesForRobotInClaimsClass.Designer.cs">
+      <DependentUpon>201805060924072_AddedStringPropertiesForRobotInClaimsClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -620,6 +624,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805010717107_addedDecisionCandidateClass.resx">
       <DependentUpon>201805010717107_addedDecisionCandidateClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805060924072_AddedStringPropertiesForRobotInClaimsClass.resx">
+      <DependentUpon>201805060924072_AddedStringPropertiesForRobotInClaimsClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
