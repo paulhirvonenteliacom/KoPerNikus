@@ -292,11 +292,11 @@ namespace Sjuklöner.Models
         public decimal RejectedSum { get; set; }
 
         //These string properties are used by the robot when it transfers information to Procapita
-        //public string QualifyingDateAsString { get; set; }
+        public string QualifyingDateAsString { get; set; }
 
-        //public string LastDayOfSicknessDateAsString { get; set; }
+        public string LastDayOfSicknessDateAsString { get; set; }
 
-        //public string SentInDateAsString { get; set; }
+        public string SentInDateAsString { get; set; }
 
         //public string ClaimedSumAsString { get; set; }
 
