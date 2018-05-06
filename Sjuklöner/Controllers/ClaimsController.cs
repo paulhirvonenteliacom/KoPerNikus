@@ -2378,13 +2378,19 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
-                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString();
-                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString();
-                claim.SentInDateAsString = claim.SentInDate.ToString().Substring(2, 8);
-                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
-                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
-                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
-                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDate.ToShortDateString() + "+" + claim.LastDayOfSicknessDate.ToShortDateString() + "+" + claim.RejectReason + "+" +
+                    String.Format("{0:0.00}", claim.ClaimedSum) + "+" + String.Format("{0:0.00}", claim.ModelSum) + "+" + String.Format("{0:0.00}", claim.ApprovedSum) + "+" + String.Format("{0:0.00}", claim.RejectedSum) + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.SentInDate.ToString().Substring(2, 8) + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.CustomerSSN + "+" + claim.CustomerName;
+
+                //claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString();
+                //claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString();
+                //claim.SentInDateAsString = claim.SentInDate.ToString().Substring(2, 8);
+                //claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
+                //claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
+                //claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
+                //claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
