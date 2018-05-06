@@ -2422,33 +2422,33 @@ namespace Sjuklöner.Controllers
                 //}
                 //writer = null;
 
-                using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
-                {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("claiminformation");
-                    writer.WriteElementString("ReferenceNumber", refNumber);
-                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
-                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
-                    writer.WriteElementString("RejectReason", claim.RejectReason);
-                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
-                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
-                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
-                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
-                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
-                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
-                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
-                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
-                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
-                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
-                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
-                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
-                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
-                    writer.WriteElementString("SentInDate", sentInDate);
-                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Dispose();
-                }
+                //using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
+                //{
+                //    writer.WriteStartDocument();
+                //    writer.WriteStartElement("claiminformation");
+                //    writer.WriteElementString("ReferenceNumber", refNumber);
+                //    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
+                //    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
+                //    writer.WriteElementString("RejectReason", claim.RejectReason);
+                //    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
+                //    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
+                //    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
+                //    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
+                //    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
+                //    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
+                //    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
+                //    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
+                //    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
+                //    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
+                //    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
+                //    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
+                //    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
+                //    writer.WriteElementString("SentInDate", sentInDate);
+                //    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
+                //    writer.WriteEndElement();
+                //    writer.WriteEndDocument();
+                //    writer.Dispose();
+                //}
 
                 //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
