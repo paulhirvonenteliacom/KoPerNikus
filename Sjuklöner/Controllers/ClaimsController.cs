@@ -2384,10 +2384,10 @@ namespace Sjuklöner.Controllers
                 claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
                 claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
                 claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
-                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
-                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
-                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
-                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum).Replace(',', '.');
+                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum).Replace(',', '.');
+                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum).Replace(',', '.');
+                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum).Replace(',', '.');
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
