@@ -1434,6 +1434,10 @@ negative-left-margin {
     padding-left: 10px;
 }
 
+.xsmall-col-padding {
+    padding-left: 0;
+}
+
 .negative-col-padding {
     padding-left: -7px;
 }

@@ -365,6 +365,8 @@ namespace Sjuklöner.Models
 
         public virtual ClaimStatus ClaimStatus { get; set; }
 
+        //public virtual List<Assistant> SubAssistants { get; set; }
+
         public virtual List<Document> Documents { get; set; }
 
         public virtual List<Message> Messages { get; set; }

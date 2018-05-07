@@ -329,6 +329,10 @@
     <Compile Include="Migrations\201805061913360_AdjustedTransferString3.Designer.cs">
       <DependentUpon>201805061913360_AdjustedTransferString3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805071400508_AddedCommentInClaimModel.cs" />
+    <Compile Include="Migrations\201805071400508_AddedCommentInClaimModel.Designer.cs">
+      <DependentUpon>201805071400508_AddedCommentInClaimModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -655,6 +659,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805061913360_AdjustedTransferString3.resx">
       <DependentUpon>201805061913360_AdjustedTransferString3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805071400508_AddedCommentInClaimModel.resx">
+      <DependentUpon>201805071400508_AddedCommentInClaimModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

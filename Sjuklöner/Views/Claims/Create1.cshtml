@@ -68,25 +68,41 @@
                     @Html.ValidationMessageFor(model => model.CustomerPhoneNumber, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
+
+            @*<div class="row row-padding2">
+                <div class="col col-md-offset-4 col-md-2 xsmall-col-padding">
+                    <input class="btn btn-primary btn-primary-small btn-left-margin-5" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
+                </div>
+                <div class="xsmall-col-padding col col-md-1">
+                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+                </div>
+                @if (Model.CompletionStage >= 1)
+                {
+                    <div class="small-padding-left3 col col-md-1">
+                        @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                        @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
+                    @*</div>
+                }
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                </div>
+            </div>*@
+            @*<div id="AJAXContainer"></div>*@
+            @*<div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
+            <div id='myModal' class='modal' style="text-align:left;">
+                <div class="modal-dialog" style="width:70%; height:400px; padding:10px;">
+                    <div class="modal-content" style="overflow: auto; padding:10px; background-color:#fbf9ef;">
+                        <button type="button" id="closbtn" float="right"> Stäng </button>
+                        <div style="height:10px;">
+                        </div>
+                        <div id='myModalContent' style="width:1000px; height:400px; padding:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>*@
         </div>
 
         <div class="col col-md-6">
-            <div class="row">
-                @Html.LabelFor(model => model.RegularAssistants, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
-                <div class="col-md-8">
-                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new {  @class = "form-control"  })
-                    @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11" })
-                </div>
-            </div>
-
-            <div class="row row-padding2">
-                @Html.LabelFor(model => model.SubstituteAssistants, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
-                <div class="col-md-8">
-                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new {  @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11" })
-                </div>
-            </div>
-
             <div class="row row-padding2">
                 @Html.LabelFor(model => model.FirstDayOfSicknessDate, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
                 <div class="col-md-8">
@@ -102,6 +118,25 @@
                     @Html.ValidationMessageFor(model => model.LastDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
+
+            <div class="row">
+                @Html.LabelFor(model => model.RegularAssistants, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-padding2">
+                @Html.LabelFor(model => model.SubstituteAssistants, htmlAttributes: new { @class = "control-label col-md-4 display-right-align3" })
+                <div class="col-md-8">
+                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+            @*<div id="MainDiv">
+                <input id="Button1" type="button" value="Lägg till vikarierande assistent" onclick="Button1_onclick()" />
+            </div>*@
         </div>
     </div>
 
@@ -193,18 +228,83 @@
             $('#myModal').modal('hide');
         });
     });
-            //$('#loadPartialActionLink').on('click', function (e) {
-            //    e.preventDefault();
-            //    var claimNumber = document.getElementById("claimnumber");
-            //    $.ajax({
-            //        type: "GET",
-            //        url: '/Claims/_ShowClaim',
-            //        data: {
-            //            refNumber: claimNumber.innerHTML
-            //        },
-            //        success: function (data, textStatus, jqXHR) {
-            //            $('#AJAXContainer').html(data);
-            //        }
-            //    });
-            //});
+    //$('#loadPartialActionLink').on('click', function (e) {
+    //    e.preventDefault();
+    //    var claimNumber = document.getElementById("claimnumber");
+    //    $.ajax({
+    //        type: "GET",
+    //        url: '/Claims/_ShowClaim',
+    //        data: {
+    //            refNumber: claimNumber.innerHTML
+    //        },
+    //        success: function (data, textStatus, jqXHR) {
+    //            $('#AJAXContainer').html(data);
+    //        }
+    //    });
+    //});
+
+    var NumOfRow = 1;
+
+
+
+    function Button1_onclick() {
+
+        NumOfRow++;
+
+
+
+        // get the refference of the main Div
+
+        var mainDiv = document.getElementById('MainDiv');
+
+
+
+        // create new div that will work as a container
+
+        var newDiv = document.createElement('div');
+        newDiv.setAttribute('id', 'innerDiv' + NumOfRow);
+
+        //create span to contain the text
+
+        var newSpan = document.createElement('span');
+        newSpan.innerHTML = "Enter Your Mail Address ";
+
+        // create new textbox for email entry
+
+        var newTextBox = document.createElement('input');
+
+        newTextBox.type = 'text';
+
+        newTextBox.setAttribute('id', 'txtAddr' + NumOfRow);
+
+
+
+        // create remove button for each email adress
+
+        var newButton = document.createElement('input');
+        newButton.type = 'button';
+        newButton.value = 'Remove';
+        newButton.id = 'btn' + NumOfRow;
+
+        // atach event for remove button click
+
+        newButton.onclick = function RemoveEntry() {
+
+            var mainDiv = document.getElementById('MainDiv');
+
+            mainDiv.removeChild(this.parentNode);
+
+        }
+
+
+        // append the span, textbox and the button
+
+        newDiv.appendChild(newSpan);
+        newDiv.appendChild(newTextBox);
+        newDiv.appendChild(newButton);
+
+        // finally append the new div to the main div
+
+        mainDiv.appendChild(newDiv);
+    }
 </script>
