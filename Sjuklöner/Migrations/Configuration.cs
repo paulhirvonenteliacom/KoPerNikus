@@ -236,7 +236,8 @@ namespace Sjuklöner.Migrations
                 new ClaimStatus { Id = 3, Name = "Under handläggning" },
                 new ClaimStatus { Id = 4, Name = "Godkänd" }, //Not used
                 new ClaimStatus { Id = 5, Name = "Inkorgen" },
-                new ClaimStatus { Id = 6, Name = "Överförd till Procapita" }
+                new ClaimStatus { Id = 6, Name = "Överförd till Procapita" },
+                new ClaimStatus { Id = 7, Name = "Manuellt initierad överföring påbörjad" }
             };
             foreach (var claimStatus in claimStatuses)
             {

@@ -64,7 +64,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6 || c.ClaimStatusId == 7);
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
@@ -107,7 +107,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita
+                var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6  || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
@@ -142,7 +142,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita               
+                var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6 || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita               
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
@@ -406,13 +406,14 @@ namespace Sjuklöner.Controllers
             }
             do
             {
-                if (DateTime.Now.AddYears(-yearIdx).Year % 4 == 0)
+                if (DateTime.IsLeapYear(DateTime.Now.AddYears(-yearIdx).Year))
                 {
                     leapYearFound = true;
                 }
                 yearIdx++;
             } while (!leapYearFound && yearIdx < 4);
             int numberOfDays = 3 * 365;
+          
             if (leapYearFound)
             {
                 numberOfDays++;
@@ -2019,7 +2020,7 @@ namespace Sjuklöner.Controllers
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
                
-                if (claim.ClaimStatusId == 3)
+                if (claim.ClaimStatusId == 3 || claim.ClaimStatusId == 7)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString() + ".";
                 }
@@ -2031,6 +2032,7 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString() + ".";
                 }
+
 
                 claim.BasisForDecisionMsg = recommendationVM.BasisForDecisionMsg;
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
@@ -3146,7 +3148,7 @@ namespace Sjuklöner.Controllers
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
-                //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
+                claim.ClaimStatusId = 7;      // Transfer to Procapita started
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 claim.StatusDate = DateTime.Now;
               
