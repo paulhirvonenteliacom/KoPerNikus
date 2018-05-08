@@ -2077,13 +2077,13 @@ namespace Sjuklöner.Controllers
                 }
 
                 // Assign this Claim to the current Administrative Official               
-                if (User.IsInRole("AdministrativeOfficial"))
-                {
-                    var me = db.Users.Find(User.Identity.GetUserId());
+                //if (User.IsInRole("AdministrativeOfficial"))
+                //{
+                //    var me = db.Users.Find(User.Identity.GetUserId());
 
-                    claim.AdmOffId = me.Id;
-                    claim.AdmOffName = me.FirstName + " " + me.LastName;
-                }
+                //    claim.AdmOffId = me.Id;
+                //    claim.AdmOffName = me.FirstName + " " + me.LastName;
+                //}
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -3048,7 +3048,16 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
                 claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
                 claim.RejectReason = recommendationVM.RejectReason;
-               
+
+                // Assign this Claim to the current Administrative Official               
+                if (User.IsInRole("AdministrativeOfficial"))
+                {
+                    var me = db.Users.Find(User.Identity.GetUserId());
+                    
+                    claim.AdmOffId = me.Id;
+                    claim.AdmOffName = me.FirstName + " " + me.LastName;
+                }
+
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();             
 
