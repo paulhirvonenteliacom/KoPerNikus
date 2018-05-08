@@ -272,13 +272,16 @@ namespace Sjuklöner.Migrations
                 LatestReferenceNumber = 00000
             });
 
+            /*
             context.WatchLogs.AddOrUpdate(w => w.Id, new WatchLog
             {
+                Id=1,
                 LogDate = System.DateTime.Now,
                 LogCode = 0,
                 LogMsg = "Initial status",
                 Robot = "A001325"
             });
+            */
 
             context.AppAdmins.AddOrUpdate(c => c.Id, new AppAdmin
             {
