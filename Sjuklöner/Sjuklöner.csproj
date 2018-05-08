@@ -309,6 +309,30 @@
     <Compile Include="Migrations\201805010717107_addedDecisionCandidateClass.Designer.cs">
       <DependentUpon>201805010717107_addedDecisionCandidateClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805060924072_AddedStringPropertiesForRobotInClaimsClass.cs" />
+    <Compile Include="Migrations\201805060924072_AddedStringPropertiesForRobotInClaimsClass.Designer.cs">
+      <DependentUpon>201805060924072_AddedStringPropertiesForRobotInClaimsClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805061132153_ReplacedTransferProperties.cs" />
+    <Compile Include="Migrations\201805061132153_ReplacedTransferProperties.Designer.cs">
+      <DependentUpon>201805061132153_ReplacedTransferProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805061617154_AdjustedTransferStringProperties.cs" />
+    <Compile Include="Migrations\201805061617154_AdjustedTransferStringProperties.Designer.cs">
+      <DependentUpon>201805061617154_AdjustedTransferStringProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805061621367_AdjustedTransferProperties2.cs" />
+    <Compile Include="Migrations\201805061621367_AdjustedTransferProperties2.Designer.cs">
+      <DependentUpon>201805061621367_AdjustedTransferProperties2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805061913360_AdjustedTransferString3.cs" />
+    <Compile Include="Migrations\201805061913360_AdjustedTransferString3.Designer.cs">
+      <DependentUpon>201805061913360_AdjustedTransferString3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805071400508_AddedCommentInClaimModel.cs" />
+    <Compile Include="Migrations\201805071400508_AddedCommentInClaimModel.Designer.cs">
+      <DependentUpon>201805071400508_AddedCommentInClaimModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -354,6 +378,7 @@
     <Compile Include="Viewmodels\OmbudCreateVM.cs" />
     <Compile Include="Viewmodels\OmbudIndexVM.cs" />
     <Compile Include="Viewmodels\AssistantIndexVM.cs" />
+    <Compile Include="Viewmodels\TriggerContent.cs" />
     <Compile Include="Viewmodels\UserEditVM.cs" />
     <Compile Include="Viewmodels\CareCompanyEditVM.cs" />
     <Compile Include="Viewmodels\CollectiveAgreementEditVM.cs" />
@@ -619,6 +644,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805010717107_addedDecisionCandidateClass.resx">
       <DependentUpon>201805010717107_addedDecisionCandidateClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805060924072_AddedStringPropertiesForRobotInClaimsClass.resx">
+      <DependentUpon>201805060924072_AddedStringPropertiesForRobotInClaimsClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805061132153_ReplacedTransferProperties.resx">
+      <DependentUpon>201805061132153_ReplacedTransferProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805061617154_AdjustedTransferStringProperties.resx">
+      <DependentUpon>201805061617154_AdjustedTransferStringProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805061621367_AdjustedTransferProperties2.resx">
+      <DependentUpon>201805061621367_AdjustedTransferProperties2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805061913360_AdjustedTransferString3.resx">
+      <DependentUpon>201805061913360_AdjustedTransferString3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805071400508_AddedCommentInClaimModel.resx">
+      <DependentUpon>201805071400508_AddedCommentInClaimModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

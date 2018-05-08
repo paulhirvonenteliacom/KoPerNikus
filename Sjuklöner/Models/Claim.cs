@@ -291,6 +291,23 @@ namespace Sjuklöner.Models
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal RejectedSum { get; set; }
 
+        //These string properties are used by the robot when it transfers information to Procapita
+        public string QualifyingDateAsString { get; set; }
+
+        public string LastDayOfSicknessDateAsString { get; set; }
+
+        public string SentInDateAsString { get; set; }
+
+        public string ClaimedSumAsString { get; set; }
+
+        public string ModelSumAsString { get; set; }
+
+        public string ApprovedSumAsString { get; set; }
+
+        public string RejectedSumAsString { get; set; }
+
+        public string TransferToProcapitaString { get; set; }
+
         //These properties were added for the case when hours only (not working time) are given as input by the ombud.
         [Display(Name = "Sjuklön (%):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
@@ -347,6 +364,8 @@ namespace Sjuklöner.Models
         public virtual CareCompany CareCompany { get; set; }
 
         public virtual ClaimStatus ClaimStatus { get; set; }
+
+        //public virtual List<Assistant> SubAssistants { get; set; }
 
         public virtual List<Document> Documents { get; set; }
 

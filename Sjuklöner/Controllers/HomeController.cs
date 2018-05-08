@@ -52,6 +52,15 @@ namespace Sjuklöner.Controllers
                 adminIndexVM.NumberOfCareCompanies = db.CareCompanies.Count();
                 adminIndexVM.NumberOfClaims = db.Claims.Where(c => c.ClaimStatusId >= 5).Count(); //Claims that have been submitted and where Robin has done its checks.
                 adminIndexVM.NumberOfCollectiveAgreements = db.CollectiveAgreementHeaders.Count();
+
+                //Create an instance of the AppAdmin class the first time the Admin logs in.
+                if (!db.AppAdmins.Any())
+                {
+                    AppAdmin newAppAdmin = new AppAdmin();
+                    newAppAdmin.AutomaticTransferToProcapita = false;
+                    db.AppAdmins.Add(newAppAdmin);
+                    db.SaveChanges();
+                }
                 adminIndexVM.AutomaticTransferToProcapita = db.AppAdmins.FirstOrDefault().AutomaticTransferToProcapita;
 
                 return View("Index", adminIndexVM);

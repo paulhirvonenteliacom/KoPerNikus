@@ -94,7 +94,8 @@ namespace Sjuklöner.Migrations
 
             var administrativeOfficials = new List<AdministrativeOfficial>
             {
-                new AdministrativeOfficial{FirstName = "Henrik",LastName = "Signell",Email = "henrik.signell@helsingborg.se",UserName = "henrik.signell@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "19670507-8134"}
+                new AdministrativeOfficial{FirstName = "Henrik",LastName = "Signell",Email = "henrik.signell@helsingborg.se",UserName = "henrik.signell@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "19670507-8134"},
+                new AdministrativeOfficial{FirstName = "Robin",LastName = "Bitoreq",Email = "robin.bitoreq@helsingborg.se",UserName = "robin.bitoreq@helsingborg.se", LastLogon=DateTime.Now.AddDays(-2), SSN = "19010101-1234"}
             };
 
             foreach (var administrativeOfficial in administrativeOfficials)
@@ -282,12 +283,6 @@ namespace Sjuklöner.Migrations
                 Robot = "A001325"
             });
             */
-
-            context.AppAdmins.AddOrUpdate(c => c.Id, new AppAdmin
-            {
-                Id = 1,
-                AutomaticTransferToProcapita = false
-            });
 
             context.DecisionCandidates.AddOrUpdate(c => c.Id, new DecisionCandidate
             {

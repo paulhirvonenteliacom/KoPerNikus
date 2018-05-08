@@ -17,10 +17,11 @@ using System.Net.Mail;
 using System.Configuration;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace Sjuklöner.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ClaimsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -44,7 +45,7 @@ namespace Sjuklöner.Controllers
             }
             else  // This should never happen     
             {
-                return View(db.Claims.ToList());
+                return RedirectToAction("Login", "Account");
             }
         }
 
@@ -63,7 +64,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6);
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
@@ -141,7 +142,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita               
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
@@ -396,9 +397,29 @@ namespace Sjuklöner.Controllers
                 ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
             }
             //Check that the last day in the sickleave period is not older than one year
-            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > 365)
+            //First check if one of the 3 previous years is a leap year
+            bool leapYearFound = false;
+            int yearIdx = 0;
+            if (DateTime.Now.Month < 3)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än ett år tillbaka i tiden.");
+                yearIdx = 1;
+            }
+            do
+            {
+                if (DateTime.Now.AddYears(-yearIdx).Year % 4 == 0)
+                {
+                    leapYearFound = true;
+                }
+                yearIdx++;
+            } while (!leapYearFound && yearIdx < 4);
+            int numberOfDays = 3 * 365;
+            if (leapYearFound)
+            {
+                numberOfDays++;
+            }
+            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > numberOfDays)
+            {
+                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än tre år tillbaka i tiden.");
             }
             //Check if the regular assistant has been selected
             if (create1VM.SelectedRegAssistantId == null)
@@ -1752,6 +1773,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("OmbudName", $"{claim.OmbudFirstName} {claim.OmbudLastName}");
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+                writer.Dispose();
             }
             var create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
@@ -1763,6 +1785,11 @@ namespace Sjuklöner.Controllers
         [Authorize(Roles = "Admin, AdministrativeOfficial")]
         public ActionResult Recommend(int? id)
         {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             RecommendationVM recommendationVM = new RecommendationVM();
             var claim = db.Claims.Where(c => c.Id == id).FirstOrDefault();
             if (claim != null)
@@ -1994,15 +2021,15 @@ namespace Sjuklöner.Controllers
                
                 if (claim.ClaimStatusId == 3)
                 {
-                    recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString();
+                    recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString() + ".";
                 }
                 if (claim.ClaimStatusId == 6 || claim.ClaimStatusId == 1)
                 {
-                    recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString();
+                    recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString() + ".";
                 }
                 if (claim.ClaimStatusId == 1)
                 {
-                    recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString();
+                    recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString() + ".";
                 }
 
                 claim.BasisForDecisionMsg = recommendationVM.BasisForDecisionMsg;
@@ -2068,6 +2095,7 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims/RobotRecommend
         //This action is used by the robot when automatic transfer of claims is switched on by the admin.
+        [HttpGet]
         [AllowAnonymous]
         public ActionResult RobotRecommend(string refNumber)
         {
@@ -2350,37 +2378,26 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
+                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
+                claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
+                claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
+                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
+                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
+                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
+                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
+                    claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
-                string sentInDate = claim.SentInDate.ToString().Substring(2, 8).Replace("-", "");
-
-                using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
-                {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("claiminformation");
-                    writer.WriteElementString("ReferenceNumber", refNumber);
-                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
-                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
-                    writer.WriteElementString("RejectReason", claim.RejectReason);
-                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
-                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
-                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
-                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
-                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
-                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
-                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
-                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
-                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
-                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
-                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
-                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
-                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
-                    writer.WriteElementString("SentInDate", sentInDate);
-                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                }
                 //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 db.Entry(claim).State = EntityState.Modified;
@@ -2394,6 +2411,7 @@ namespace Sjuklöner.Controllers
             }
         }
 
+        [AllowAnonymous]
         private string RejectReason(Claim claim, RecommendationVM recommendationVM, bool partiallyCoveredSickleave)
         {
             string resultMsg = "";
@@ -3065,6 +3083,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+                writer.Dispose();
             }
             return View("RecommendationReceipt", recommendationVM);
         }
@@ -3106,27 +3125,27 @@ namespace Sjuklöner.Controllers
                     writer.WriteStartDocument();
                     writer.WriteStartElement("claiminformation");
                     writer.WriteElementString("ReferenceNumber", refNumber);
-                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
-                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
-                    writer.WriteElementString("RejectReason", claim.RejectReason);
-                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
-                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
-                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
-                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
-                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
-                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
-                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
-                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
-                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
-                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
-                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
-                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
-                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
-                    writer.WriteElementString("SentInDate", sentInDate);
-                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
+
+                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
+                claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
+                claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
+                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
+                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
+                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
+                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
+                    claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+
                 //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 claim.StatusDate = DateTime.Now;
@@ -3236,6 +3255,7 @@ namespace Sjuklöner.Controllers
                 writer.WriteElementString("ReferenceNumber", claim.ReferenceNumber);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+                writer.Dispose();
             }
             return RedirectToAction("StodsystemLogout");
         }
@@ -3251,8 +3271,9 @@ namespace Sjuklöner.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            {                
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Claim claim = db.Claims.Find(id);
             if (claim == null)
@@ -3283,8 +3304,9 @@ namespace Sjuklöner.Controllers
         public ActionResult Delete(int? id)
         {
             if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            {              
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Claim claim = db.Claims.Find(id);
             if (claim == null)
@@ -3395,6 +3417,7 @@ namespace Sjuklöner.Controllers
             return stream;
         }
 
+        [AllowAnonymous]
         private void CalculateModelSum(Claim claim, List<ClaimDay> claimDays, int? startIndex, int? numberOfDaysToRemove)
         {
             //The optional parameters startIndex and numberOfDaysToRemove are only needed if the decision about personal assistance does not cover the whole sickleave period.

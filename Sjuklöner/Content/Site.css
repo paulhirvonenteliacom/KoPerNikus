@@ -647,9 +647,9 @@ li a {
 }
 
 .btn-primary-extra-wide {
-    margin-left: 18px;
-    font-size: 22px;
-    width: 270px;
+    margin-left: 28px;
+    font-size: 18px;
+    width: 230px;
 }
 .btn-secondary {
     color: #fff;
@@ -1432,6 +1432,10 @@ negative-left-margin {
 
 .small-col-padding {
     padding-left: 10px;
+}
+
+.xsmall-col-padding {
+    padding-left: 0;
 }
 
 .negative-col-padding {
