@@ -235,6 +235,17 @@ namespace Sjuklöner.Controllers
                 create1VM.SubstituteAssistants = assistantDdlString;
                 create1VM.AssistantIds = assistantIds;
 
+                //Number of substitute assistants is always at least one. One is used as default for a new claim.
+                create1VM.NumberOfSubAssistants = 1;
+
+                //Initialize array that will hold selected substitute assistants (beyond the first sub that is mandatory)
+                int[] subIndeces = new int[20];
+                for (int i = 0; i < 20; i++)
+                {
+                    subIndeces[i] = 0;
+                }
+                create1VM.SelectedSubIndeces = subIndeces;
+
                 create1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
                 create1VM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
                 return View("Create1", create1VM);
@@ -284,6 +295,7 @@ namespace Sjuklöner.Controllers
             create1VM.RegularAssistants = regAssistantDdlString;
             create1VM.SubstituteAssistants = subAssistantDdlString;
             create1VM.AssistantIds = assistantIds;
+            //create1VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
             create1VM.CustomerName = claim.CustomerName;
             create1VM.CustomerSSN = claim.CustomerSSN;
@@ -316,6 +328,9 @@ namespace Sjuklöner.Controllers
             }
             defaultValuesCreate1VM.RegularAssistants = assistantDdlString;
             defaultValuesCreate1VM.SubstituteAssistants = assistantDdlString;
+
+            //Number of substitute assistants is always at least one. One is used as default for a new claim.
+            defaultValuesCreate1VM.NumberOfSubAssistants = 1;
 
             defaultValuesCreate1VM.CustomerSSN = "391025-7246";
             defaultValuesCreate1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
@@ -485,6 +500,7 @@ namespace Sjuklöner.Controllers
                     }
                     create1VM.RegularAssistants = regAssistantDdlString;
                     create1VM.SubstituteAssistants = subAssistantDdlString;
+                    //create1VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
                     create1VM.CompletionStage = (int)claim.CompletionStage;
                     create1VM.ClaimNumber = claim.ReferenceNumber;
 
@@ -1595,8 +1611,8 @@ namespace Sjuklöner.Controllers
                 if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
                     ModelState.AddModelError("SalaryAttachment", "Lönespecifikation för ordinarie assistent saknas");
 
-                if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
-                    ModelState.AddModelError("SalaryAttachmentStandIn", "Lönespecifikation för vikarierande assistent saknas");
+                //if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
+                //    ModelState.AddModelError("SalaryAttachmentStandIn", "Lönespecifikation för vikarierande assistent saknas");
 
                 if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
                     ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas");
@@ -1619,8 +1635,8 @@ namespace Sjuklöner.Controllers
                         if (model.SalaryAttachment != null)
                             NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
 
-                        if (model.SalaryAttachmentStandIn != null)
-                            NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
+                        //if (model.SalaryAttachmentStandIn != null)
+                        //    NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
 
                         if (model.SickLeaveNotification != null)
                             NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);

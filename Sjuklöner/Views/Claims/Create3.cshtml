@@ -107,15 +107,15 @@
                 @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
                 <input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Till steg 4" id="proceed" />
             </div>
-            <div class="small-padding-left3 col col-md-1">
+            <div class="no-col-padding col col-md-1">
                 <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
             </div>
-            <div class="small-padding-left3 col col-md-1">
-                @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
-                @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
-            </div>
-            <div class="small-padding-left3 col col-md-1">
+            <div class="small-padding-left10 col col-md-1">
                 @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
+            </div>
+            <div class="no-col-padding col-md-1">
+                @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-3" })
+                @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
             </div>
             @*<div id="AJAXContainer"></div>*@
             <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>

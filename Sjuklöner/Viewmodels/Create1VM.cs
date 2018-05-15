@@ -64,10 +64,14 @@ namespace Sjuklöner.Viewmodels
         public int? SelectedSubAssistantId { get; set; }
 
         //[Required]
-        [Display(Name = "Vikarierande assistent")]
+        [Display(Name = "Vikarierande assistent 1")]
         public IEnumerable<SelectListItem> SubstituteAssistants { get; set; }
 
         public List<int> AssistantIds { get; set; } //This list is required in order to be able to map the selected ddl ids to Assistant records in the db.
+
+        public int NumberOfSubAssistants { get; set; }
+
+        public int[] SelectedSubIndeces { get; set; }
 
         //public bool Rejected { get; set; }
 

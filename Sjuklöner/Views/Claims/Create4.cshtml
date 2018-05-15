@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="row row-height-26">
+            @*<div class="row row-height-26">
                 @Html.LabelFor(model => model.SalaryAttachmentStandIn, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     <input type="file" name="SalaryAttachmentStandIn" id="SalaryAttachmentStandIn" class="wide-input btn btn-default" />
@@ -54,7 +54,7 @@
                 <div class="col col-md-offset-2 col-md-10">
                     @Html.ValidationMessageFor(model => model.SalaryAttachmentStandIn, "", new { @class = "text-danger font-size-11" })
                 </div>
-            </div>
+            </div>*@
 
             @if (Model.NumberOfSickDays > 7)
             {
@@ -112,14 +112,14 @@
                     <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
                 </div>
                 <div class="small-padding-left3 col col-md-1">
-                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-5" type="submit" name="submitButton" value="Spara" id="save" />
+                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-7" type="submit" name="submitButton" value="Spara" id="save" />
                 </div>
                 <div class="small-padding-left3 col col-md-1">
-                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "btn-sm js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-5" })
+                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small btn-left-margin-4" })
+                </div>
+                <div class="small-padding-left3 col col-md-1">
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-1" })
                     @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
-                </div>
-                <div class="small-padding-left3 col col-md-1">
-                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small" })
                 </div>
                 @*<div id="AJAXContainer"></div>*@
                 <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>

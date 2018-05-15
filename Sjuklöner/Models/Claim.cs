@@ -152,6 +152,8 @@ namespace Sjuklöner.Models
         public string PensionAndInsuranceRateAsString { get; set; }
 
         //SUBSTITUTE ASSISTANT INFORMATION
+        //public int NumberOfSubAssistants { get; set; }
+
         public int? SelectedSubAssistantId { get; set; }
 
         [Display(Name = "Personnummer")]
@@ -364,8 +366,6 @@ namespace Sjuklöner.Models
         public virtual CareCompany CareCompany { get; set; }
 
         public virtual ClaimStatus ClaimStatus { get; set; }
-
-        //public virtual List<Assistant> SubAssistants { get; set; }
 
         public virtual List<Document> Documents { get; set; }
 
