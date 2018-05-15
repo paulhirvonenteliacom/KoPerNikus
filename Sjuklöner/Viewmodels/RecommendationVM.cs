@@ -33,9 +33,9 @@ namespace Sjuklöner.Viewmodels
         public bool SalarySpecRegAssistantCheck { get; set; }
         public string SalarySpecRegAssistantCheckMsg { get; set; }
 
-        [Display(Name = "Lönespecifikation, vikarierande assistent:")]
-        public bool SalarySpecSubAssistantCheck { get; set; }
-        public string SalarySpecSubAssistantCheckMsg { get; set; }
+        //[Display(Name = "Lönespecifikation, vikarierande assistent:")]
+        //public bool SalarySpecSubAssistantCheck { get; set; }
+        //public string SalarySpecSubAssistantCheckMsg { get; set; }
 
         [Display(Name = "Sjukfrånvaroanmälan:")]
         public bool SickleaveNotificationCheck { get; set; }

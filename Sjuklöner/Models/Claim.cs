@@ -188,8 +188,8 @@ namespace Sjuklöner.Models
         public bool SalarySpecRegAssistantCheck { get; set; }
         public string SalarySpecRegAssistantCheckMsg { get; set; }
 
-        public bool SalarySpecSubAssistantCheck { get; set; }
-        public string SalarySpecSubAssistantCheckMsg { get; set; }
+        //public bool SalarySpecSubAssistantCheck { get; set; }
+        //public string SalarySpecSubAssistantCheckMsg { get; set; }
 
         public bool SickleaveNotificationCheck { get; set; }
         public string SickleaveNotificationCheckMsg { get; set; }

@@ -1674,8 +1674,8 @@ namespace Sjuklöner.Controllers
                             claim.SalarySpecRegAssistantCheck = false;
                             claim.SalarySpecRegAssistantCheckMsg = "Kontroll ej utförd";
 
-                            claim.SalarySpecSubAssistantCheck = false;
-                            claim.SalarySpecSubAssistantCheckMsg = "Kontroll ej utförd";
+                            //claim.SalarySpecSubAssistantCheck = false;
+                            //claim.SalarySpecSubAssistantCheckMsg = "Kontroll ej utförd";
 
                             claim.SickleaveNotificationCheck = false;
                             claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
@@ -2007,8 +2007,8 @@ namespace Sjuklöner.Controllers
                 recommendationVM.SalarySpecRegAssistantCheck = claim.SalarySpecRegAssistantCheck;
                 recommendationVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
 
-                recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
-                recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+                //recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
+                //recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
 
                 recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
                 recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
@@ -2060,7 +2060,7 @@ namespace Sjuklöner.Controllers
                     recommendationVM.InInbox = true;
 
                     if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                   !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                        !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                     {
                         recommendationVM.ApprovedSum = "0,00";
                         recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
@@ -2317,8 +2317,8 @@ namespace Sjuklöner.Controllers
                 recommendationVM.SalarySpecRegAssistantCheck = claim.SalarySpecRegAssistantCheck;
                 recommendationVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
 
-                recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
-                recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+                //recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
+                //recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
 
                 recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
                 recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
@@ -2346,7 +2346,7 @@ namespace Sjuklöner.Controllers
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
                 if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                    !recommendationVM.SalarySpecSubAssistantCheck || !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                    !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                 {
                     recommendationVM.ApprovedSum = "0,00";
                     claim.ApprovedSum = 0;
@@ -2409,7 +2409,7 @@ namespace Sjuklöner.Controllers
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
-                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
@@ -2457,10 +2457,10 @@ namespace Sjuklöner.Controllers
             {
                 resultMsg += "Kontroll av ordinarie assistents lönespecifikation gav negativt resultat. ";
             }
-            if (!claim.SalarySpecSubAssistantCheck)
-            {
-                resultMsg += "Kontroll av vikarierande assistents lönespecifikation gav negativt resultat. ";
-            }
+            //if (!claim.SalarySpecSubAssistantCheck)
+            //{
+            //    resultMsg += "Kontroll av vikarierande assistents lönespecifikation gav negativt resultat. ";
+            //}
             if (!claim.SickleaveNotificationCheck)
             {
                 resultMsg += "Kontroll av sjukfrånvaroanmälan gav negativt resultat. ";
@@ -2621,7 +2621,7 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.ProxyCheck = claim.ProxyCheckMsg;
                 claimDetailsOmbudVM.AssistanceCheck = claim.AssistanceCheckMsg;
                 claimDetailsOmbudVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
-                claimDetailsOmbudVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+                //claimDetailsOmbudVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
                 claimDetailsOmbudVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
                 claimDetailsOmbudVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
                 claimDetailsOmbudVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
@@ -3169,7 +3169,7 @@ namespace Sjuklöner.Controllers
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
-                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
