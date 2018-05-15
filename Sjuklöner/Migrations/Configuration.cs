@@ -236,7 +236,8 @@ namespace Sjuklöner.Migrations
                 new ClaimStatus { Id = 3, Name = "Under handläggning" },
                 new ClaimStatus { Id = 4, Name = "Godkänd" }, //Not used
                 new ClaimStatus { Id = 5, Name = "Inkorgen" },
-                new ClaimStatus { Id = 6, Name = "Överförd till Procapita" }
+                new ClaimStatus { Id = 6, Name = "Överförd till Procapita" },
+                new ClaimStatus { Id = 7, Name = "Manuellt initierad överföring påbörjad" }
             };
             foreach (var claimStatus in claimStatuses)
             {
@@ -273,13 +274,16 @@ namespace Sjuklöner.Migrations
                 LatestReferenceNumber = 00000
             });
 
+            /*
             context.WatchLogs.AddOrUpdate(w => w.Id, new WatchLog
             {
+                Id=1,
                 LogDate = System.DateTime.Now,
                 LogCode = 0,
                 LogMsg = "Initial status",
                 Robot = "A001325"
             });
+            */
 
             context.DecisionCandidates.AddOrUpdate(c => c.Id, new DecisionCandidate
             {

@@ -64,7 +64,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6);
+                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6 || c.ClaimStatusId == 7);
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
@@ -107,7 +107,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita
+                var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6  || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
@@ -142,7 +142,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => c.ClaimStatusId == 6); //Claims that have been transferred to Procapita               
+                var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6 || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita               
 
                 if (!string.IsNullOrWhiteSpace(searchString))
                 {
@@ -421,13 +421,14 @@ namespace Sjuklöner.Controllers
             }
             do
             {
-                if (DateTime.Now.AddYears(-yearIdx).Year % 4 == 0)
+                if (DateTime.IsLeapYear(DateTime.Now.AddYears(-yearIdx).Year))
                 {
                     leapYearFound = true;
                 }
                 yearIdx++;
             } while (!leapYearFound && yearIdx < 4);
             int numberOfDays = 3 * 365;
+          
             if (leapYearFound)
             {
                 numberOfDays++;
@@ -2035,7 +2036,7 @@ namespace Sjuklöner.Controllers
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
                
-                if (claim.ClaimStatusId == 3)
+                if (claim.ClaimStatusId == 3 || claim.ClaimStatusId == 7)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString() + ".";
                 }
@@ -2047,6 +2048,7 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString() + ".";
                 }
+
 
                 claim.BasisForDecisionMsg = recommendationVM.BasisForDecisionMsg;
                 claim.IVOCheckMsg = recommendationVM.IvoCheckMsg;
@@ -2091,13 +2093,13 @@ namespace Sjuklöner.Controllers
                 }
 
                 // Assign this Claim to the current Administrative Official               
-                if (User.IsInRole("AdministrativeOfficial"))
-                {
-                    var me = db.Users.Find(User.Identity.GetUserId());
+                //if (User.IsInRole("AdministrativeOfficial"))
+                //{
+                //    var me = db.Users.Find(User.Identity.GetUserId());
 
-                    claim.AdmOffId = me.Id;
-                    claim.AdmOffName = me.FirstName + " " + me.LastName;
-                }
+                //    claim.AdmOffId = me.Id;
+                //    claim.AdmOffName = me.FirstName + " " + me.LastName;
+                //}
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -2394,102 +2396,25 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
-                //claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
-                //claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
-                //claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
-                //claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
-                //claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
-                //claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
-                //claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum).Replace('.', ',');
-                //claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum).Replace('.', ',');
-                //claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum).Replace('.', ',');
-                //claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum).Replace('.', ',');
+                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
+                claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
+                claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
+                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
+                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
+                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
+                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
-                //claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
-                //    claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
-                //    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
-                //    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
-                //    claim.CustomerSSN + "+" + claim.CustomerName;
-
-                //claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString();
-                //claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString();
-                //claim.SentInDateAsString = claim.SentInDate.ToString().Substring(2, 8);
-                //claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
-                //claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
-                //claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
-                //claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
+                    claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
-
-                string sentInDate = claim.SentInDate.ToString().Substring(2, 8).Replace("-", "");
-
-                //serialize to XML
-                //var triggerContent = new TriggerContent
-                //{
-                //    ClaimInfo = "claiminformation",
-                //    ReferenceNumber = refNumber,
-                //    QualifyingDate = claim.QualifyingDate.ToShortDateString(),
-                //    LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString(),
-                //    RejectReason = claim.RejectReason,
-                //    ModelSum = String.Format("{0:0.00}", claim.ModelSum),
-                //    ClaimedSum = String.Format("{0:0.00}", claim.ClaimedSum),
-                //    ApprovedSum = String.Format("{0:0.00}", claim.ApprovedSum),
-                //    RejectedSum = String.Format("{0:0.00}", claim.RejectedSum),
-                //    IVOCheckMsg = claim.IVOCheckMsg,
-                //    ProxyCheckMsg = claim.ProxyCheckMsg,
-                //    AssistanceCheckMsg = claim.AssistanceCheckMsg,
-                //    SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg,
-                //    SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg,
-                //    SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg,
-                //    MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg,
-                //    FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg,
-                //    FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg,
-                //    sentInDate = sentInDate,
-                //    NumberOfSickDays = claim.NumberOfSickDays.ToString()
-                //};
-
-                //XmlSerializer writer = new XmlSerializer(typeof(TriggerContent));
-                //string path = "\\sjukloner";
-                //if (!System.IO.Directory.Exists(path))
-                //{
-                //    System.IO.Directory.CreateDirectory(path);
-                //}
-                //path += "\\" + "transfer" + refNumber + ".xml";
-
-                //using (System.IO.FileStream file = System.IO.File.Create(path))
-                //{
-                //    writer.Serialize(file, triggerContent);
-                //}
-                //writer = null;
-
-                using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + "transfer" + refNumber + ".xml")))
-                {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("claiminformation");
-                    writer.WriteElementString("ReferenceNumber", refNumber);
-                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
-                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
-                    writer.WriteElementString("RejectReason", claim.RejectReason);
-                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
-                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
-                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
-                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
-                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
-                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
-                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
-                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
-                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
-                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
-                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
-                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
-                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
-                    writer.WriteElementString("SentInDate", sentInDate);
-                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Dispose();
-                }
 
                 //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
@@ -3139,7 +3064,16 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSum = Convert.ToDecimal(recommendationVM.ApprovedSum);
                 claim.RejectedSum = Convert.ToDecimal(recommendationVM.RejectedSum);
                 claim.RejectReason = recommendationVM.RejectReason;
-               
+
+                // Assign this Claim to the current Administrative Official               
+                if (User.IsInRole("AdministrativeOfficial"))
+                {
+                    var me = db.Users.Find(User.Identity.GetUserId());
+                    
+                    claim.AdmOffId = me.Id;
+                    claim.AdmOffName = me.FirstName + " " + me.LastName;
+                }
+
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();             
 
@@ -3218,28 +3152,28 @@ namespace Sjuklöner.Controllers
                     writer.WriteStartDocument();
                     writer.WriteStartElement("claiminformation");
                     writer.WriteElementString("ReferenceNumber", refNumber);
-                    writer.WriteElementString("FirstDayOfSickness", claim.QualifyingDate.ToShortDateString());
-                    writer.WriteElementString("LastDayOfSickness", claim.LastDayOfSicknessDate.ToShortDateString());
-                    writer.WriteElementString("RejectReason", claim.RejectReason);
-                    writer.WriteElementString("ModelSum", String.Format("{0:0.00}", claim.ModelSum));
-                    writer.WriteElementString("ClaimedSum", String.Format("{0:0.00}", claim.ClaimedSum));
-                    writer.WriteElementString("ApprovedSum", String.Format("{0:0.00}", claim.ApprovedSum));
-                    writer.WriteElementString("RejectedSum", String.Format("{0:0.00}", claim.RejectedSum));
-                    writer.WriteElementString("IVOCheck", claim.IVOCheckMsg);
-                    writer.WriteElementString("ProxyCheck", claim.ProxyCheckMsg);
-                    writer.WriteElementString("AssistanceCheck", claim.AssistanceCheckMsg);
-                    writer.WriteElementString("SalarySpecRegAssistantCheck", claim.SalarySpecRegAssistantCheckMsg);
-                    writer.WriteElementString("SalarySpecSubAssistantCheck", claim.SalarySpecSubAssistantCheckMsg);
-                    writer.WriteElementString("SickLeaveNotificationCheck", claim.SickleaveNotificationCheckMsg);
-                    writer.WriteElementString("MedicalCertificateCheck", claim.MedicalCertificateCheckMsg);
-                    writer.WriteElementString("FKRegAssistantCheck", claim.FKRegAssistantCheckMsg);
-                    writer.WriteElementString("FKSubAssistantCheck", claim.FKSubAssistantCheckMsg);
-                    writer.WriteElementString("SentInDate", sentInDate);
-                    writer.WriteElementString("NumberOfSickDays", claim.NumberOfSickDays.ToString());
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
-                //claim.ClaimStatusId = 6; //This should probably be done by the robot when the transfer to Procapita has been done.
+
+                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
+                claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
+                claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
+                claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
+                claim.ModelSumAsString = String.Format("{0:0.00}", claim.ModelSum);
+                claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
+                claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
+
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
+                    claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
+                    claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SalarySpecSubAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+
+                claim.ClaimStatusId = 7;      // Transfer to Procapita started
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 claim.StatusDate = DateTime.Now;
               
