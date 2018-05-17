@@ -129,7 +129,7 @@
     </Reference>
     <Reference Include="ts_clr, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ec0900f7c2314157, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ts_clr.dll</HintPath>
+      <HintPath>Content\ts_clr.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
