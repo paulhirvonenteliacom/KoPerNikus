@@ -17,6 +17,7 @@ using System.Data.Entity;
 using static Sjuklöner.Models.AdmOffIndexVM;
 using System.Net;
 using static Sjuklöner.Models.IndexAllOmbudsVM;
+using System.Configuration;
 
 namespace Sjuklöner.Controllers
 {
@@ -1121,10 +1122,45 @@ namespace Sjuklöner.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult BankIDLogin(string ssn, string ReturnUrl, string type)
+        public async Task<ActionResult> BankIDLogin(string ssn, string ReturnUrl, string type)
         {
+            try
+            {
+                TicketService.Assertion assertion;
+                TicketService.DistinguishedName dn;
+                using (TicketService.eID ts = new TicketService.eID())
+                {
+                    ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
+                    ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
+                    ts.System = "helsingborg";
+                    //ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
+                    //ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
+                    //ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
+                    ts.Authenticate(false, false);
+                    assertion = ts.GetAssertion();
+                    dn = assertion.Subject;
+                    HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+                    //HttpContext.Current.Response.Write(dn.ToString());
+                    //HttpContext.Current.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+                }
+                var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
+                await SignInManager.SignInAsync(user, true, true);
+                if (!string.IsNullOrWhiteSpace(ReturnUrl))
+                    return Redirect(ReturnUrl);
 
-            return RedirectToAction("BankIDWaitScreen", new { SSN = ssn, returnUrl = ReturnUrl, Type = type });
+                return RedirectToAction("Index", "Claims");
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                throw;
+            }
+            catch (System.SystemException exception)
+            {
+                HttpContext.Response.Write(exception.Message);
+            }
+
+            return View();
+            //return RedirectToAction("BankIDWaitScreen", new { SSN = ssn, returnUrl = ReturnUrl, Type = type });
         }
 
         // GET: /Account/BankIDWaitScreen
@@ -1150,57 +1186,48 @@ namespace Sjuklöner.Controllers
         {
             if (UserManager.Users.Where(u => u.SSN == model.ssn).Any())
             {
-                System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
+                //System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls12;
 
 
-                using (var client = new RpServicePortTypeClient())
-                {
-                    var authRequest = new AuthenticateRequestType();
-                    authRequest.personalNumber = model.ssn;
-                    if (model.type == "Mobilt")
-                    {
-                        RequirementType conditions = new RequirementType
-                        {
-                            condition = new[]
-                            {
-                                new ConditionType()
-                                {
-                                    key = "certificatePolicies",
-                                    value = new[] {"1.2.3.4.25"}
-                                }
-                            }
-                        };
-                        authRequest.requirementAlternatives = new[] { conditions };
-                    }
+                //using (var client = new RpServicePortTypeClient())
+                //{
+                //    var authRequest = new AuthenticateRequestType();
+                //    authRequest.personalNumber = model.ssn;
+                //    if (model.type == "Mobilt")
+                //    {
+                //        RequirementType conditions = new RequirementType
+                //        {
+                //            condition = new[]
+                //            {
+                //                new ConditionType()
+                //                {
+                //                    key = "certificatePolicies",
+                //                    value = new[] {"1.2.3.4.25"}
+                //                }
+                //            }
+                //        };
+                //        authRequest.requirementAlternatives = new[] { conditions };
+                //    }
 
 
-                    OrderResponseType response = client.Authenticate(authRequest);
+                //    OrderResponseType response = client.Authenticate(authRequest);
 
-                    CollectResponseType result;
+                //    CollectResponseType result;
 
-                    do
-                    {
-                        try
-                        {
-                            result = client.Collect(response.orderRef);
-                        }
-                        catch
-                        {
-                            return View("Login");
-                        }
-                        System.Threading.Thread.Sleep(1000);
-                    } while (result.progressStatus != ProgressStatusType.COMPLETE);
-
-                    var user = UserManager.Users.Where(u => u.SSN == model.ssn).FirstOrDefault();
-                    await SignInManager.SignInAsync(user, true, true);
-                }
-
-                if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
-                    return Redirect(model.ReturnUrl);
-
-                return RedirectToAction("Index", "Claims");
+                //    do
+                //    {
+                //        try
+                //        {
+                //            result = client.Collect(response.orderRef);
+                //        }
+                //        catch
+                //        {
+                //            return View("Login");
+                //        }
+                //        System.Threading.Thread.Sleep(1000);
+                //    } while (result.progressStatus != ProgressStatusType.COMPLETE);
             }
-            return View("BankIDWaitScreen");
+            return View("Login", "Account");
         }
 
         //
