@@ -299,7 +299,7 @@ namespace Sjuklöner.Controllers
 
             create1VM.CustomerName = claim.CustomerName;
             create1VM.CustomerSSN = claim.CustomerSSN;
-            create1VM.CustomerAddress = claim.CustomerAddress;
+            //create1VM.CustomerAddress = claim.CustomerAddress;
             create1VM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
             create1VM.FirstDayOfSicknessDate = claim.QualifyingDate;
             create1VM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
@@ -733,7 +733,7 @@ namespace Sjuklöner.Controllers
         {
             claim.CustomerSSN = create1VM.CustomerSSN;
             claim.CustomerName = create1VM.CustomerName;
-            claim.CustomerAddress = create1VM.CustomerAddress;
+            //claim.CustomerAddress = create1VM.CustomerAddress;
             claim.CustomerPhoneNumber = create1VM.CustomerPhoneNumber;
         }
 
@@ -2534,7 +2534,7 @@ namespace Sjuklöner.Controllers
                 //Assistansberättigad
                 claimDetailsOmbudVM.CustomerName = claim.CustomerName;
                 claimDetailsOmbudVM.CustomerSSN = claim.CustomerSSN;
-                claimDetailsOmbudVM.CustomerAddress = claim.CustomerAddress;
+                //claimDetailsOmbudVM.CustomerAddress = claim.CustomerAddress;
                 claimDetailsOmbudVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
                 //Ombud/uppgiftslämnare
@@ -2837,7 +2837,7 @@ namespace Sjuklöner.Controllers
             //Assistansberättigad
             claimDetailsVM.CustomerName = claim.CustomerName;
             claimDetailsVM.CustomerSSN = claim.CustomerSSN;
-            claimDetailsVM.CustomerAddress = claim.CustomerAddress;
+            //claimDetailsVM.CustomerAddress = claim.CustomerAddress;
             claimDetailsVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
             //Ombud/uppgiftslämnare
