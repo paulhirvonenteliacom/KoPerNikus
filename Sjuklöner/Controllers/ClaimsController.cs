@@ -107,7 +107,7 @@ namespace Sjuklöner.Controllers
             {
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
-                var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6  || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita
+                var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6 || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita
                 if (searchBy == "Mine")
                 {
                     decidedClaims = decidedClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
@@ -190,7 +190,7 @@ namespace Sjuklöner.Controllers
             }
 
             return Claims;
-        }        
+        }
 
         /*
         // GET: Claims/Details/5
@@ -240,11 +240,14 @@ namespace Sjuklöner.Controllers
 
                 //Initialize array that will hold selected substitute assistants (beyond the first sub that is mandatory)
                 int[] subIndeces = new int[20];
+                string[] selectedSubAssistants = new string[20];
                 for (int i = 0; i < 20; i++)
                 {
                     subIndeces[i] = 0;
+                    selectedSubAssistants[i] = "";
                 }
                 create1VM.SelectedSubIndeces = subIndeces;
+                create1VM.SelectedSubAssistants = selectedSubAssistants;
 
                 create1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
                 create1VM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
@@ -278,6 +281,45 @@ namespace Sjuklöner.Controllers
             create1VM.SelectedRegAssistantId = 1;
             create1VM.SelectedSubAssistantId = 1;
 
+            //Initialize the array holding the selected substitute assistant indeces
+            int[] selectedSubAssistantIndeces = new int[20];
+            for (int i = 0; i < 20; i++)
+            {
+                selectedSubAssistantIndeces[i] = 0;
+            }
+
+            //Figure out the index of each saved substitue assistant. They could have changed due to addition and removal of Assistants since the draft claim was saved. 
+            string[] selectedSubAssistantSSNs = new string[20];
+            int numberOfRemovedSubAssistants = 0;
+            bool indexFound;
+            int idx;
+            int selectedIndex;
+            for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++) //- 1 because the first (mandatory substitue assistant is included in NumberOfSubAssistants but not in the concatenated strings.
+            {
+                idx = 0;
+                indexFound = false;
+                selectedIndex = 0;
+                selectedSubAssistantSSNs[i] = claim.SubAssistantsSSNConcat.Split('£')[i];
+                while (!indexFound && idx < assistants.Count())
+                {
+                    if (selectedSubAssistantSSNs[i] == assistants[idx].AssistantSSN)
+                    {
+                        selectedIndex = idx + 1;
+                        indexFound = true;
+                    }
+                    idx++;
+                }
+                if (indexFound)
+                {
+                    selectedSubAssistantIndeces[i - numberOfRemovedSubAssistants] = selectedIndex;
+                }
+                else
+                {
+                    //Need to remove the substitute assistant??
+                    numberOfRemovedSubAssistants++;
+                }
+            }
+
             for (int i = 0; i < assistants.Count(); i++)
             {
                 regAssistantDdlString.Add(new SelectListItem() { Text = assistants[i].AssistantSSN + ", " + assistants[i].FirstName + " " + assistants[i].LastName, Value = assistants[i].Id.ToString() });
@@ -295,7 +337,22 @@ namespace Sjuklöner.Controllers
             create1VM.RegularAssistants = regAssistantDdlString;
             create1VM.SubstituteAssistants = subAssistantDdlString;
             create1VM.AssistantIds = assistantIds;
-            //create1VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
+            create1VM.NumberOfSubAssistants = claim.NumberOfSubAssistants - numberOfRemovedSubAssistants;
+
+            //Possibly code could be added here to handle the case where a sub assistant has been removed after creation of the claim but before submission of it
+
+            //Load substitute assistant indeces for assistants beyond the first
+            //int[] selectedSubAssistantIndeces = new int[20];
+
+            //for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+            //{
+            //    selectedSubAssistantIndeces[i] = Convert.ToInt32(claim.SelectedSubAssistantIndeces.Split(',')[i]);
+            //}
+            //for (int i = claim.NumberOfSubAssistants - 1; i < 20; i++)
+            //{
+            //    selectedSubAssistantIndeces[i] = 0;
+            //}
+            create1VM.SelectedSubIndeces = selectedSubAssistantIndeces;
 
             create1VM.CustomerName = claim.CustomerName;
             create1VM.CustomerSSN = claim.CustomerSSN;
@@ -428,7 +485,7 @@ namespace Sjuklöner.Controllers
                 yearIdx++;
             } while (!leapYearFound && yearIdx < 4);
             int numberOfDays = 3 * 365;
-          
+
             if (leapYearFound)
             {
                 numberOfDays++;
@@ -455,6 +512,47 @@ namespace Sjuklöner.Controllers
             if (OverlappingClaim(refNumber, create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN))
             {
                 ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund.");
+            }
+            //Check if no substitute was selected in the substitutes beyond the first mandatory substitute assistant
+            for (int i = 0; i < create1VM.NumberOfSubAssistants - 1; i++)
+            {
+                if (create1VM.SelectedSubIndeces[i] == 0 || create1VM.SelectedSubIndeces[i] == 9999)  //9999 is used as a non valid value
+                {
+                    ModelState.AddModelError("SelectedSubAssistants[" + i.ToString() + "]", "Vikarierande assistent måste väljas.");
+                }
+            }
+            //Check if a substitute assistant already has been selected
+            int startIdx = 1;
+            for (int i = 0; i < create1VM.NumberOfSubAssistants - 1; i++)
+            {
+                if (create1VM.SelectedSubIndeces[i] != 0 && create1VM.SelectedSubIndeces[i] != 9999)  //9999 is used as a non valid value
+                {
+                    for (int k = startIdx; k < create1VM.NumberOfSubAssistants - 1; k++)
+                    {
+                        if (create1VM.SelectedSubIndeces[i] == create1VM.SelectedSubIndeces[k])
+                        {
+                            ModelState.AddModelError("SelectedSubAssistants[" + k.ToString() + "]", "Assistenten är redan vald.");
+                        }
+                    }
+                    //Check if the selected substitute assistant is equal to the first (mandatory) substitute assistant or if it is equal to the regular assistant
+                    var firstSub = db.Assistants.Where(a => a.Id == create1VM.SelectedSubAssistantId).FirstOrDefault();
+                    var regAssistant = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault();
+                    if (firstSub != null)
+                    {
+                        if (create1VM.SelectedSubAssistants[i].Substring(0, 13) == firstSub.AssistantSSN)
+                        {
+                            ModelState.AddModelError("SelectedSubAssistants[" + i.ToString() + "]", "Assistenten är redan vald.");
+                        }
+                    }
+                    if (regAssistant != null)
+                    {
+                        if (create1VM.SelectedSubAssistants[i].Substring(0, 13) == regAssistant.AssistantSSN)
+                        {
+                            ModelState.AddModelError("SelectedSubAssistants[" + i.ToString() + "]", "Assistenten är redan vald.");
+                        }
+                    }
+                }
+                startIdx++;
             }
 
             if (ModelState.IsValid)
@@ -501,7 +599,7 @@ namespace Sjuklöner.Controllers
                     }
                     create1VM.RegularAssistants = regAssistantDdlString;
                     create1VM.SubstituteAssistants = subAssistantDdlString;
-                    //create1VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
+                    create1VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
                     create1VM.CompletionStage = (int)claim.CompletionStage;
                     create1VM.ClaimNumber = claim.ReferenceNumber;
 
@@ -514,6 +612,7 @@ namespace Sjuklöner.Controllers
             }
             else
             {
+                //Should this branch also handle the case where an attempt to update an existing claim is made and where the update does not have a valid model? 
                 var currentId = User.Identity.GetUserId();
                 ApplicationUser currentUser = db.Users.Where(u => u.Id == currentId).FirstOrDefault();
                 var companyId = currentUser.CareCompanyId;
@@ -528,6 +627,8 @@ namespace Sjuklöner.Controllers
                 }
                 create1VM.RegularAssistants = regAssistantDdlString;
                 create1VM.SubstituteAssistants = subAssistantDdlString;
+                //create1VM.NumberOfSubAssistants = 1;
+
                 return View(create1VM);
             }
         }
@@ -753,6 +854,47 @@ namespace Sjuklöner.Controllers
                 claim.StandInSSN = null;
             }
             claim.SelectedSubAssistantId = create1VM.SelectedSubAssistantId;
+
+            claim.NumberOfSubAssistants = create1VM.NumberOfSubAssistants;
+
+            //Save substitute assistant indeces for assistants beyond the first
+            string selectedIndeces = "";
+            string selectedCustomerNames = "";
+            string selectedCustomerSSNs = "";
+            string selectedCustomerPhoneNumbers = "";
+            string selectedCustomerEmails = "";
+            string subAssistantSSN;
+
+            for (int i = 0; i < create1VM.NumberOfSubAssistants - 1; i++)
+            {
+                selectedIndeces += create1VM.SelectedSubIndeces[i] + ",";
+                selectedCustomerSSNs += create1VM.SelectedSubAssistants[i].Substring(0, 13) + "£";
+                selectedCustomerNames += create1VM.SelectedSubAssistants[i].Substring(15) + "£";
+                subAssistantSSN = create1VM.SelectedSubAssistants[i].Substring(0, 13);
+
+                //find record of sub assistant in order to read the phone number and emailaddress
+                var subAssistant = db.Assistants.Where(a => a.AssistantSSN == subAssistantSSN).FirstOrDefault();
+                if (subAssistant != null)
+                {
+                    selectedCustomerPhoneNumbers += subAssistant.PhoneNumber + "£";
+                    selectedCustomerEmails += subAssistant.Email + "£";
+                }
+                else
+                {
+                    selectedCustomerPhoneNumbers += "NN£";    //This can only happen if the assistant has been removed after the creation of the claim and before submitting it.
+                    selectedCustomerEmails += "NN£";    //This can only happen if the assistant has been removed after the creation of the claim and before submitting it.
+                }
+            }
+            claim.SubAssistantsNameConcat = selectedCustomerNames;
+            claim.SubAssistantsSSNConcat = selectedCustomerSSNs;
+            claim.SubAssistantsPhoneConcat = selectedCustomerPhoneNumbers;
+            claim.SubAssistantsEmailConcat = selectedCustomerEmails;
+
+            for (int i = claim.NumberOfSubAssistants - 1; i < 20; i++)
+            {
+                selectedIndeces += "0,";
+            }
+            claim.SelectedSubAssistantIndeces = selectedIndeces;
         }
 
         private void SaveRegAssistantInformation(Create1VM create1VM, Claim claim)
@@ -979,15 +1121,34 @@ namespace Sjuklöner.Controllers
             var numberOfDays = (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate.Date).Days + 1;
 
             create2VM.ReferenceNumber = claim.ReferenceNumber;
+            create2VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
             List<ScheduleRow> rowList = new List<ScheduleRow>();
 
             DateTime dateInSchedule;
 
             List<ClaimDay> claimDays = new List<ClaimDay>();
 
+            string[] hoursSIArray = new string[20];
+            string[] unsocialEveningSIArray = new string[20];
+            string[] unsocialNightSIArray = new string[20];
+            string[] unsocialWeekendSIArray = new string[20];
+            string[] unsocialGrandWeekendSIArray = new string[20];
+            string[] onCallDaySIArray = new string[20];
+            string[] onCallNightSIArray = new string[20];
+
             if (claim.CompletionStage >= 2)
             {
                 claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                foreach (var day in claimDays)
+                {
+                    hoursSIArray = day.HoursSI.Split('+').ToArray();
+                    unsocialEveningSIArray = day.UnsocialEveningSI.Split('+').ToArray();
+                    unsocialNightSIArray = day.UnsocialNightSI.Split('+').ToArray();
+                    unsocialWeekendSIArray = day.UnsocialWeekendSI.Split('+').ToArray();
+                    unsocialGrandWeekendSIArray = day.UnsocialGrandWeekendSI.Split('+').ToArray();
+                    onCallDaySIArray = day.OnCallDaySI.Split('+').ToArray();
+                    onCallNightSIArray = day.OnCallNightSI.Split('+').ToArray();
+                }
             }
 
             //Populate viewmodel properties by iterating over each row in the schedule
@@ -995,6 +1156,22 @@ namespace Sjuklöner.Controllers
             {
                 //Instantiate a new scheduleRow in the viewmodel
                 ScheduleRow scheduleRow = new ScheduleRow();
+
+                string[] hoursArray = new string[20];
+                string[] unsocialEveningArray = new string[20];
+                string[] unsocialNightArray = new string[20];
+                string[] unsocialWeekendArray = new string[20];
+                string[] unsocialGrandWeekendArray = new string[20];
+                string[] onCallDayArray = new string[20];
+                string[] onCallNightArray = new string[20];
+
+                scheduleRow.HoursSI = hoursArray;
+                scheduleRow.UnsocialEveningSI = unsocialEveningArray;
+                scheduleRow.UnsocialNightSI = unsocialNightArray;
+                scheduleRow.UnsocialWeekendSI = unsocialWeekendArray;
+                scheduleRow.UnsocialGrandWeekendSI = unsocialGrandWeekendArray;
+                scheduleRow.OnCallDaySI = onCallDayArray;
+                scheduleRow.OnCallNightSI = onCallNightArray;
 
                 //Assign values to the ScheduleRowDate and ScheduleRowWeekDay properties in the viewmodel
                 dateInSchedule = claim.QualifyingDate.AddDays(i);
@@ -1017,14 +1194,17 @@ namespace Sjuklöner.Controllers
                     scheduleRow.OnCallDay = claimDays[i].OnCallDay;
                     scheduleRow.OnCallNight = claimDays[i].OnCallNight;
 
-                    scheduleRow.HoursSI = claimDays[i].HoursSI;
-                    scheduleRow.UnsocialEveningSI = claimDays[i].UnsocialEveningSI;
-                    scheduleRow.UnsocialNightSI = claimDays[i].UnsocialNightSI;
-                    scheduleRow.UnsocialWeekendSI = claimDays[i].UnsocialWeekendSI;
-                    scheduleRow.UnsocialGrandWeekendSI = claimDays[i].UnsocialGrandWeekendSI;
+                    for (int k = 0; k < claim.NumberOfSubAssistants; k++)
+                    {
+                        scheduleRow.HoursSI[k] = hoursSIArray[k];
+                        scheduleRow.UnsocialEveningSI[k] = unsocialEveningSIArray[k];
+                        scheduleRow.UnsocialNightSI[k] = unsocialNightSIArray[k];
+                        scheduleRow.UnsocialWeekendSI[k] = unsocialWeekendSIArray[k];
+                        scheduleRow.UnsocialGrandWeekendSI[k] = unsocialGrandWeekendSIArray[k];
 
-                    scheduleRow.OnCallDaySI = claimDays[i].OnCallDaySI;
-                    scheduleRow.OnCallNightSI = claimDays[i].OnCallNightSI;
+                        scheduleRow.OnCallDaySI[k] = onCallDaySIArray[k];
+                        scheduleRow.OnCallNightSI[k] = onCallNightSIArray[k];
+                    }
                 }
                 rowList.Add(scheduleRow);
             }
@@ -1040,6 +1220,84 @@ namespace Sjuklöner.Controllers
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
             int idx = 0;
+            foreach (var row in create2VM.ScheduleRowList)
+            {
+                //For some reason these properties appear in the model validation even though they are not used and should therefore not be causing a validation error.
+                //Since these non-array properties are not used in any way in the action/model, they are removed from the validation.
+                //Array properties with the same names are used and also validated.
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].HoursSI");
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI");
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI");
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI");
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI");
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI");
+                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI");
+
+                //Set all empty hour properties to zero
+                if (create2VM.ScheduleRowList[idx].Hours == "")
+                {
+                    create2VM.ScheduleRowList[idx].Hours = "0";
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialEvening == "")
+                {
+                    create2VM.ScheduleRowList[idx].UnsocialEvening = "0";
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialNight == "")
+                {
+                    create2VM.ScheduleRowList[idx].UnsocialNight = "0";
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialWeekend == "")
+                {
+                    create2VM.ScheduleRowList[idx].UnsocialWeekend = "0";
+                }
+                if (create2VM.ScheduleRowList[idx].UnsocialGrandWeekend == "")
+                {
+                    create2VM.ScheduleRowList[idx].UnsocialGrandWeekend = "0";
+                }
+                if (create2VM.ScheduleRowList[idx].OnCallDay == "")
+                {
+                    create2VM.ScheduleRowList[idx].OnCallDay = "0";
+                }
+                if (create2VM.ScheduleRowList[idx].OnCallNight == "")
+                {
+                    create2VM.ScheduleRowList[idx].OnCallNight = "0";
+                }
+
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                {
+                    if (create2VM.ScheduleRowList[idx].HoursSI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].HoursSI[i] = "0";
+                    }
+                    if (create2VM.ScheduleRowList[idx].UnsocialEveningSI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].UnsocialEveningSI[i] = "0";
+                    }
+                    if (create2VM.ScheduleRowList[idx].UnsocialNightSI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].UnsocialNightSI[i] = "0";
+                    }
+                    if (create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i] = "0";
+                    }
+                    if (create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i] = "0";
+                    }
+                    if (create2VM.ScheduleRowList[idx].OnCallDaySI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].OnCallDaySI[i] = "0";
+                    }
+                    if (create2VM.ScheduleRowList[idx].OnCallNightSI[i] == "")
+                    {
+                        create2VM.ScheduleRowList[idx].OnCallNightSI[i] = "0";
+                    }
+                }
+                idx++;
+            }
+
+            idx = 0;
             //Check that each entry has a correct format
             Regex regex = new Regex(@"\d{0,2}(\,\d{0,2})?$");
             foreach (var row in create2VM.ScheduleRowList)
@@ -1100,60 +1358,82 @@ namespace Sjuklöner.Controllers
                         ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "Fel format.");
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].HoursSI != null)
+
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].HoursSI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].HoursSI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].HoursSI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].UnsocialEveningSI != null)
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialEveningSI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].UnsocialEveningSI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].UnsocialNightSI != null)
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialNightSI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].UnsocialNightSI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].UnsocialWeekendSI != null)
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialWeekendSI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI != null)
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].OnCallDaySI != null)
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallDaySI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].OnCallDaySI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallDaySI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
-                if (create2VM.ScheduleRowList[idx].OnCallNightSI != null)
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallNightSI);
-                    if (!match.Success)
+                    if (create2VM.ScheduleRowList[idx].OnCallNightSI[i] != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI", "Fel format.");
+                        Match match = regex.Match(create2VM.ScheduleRowList[idx].OnCallNightSI[i]);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI[" + i.ToString() + "]", "Fel format.");
+                        }
                     }
                 }
                 idx++;
@@ -1169,9 +1449,12 @@ namespace Sjuklöner.Controllers
                     {
                         ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För högt antal timmar.");
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
                     idx++;
                 }
@@ -1208,33 +1491,54 @@ namespace Sjuklöner.Controllers
                     {
                         ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "För högt antal timmar.");
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI) > 25)
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI", "För högt antal timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI[i]) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI[" + i.ToString() + "]", "För högt antal timmar.");
+                        }
                     }
                     idx++;
                 }
@@ -1247,9 +1551,12 @@ namespace Sjuklöner.Controllers
                     {
                         ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För många OB-timmar.");
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI))
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI", "För många OB-timmar.");
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För många OB-timmar.");
+                        }
                     }
                     idx++;
                 }
@@ -1269,19 +1576,22 @@ namespace Sjuklöner.Controllers
                 {
                     ModelState.AddModelError("ScheduleRowList[0].Hours", "Inga timmar ifyllda.");
                 }
-                bool hoursSIFound = false;
-                idx = 0;
-                do
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI))
+                    bool hoursSIFound = false;
+                    idx = 0;
+                    do
                     {
-                        hoursSIFound = true;
+                        if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI[i]) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI[i]))
+                        {
+                            hoursSIFound = true;
+                        }
+                        idx++;
+                    } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
+                    if (!hoursSIFound)
+                    {
+                        ModelState.AddModelError("ScheduleRowList[0].HoursSI[" + i.ToString() + "]", "Inga timmar ifyllda.");
                     }
-                    idx++;
-                } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
-                if (!hoursSIFound)
-                {
-                    ModelState.AddModelError("ScheduleRowList[0].HoursSI", "Inga timmar ifyllda.");
                 }
             }
 
@@ -1316,17 +1626,48 @@ namespace Sjuklöner.Controllers
 
             var claim = db.Claims.Where(c => c.ReferenceNumber == create2VM.ReferenceNumber).FirstOrDefault();
             decimal numberOfAbsenceHours = 0;
+            decimal numberOfOrdinaryHours = 0;
             decimal numberOfUnsocialHours = 0;
             decimal numberOfOnCallHours = 0;
             decimal numberOfAbsenceHoursWithSI = 0;
+            decimal numberOfOrdinaryHoursWithSI = 0;
             decimal numberOfUnsocialHoursSI = 0;
             decimal numberOfOnCallHoursSI = 0;
 
             DateTime claimDate = claim.QualifyingDate;
 
+            string numberOfHoursWithSIConcat = "";
+            string numberOfOrdinaryHoursSIConcat = "";
+            string numberOfUnsocialHoursSIConcat = "";
+            string numberOfOnCallHoursSIConcat = "";
+
+            decimal[] numberOfHoursWithSIArray = new decimal[20];
+            decimal[] numberOfOrdinaryHoursSIArray = new decimal[20];
+            decimal[] numberOfUnsocialHoursSIArray = new decimal[20];
+            decimal[] numberOfOnCallHoursSIArray = new decimal[20];
+
+            string HoursSIConcat = "";
+            string UnsocialEveningSIConcat = "";
+            string UnsocialNightSIConcat = "";
+            string UnsocialWeekendSIConcat = "";
+            string UnsocialGrandWeekendSIConcat = "";
+            string OnCallDaySIConcat = "";
+            string OnCallNightSIConcat = "";
+
             int dayIdx = 1;
             foreach (var day in create2VM.ScheduleRowList)
             {
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                {
+                    HoursSIConcat += day.HoursSI[i] + "+";
+                    UnsocialEveningSIConcat += day.UnsocialEveningSI[i] + "+";
+                    UnsocialNightSIConcat += day.UnsocialNightSI[i] + "+";
+                    UnsocialWeekendSIConcat += day.UnsocialWeekendSI[i] + "+";
+                    UnsocialGrandWeekendSIConcat += day.UnsocialGrandWeekendSI[i] + "+";
+                    OnCallDaySIConcat += day.OnCallDaySI[i] + "+";
+                    OnCallNightSIConcat += day.OnCallNightSI[i] + "+";
+                }
+
                 var claimDay = new ClaimDay
                 {
                     ReferenceNumber = create2VM.ReferenceNumber,
@@ -1341,32 +1682,67 @@ namespace Sjuklöner.Controllers
                     UnsocialGrandWeekend = day.UnsocialGrandWeekend,
                     OnCallDay = day.OnCallDay,
                     OnCallNight = day.OnCallNight,
-                    HoursSI = day.HoursSI,
-                    UnsocialEveningSI = day.UnsocialEveningSI,
-                    UnsocialNightSI = day.UnsocialNightSI,
-                    UnsocialWeekendSI = day.UnsocialWeekendSI,
-                    UnsocialGrandWeekendSI = day.UnsocialGrandWeekendSI,
-                    OnCallDaySI = day.OnCallDaySI,
-                    OnCallNightSI = day.OnCallNightSI
+                    HoursSI = HoursSIConcat,
+                    UnsocialEveningSI = UnsocialEveningSIConcat,
+                    UnsocialNightSI = UnsocialNightSIConcat,
+                    UnsocialWeekendSI = UnsocialWeekendSIConcat,
+                    UnsocialGrandWeekendSI = UnsocialGrandWeekendSIConcat,
+                    OnCallDaySI = OnCallDaySIConcat,
+                    OnCallNightSI = OnCallNightSIConcat
                 };
                 db.ClaimDays.Add(claimDay);
 
-                numberOfAbsenceHours = numberOfAbsenceHours + Convert.ToDecimal(day.Hours);
+                numberOfOrdinaryHours = numberOfOrdinaryHours + Convert.ToDecimal(day.Hours);
                 numberOfUnsocialHours = numberOfUnsocialHours + Convert.ToDecimal(day.UnsocialEvening) + Convert.ToDecimal(day.UnsocialNight) + Convert.ToDecimal(day.UnsocialWeekend) + Convert.ToDecimal(day.UnsocialGrandWeekend);
                 numberOfOnCallHours = numberOfOnCallHours + Convert.ToDecimal(day.OnCallDay) + Convert.ToDecimal(day.OnCallNight);
-                numberOfAbsenceHoursWithSI = numberOfAbsenceHoursWithSI + Convert.ToDecimal(day.HoursSI);
-                numberOfUnsocialHoursSI = numberOfUnsocialHoursSI + Convert.ToDecimal(day.UnsocialEveningSI) + Convert.ToDecimal(day.UnsocialNightSI) + Convert.ToDecimal(day.UnsocialWeekendSI) + Convert.ToDecimal(day.UnsocialGrandWeekendSI);
-                numberOfOnCallHoursSI = numberOfOnCallHoursSI + Convert.ToDecimal(day.OnCallDaySI) + Convert.ToDecimal(day.OnCallNightSI);
+                numberOfAbsenceHours = numberOfAbsenceHours + Convert.ToDecimal(day.Hours) + Convert.ToDecimal(day.OnCallDay) + Convert.ToDecimal(day.OnCallNight);
 
+                //numberOfOrdinaryHoursWithSI = numberOfOrdinaryHoursWithSI + Convert.ToDecimal(day.HoursSI);
+                //numberOfUnsocialHoursSI = numberOfUnsocialHoursSI + Convert.ToDecimal(day.UnsocialEveningSI) + Convert.ToDecimal(day.UnsocialNightSI) + Convert.ToDecimal(day.UnsocialWeekendSI) + Convert.ToDecimal(day.UnsocialGrandWeekendSI);
+                //numberOfOnCallHoursSI = numberOfOnCallHoursSI + Convert.ToDecimal(day.OnCallDaySI) + Convert.ToDecimal(day.OnCallNightSI);
+                //numberOfAbsenceHoursWithSI = numberOfAbsenceHoursWithSI + Convert.ToDecimal(day.HoursSI) + Convert.ToDecimal(day.OnCallDaySI) + Convert.ToDecimal(day.OnCallNightSI);
+
+                //The variables below are required in order to be able to handle more than one substitute assistants
+                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                {
+                    numberOfOrdinaryHoursSIArray[i] = numberOfOrdinaryHoursSIArray[i] + Convert.ToDecimal(day.HoursSI[i]);
+                    numberOfUnsocialHoursSIArray[i] = numberOfUnsocialHoursSIArray[i] + Convert.ToDecimal(day.UnsocialEveningSI[i]) + Convert.ToDecimal(day.UnsocialNightSI[i]) + Convert.ToDecimal(day.UnsocialWeekendSI[i]) + Convert.ToDecimal(day.UnsocialGrandWeekendSI[i]);
+                    numberOfOnCallHoursSIArray[i] = numberOfOnCallHoursSIArray[i] + Convert.ToDecimal(day.OnCallDaySI[i]) + Convert.ToDecimal(day.OnCallNightSI[i]);
+                    numberOfHoursWithSIArray[i] = numberOfHoursWithSIArray[i] + Convert.ToDecimal(day.HoursSI[i]) + Convert.ToDecimal(day.OnCallDaySI[i]) + Convert.ToDecimal(day.OnCallNightSI[i]);
+                }
+
+                HoursSIConcat = "";
+                UnsocialEveningSIConcat = "";
+                UnsocialNightSIConcat = "";
+                UnsocialWeekendSIConcat = "";
+                UnsocialGrandWeekendSIConcat = "";
+                OnCallDaySIConcat = "";
+                OnCallNightSIConcat = "";
                 dayIdx++;
             }
 
             claim.NumberOfAbsenceHours = numberOfAbsenceHours;
+            claim.NumberOfOrdinaryHours = numberOfOrdinaryHours;
             claim.NumberOfUnsocialHours = numberOfUnsocialHours;
             claim.NumberOfOnCallHours = numberOfOnCallHours;
-            claim.NumberOfHoursWithSI = numberOfAbsenceHoursWithSI;
-            claim.NumberOfUnsocialHoursSI = numberOfUnsocialHoursSI;
-            claim.NumberOfOnCallHoursSI = numberOfOnCallHoursSI;
+
+            //claim.NumberOfHoursWithSI = numberOfAbsenceHoursWithSI;
+            //claim.NumberOfOrdinaryHoursSI = numberOfOrdinaryHoursWithSI;
+            //claim.NumberOfUnsocialHoursSI = numberOfUnsocialHoursSI;
+            //claim.NumberOfOnCallHoursSI = numberOfOnCallHoursSI;
+
+            for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+            {
+                numberOfHoursWithSIConcat += numberOfHoursWithSIArray[i] + "+";
+                numberOfOrdinaryHoursSIConcat += numberOfOrdinaryHoursSIArray[i] + "+";
+                numberOfUnsocialHoursSIConcat += numberOfUnsocialHoursSIArray[i] + "+";
+                numberOfOnCallHoursSIConcat += numberOfOnCallHoursSIArray[i] + "+";
+            }
+
+            claim.NumberOfHoursWithSIConcat = numberOfHoursWithSIConcat;
+            claim.NumberOfOrdinaryHoursSIConcat = numberOfOrdinaryHoursSIConcat;
+            claim.NumberOfUnsocialHoursSIConcat = numberOfUnsocialHoursSIConcat;
+            claim.NumberOfOnCallHoursSIConcat = numberOfOnCallHoursSIConcat;
 
             if (claim.CompletionStage < 2)
             {
@@ -1589,6 +1965,7 @@ namespace Sjuklöner.Controllers
             VM.ClaimNumber = ClaimNumber;
             var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
             VM.NumberOfSickDays = claim.NumberOfSickDays;
+            VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
             return View("Create4", VM);
         }
@@ -1598,7 +1975,7 @@ namespace Sjuklöner.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Ombud")]
-        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SalaryAttachmentStandIn, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model, string submitButton)
+        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model, string submitButton)
         {
             if (submitButton == "Skicka in" || submitButton == "Spara")
             {
@@ -1610,22 +1987,22 @@ namespace Sjuklöner.Controllers
                 var claim = db.Claims.Where(c => c.ReferenceNumber == model.ClaimNumber).FirstOrDefault();
 
                 if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
-                    ModelState.AddModelError("SalaryAttachment", "Lönespecifikation för ordinarie assistent saknas");
-
-                //if (!CheckExistingDocument(claim, "SalaryAttachmentStandIn", model.SalaryAttachmentStandIn))
-                //    ModelState.AddModelError("SalaryAttachmentStandIn", "Lönespecifikation för vikarierande assistent saknas");
+                    ModelState.AddModelError("SalaryAttachment", "Lönespecifikation för ordinarie assistent saknas.");
 
                 if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
-                    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas");
+                    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas.");
 
                 if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
-                    ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas");
+                    ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas.");
 
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
-                    ModelState.AddModelError("TimeReport", "Tidsrapportering, Försäkringskassan för ordinarie assistent saknas");
+                    ModelState.AddModelError("TimeReport", "Tidsredovisning för ordinarie assistent saknas.");
 
-                if (!CheckExistingDocument(claim, "TimeReportStandIn", model.TimeReportStandIn))
-                    ModelState.AddModelError("TimeReportStandIn", "Tidsrapportering, Försäkringskassan för vikarierande assistent saknas");
+                for (int i = 0; i < model.NumberOfSubAssistants; i++)
+                {
+                    if (!CheckExistingDocument(claim, "TimeReportStandIn", model.TimeReportStandIn[i]))
+                        ModelState.AddModelError("TimeReportStandIn", "Tidsredovisning för vikarierande assistent saknas.");
+                }
 
                 if (ModelState.IsValid)
                 {
@@ -1636,9 +2013,6 @@ namespace Sjuklöner.Controllers
                         if (model.SalaryAttachment != null)
                             NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
 
-                        //if (model.SalaryAttachmentStandIn != null)
-                        //    NewDocument(model.SalaryAttachmentStandIn, path, "SalaryAttachmentStandIn", claim);
-
                         if (model.SickLeaveNotification != null)
                             NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
 
@@ -1648,8 +2022,11 @@ namespace Sjuklöner.Controllers
                         if (model.TimeReport != null)
                             NewDocument(model.TimeReport, path, "TimeReport", claim);
 
-                        if (model.TimeReportStandIn != null)
-                            NewDocument(model.TimeReportStandIn, path, "TimeReportStandIn", claim);
+                        for (int i = 0; i < model.NumberOfSubAssistants; i++)
+                        {
+                            if (model.TimeReportStandIn[i] != null)
+                                NewDocument(model.TimeReportStandIn[i], path, "TimeReportStandIn", claim);
+                        }
 
                         if (claim.CompletionStage < 4)
                         {
@@ -2035,7 +2412,7 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ModelSum = claim.ModelSum;
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
-               
+
                 if (claim.ClaimStatusId == 3 || claim.ClaimStatusId == 7)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString() + ".";
@@ -2558,11 +2935,29 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
                 claimDetailsOmbudVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
 
-                //Vikarierande assistent
+                //Vikarierande assistent 1
                 claimDetailsOmbudVM.SubAssistantName = claim.SubFirstName + " " + claim.SubLastName;
                 claimDetailsOmbudVM.SubAssistantSSN = claim.SubAssistantSSN;
                 claimDetailsOmbudVM.SubPhoneNumber = claim.SubPhoneNumber;
                 claimDetailsOmbudVM.SubEmail = claim.SubEmail;
+
+                //Vikarierande assistent 2 - 20
+                string[] Name = new string[20];
+                string[] SSN = new string[20];
+                string[] PhoneNumber = new string[20];
+                string[] Email = new string[20];
+
+                Name = claim.SubAssistantsNameConcat.Split('£');
+                SSN = claim.SubAssistantsSSNConcat.Split('£');
+                PhoneNumber = claim.SubAssistantsPhoneConcat.Split('£');
+                Email = claim.SubAssistantsEmailConcat.Split('£');
+
+                claimDetailsOmbudVM.SubstituteAssistantName = Name;
+                claimDetailsOmbudVM.SubstituteAssistantSSN = SSN;
+                claimDetailsOmbudVM.SubstituteAssistantPhoneNumber = PhoneNumber;
+                claimDetailsOmbudVM.SubstituteAssistantEmail = Email;
+
+                claimDetailsOmbudVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
                 claimDetailsOmbudVM.NumberOfSickDays = claim.NumberOfSickDays;
 
@@ -2583,12 +2978,76 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
                 //claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
 
-                //Hours for substitute assistant
+                //Hours for substitute assistant including handling for multiple substitute assistants
                 claimDetailsOmbudVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
                 claimDetailsOmbudVM.NumberOfUnsocialHoursSI = claim.NumberOfUnsocialHoursSI;
                 claimDetailsOmbudVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
 
+                string[] hoursWithSI = new string[20];
+                string[] ordinaryHoursSI = new string[20];
+                string[] unsocialHoursSI = new string[20];
+                string[] onCallHoursSI = new string[20];
+
+                hoursWithSI = claim.NumberOfHoursWithSIConcat.Split('+').ToArray();
+                ordinaryHoursSI = claim.NumberOfOrdinaryHoursSIConcat.Split('+').ToArray();
+                unsocialHoursSI = claim.NumberOfUnsocialHoursSIConcat.Split('+').ToArray();
+                onCallHoursSI = claim.NumberOfOnCallHoursSIConcat.Split('+').ToArray();
+
+                claimDetailsOmbudVM.HoursWithSI = hoursWithSI;
+                claimDetailsOmbudVM.OrdinaryHoursSI = ordinaryHoursSI;
+                claimDetailsOmbudVM.UnsocialHoursSI = unsocialHoursSI;
+                claimDetailsOmbudVM.OnCallHoursSI = onCallHoursSI;
+
+                string[] hoursSIArrayPerDay = new string[20];
+                string[] unsocialEveningSIArrayPerDay = new string[20];
+                string[] unsocialNightSIArrayPerDay = new string[20];
+                string[] unsocialWeekendSIArrayPerDay = new string[20];
+                string[] unsocialGrandWeekendSIArrayPerDay = new string[20];
+                string[] onCallDaySIArrayPerDay = new string[20];
+                string[] onCallNightSIArrayPerDay = new string[20];
+
+                string[,] hoursSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialEveningSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialNightSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialWeekendSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 14];
+                string[,] onCallDaySIPerSubAndDay = new string[20, 14];
+                string[,] onCallNightSIPerSubAndDay = new string[20, 14];
+
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                int index = 0;
+                foreach (var day in claimDays)
+                {
+                    hoursSIArrayPerDay = day.HoursSI.Split('+').ToArray();
+                    unsocialEveningSIArrayPerDay = day.UnsocialEveningSI.Split('+').ToArray();
+                    unsocialNightSIArrayPerDay = day.UnsocialNightSI.Split('+').ToArray();
+                    unsocialWeekendSIArrayPerDay = day.UnsocialWeekendSI.Split('+').ToArray();
+                    unsocialGrandWeekendSIArrayPerDay = day.UnsocialGrandWeekendSI.Split('+').ToArray();
+                    onCallDaySIArrayPerDay = day.OnCallDaySI.Split('+').ToArray();
+                    onCallNightSIArrayPerDay = day.OnCallNightSI.Split('+').ToArray();
+
+                    for (int i = 0; i < claim.NumberOfSubAssistants; i++)
+                    {
+                        hoursSIPerSubAndDay[i, index] = hoursSIArrayPerDay[i];
+                        unsocialEveningSIPerSubAndDay[i, index] = unsocialEveningSIArrayPerDay[i];
+                        unsocialNightSIPerSubAndDay[i, index] = unsocialNightSIArrayPerDay[i];
+                        unsocialWeekendSIPerSubAndDay[i, index] = unsocialWeekendSIArrayPerDay[i];
+                        unsocialGrandWeekendSIPerSubAndDay[i, index] = unsocialGrandWeekendSIArrayPerDay[i];
+                        onCallDaySIPerSubAndDay[i, index] = onCallDaySIArrayPerDay[i];
+                        onCallNightSIPerSubAndDay[i, index] = onCallNightSIArrayPerDay[i];
+                    }
+                    index++;
+                }
+
+                claimDetailsOmbudVM.HoursSIPerSubAndDay = hoursSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialEveningSIPerSubAndDay = unsocialEveningSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialNightSIPerSubAndDay = unsocialNightSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialWeekendSIPerSubAndDay = unsocialWeekendSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialGrandWeekendSIPerSubAndDay = unsocialGrandWeekendSIPerSubAndDay;
+                claimDetailsOmbudVM.OnCallDaySIPerSubAndDay = onCallDaySIPerSubAndDay;
+                claimDetailsOmbudVM.OnCallNightSIPerSubAndDay = onCallNightSIPerSubAndDay;
+
+                //var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
                 claimDetailsOmbudVM.ClaimDays = claimDays;
             }
 
@@ -2703,7 +3162,7 @@ namespace Sjuklöner.Controllers
                         //Sick pay for qualifying day
                         claimCalc.SickPayQD = claimCalculations[i].SickPayQD;
                         claimCalc.SickPayCalcQD = claimCalculations[i].SickPayCalcQD;
-        
+
                         //Social fees for qualifying day
                         claimCalc.SocialFeesQD = claimCalculations[i].SocialFeesQD;
                         claimCalc.SocialFeesCalcQD = claimCalculations[i].SocialFeesCalcQD;
@@ -2826,7 +3285,7 @@ namespace Sjuklöner.Controllers
 
             ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
 
-            claimDetailsVM.ReferenceNumber = referenceNumber;            
+            claimDetailsVM.ReferenceNumber = referenceNumber;
             claimDetailsVM.StatusName = claim.ClaimStatus.Name;
             claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
 
@@ -3069,13 +3528,13 @@ namespace Sjuklöner.Controllers
                 if (User.IsInRole("AdministrativeOfficial"))
                 {
                     var me = db.Users.Find(User.Identity.GetUserId());
-                    
+
                     claim.AdmOffId = me.Id;
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
                 db.Entry(claim).State = EntityState.Modified;
-                db.SaveChanges();             
+                db.SaveChanges();
 
                 ConfirmTransferVM confirmTransferVM = new ConfirmTransferVM();
                 confirmTransferVM.ClaimId = claim.Id;
@@ -3176,15 +3635,15 @@ namespace Sjuklöner.Controllers
                 claim.ClaimStatusId = 7;      // Transfer to Procapita started
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
                 claim.StatusDate = DateTime.Now;
-              
+
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
                 //return RedirectToAction("IndexPageAdmOff", "Claims");
                 return RedirectToAction("Recommend", new { id });
 
             }
-            return RedirectToAction("Recommend", new { id }); 
-           
+            return RedirectToAction("Recommend", new { id });
+
         }
 
         // GET: Claims/StodSystemLogin
@@ -3298,7 +3757,7 @@ namespace Sjuklöner.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {                
+            {
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 return RedirectToAction("Index", "Home");
             }
@@ -3331,7 +3790,7 @@ namespace Sjuklöner.Controllers
         public ActionResult Delete(int? id)
         {
             if (id == null)
-            {              
+            {
                 //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 return RedirectToAction("Index", "Home");
             }
@@ -3811,6 +4270,7 @@ namespace Sjuklöner.Controllers
                 claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.HoursD2T14);
                 claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14) + Convert.ToDecimal(claimDays[0].UnsocialEvening) + Convert.ToDecimal(claimDays[0].UnsocialNight) + Convert.ToDecimal(claimDays[0].UnsocialWeekend) + Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend);
                 claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimDays[0].OnCallDay) + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimDays[0].OnCallNight) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
+                //Code maybe should be added here to calculate the number of hours for the SI assistant..
 
                 //Calculate the money by category for day 2 to day 14
                 //Sickpay for day 2 to day 14

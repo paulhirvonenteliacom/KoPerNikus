@@ -73,6 +73,8 @@ namespace Sjuklöner.Viewmodels
 
         public int[] SelectedSubIndeces { get; set; }
 
+        public string[] SelectedSubAssistants { get; set; }
+
         //public bool Rejected { get; set; }
 
         //public string RejectReason { get; set; }

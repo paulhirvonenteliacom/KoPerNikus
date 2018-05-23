@@ -383,9 +383,18 @@
             <div class="col col-md-2">
             </div>
             <div class="col col-md-9 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Vikarierande assistent
-                </div>
+                @if (Model.NumberOfSubAssistants == 1)
+                {
+                    <div class="row form-group-heading">
+                        Vikarierande assistent
+                    </div>
+                }
+                else
+                {
+                    <div class="row form-group-heading">
+                        Vikarierande assistent 1
+                    </div>
+                }
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
@@ -432,6 +441,78 @@
                 </div>
             </div>
         </div>
+
+        if (Model.NumberOfSubAssistants > 1)
+        {
+            for (int i = 0; i < Model.NumberOfSubAssistants - 1; i++)
+            {
+                <div class="row">
+                    <div class="col col-md-2">
+                    </div>
+                    <div class="col col-md-9 form-group-div-frame">
+                        <div class="row form-group-heading">
+                            Vikarierande assistent @(i + 2)
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align">
+                                            Namn:
+                                            @*@Html.LabelFor(model => model.SubstituteAssistantName[i], htmlAttributes: new { @class = "control-label-left-align col-md-12" })*@
+                                        </div>
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.SubstituteAssistantName[i])
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align2">
+                                            Personnummer:
+                                            @*@Html.LabelFor(model => model.SubstituteAssistantSSN[i], htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })*@
+                                        </div>
+                                    </div>
+                                    <div class="row display-padding6">
+                                        @Html.DisplayFor(m => m.SubstituteAssistantSSN[i])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align">
+                                            Telefonnummer (inkl. riktnr.):
+                                        </div>
+                                        @*@Html.LabelFor(model => model.SubstituteAssistantPhoneNumber[i], htmlAttributes: new { @class = "control-label-left-align col-md-12" })*@
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.SubstituteAssistantPhoneNumber[i])
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align2">
+                                            E-postadress:
+                                        </div>
+                                        @*@Html.LabelFor(model => model.SubstituteAssistantEmail[i], htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })*@
+                                    </div>
+                                    <div class="row display-padding6">
+                                        @Html.DisplayFor(m => m.SubstituteAssistantEmail[i])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     }
     @if (Model.CompletionStage >= 2)
     {
@@ -542,9 +623,18 @@
             <div class="col col-md-2">
             </div>
             <div class="col col-md-9 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Antal timmar, vikarierande assistent
-                </div>
+                @if (Model.NumberOfSubAssistants == 1)
+                {
+                    <div class="row form-group-heading">
+                        Antal timmar, vikarierande assistent
+                    </div>
+                }
+                else
+                {
+                    <div class="row form-group-heading">
+                        Antal timmar, vikarierande assistent 1
+                    </div>
+                }
                 <div class="row">
 
                     <div class="col col-md-5">
@@ -640,6 +730,130 @@
                 </table>
             </div>
         </div>
+
+
+        //TEST
+        for (int k = 1; k < Model.NumberOfSubAssistants; k++)
+        {
+
+            <div class="row">
+                <div class="col col-md-2">
+                </div>
+                <div class="col col-md-9 form-group-div-frame">
+                    <div class="row form-group-heading">
+                        Antal timmar, vikarierande assistent @(k + 1)
+                    </div>
+                    <div class="row">
+
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfHoursWithSI, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.HoursWithSI[k])
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfUnsocialHoursSI, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                                </div>
+                                <div class="row display-padding6">
+                                    @Html.DisplayFor(m => m.UnsocialHoursSI[k])
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfOnCallHoursSI, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.OnCallHoursSI[k])
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table2">
+                        <tr>
+                            <th class="claimdetails-col row-divider">
+                                Datum
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Arbetade timmar
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, kväll
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, natt
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, helg
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, storhelg
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Jour, dag
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Jour, natt/helg
+                            </th>
+                            <th></th>
+                        </tr>
+                        @for (int i = 0; i < Model.NumberOfSickDays; i++)
+                        {
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].DateString)
+                                </td>
+                                <td>
+                                    @Model.HoursSIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.HoursSIPerSubAndDay[k, i])*@
+                                </td>
+                                <td>
+                                    @Model.UnsocialEveningSIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.UnsocialEveningSIPerSubAndDay[k, i])*@
+                                </td>
+                                <td>
+                                    @Model.UnsocialNightSIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.UnsocialNightSIPerSubAndDay[k, i])*@
+                                </td>
+                                <td>
+                                    @Model.UnsocialWeekendSIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.UnsocialWeekendSIPerSubAndDay[k, i])*@
+                                </td>
+                                <td>
+                                    @Model.UnsocialGrandWeekendSIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.UnsocialGrandWeekendSIPerSubAndDay[k, i])*@
+                                </td>
+                                <td>
+                                    @Model.OnCallDaySIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.OnCallDaySIPerSubAndDay[k, i])*@
+                                </td>
+                                <td>
+                                    @Model.OnCallNightSIPerSubAndDay[k, i]
+
+                                    @*@Html.DisplayFor(m => m.OnCallNightSIPerSubAndDay[k, i])*@
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        }
+
     }
 
     @if (Model.CompletionStage >= 3)
@@ -763,15 +977,6 @@
                             </div>
                         </div>
                     </div>
-                    @*<div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding6">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachmentStandIn").FirstOrDefault().Filename}")">
-                                    Lönespecifikation, vikarie
-                                </a>
-                            </div>
-                        </div>
-                    </div>*@
                 </div>
                 <div class="row">
                     <div class="col col-md-5">
@@ -864,14 +1069,6 @@
                         </div>
                     </div>
                     <div class="col col-md-5">
-                        @*<div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                                </div>
-                                <div class="row display-padding6">
-                                    @Html.DisplayFor(m => m.RejectReason)
-                                </div>
-                            </div>*@
                     </div>
                 </div>
                 <div class="row">
@@ -953,14 +1150,6 @@
                     </div>
                 </div>
                 <div class="col col-md-5">
-                    @*<div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.AssistanceCheck)
-                            </div>
-                        </div>*@
                 </div>
             </div>
         </div>
@@ -1082,7 +1271,6 @@
                         </div>
                     </div>
                     <br />
-
 
                     if (i == 0)
                     {
