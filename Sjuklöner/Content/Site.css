@@ -896,16 +896,16 @@ li a {
 
 .selectedSubIndex {
     width: 40px;
-    /*display: none;*/
+    display: none;
 }
 
 .selectedSubAssistant {
     width: 200px;
-    /*display: none;*/
+    display: none;
 }
 
 .selectedSubAssistantVal {
-    /*display: none;*/
+    display: none;
     font-weight: 100;
 }
 
@@ -914,7 +914,7 @@ li a {
 }
 
 .selecteditem {
-    /*display: none;*/
+    display: none;
     width: 15px;
     float: right;
 }
