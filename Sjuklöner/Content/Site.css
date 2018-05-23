@@ -867,6 +867,10 @@ li a {
     margin-left: 16px;
 }
 
+.btn-left-margin-21 {
+    margin-left: 21px;
+}
+
 .btn-left-margin-22 {
     margin-left: 22px;
 }
@@ -902,6 +906,7 @@ li a {
 .selectedSubAssistant {
     width: 200px;
     display: none;
+    /*comment display attribute when testing*/
 }
 
 .selectedSubAssistantVal {
@@ -1035,7 +1040,7 @@ li a {
 }
 
 .right-col-padding-42 {
-    padding-right: 42px;
+    padding-right: 37px;
     height: 36px;
 }
 

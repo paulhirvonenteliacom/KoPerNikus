@@ -361,6 +361,10 @@
     <Compile Include="Migrations\201805180527344_AddedPropoertiesForHandlingMoreThanOneSubAssistantsPartII.Designer.cs">
       <DependentUpon>201805180527344_AddedPropoertiesForHandlingMoreThanOneSubAssistantsPartII.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs" />
+    <Compile Include="Migrations\201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.Designer.cs">
+      <DependentUpon>201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -709,6 +713,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805180527344_AddedPropoertiesForHandlingMoreThanOneSubAssistantsPartII.resx">
       <DependentUpon>201805180527344_AddedPropoertiesForHandlingMoreThanOneSubAssistantsPartII.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.resx">
+      <DependentUpon>201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

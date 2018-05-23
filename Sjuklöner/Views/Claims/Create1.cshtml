@@ -57,7 +57,7 @@
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
 
-    <div class="row">
+    @*<div class="row">
     </div>
     <div class="no-col-padding col col-md-6 display-inline-block">
         <div class="row">
@@ -152,11 +152,9 @@
             <div class="col col-md-6">
                 <div class="no-col-padding col col-md-4">
                     <input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
-                    @*<input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" onclick="saveSelectedIndeces()" />*@
                 </div>
                 <div class="no-col-padding col col-md-4">
                     <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-1" type="submit" name="submitButton" value="Spara" id="save" />
-                    @*<input class="btn btn-secondary btn-secondary-small2 btn-left-margin-1" type="submit" name="submitButton" value="Spara" id="save" onclick="saveSelectedIndeces()" />*@
                 </div>
                 <div class="no-col-padding col col-md-4">
                     @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-2" })
@@ -168,7 +166,6 @@
                     <div class="row">
                         <div class="btn-left-margin-15">
                             @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
-                            @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
                         </div>
                     </div>
                 }
@@ -202,13 +199,13 @@
                 @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11", id = "first-subassistant-val" })
             </div>
         </div>
-    </div>
+    </div>*@
 
 
 
 
     //TEST
-    @*<div class="row">
+    <div class="row">
         </div>
         <div class="no-col-padding col col-md-8 display-inline-block">
             <div class="row">
@@ -225,7 +222,7 @@
                     @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
                 <div class="col col-md-6">
-                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control", onchange = "select_regular_assistant()" })
                 </div>
             </div>
 
@@ -234,7 +231,7 @@
                     @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger font-size-11" })
                 </div>
                 <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11" })
+                    @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11", id = "regular-assistant-val" })
                 </div>
             </div>
 
@@ -300,15 +297,15 @@
             </div>
 
             <div class="row row-height-36">
-                <div class="col col-md-8">
-                    <div class="no-col-padding col col-md-4">
+                <div class="col col-md-6">
+                    <div class="no-col-padding col col-md-3">
                         <input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
                     </div>
-                    <div class="no-col-padding col col-md-4">
-                        <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-1" type="submit" name="submitButton" value="Spara" id="save" />
+                    <div class="no-col-padding col col-md-3">
+                        <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-10" type="submit" name="submitButton" value="Spara" id="save" />
                     </div>
-                    <div class="no-col-padding col col-md-4">
-                        @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-2" })
+                    <div class="no-col-padding col col-md-3">
+                        @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-21" })
                     </div>
                 </div>
                 <div class="col col-md-4">
@@ -340,17 +337,17 @@
 
             <div class="row row-height-36">
                 <div class="col col-md-12 right-col-padding-42">
-                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control" })
+                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control", onchange = "select_first_subassistant()" })
                     <input id="Button+" class="btn btn btn-primary btn-primary-xsmall5 float-right" type="button" value="+" onclick="addsubassistant_onclick()" />
                 </div>
             </div>
 
             <div class="row row-validation-20 row-height-20 line-height-07">
-                <div class="no-col-padding col col-md-12">
-                    @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11" })
+                <div class="col col-md-12">
+                    @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11", id = "first-subassistant-val" })
                 </div>
             </div>
-        </div>*@
+        </div>
 
 }
 
@@ -549,7 +546,7 @@
 
         var newInnerLabelDiv = document.createElement('div');
         newInnerLabelDiv.setAttribute('id', 'innerLabelDiv' + numOfRow);
-        newInnerLabelDiv.setAttribute('class', 'col col-md-8 subass-innerlabel');
+        newInnerLabelDiv.setAttribute('class', 'col col-md-12 subass-innerlabel');
 
         var newOuterDdlDiv = document.createElement('div');
         newOuterDdlDiv.setAttribute('id', 'outerDdlDiv' + numOfRow);
@@ -557,7 +554,7 @@
 
         var newInnerDdlDiv = document.createElement('div');
         newInnerDdlDiv.setAttribute('id', 'innerDdlDiv' + numOfRow);
-        newInnerDdlDiv.setAttribute('class', 'col col-md-8 right-col-padding-42 subass-innerddl');
+        newInnerDdlDiv.setAttribute('class', 'col col-md-12 right-col-padding-42 subass-innerddl');
 
         var newOuterValDiv = document.createElement('div');
         newOuterValDiv.setAttribute('id', 'outerValDiv' + numOfRow);
@@ -565,7 +562,7 @@
 
         var newInnerValDiv = document.createElement('div');
         newInnerValDiv.setAttribute('id', 'innerValDiv' + numOfRow);
-        newInnerValDiv.setAttribute('class', 'col col-md-8 subass-innerval');
+        newInnerValDiv.setAttribute('class', 'col col-md-12 subass-innerval');
 
 
         var newLabel = document.createElement('label');
@@ -720,12 +717,24 @@
         newButton.onclick = function RemoveEntry() {
             var idx = this.id.substring(3);
 
+            //remove() method is not supported by IE. Therefore the following code is used.
+            //var labelDiv = document.getElementById('outerLabelDiv' + idx);
+            //labelDiv.remove();
+
+            //var ddlDiv = document.getElementById('outerDdlDiv' + idx);
+            //ddlDiv.remove();
+
+            //var valDiv = document.getElementById('outerValDiv' + idx);
+            //valDiv.remove();
+
             var labelDiv = document.getElementById('outerLabelDiv' + idx);
+            labelDiv.parentNode.removeChild(labelDiv);
+
             var ddlDiv = document.getElementById('outerDdlDiv' + idx);
+            ddlDiv.parentNode.removeChild(ddlDiv);
+
             var valDiv = document.getElementById('outerValDiv' + idx);
-            labelDiv.remove();
-            ddlDiv.remove();
-            valDiv.remove();
+            valDiv.parentNode.removeChild(valDiv);
 
             //decrement the counter holding the number of sub assistant ddls
             var subassddlcounterInt = parseInt(assistantddlcounter.value);

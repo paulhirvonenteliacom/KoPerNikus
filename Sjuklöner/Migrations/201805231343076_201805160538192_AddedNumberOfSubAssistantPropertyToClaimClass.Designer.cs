@@ -7,13 +7,13 @@ namespace Sjuklöner.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class testII : IMigrationMetadata
+    public sealed partial class _201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(testII));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass));
         
         string IMigrationMetadata.Id
         {
-            get { return "201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass"; }
+            get { return "201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass"; }
         }
         
         string IMigrationMetadata.Source
