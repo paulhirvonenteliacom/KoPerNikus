@@ -127,6 +127,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="ts_clr, Version=0.0.0.0, Culture=neutral, PublicKeyToken=ec0900f7c2314157, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Content\ts_clr.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -336,6 +340,10 @@
     <Compile Include="Migrations\201805151333457_RemovedSubAssistantSalarySpec.cs" />
     <Compile Include="Migrations\201805151333457_RemovedSubAssistantSalarySpec.Designer.cs">
       <DependentUpon>201805151333457_RemovedSubAssistantSalarySpec.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805180928559_RemovedCustomerAddressFromClaim.cs" />
+    <Compile Include="Migrations\201805180928559_RemovedCustomerAddressFromClaim.Designer.cs">
+      <DependentUpon>201805180928559_RemovedCustomerAddressFromClaim.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs" />
     <Compile Include="Migrations\201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.Designer.cs">
@@ -685,6 +693,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805151333457_RemovedSubAssistantSalarySpec.resx">
       <DependentUpon>201805151333457_RemovedSubAssistantSalarySpec.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805180925118_RemovedCustomerAddressFromClaim.cs.resx" />
+    <EmbeddedResource Include="Migrations\201805180928559_RemovedCustomerAddressFromClaim.resx">
+      <DependentUpon>201805180928559_RemovedCustomerAddressFromClaim.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.resx">
       <DependentUpon>201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs</DependentUpon>

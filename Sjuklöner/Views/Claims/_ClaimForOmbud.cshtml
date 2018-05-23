@@ -116,29 +116,41 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row label-padding">
-                                @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
                             <div class="row display-padding">
-                                @Html.DisplayFor(m => m.CustomerAddress)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                            </div>
-                            <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.CustomerPhoneNumber)
+                                @Html.DisplayFor(modelItem => Model.CustomerPhoneNumber)
                             </div>
                         </div>
                     </div>
                 </div>
+
+                @*<div class="row">
+                    <div class="col col-md-5">
+                      <div class="form-group line-height-12">
+                         <div class="row label-padding">
+                             @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                         </div>
+                         <div class="row display-padding">
+                             @Html.DisplayFor(m => m.CustomerAddress)
+                         </div>
+                      </div>
+                    </div>
+                    <div class="col col-md-5">
+                      <div class="form-group line-height-12">
+                          <div class="row label-padding">
+                             @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                          </div>
+                          <div class="row display-padding6">
+                             @Html.DisplayFor(m => m.CustomerPhoneNumber)
+                          </div>
+                       </div>
+                    </div>
+                </div>*@
             </div>
         </div>
         <div class="row">

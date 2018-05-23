@@ -32,8 +32,9 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Personnummer:")]
         public string CustomerSSN { get; set; }
 
-        [Display(Name = "Adress:")]
-        public string CustomerAddress { get; set; }
+        //CustomerAddress will never be used
+        //[Display(Name = "Adress:")]
+        //public string CustomerAddress { get; set; }
 
         [Display(Name = "Telefonnummer:")]
         public string CustomerPhoneNumber { get; set; }

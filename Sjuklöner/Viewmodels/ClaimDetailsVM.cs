@@ -31,8 +31,9 @@ namespace Sjuklöner.Viewmodels
         [RegularExpression(@"^(19[0-9][0-9]|20(0[0-9]|1[0-8])(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])[-]?\d{4}$", ErrorMessage = "Ej giltigt personnummer. Formaten YYYYMMDD-NNNN och YYYYMMDDNNNN är giltiga.")]
         public string CustomerSSN { get; set; }
 
-        [Display(Name = "Adress:")]
-        public string CustomerAddress { get; set; }
+        //CustomerAddress will never be used
+        //[Display(Name = "Adress:")]
+        //public string CustomerAddress { get; set; }
 
         [Display(Name = "Telefonnummer:")]
         public string CustomerPhoneNumber { get; set; }
