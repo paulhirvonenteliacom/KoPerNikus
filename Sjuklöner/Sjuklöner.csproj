@@ -365,6 +365,10 @@
     <Compile Include="Migrations\201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.Designer.cs">
       <DependentUpon>201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805241347259_AddedInvestigationQueueClass.cs" />
+    <Compile Include="Migrations\201805241347259_AddedInvestigationQueueClass.Designer.cs">
+      <DependentUpon>201805241347259_AddedInvestigationQueueClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -376,6 +380,7 @@
     <Compile Include="Models\ClaimDaySeed.cs" />
     <Compile Include="Models\ClaimDay.cs" />
     <Compile Include="Models\ClaimReferenceNumber.cs" />
+    <Compile Include="Models\InvestigationQueue.cs" />
     <Compile Include="Models\DecisionCandidate.cs" />
     <Compile Include="Models\DefaultCollectiveAgreementInfo.cs" />
     <Compile Include="Models\DefaultCollectiveAgreementHeader.cs" />
@@ -716,6 +721,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.resx">
       <DependentUpon>201805231343076_201805160538192_AddedNumberOfSubAssistantPropertyToClaimClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805241347259_AddedInvestigationQueueClass.resx">
+      <DependentUpon>201805241347259_AddedInvestigationQueueClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
