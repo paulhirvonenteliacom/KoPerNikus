@@ -130,27 +130,27 @@
                 </div>
 
                 @*<div class="row">
-                    <div class="col col-md-5">
-                      <div class="form-group line-height-12">
-                         <div class="row label-padding">
-                             @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                         </div>
-                         <div class="row display-padding">
-                             @Html.DisplayFor(m => m.CustomerAddress)
-                         </div>
-                      </div>
-                    </div>
-                    <div class="col col-md-5">
-                      <div class="form-group line-height-12">
-                          <div class="row label-padding">
-                             @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                        <div class="col col-md-5">
+                          <div class="form-group line-height-12">
+                             <div class="row label-padding">
+                                 @Html.LabelFor(model => model.CustomerAddress, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                             </div>
+                             <div class="row display-padding">
+                                 @Html.DisplayFor(m => m.CustomerAddress)
+                             </div>
                           </div>
-                          <div class="row display-padding6">
-                             @Html.DisplayFor(m => m.CustomerPhoneNumber)
-                          </div>
-                       </div>
-                    </div>
-                </div>*@
+                        </div>
+                        <div class="col col-md-5">
+                          <div class="form-group line-height-12">
+                              <div class="row label-padding">
+                                 @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                              </div>
+                              <div class="row display-padding6">
+                                 @Html.DisplayFor(m => m.CustomerPhoneNumber)
+                              </div>
+                           </div>
+                        </div>
+                    </div>*@
             </div>
         </div>
         <div class="row">
@@ -631,130 +631,139 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col col-md-2">
-            </div>
-            <div class="col col-md-9 form-group-div-frame">
-                @if (Model.NumberOfSubAssistants == 1)
-                {
-                    <div class="row form-group-heading">
-                        Antal timmar, vikarierande assistent
-                    </div>
-                }
-                else
-                {
-                    <div class="row form-group-heading">
-                        Antal timmar, vikarierande assistent 1
-                    </div>
-                }
-                <div class="row">
-
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.NumberOfHoursWithSI, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.NumberOfHoursWithSI)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.NumberOfUnsocialHoursSI, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                            </div>
-                            <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.NumberOfUnsocialHoursSI)
-                            </div>
-                        </div>
-                    </div>
+        @*<div class="row">
+                <div class="col col-md-2">
                 </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.NumberOfOnCallHoursSI, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.NumberOfOnCallHoursSI)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <table class="table2">
-                    <tr>
-                        <th class="claimdetails-col row-divider">
-                            Datum
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Arbetade timmar
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Varav OB, kväll
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Varav OB, natt
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Varav OB, helg
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Varav OB, storhelg
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Jour, dag
-                        </th>
-                        <th class="claimdetails-col row-divider">
-                            Jour, natt/helg
-                        </th>
-                        <th></th>
-                    </tr>
-                    @for (int i = 0; i < Model.NumberOfSickDays; i++)
+                <div class="col col-md-9 form-group-div-frame">
+                    @if (Model.NumberOfSubAssistants == 1)
                     {
-                        <tr row-divider>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].DateString)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].HoursSI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialEveningSI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialNightSI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialWeekendSI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialGrandWeekendSI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].OnCallDaySI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].OnCallNightSI)
-                            </td>
-                        </tr>
+                        <div class="row form-group-heading">
+                            Antal timmar, vikarierande assistent
+                        </div>
                     }
-                </table>
-            </div>
-        </div>
+                    else
+                    {
+                        <div class="row form-group-heading">
+                            Antal timmar, vikarierande assistent 1
+                        </div>
+                    }
+                    <div class="row">
+
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfHoursWithSI, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.NumberOfHoursWithSI)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfUnsocialHoursSI, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                                </div>
+                                <div class="row display-padding6">
+                                    @Html.DisplayFor(m => m.NumberOfUnsocialHoursSI)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    @Html.LabelFor(model => model.NumberOfOnCallHoursSI, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.NumberOfOnCallHoursSI)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table2">
+                        <tr>
+                            <th class="claimdetails-col row-divider">
+                                Datum
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Arbetade timmar
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, kväll
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, natt
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, helg
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Varav OB, storhelg
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Jour, dag
+                            </th>
+                            <th class="claimdetails-col row-divider">
+                                Jour, natt/helg
+                            </th>
+                            <th></th>
+                        </tr>
+                        @for (int i = 0; i < Model.NumberOfSickDays; i++)
+                        {
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].DateString)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].HoursSI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialEveningSI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialNightSI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialWeekendSI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialGrandWeekendSI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].OnCallDaySI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.ClaimDays[i].OnCallNightSI)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>*@
 
 
         //TEST
-        for (int k = 1; k < Model.NumberOfSubAssistants; k++)
+        for (int k = 0; k < Model.NumberOfSubAssistants; k++)
         {
 
             <div class="row">
                 <div class="col col-md-2">
                 </div>
                 <div class="col col-md-9 form-group-div-frame">
-                    <div class="row form-group-heading">
-                        Antal timmar, vikarierande assistent @(k + 1)
-                    </div>
+                    @if (k == 0 && Model.NumberOfSubAssistants == 1)
+                    {
+                        <div class="row form-group-heading">
+                            Antal timmar, vikarierande assistent
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row form-group-heading">
+                            Antal timmar, vikarierande assistent @(k + 1)
+                        </div>
+                    }
                     <div class="row">
 
                         <div class="col col-md-5">

@@ -1460,6 +1460,11 @@ li a {
     font-size: 18px;
 }
 
+.height-18-2 {
+    height: 18px;
+    font-size: 14px;
+}
+
 .height-14 {
     height: 14px;
 }
@@ -1490,6 +1495,12 @@ li a {
 
 .assistant-heading {
     font-size: 24px;
+    font-weight: bold;
+    margin-left: -15px;
+}
+
+.assistant-heading2 {
+    font-size: 16px;
     font-weight: bold;
     margin-left: -15px;
 }

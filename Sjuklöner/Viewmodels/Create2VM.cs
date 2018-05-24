@@ -14,6 +14,10 @@ namespace Sjuklöner.Viewmodels
 
         public string ReferenceNumber { get; set; }
 
+        public string RegAssistantSSNAndName { get; set; }
+
+        public string[] SubAssistantSSNAndName { get; set; }
+
         public int NumberOfSubAssistants { get; set; }
     }
 

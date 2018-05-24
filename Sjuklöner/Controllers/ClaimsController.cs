@@ -663,6 +663,7 @@ namespace Sjuklöner.Controllers
                     claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(i).ToString(format: "ddd d MMM");
                     claimDay.ReferenceNumber = create1VM.ClaimNumber;
                     claimDay.SickDayNumber = i + 1;
+                    InitializeHoursInClaimDay(claimDay);
                     newClaimDays.Add(claimDay);
                     claimDayPos++;
                 }
@@ -695,6 +696,7 @@ namespace Sjuklöner.Controllers
                         claimDay.SickDayNumber = claimDayPos;
                         claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
                         claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
+                        InitializeHoursInClaimDay(claimDay);
                         newClaimDays.Add(claimDay);
                         claimDayPos++;
                     }
@@ -724,6 +726,7 @@ namespace Sjuklöner.Controllers
                         claimDay.SickDayNumber = claimDayPos;
                         claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
                         claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
+                        InitializeHoursInClaimDay(claimDay);
                         newClaimDays.Add(claimDay);
                         claimDayPos++;
                     }
@@ -756,6 +759,7 @@ namespace Sjuklöner.Controllers
                         claimDay.SickDayNumber = claimDayPos;
                         claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
                         claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
+                        InitializeHoursInClaimDay(claimDay);
                         newClaimDays.Add(claimDay);
                         claimDayPos++;
                     }
@@ -771,6 +775,7 @@ namespace Sjuklöner.Controllers
                     claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(i).ToString(format: "ddd d MMM");
                     claimDay.ReferenceNumber = create1VM.ClaimNumber;
                     claimDay.SickDayNumber = i + 1;
+                    InitializeHoursInClaimDay(claimDay);
                     newClaimDays.Add(claimDay);
                 }
             }
@@ -781,6 +786,24 @@ namespace Sjuklöner.Controllers
             }
             db.ClaimDays.AddRange(newClaimDays);
             db.SaveChanges();
+        }
+
+        private void InitializeHoursInClaimDay(ClaimDay claimDay)
+        {
+            claimDay.Hours = "";
+            claimDay.UnsocialEvening = "";
+            claimDay.UnsocialNight = "";
+            claimDay.UnsocialWeekend = "";
+            claimDay.UnsocialGrandWeekend = "";
+            claimDay.OnCallDay = "";
+            claimDay.OnCallNight = "";
+            claimDay.HoursSI = "+++++++++++++++++++";
+            claimDay.UnsocialEveningSI = "+++++++++++++++++++";
+            claimDay.UnsocialNightSI = "+++++++++++++++++++";
+            claimDay.UnsocialWeekendSI = "+++++++++++++++++++";
+            claimDay.UnsocialGrandWeekendSI = "+++++++++++++++++++";
+            claimDay.OnCallDaySI = "+++++++++++++++++++";
+            claimDay.OnCallNightSI = "+++++++++++++++++++";
         }
 
         private string SaveNewClaim(Create1VM create1VM)
@@ -1122,6 +1145,24 @@ namespace Sjuklöner.Controllers
 
             create2VM.ReferenceNumber = claim.ReferenceNumber;
             create2VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
+
+            create2VM.RegAssistantSSNAndName = claim.RegAssistantSSN + ", " + claim.RegFirstName + " " + claim.RegLastName;
+
+            string[] subAssistantSSN = new string[20];
+            string[] subAssistantName = new string[20];
+            string[] subAssistantSSNAndName = new string[20];
+
+            subAssistantSSN = claim.SubAssistantsSSNConcat.Split('£').ToArray();
+            subAssistantName = claim.SubAssistantsNameConcat.Split('£').ToArray();
+            subAssistantSSNAndName[0] = claim.SubAssistantSSN + ", " + claim.SubFirstName + " " + claim.SubLastName;
+
+            for (int i = 1; i < claim.NumberOfSubAssistants; i++)
+            {
+                subAssistantSSNAndName[i] = subAssistantSSN[i - 1] + ", " + subAssistantName[i - 1];
+            }
+
+            create2VM.SubAssistantSSNAndName = subAssistantSSNAndName;
+
             List<ScheduleRow> rowList = new List<ScheduleRow>();
 
             DateTime dateInSchedule;
@@ -1136,8 +1177,17 @@ namespace Sjuklöner.Controllers
             string[] onCallDaySIArray = new string[20];
             string[] onCallNightSIArray = new string[20];
 
+            string[,] hoursSIPerSubAndDay = new string[20, 14];
+            string[,] unsocialEveningSIPerSubAndDay = new string[20, 14];
+            string[,] unsocialNightSIPerSubAndDay = new string[20, 14];
+            string[,] unsocialWeekendSIPerSubAndDay = new string[20, 14];
+            string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 14];
+            string[,] onCallDaySIPerSubAndDay = new string[20, 14];
+            string[,] onCallNightSIPerSubAndDay = new string[20, 14];
+
             if (claim.CompletionStage >= 2)
             {
+                var dayIdx = 0;
                 claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
                 foreach (var day in claimDays)
                 {
@@ -1148,6 +1198,18 @@ namespace Sjuklöner.Controllers
                     unsocialGrandWeekendSIArray = day.UnsocialGrandWeekendSI.Split('+').ToArray();
                     onCallDaySIArray = day.OnCallDaySI.Split('+').ToArray();
                     onCallNightSIArray = day.OnCallNightSI.Split('+').ToArray();
+
+                    for (int subIdx = 0; subIdx < claim.NumberOfSubAssistants; subIdx++)
+                    {
+                        hoursSIPerSubAndDay[subIdx, dayIdx] = hoursSIArray[subIdx];
+                        unsocialEveningSIPerSubAndDay[subIdx, dayIdx] = unsocialEveningSIArray[subIdx];
+                        unsocialNightSIPerSubAndDay[subIdx, dayIdx] = unsocialNightSIArray[subIdx];
+                        unsocialWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialWeekendSIArray[subIdx];
+                        unsocialGrandWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialGrandWeekendSIArray[subIdx];
+                        onCallDaySIPerSubAndDay[subIdx, dayIdx] = onCallDaySIArray[subIdx];
+                        onCallNightSIPerSubAndDay[subIdx, dayIdx] = onCallNightSIArray[subIdx];
+                    }
+                    dayIdx++;
                 }
             }
 
@@ -1196,14 +1258,14 @@ namespace Sjuklöner.Controllers
 
                     for (int k = 0; k < claim.NumberOfSubAssistants; k++)
                     {
-                        scheduleRow.HoursSI[k] = hoursSIArray[k];
-                        scheduleRow.UnsocialEveningSI[k] = unsocialEveningSIArray[k];
-                        scheduleRow.UnsocialNightSI[k] = unsocialNightSIArray[k];
-                        scheduleRow.UnsocialWeekendSI[k] = unsocialWeekendSIArray[k];
-                        scheduleRow.UnsocialGrandWeekendSI[k] = unsocialGrandWeekendSIArray[k];
+                        scheduleRow.HoursSI[k] = hoursSIPerSubAndDay[k, i];
+                        scheduleRow.UnsocialEveningSI[k] = unsocialEveningSIPerSubAndDay[k, 1];
+                        scheduleRow.UnsocialNightSI[k] = unsocialNightSIPerSubAndDay[k, i];
+                        scheduleRow.UnsocialWeekendSI[k] = unsocialWeekendSIPerSubAndDay[k, i];
+                        scheduleRow.UnsocialGrandWeekendSI[k] = unsocialGrandWeekendSIPerSubAndDay[k, i];
 
-                        scheduleRow.OnCallDaySI[k] = onCallDaySIArray[k];
-                        scheduleRow.OnCallNightSI[k] = onCallNightSIArray[k];
+                        scheduleRow.OnCallDaySI[k] = onCallDaySIPerSubAndDay[k, i];
+                        scheduleRow.OnCallNightSI[k] = onCallNightSIPerSubAndDay[k, i];
                     }
                 }
                 rowList.Add(scheduleRow);
@@ -1609,11 +1671,15 @@ namespace Sjuklöner.Controllers
                 else
                 {
                     SaveClaim2(create2VM);
+                    var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                    create2VM = LoadClaimCreate2VM(claim);
                     return View(create2VM);
                 }
             }
             else
             {
+                var claim = db.Claims.Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
+                create2VM = LoadClaimCreate2VM(claim);
                 return View(create2VM);
             }
         }
