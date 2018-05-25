@@ -153,7 +153,9 @@ namespace Sjuklöner.Models
         public string PensionAndInsuranceRateAsString { get; set; }
 
         //SUBSTITUTE ASSISTANT INFORMATION
-        //public int NumberOfSubAssistants { get; set; }
+        public int NumberOfSubAssistants { get; set; }
+
+        public string SelectedSubAssistantIndeces { get; set; }
 
         public int? SelectedSubAssistantId { get; set; }
 
@@ -172,6 +174,11 @@ namespace Sjuklöner.Models
 
         [Display(Name = "Telefonnummer")]
         public string SubPhoneNumber { get; set; }
+
+        public string SubAssistantsNameConcat { get; set; }
+        public string SubAssistantsSSNConcat { get; set; }
+        public string SubAssistantsEmailConcat { get; set; }
+        public string SubAssistantsPhoneConcat { get; set; }
 
         public bool IVOCheck { get; set; }
         public string IVOCheckMsg { get; set; }
@@ -257,6 +264,13 @@ namespace Sjuklöner.Models
 
         [Display(Name = "Antal jour-timmar med vikarie")]
         public decimal NumberOfOnCallHoursSI { get; set; }
+
+        //The following four properties contain the concatenated hours for all substitute assistants 
+        public string NumberOfHoursWithSIConcat { get; set; }
+        public string NumberOfOrdinaryHoursSIConcat { get; set; }
+        public string NumberOfUnsocialHoursSIConcat { get; set; }
+        public string NumberOfOnCallHoursSIConcat { get; set; }
+
 
         [Display(Name = "Sjuklön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

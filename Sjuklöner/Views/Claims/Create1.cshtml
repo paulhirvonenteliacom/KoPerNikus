@@ -28,20 +28,25 @@
         <p class="page-header10 col col-md-9">Ansökan om sjuklöneersättning</p>
         <div class="col col-md-1 no-col-padding">
             @Html.EditorFor(model => model.NumberOfSubAssistants, new { htmlAttributes = new { @class = "form-control", id = "ddl-counter" } })
-
-            @*Used for counting number of substitute assistants*@
-            @*<label for="NumberOfSubAssistants" id="ddl-counter" class="cols-sm-2 control-label">
-            @Html.Hidden("NumberOfSubAssistants", "")
-        </label>*@
         </div>
         <div class="col col-md-1 no-col-padding">
             @*Used for counting number of substitute assistants*@
             @for (int i = 0; i < 20; i++)
             {
                 @Html.EditorFor(model => model.SelectedSubIndeces[i], new { htmlAttributes = new { @class = "form-control selectedSubIndex" } })
-                @*<label for="SelectedSubIndeces[i]" class="cols-sm-2 control-label selectedSubIndex">
-                    @Html.Hidden("SelectedSubIndeces[i]", "")
-                </label>*@
+            }
+        </div>
+        <div class="col col-md-4 no-col-padding">
+            @*Used for counting number of substitute assistants*@
+            @for (int i = 0; i < 20; i++)
+            {
+                @Html.EditorFor(model => model.SelectedSubAssistants[i], new { htmlAttributes = new { @class = "form-control selectedSubAssistant" } })
+            }
+        </div>
+        <div class="col col-md-4 no-col-padding">
+            @for (int i = 0; i < 20; i++)
+            {
+                @Html.ValidationMessageFor(model => model.SelectedSubAssistants[i], "", new { @class = "text-danger font-size-11 selectedSubAssistantVal" })
             }
         </div>
         <br>
@@ -52,7 +57,7 @@
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
 
-    <div class="row">
+    @*<div class="row">
     </div>
     <div class="no-col-padding col col-md-6 display-inline-block">
         <div class="row">
@@ -69,7 +74,7 @@
                 @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
             </div>
             <div class="col col-md-6">
-                @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control", onchange = "select_regular_assistant()" })
             </div>
         </div>
 
@@ -78,7 +83,7 @@
                 @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger font-size-11" })
             </div>
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11", id = "regular-assistant-val" })
             </div>
         </div>
 
@@ -147,11 +152,9 @@
             <div class="col col-md-6">
                 <div class="no-col-padding col col-md-4">
                     <input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
-                    @*<input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" onclick="saveSelectedIndeces()" />*@
                 </div>
                 <div class="no-col-padding col col-md-4">
                     <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-1" type="submit" name="submitButton" value="Spara" id="save" />
-                    @*<input class="btn btn-secondary btn-secondary-small2 btn-left-margin-1" type="submit" name="submitButton" value="Spara" id="save" onclick="saveSelectedIndeces()" />*@
                 </div>
                 <div class="no-col-padding col col-md-4">
                     @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-2" })
@@ -163,7 +166,6 @@
                     <div class="row">
                         <div class="btn-left-margin-15">
                             @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
-                            @*<a type="button" class="btn btn-secondary btn-secondary-small btn-left-margin-5" href="#" id="loadPartialActionLink">@Model.ClaimNumber</a>*@
                         </div>
                     </div>
                 }
@@ -187,58 +189,343 @@
 
         <div class="row row-height-36">
             <div class="col col-md-8 right-col-padding-42">
-                @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control" })
+                @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control", onchange = "select_first_subassistant()" })
                 <input id="Button+" class="btn btn btn-primary btn-primary-xsmall5 float-right" type="button" value="+" onclick="addsubassistant_onclick()" />
             </div>
         </div>
 
         <div class="row row-validation-20 row-height-20 line-height-07">
-            <div class="no-col-padding col col-md-8">
-                @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11" })
+            <div class="col col-md-8">
+                @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11", id = "first-subassistant-val" })
             </div>
         </div>
-    </div>
+    </div>*@
+
+
+
+
+    //TEST
+    <div class="row">
+        </div>
+        <div class="no-col-padding col col-md-8 display-inline-block">
+            <div class="row">
+                <div class="col col-md-6">
+                    @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+                <div class="col col-md-6">
+                    @Html.LabelFor(model => model.RegularAssistants, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+            </div>
+
+            <div class="row row-height-36">
+                <div class="col col-md-6">
+                    @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col col-md-6">
+                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control", onchange = "select_regular_assistant()" })
+                </div>
+            </div>
+
+            <div class="row row-validation-20 line-height-07">
+                <div class="col col-md-6">
+                    @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger font-size-11" })
+                </div>
+                <div class="col col-md-6">
+                    @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11", id = "regular-assistant-val" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6">
+                    @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+                <div class="col col-md-6">
+                    @Html.LabelFor(model => model.FirstDayOfSicknessDate, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+            </div>
+
+            <div class="row row-height-36">
+                <div class="col col-md-6">
+                    @Html.EditorFor(model => model.CustomerSSN, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col col-md-6">
+                    @Html.EditorFor(model => model.FirstDayOfSicknessDate, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="row row-validation-20 line-height-07">
+                <div class="col col-md-6">
+                    @Html.ValidationMessageFor(model => model.CustomerSSN, "", new { @class = "text-danger font-size-11" })
+                </div>
+                <div class="col col-md-6">
+                    @Html.ValidationMessageFor(model => model.FirstDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6">
+                    @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+                <div class="col col-md-6">
+                    @Html.LabelFor(model => model.LastDayOfSicknessDate, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+            </div>
+
+            <div class="row row-height-36">
+                <div class="col col-md-6">
+                    @Html.EditorFor(model => model.CustomerPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col col-md-6">
+                    @Html.EditorFor(model => model.LastDayOfSicknessDate, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="row row-validation-20 line-height-07">
+                <div class="col col-md-6">
+                    @Html.ValidationMessageFor(model => model.CustomerPhoneNumber, "", new { @class = "text-danger font-size-11" })
+                </div>
+                <div class="col col-md-6">
+                    @Html.ValidationMessageFor(model => model.LastDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
+                </div>
+            </div>
+
+            <div class="row row-height-20">
+                <div class="col col-md-8">
+                </div>
+                <div class="col col-md-4">
+                </div>
+            </div>
+
+            <div class="row row-height-36">
+                <div class="col col-md-6">
+                    <div class="no-col-padding col col-md-3">
+                        <input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
+                    </div>
+                    <div class="no-col-padding col col-md-3">
+                        <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-10" type="submit" name="submitButton" value="Spara" id="save" />
+                    </div>
+                    <div class="no-col-padding col col-md-3">
+                        @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-21" })
+                    </div>
+                </div>
+                <div class="col col-md-4">
+                    @if (Model.CompletionStage >= 1)
+                    {
+                        <div class="row">
+                            <div class="btn-left-margin-15">
+                                @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="row row-validation-20 line-height-07">
+                <div class="col col-md-8">
+                </div>
+                <div class="col col-md-4">
+                </div>
+            </div>
+        </div>
+
+        <div id="anchor-beyond4ddls" class="col col-md-4 display-inline-block">
+            <div class="row">
+                <div class="col col-md-12">
+                    @Html.LabelFor(model => model.SubstituteAssistants, htmlAttributes: new { @class = "create1-label control-label" })
+                </div>
+            </div>
+
+            <div class="row row-height-36">
+                <div class="col col-md-12 right-col-padding-42">
+                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control", onchange = "select_first_subassistant()" })
+                    <input id="Button+" class="btn btn btn-primary btn-primary-xsmall5 float-right" type="button" value="+" onclick="addsubassistant_onclick()" />
+                </div>
+            </div>
+
+            <div class="row row-validation-20 row-height-20 line-height-07">
+                <div class="col col-md-12">
+                    @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11", id = "first-subassistant-val" })
+                </div>
+            </div>
+        </div>
+
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
-<script>
-    $(function () {
-        $(".js-show-view-btn").click(function (e) {
-            e.preventDefault();
-            var $buttonClicked = $(this);
-            var options = {
-                "backdrop": "static",
-                keyboard: true
-            };
-            $.ajax({
-                method: "GET",
-                url: "/Claims/_ShowClaim",
-                contentType: "application/json; charset=utf-8",
-                datatype: "json",
-                data: { refNumber: this.innerHTML },
-                cache: false,
-                success: function (data, textStatus, jqXHR) {
-                    $("#myModalContent").html(data);
-                    $("#myModal").modal(options);
-                    $("#myModal").modal('show');
-                }
-            });
-        })
-        $("#closbtn").click(function () {
-            $('#myModal').modal('hide');
-        });
+<script type='text/javascript'>
+    $(document).ready(function createSubAssistants() {
+        //get the number of sub assistants (1 is the default)
+        var assistantddlcounter = document.getElementById('ddl-counter');
+        var subassddlcounterInt = parseInt(assistantddlcounter.value);
 
+        if (subassddlcounterInt > 1) {
+            //add ddls that have been saved earlier
+            var newddl = false;
+            var numOfRow = 0;
+            var notRemoveButton = true;
+            for (var i = 1; i < subassddlcounterInt; i++) {
+                numOfRow = i + 1;
+                addSubAssistant(newddl, numOfRow, notRemoveButton);
+            }
+        }
     });
 
-    var NumOfRow = 1;
+    function select_regular_assistant() {
+        var regAssistant = document.getElementById('SelectedRegAssistantId')
+        var regAssistantVal = document.getElementById('regular-assistant-val');
+        var items = document.getElementsByClassName('selecteditem');
+        if (regAssistant.selectedIndex == 0) {
+            //reset the validation message for the regular assistant
+            regAssistantVal.innerText = '';
+        }
+        else {
+            //check if the selected regular assistant already has been selected
+            var assistantFound = false;
+            var assIdx = 0;
+            while (!assistantFound && assIdx < items.length) {
+                if (regAssistant.selectedIndex == items[assIdx].innerText) {
+                    regAssistantVal.innerText = 'Assistenten är redan vald.';
+                    assistantFound = true;
+                }
+                assIdx++;
+            }
+            if (!assistantFound) {
+                //check if the selected regular assistant already has been selected as the first substitute assistant
+                var firstSub = document.getElementById('subassistant1-ddl');
+                if (regAssistant.selectedIndex == firstSub.selectedIndex) {
+                    regAssistantVal.innerText = 'Assistenten är redan vald.';
+                    assistantFound = true;
+                }
+            }
+            if (!assistantFound) {
+                //reset the validation message for the regular assistant
+                regAssistantVal.innerText = '';
+            }
+        }
+
+        //reset validation message 'Assistenten är redan vald' where relevant
+        var startIdx = items.length - 2;
+        var k = 0;
+        var sameSubAssFound = false;
+        for (var i = items.length - 1; i >= 0; i--) {
+            if (items[i].innerText != "0" && items[i].innerText != "9999") {
+                var subAssVal = document.getElementById('innerValDiv' + (i + 2).toString()).children;
+                if (subAssVal[0].innerText == "Assistenten är redan vald.") {
+                    sameSubAssFound = false;
+                    k = startIdx;
+                    while (k >= 0 && !sameSubAssFound) {
+                        if (items[i].innerText == items[k].innerText) {
+                            sameSubAssFound = true;
+                        }
+                        k--;
+                    }
+                    //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+                    if (!sameSubAssFound) {
+                        var firstSub = document.getElementById('subassistant1-ddl')
+                        if (items[i].innerText == firstSub.selectedIndex) {
+                            sameSubAssFound = true;
+                        }
+                    }
+                    if (!sameSubAssFound) {
+                        var firstSub = document.getElementById('SelectedRegAssistantId')
+                        if (items[i].innerText == firstSub.selectedIndex) {
+                            sameSubAssFound = true;
+                        }
+                    }
+                    if (!sameSubAssFound) {
+                        subAssVal[0].innerText = "";
+                    }
+                }
+            }
+            startIdx--;
+        }
+    }
+
+    function select_first_subassistant() {
+        var firstSub = document.getElementById('subassistant1-ddl')
+        var firstSubVal = document.getElementById('first-subassistant-val');
+        if (firstSub.selectedIndex == 0) {
+            //reset the validation message for the first subassistant
+            firstSubVal.innerText = '';
+        }
+        else {
+            //check if the selected first subassistant already has been selected
+            var items = document.getElementsByClassName('selecteditem');
+            var assistantFound = false;
+            var assIdx = 0;
+            while (!assistantFound && assIdx < items.length) {
+                if (firstSub.selectedIndex == items[assIdx].innerText) {
+                    firstSubVal.innerText = 'Assistenten är redan vald.';
+                    assistantFound = true;
+                }
+                assIdx++;
+            }
+            if (!assistantFound) {
+                //check if the selected first subassistant already has been selected as the regular assistant
+                var regAssistant = document.getElementById('SelectedRegAssistantId')
+                if (regAssistant.selectedIndex == firstSub.selectedIndex) {
+                    firstSubVal.innerText = 'Assistenten är redan vald.';
+                    assistantFound = true;
+                }
+            }
+            if (!assistantFound) {
+                //reset the validation message for the first subassistant
+                firstSubVal.innerText = '';
+            }
+        }
+
+        //reset validation message 'Assistenten är redan vald' where relevant
+        var items = document.getElementsByClassName('selecteditem');
+        var startIdx = items.length - 2;
+        var k = 0;
+        var sameSubAssFound = false;
+        for (var i = items.length - 1; i >= 0; i--) {
+            if (items[i].innerText != "0" && items[i].innerText != "9999") {
+                var subAssVal = document.getElementById('innerValDiv' + (i + 2).toString()).children;
+                if (subAssVal[0].innerText == "Assistenten är redan vald.") {
+                    sameSubAssFound = false;
+                    k = startIdx;
+                    while (k >= 0 && !sameSubAssFound) {
+                        if (items[i].innerText == items[k].innerText) {
+                            sameSubAssFound = true;
+                        }
+                        k--;
+                    }
+                    //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+                    if (!sameSubAssFound) {
+                        var firstSub = document.getElementById('subassistant1-ddl')
+                        if (items[i].innerText == firstSub.selectedIndex) {
+                            sameSubAssFound = true;
+                        }
+                    }
+                    if (!sameSubAssFound) {
+                        var firstSub = document.getElementById('SelectedRegAssistantId')
+                        if (items[i].innerText == firstSub.selectedIndex) {
+                            sameSubAssFound = true;
+                        }
+                    }
+                    if (!sameSubAssFound) {
+                        subAssVal[0].innerText = "";
+                    }
+                }
+            }
+            startIdx--;
+        }
+    }
 
     function addsubassistant_onclick() {
-        var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        var newddl = true;
+        var numOfRow = 0;
+        var notRemoveButton = true;
+        var assistantddlcounter = document.getElementById('ddl-counter');
+        var subassddlcounterInt = parseInt(assistantddlcounter.value);
+        numOfRow = subassddlcounterInt + 1;
+        addSubAssistant(newddl, numOfRow, notRemoveButton);
+    }
 
-        //NumOfRow++;
-
+    function addSubAssistant(newddl, numOfRow, notRemoveButton) {
         //initiate a variable that will hold the ddl of the 1st substitute assistant
         var ddl1 = document.getElementById('subassistant1-ddl');
 
@@ -247,46 +534,44 @@
 
         //get the number of substitute assistants used in this claim
         var assistantddlcounter = document.getElementById('ddl-counter');
-        //var numberOfSubAssistants = document.getElementById('ddl-counter');
-
         var subassddlcounterInt = parseInt(assistantddlcounter.value);
-        NumOfRow = subassddlcounterInt + 1;
+        //numOfRow = subassddlcounterInt + 1;
 
         //get the reference of the anchor div
         var mainDiv = document.getElementById('anchor-beyond4ddls');
 
         //create new div that will work as an outer container for the label
         var newOuterLabelDiv = document.createElement('div');
-        newOuterLabelDiv.setAttribute('id', 'outerLabelDiv' + NumOfRow);
+        newOuterLabelDiv.setAttribute('id', 'outerLabelDiv' + numOfRow);
         newOuterLabelDiv.setAttribute('class', 'row subass-outerlabel');
 
         var newInnerLabelDiv = document.createElement('div');
-        newInnerLabelDiv.setAttribute('id', 'innerLabelDiv' + NumOfRow);
-        newInnerLabelDiv.setAttribute('class', 'col col-md-8 subass-innerlabel');
+        newInnerLabelDiv.setAttribute('id', 'innerLabelDiv' + numOfRow);
+        newInnerLabelDiv.setAttribute('class', 'col col-md-12 subass-innerlabel');
 
         var newOuterDdlDiv = document.createElement('div');
-        newOuterDdlDiv.setAttribute('id', 'outerDdlDiv' + NumOfRow);
+        newOuterDdlDiv.setAttribute('id', 'outerDdlDiv' + numOfRow);
         newOuterDdlDiv.setAttribute('class', 'row row-height-36 subass-outerddl');
 
         var newInnerDdlDiv = document.createElement('div');
-        newInnerDdlDiv.setAttribute('id', 'innerDdlDiv' + NumOfRow);
-        newInnerDdlDiv.setAttribute('class', 'col col-md-8 right-col-padding-42 subass-innerddl');
+        newInnerDdlDiv.setAttribute('id', 'innerDdlDiv' + numOfRow);
+        newInnerDdlDiv.setAttribute('class', 'col col-md-12 right-col-padding-42 subass-innerddl');
 
         var newOuterValDiv = document.createElement('div');
-        newOuterValDiv.setAttribute('id', 'outerValDiv' + NumOfRow);
+        newOuterValDiv.setAttribute('id', 'outerValDiv' + numOfRow);
         newOuterValDiv.setAttribute('class', 'row row-validation-20 row-height-20 line-height-07 subass-outerval');
 
         var newInnerValDiv = document.createElement('div');
-        newInnerValDiv.setAttribute('id', 'innerValDiv' + NumOfRow);
-        newInnerValDiv.setAttribute('class', 'col col-md-8 subass-innerval');
+        newInnerValDiv.setAttribute('id', 'innerValDiv' + numOfRow);
+        newInnerValDiv.setAttribute('class', 'col col-md-12 subass-innerval');
 
 
         var newLabel = document.createElement('label');
         newLabel.setAttribute('class', 'create1-label control-label subass-label');
-        newLabel.innerText = "Vikarierande assistent " + NumOfRow.toString();
+        newLabel.innerText = "Vikarierande assistent " + numOfRow.toString();
 
         var newDropDownList = document.createElement('select');
-        newDropDownList.id = 'ddl' + NumOfRow;
+        newDropDownList.id = 'ddl' + numOfRow;
         newDropDownList.setAttribute('class', 'display-inline-block form-control subass-ddl');
         newDropDownList.setAttribute('data-val', 'true');
         newDropDownList.setAttribute('data-val-range-min', '1');
@@ -300,9 +585,8 @@
 
         var newSpan2 = document.createElement('span');
         newSpan2.setAttribute('class', 'selecteditem');
-        newSpan2.id = 'span' + NumOfRow;
+        newSpan2.id = 'span' + numOfRow;
         newSpan2.innerText = 0;
-
 
         //copy options to the new ddl
         for (var i = 0; i < assistantcounter; i++) {
@@ -311,10 +595,11 @@
             //if (i === 0) {
             option.value = i;
             //}
-            option.setAttribute('class', 'option' + NumOfRow);
+            option.setAttribute('class', 'option' + numOfRow);
             option.onclick = function UpdateSelectedItem() {
                 var idx = this.className.substring(6);
                 var selectIdx = this.value;
+
                 var selectedItemSpan = document.getElementById('span' + idx);
                 selectedItemSpan.innerText = selectIdx;
 
@@ -325,43 +610,132 @@
 
                 var items = document.getElementsByClassName('selecteditem');
                 var selectedItems = document.getElementsByClassName('selectedSubIndex');
-                for (var i = 0; i < subassddlcounterInt - 1; i++) {
-                    selectedItems[i].value = 0;
+                var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+                //var selectedAssistantVals = document.getElementsByClassName('selectedSubAssistantVal')
+
+                for (var idx3 = 0; idx3 < subassddlcounterInt - 1; idx3++) {
+                    selectedItems[idx3].value = 9999;
+                    selectedAssistants[idx3].value = "";
                 }
 
                 //load current indeces
-                for (var i = 0; i < subassddlcounterInt - 1; i++) {
-                    selectedItems[i].value = parseInt(items[i].innerText);
+                var selectedItems = document.getElementsByClassName('selectedSubIndex');
+                for (var idx1 = 0; idx1 < subassddlcounterInt - 1; idx1++) {
+                    selectedItems[idx1].value = parseInt(items[idx1].innerText);
+                }
+
+                //load the selectedAssistants
+                var items = document.getElementsByClassName('selecteditem');
+                var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+                for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
+                    if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
+                        var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
+                        selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
+                    }
+                }
+
+                //update validation messages
+                var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+                var items = document.getElementsByClassName('selecteditem');
+                if (selectedItemSpan.innerText != "0") {
+                    selectedSubAssistantVal[parseInt(idx) - 2].innerText = "";
+                    var subAssVal = document.getElementById('innerValDiv' + idx).children;
+                    subAssVal[0].innerText = "";
+                }
+
+                for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
+                    if (selectedSubAssistantVal[idx2].innerText != "") {
+                        var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
+                        subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
+                    }
+                }
+
+                //check if the assistant already has been selected
+                var subAssVal = document.getElementById('innerValDiv' + idx).children;
+
+                if (selectIdx == 0 && selectedSubAssistantVal[parseInt(idx) - 2].innerText == "") {
+                    //reset the validation message
+                    subAssVal[0].innerText = '';
+                }
+                else {
+                    var items = document.getElementsByClassName('selecteditem');
+                    var itemFound = false;
+                    var itemIdx = 0;
+                    while (!itemFound && itemIdx < items.length) {
+                        if (selectIdx == parseInt(items[itemIdx].innerText) && idx != (2 + itemIdx).toString()) {
+                            subAssVal[0].innerText = 'Assistenten är redan vald.';
+                            itemFound = true;
+                        }
+                        itemIdx++;
+                    }
+                    //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+                    if (!itemFound) {
+                        var firstSub = document.getElementById('subassistant1-ddl')
+                        if (selectIdx == firstSub.selectedIndex) {
+                            subAssVal[0].innerText = 'Assistenten är redan vald.';
+                            itemFound = true;
+                        }
+                    }
+                    if (!itemFound) {
+                        var firstSub = document.getElementById('SelectedRegAssistantId')
+                        if (selectIdx == firstSub.selectedIndex) {
+                            subAssVal[0].innerText = 'Assistenten är redan vald.';
+                            itemFound = true;
+                        }
+                    }
                 }
             }
             newDropDownList.add(option, newDropDownList.options[i]);
         }
 
-        newDropDownList.selectedIndex = 0;
+        if (newddl) {
+            //This code is executed when a new ddl is added
+            //set the selected value in the ddl to zero
+            newDropDownList.selectedIndex = 0;
 
+            //increment the counter holding the number of sub assistant ddls
+            assistantddlcounter.value = subassddlcounterInt + 1;
+        }
+        else {
+            //This code is executed at load of the page
+            //var items = document.getElementsByClassName('selecteditem');
+            var selectedItems = document.getElementsByClassName('selectedSubIndex');
+            newDropDownList.selectedIndex = selectedItems[numOfRow - 2].value;
 
-        //increment the counter holding the number of sub assistant ddls
-        assistantddlcounter.value = subassddlcounterInt + 1;
-
-
+            //load the selectedAssistants
+            //var items = document.getElementsByClassName('selecteditem');
+            //var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+        }
 
         //create remove button for each email adress
         var newButton = document.createElement('input');
         newButton.type = 'button';
         newButton.value = '-';
-        newButton.id = 'btn' + NumOfRow;
+        newButton.id = 'btn' + numOfRow;
         newButton.setAttribute('class', 'btn btn-primary btn-primary-xsmall6 float-right minusbutton');
 
         //attach event for remove button click
         newButton.onclick = function RemoveEntry() {
             var idx = this.id.substring(3);
 
+            //remove() method is not supported by IE. Therefore the following code is used.
+            //var labelDiv = document.getElementById('outerLabelDiv' + idx);
+            //labelDiv.remove();
+
+            //var ddlDiv = document.getElementById('outerDdlDiv' + idx);
+            //ddlDiv.remove();
+
+            //var valDiv = document.getElementById('outerValDiv' + idx);
+            //valDiv.remove();
+
             var labelDiv = document.getElementById('outerLabelDiv' + idx);
+            labelDiv.parentNode.removeChild(labelDiv);
+
             var ddlDiv = document.getElementById('outerDdlDiv' + idx);
+            ddlDiv.parentNode.removeChild(ddlDiv);
+
             var valDiv = document.getElementById('outerValDiv' + idx);
-            labelDiv.remove();
-            ddlDiv.remove();
-            valDiv.remove();
+            valDiv.parentNode.removeChild(valDiv);
 
             //decrement the counter holding the number of sub assistant ddls
             var subassddlcounterInt = parseInt(assistantddlcounter.value);
@@ -374,15 +748,21 @@
 
             //update the array that holds the selected sub assistant indeces
             //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
+            //reset validation messages
             var items = document.getElementsByClassName('selecteditem');
             var selectedItems = document.getElementsByClassName('selectedSubIndex');
+            var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+            var selectedAssistantVals = document.getElementsByClassName('selectedSubAssistantVal')
             for (var i = 0; i < subassddlcounterInt - 1; i++) {
-                selectedItems[i].value = 0;
+                selectedItems[i].value = 9999;
+                selectedAssistants[i].value = "";
+                selectedAssistantVals[i].innerText = "";
             }
 
             //load current indeces
             for (var i = 0; i < subassddlcounterInt - 2; i++) {
                 selectedItems[i].value = parseInt(items[i].innerText);
+                //selectedAssistants[i].value = items[i].innerText; continue here
             }
 
             //rename ids for label-, ddl- and validationmessage divs, rename options classes, rename ids for selecteditem spans and for minusbuttons
@@ -425,6 +805,72 @@
                 }
             }
 
+            //load current assistants
+            for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
+                if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
+                    //if (items[idx2].innerText != "0") {
+                    var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
+                    selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
+                }
+            }
+
+            //load validation messages
+            var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+            for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
+                if (selectedSubAssistantVal[idx2].innerText != "") {
+                    var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
+                    subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
+                }
+            }
+
+            //reset validation message 'Assistenten är redan vald' where relevant
+            var startIdx = items.length - 2;
+            var k = 0;
+            var sameSubAssFound = false;
+            var sameAsFirstSub = false;
+            var sameAsRegAss = false;
+            for (var i = items.length - 1; i >= 0; i--) {
+                if (items[i].innerText != "0" && items[i].innerText != "9999") {
+                    var subAssVal = document.getElementById('innerValDiv' + (i + 2).toString()).children;
+                    if (subAssVal[0].innerText == "Assistenten är redan vald.") {
+                        sameSubAssFound = false;
+                        k = startIdx;
+                        while (k >= 0 && !sameSubAssFound) {
+                            if (items[i].innerText == items[k].innerText) {
+                                sameSubAssFound = true;
+                            }
+                            k--;
+                        }
+                        //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+                        if (!sameSubAssFound) {
+                            var firstSub = document.getElementById('subassistant1-ddl')
+                            if (items[i].innerText == firstSub.selectedIndex) {
+                                sameSubAssFound = true;
+                                sameAsFirstSub = true;
+                            }
+                        }
+                        if (!sameSubAssFound) {
+                            var firstSub = document.getElementById('SelectedRegAssistantId')
+                            if (items[i].innerText == firstSub.selectedIndex) {
+                                sameSubAssFound = true;
+                                sameAsRegAss = true;
+                            }
+                        }
+                        if (!sameSubAssFound) {
+                            subAssVal[0].innerText = "";
+                        }
+                    }
+                }
+                startIdx--;
+            }
+            //check if the validation message first substitute assistant and/or the regular assistant needs to be reset
+            if (!sameAsFirstSub) {
+                select_first_subassistant();
+            }
+            if (!sameAsRegAss) {
+                select_regular_assistant();
+            }
+
             var selecteditems = document.getElementsByClassName('selecteditem');
             for (var i = 0; i < subassddlcounterInt - 2; i++) {
                 selecteditems[i].id = 'span' + (i + 2).toString();
@@ -449,23 +895,53 @@
         mainDiv.appendChild(newOuterLabelDiv);
         mainDiv.appendChild(newOuterDdlDiv);
         mainDiv.appendChild(newOuterValDiv);
+
+        if (!newddl && notRemoveButton) {
+            //This code is executed at load of the page
+
+            //set the selected value in the span
+            var items = document.getElementsByClassName('selecteditem');
+            var selectedItems = document.getElementsByClassName('selectedSubIndex');
+            items[numOfRow - 2].innerText = selectedItems[numOfRow - 2].value;
+
+            var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+            if (selectedSubAssistantVal[numOfRow - 2].innerText != "") {
+                var subAssVal = document.getElementById('innerValDiv' + numOfRow.toString()).children;
+                subAssVal[0].innerText = selectedSubAssistantVal[numOfRow - 2].innerText;
+            }
+
+            var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+            if (items[numOfRow - 2].innerText != "0" && items[numOfRow - 2].innerText != "9999") {
+                var options = document.getElementsByClassName('option' + (numOfRow).toString());
+                selectedAssistants[numOfRow - 2].value = options[parseInt(items[numOfRow - 2].innerText)].innerText;
+            }
+        }
     }
 
-    function saveSelectedIndeces() {
-        //get the number of substitute assistants used in this claim
-        var assistantddlcounter = document.getElementById('ddl-counter');
-        var subassddlcounterInt = parseInt(assistantddlcounter.innerText);
-        var items = document.getElementsByClassName('selecteditem');
-        var selectedItems = document.getElementsByClassName('selectedSubIndex');
-
-        //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
-        for (var i = 0; i < 20; i++) {
-            selectedItems[i].innerText = 0;
-        }
-
-        //load current indeces
-        for (var i = 0; i < subassddlcounterInt; i++) {
-            selectedItems[i].innerHtml = items[i].innerText;
-        }
-    }
+    $(function () {
+        $(".js-show-view-btn").click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var options = {
+                "backdrop": "static",
+                keyboard: true
+            };
+            $.ajax({
+                method: "GET",
+                url: "/Claims/_ShowClaim",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                data: { refNumber: this.innerHTML },
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    $("#myModalContent").html(data);
+                    $("#myModal").modal(options);
+                    $("#myModal").modal('show');
+                }
+            });
+        })
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
 </script>

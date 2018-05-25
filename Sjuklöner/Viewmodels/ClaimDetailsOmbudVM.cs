@@ -67,7 +67,7 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kollektivavtal:")]
         public string CollectiveAgreement { get; set; } //Avtal, fackförbund
 
-        //Vikarierande assistent
+        //1:a Vikarierande assistent
         [Display(Name = "Namn:")]
         public string SubAssistantName { get; set; }
 
@@ -79,6 +79,21 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "E-postadress:")]
         public string SubEmail { get; set; }
+
+        //Övriga vikarierande assistenter (2 - 20)
+        [Display(Name = "Namn:")]
+        public string[] SubstituteAssistantName { get; set; }
+
+        [Display(Name = "Personnummer:")]
+        public string[] SubstituteAssistantSSN { get; set; }
+
+        [Display(Name = "Telefonnummer (inkl. riktnr.):")]
+        public string[] SubstituteAssistantPhoneNumber { get; set; }
+
+        [Display(Name = "E-postadress:")]
+        public string[] SubstituteAssistantEmail { get; set; }
+
+        public int NumberOfSubAssistants { get; set; }
 
         //Insjuknad ordinarie assistent
         [Display(Name = "Namn:")]
@@ -162,6 +177,41 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Varav timmar med jour:")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public decimal NumberOfOnCallHoursSI { get; set; }
+
+        //The following 11 properties handle multiple substitute assistants in the same claim (subs 2 - 20)
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[] HoursWithSI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[] OrdinaryHoursSI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[] UnsocialHoursSI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[] OnCallHoursSI { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] HoursSIPerSubAndDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] UnsocialEveningSIPerSubAndDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] UnsocialNightSIPerSubAndDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] UnsocialWeekendSIPerSubAndDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] UnsocialGrandWeekendSIPerSubAndDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] OnCallDaySIPerSubAndDay { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string[,] OnCallNightSIPerSubAndDay { get; set; }
+
 
         [Display(Name = "Yrkat belopp, total (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

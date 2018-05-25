@@ -867,6 +867,10 @@ li a {
     margin-left: 16px;
 }
 
+.btn-left-margin-21 {
+    margin-left: 21px;
+}
+
 .btn-left-margin-22 {
     margin-left: 22px;
 }
@@ -897,7 +901,17 @@ li a {
 .selectedSubIndex {
     width: 40px;
     display: none;
-    /*float: right;*/
+}
+
+.selectedSubAssistant {
+    width: 200px;
+    display: none;
+    /*comment display attribute when testing*/
+}
+
+.selectedSubAssistantVal {
+    display: none;
+    font-weight: 100;
 }
 
 .display-inline-block {
@@ -922,9 +936,19 @@ li a {
     margin-bottom: 0;
 }
 
+.label-align-top {
+    vertical-align: top;
+}
+
 .bold-14 {
     font-size: 14px;
     font-weight: bold;
+}
+
+.bold-14-2 {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: right;
 }
 
 .bold-16 {
@@ -1016,7 +1040,8 @@ li a {
 }
 
 .right-col-padding-42 {
-    padding-right: 42px;
+    padding-right: 37px;
+    height: 36px;
 }
 
 .col-padding {
@@ -1284,6 +1309,10 @@ li a {
     text-align: left;
 }
 
+.no-padding-top{
+    padding-top: 0;
+}
+
 .no-padding-left3 {
     padding-left: -32px;
     margin-left: -32px;
@@ -1304,6 +1333,10 @@ li a {
 
 .padding-top-7 {
     padding-top: 7px;
+}
+
+.padding-top-10 {
+    padding-top: 10px;
 }
 
 .col-small-margin-left {
@@ -1343,6 +1376,10 @@ li a {
     /*padding: 0 4px;*/
     margin-top: -5px;
     font-size: 14px;
+}
+
+.row-margin {
+    margin-bottom: 12px;
 }
 
 .small-row-margin {
@@ -1423,6 +1460,11 @@ li a {
     font-size: 18px;
 }
 
+.height-18-2 {
+    height: 18px;
+    font-size: 14px;
+}
+
 .height-14 {
     height: 14px;
 }
@@ -1453,6 +1495,12 @@ li a {
 
 .assistant-heading {
     font-size: 24px;
+    font-weight: bold;
+    margin-left: -15px;
+}
+
+.assistant-heading2 {
+    font-size: 16px;
     font-weight: bold;
     margin-left: -15px;
 }

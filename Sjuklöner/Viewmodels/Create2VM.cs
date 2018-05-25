@@ -13,6 +13,12 @@ namespace Sjuklöner.Viewmodels
         public List<ScheduleRow> ScheduleRowList { get; set; }
 
         public string ReferenceNumber { get; set; }
+
+        public string RegAssistantSSNAndName { get; set; }
+
+        public string[] SubAssistantSSNAndName { get; set; }
+
+        public int NumberOfSubAssistants { get; set; }
     }
 
     public class ScheduleRow
@@ -48,24 +54,24 @@ namespace Sjuklöner.Viewmodels
         public string OnCallNight { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string HoursSI { get; set; }
+        public string[] HoursSI { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string UnsocialEveningSI { get; set; }
+        public string[] UnsocialEveningSI { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string UnsocialNightSI { get; set; }
+        public string[] UnsocialNightSI { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string UnsocialWeekendSI { get; set; }
+        public string[] UnsocialWeekendSI { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string UnsocialGrandWeekendSI { get; set; }
+        public string[] UnsocialGrandWeekendSI { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string OnCallDaySI { get; set; }
+        public string[] OnCallDaySI { get; set; }
 
         [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
-        public string OnCallNightSI { get; set; }
+        public string[] OnCallNightSI { get; set; }
     }
 }
