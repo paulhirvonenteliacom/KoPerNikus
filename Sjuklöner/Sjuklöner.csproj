@@ -72,6 +72,9 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -441,6 +444,7 @@
     <Compile Include="Models\WatchLog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="Connected Services\BankIDService\configuration91.svcinfo" />
     <None Include="Connected Services\BankIDService\configuration.svcinfo" />
     <None Include="Connected Services\BankIDService\Reference.svcmap">
@@ -454,6 +458,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -601,6 +609,9 @@
     <Content Include="Views\WatchLogs\DeleteAll.cshtml" />
     <Content Include="Views\WatchLogs\Delete.cshtml" />
     <Content Include="Views\Claims\RobotRecommend.cshtml" />
+    <Content Include="Views\Claims\ReceiptPDF.cshtml" />
+    <Content Include="Views\Claims\ClaimDetailsPdf.cshtml" />
+    <Content Include="Views\Shared\_LayoutPdf.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
