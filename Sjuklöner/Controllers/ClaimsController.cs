@@ -2482,10 +2482,12 @@ namespace Sjuklöner.Controllers
                 if (claim.ClaimStatusId == 3 || claim.ClaimStatusId == 7)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring påbörjad " + claim.BasisForDecisionTransferStartTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferStartTimeStamp.ToShortTimeString() + ".";
+                    recommendationVM.BasisForDecision = false;
                 }
                 if (claim.ClaimStatusId == 6 || claim.ClaimStatusId == 1)
                 {
                     recommendationVM.BasisForDecisionMsg = "Överföring avslutad " + claim.BasisForDecisionTransferFinishTimeStamp.Date.ToShortDateString() + " kl " + claim.BasisForDecisionTransferFinishTimeStamp.ToShortTimeString() + ".";
+                    recommendationVM.BasisForDecision = true;
                 }
                 if (claim.ClaimStatusId == 1)
                 {
