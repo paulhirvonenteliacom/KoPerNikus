@@ -3342,8 +3342,8 @@ namespace Sjuklöner.Controllers
         public ActionResult ClaimDetailsAsPdf(string refNumber)
         {
             var claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
-            var claimDetailsOmbudVM = new ClaimDetailsOmbudVM();
 
+            ClaimDetailsOmbudVM claimDetailsOmbudVM = new ClaimDetailsOmbudVM();
             claimDetailsOmbudVM.CompletionStage = claim.CompletionStage;
             if (claim.CompletionStage >= 1)
             {
@@ -3382,11 +3382,29 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
                 claimDetailsOmbudVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
 
-                //Vikarierande assistent
+                //Vikarierande assistent 1
                 claimDetailsOmbudVM.SubAssistantName = claim.SubFirstName + " " + claim.SubLastName;
                 claimDetailsOmbudVM.SubAssistantSSN = claim.SubAssistantSSN;
                 claimDetailsOmbudVM.SubPhoneNumber = claim.SubPhoneNumber;
                 claimDetailsOmbudVM.SubEmail = claim.SubEmail;
+
+                //Vikarierande assistent 2 - 20
+                string[] Name = new string[20];
+                string[] SSN = new string[20];
+                string[] PhoneNumber = new string[20];
+                string[] Email = new string[20];
+
+                Name = claim.SubAssistantsNameConcat.Split('£');
+                SSN = claim.SubAssistantsSSNConcat.Split('£');
+                PhoneNumber = claim.SubAssistantsPhoneConcat.Split('£');
+                Email = claim.SubAssistantsEmailConcat.Split('£');
+
+                claimDetailsOmbudVM.SubstituteAssistantName = Name;
+                claimDetailsOmbudVM.SubstituteAssistantSSN = SSN;
+                claimDetailsOmbudVM.SubstituteAssistantPhoneNumber = PhoneNumber;
+                claimDetailsOmbudVM.SubstituteAssistantEmail = Email;
+
+                claimDetailsOmbudVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
                 claimDetailsOmbudVM.NumberOfSickDays = claim.NumberOfSickDays;
 
@@ -3407,12 +3425,76 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
                 //claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
 
-                //Hours for substitute assistant
+                //Hours for substitute assistant including handling for multiple substitute assistants
                 claimDetailsOmbudVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
                 claimDetailsOmbudVM.NumberOfUnsocialHoursSI = claim.NumberOfUnsocialHoursSI;
                 claimDetailsOmbudVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
 
+                string[] hoursWithSI = new string[20];
+                string[] ordinaryHoursSI = new string[20];
+                string[] unsocialHoursSI = new string[20];
+                string[] onCallHoursSI = new string[20];
+
+                hoursWithSI = claim.NumberOfHoursWithSIConcat.Split('+').ToArray();
+                ordinaryHoursSI = claim.NumberOfOrdinaryHoursSIConcat.Split('+').ToArray();
+                unsocialHoursSI = claim.NumberOfUnsocialHoursSIConcat.Split('+').ToArray();
+                onCallHoursSI = claim.NumberOfOnCallHoursSIConcat.Split('+').ToArray();
+
+                claimDetailsOmbudVM.HoursWithSI = hoursWithSI;
+                claimDetailsOmbudVM.OrdinaryHoursSI = ordinaryHoursSI;
+                claimDetailsOmbudVM.UnsocialHoursSI = unsocialHoursSI;
+                claimDetailsOmbudVM.OnCallHoursSI = onCallHoursSI;
+
+                string[] hoursSIArrayPerDay = new string[20];
+                string[] unsocialEveningSIArrayPerDay = new string[20];
+                string[] unsocialNightSIArrayPerDay = new string[20];
+                string[] unsocialWeekendSIArrayPerDay = new string[20];
+                string[] unsocialGrandWeekendSIArrayPerDay = new string[20];
+                string[] onCallDaySIArrayPerDay = new string[20];
+                string[] onCallNightSIArrayPerDay = new string[20];
+
+                string[,] hoursSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialEveningSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialNightSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialWeekendSIPerSubAndDay = new string[20, 14];
+                string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 14];
+                string[,] onCallDaySIPerSubAndDay = new string[20, 14];
+                string[,] onCallNightSIPerSubAndDay = new string[20, 14];
+
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                int index = 0;
+                foreach (var day in claimDays)
+                {
+                    hoursSIArrayPerDay = day.HoursSI.Split('+').ToArray();
+                    unsocialEveningSIArrayPerDay = day.UnsocialEveningSI.Split('+').ToArray();
+                    unsocialNightSIArrayPerDay = day.UnsocialNightSI.Split('+').ToArray();
+                    unsocialWeekendSIArrayPerDay = day.UnsocialWeekendSI.Split('+').ToArray();
+                    unsocialGrandWeekendSIArrayPerDay = day.UnsocialGrandWeekendSI.Split('+').ToArray();
+                    onCallDaySIArrayPerDay = day.OnCallDaySI.Split('+').ToArray();
+                    onCallNightSIArrayPerDay = day.OnCallNightSI.Split('+').ToArray();
+
+                    for (int i = 0; i < claim.NumberOfSubAssistants; i++)
+                    {
+                        hoursSIPerSubAndDay[i, index] = hoursSIArrayPerDay[i];
+                        unsocialEveningSIPerSubAndDay[i, index] = unsocialEveningSIArrayPerDay[i];
+                        unsocialNightSIPerSubAndDay[i, index] = unsocialNightSIArrayPerDay[i];
+                        unsocialWeekendSIPerSubAndDay[i, index] = unsocialWeekendSIArrayPerDay[i];
+                        unsocialGrandWeekendSIPerSubAndDay[i, index] = unsocialGrandWeekendSIArrayPerDay[i];
+                        onCallDaySIPerSubAndDay[i, index] = onCallDaySIArrayPerDay[i];
+                        onCallNightSIPerSubAndDay[i, index] = onCallNightSIArrayPerDay[i];
+                    }
+                    index++;
+                }
+
+                claimDetailsOmbudVM.HoursSIPerSubAndDay = hoursSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialEveningSIPerSubAndDay = unsocialEveningSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialNightSIPerSubAndDay = unsocialNightSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialWeekendSIPerSubAndDay = unsocialWeekendSIPerSubAndDay;
+                claimDetailsOmbudVM.UnsocialGrandWeekendSIPerSubAndDay = unsocialGrandWeekendSIPerSubAndDay;
+                claimDetailsOmbudVM.OnCallDaySIPerSubAndDay = onCallDaySIPerSubAndDay;
+                claimDetailsOmbudVM.OnCallNightSIPerSubAndDay = onCallNightSIPerSubAndDay;
+
+                //var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
                 claimDetailsOmbudVM.ClaimDays = claimDays;
             }
 
@@ -3631,7 +3713,7 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.TotalCostCalcD1T14 = claim.TotalCostCalcD1T14;
                 //
             }
-
+            
             // Use the View ClaimDetailsPdf.cshtml to create a pdf view 
             var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM);
             byte[] byteArray = viewPdf.BuildFile(ControllerContext);
