@@ -161,6 +161,23 @@
         </div>
     </div>
 
+    if (TempData["PdfSuccess"] != null)
+    {
+        <div class="Event alert alert-success" id="PdfEvent">
+            <h3>
+                @TempData["PdfSuccess"]
+            </h3>
+        </div>
+    }
+    if (TempData["PdfFail"] != null)
+    {
+        <div class="Event alert alert-danger" id="PdfEvent">
+            <h3>
+                @TempData["PdfFail"]
+            </h3>
+        </div>
+    }
+
     <div class="row">
         <p class="col col-md-4 second-page-header4">Automatiserade kontroller</p>
     </div>
@@ -235,20 +252,20 @@
             </div>
 
             @*<div class="form-group margin-bottom-small col line-height-06">
-                @Html.LabelFor(model => model.SalarySpecSubAssistantCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                @if (!Model.SalarySpecSubAssistantCheck)
-                {
-                    <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.SalarySpecSubAssistantCheckMsg)
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.SalarySpecSubAssistantCheckMsg)
-                    </div>
-                }
-            </div>*@
+                    @Html.LabelFor(model => model.SalarySpecSubAssistantCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.SalarySpecSubAssistantCheck)
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.SalarySpecSubAssistantCheckMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.SalarySpecSubAssistantCheckMsg)
+                        </div>
+                    }
+                </div>*@
 
             <div class="form-group margin-bottom-small col line-height-06">
                 @Html.LabelFor(model => model.SickleaveNotificationCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
@@ -338,29 +355,29 @@
                     @Html.DisplayFor(model => model.ModelSum)
                 </div>
             </div>
-        @if (User.IsInRole("Admin") || Model.InInbox == false)
-        {
-
-        <div class="form-group margin-bottom-small col line-height-06">
-            @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-            <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="approvedsum">
-                @Html.DisplayFor(model => model.ApprovedSum)
-            </div>
-        </div>
-        <div class="form-group margin-bottom-small col line-height-06">
-            @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-            <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedsum">
-                @Html.DisplayFor(model => model.RejectedSum)
-            </div>
-        </div>
-            if (Decimal.Parse(Model.RejectedSum) > 0)
+            @if (User.IsInRole("Admin") || Model.InInbox == false)
             {
-               @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-               <div class="col-md-8 align-bottom7 display-result decision-padding-left" id="rejectedreason">
-                   @Html.DisplayFor(model => model.RejectReason)
-               </div>
+
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="approvedsum">
+                        @Html.DisplayFor(model => model.ApprovedSum)
+                    </div>
+                </div>
+                <div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    <div class="col-md-8 align-bottom7 display-result decision-padding-left2" id="rejectedsum">
+                        @Html.DisplayFor(model => model.RejectedSum)
+                    </div>
+                </div>
+                if (Decimal.Parse(Model.RejectedSum) > 0)
+                {
+                    @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    <div class="col-md-8 align-bottom7 display-result decision-padding-left" id="rejectedreason">
+                        @Html.DisplayFor(model => model.RejectReason)
+                    </div>
+                }
             }
-        }
         </div>
     </div>
     if (User.IsInRole("AdministrativeOfficial") && Model.InInbox == true)
@@ -399,7 +416,7 @@
                     </div>
                 </div>
             </div>
-        </div>       
+        </div>
         <div class="row">
             <div class="col col-md-offset-4">
                 <input type="submit" value="För över till Procapita" name="submitButton" class="btn btn-primary btn-primary-extra-wide" id="confirm" />
@@ -473,14 +490,13 @@
             </div>
         </div>
     </div>
-
-
-
-
 }
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+    $('#PdfEvent').delay(4000).hide(1500);
+</script>
 <script type='text/javascript'>
     function calculateSum(id) {
         var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));

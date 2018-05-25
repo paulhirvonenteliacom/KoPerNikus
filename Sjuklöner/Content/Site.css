@@ -1857,6 +1857,16 @@ a:hover, a:focus {
     vertical-align: text-top;
 }
 
+.claimpdf-col {
+    width: 5%;
+    vertical-align: text-top;
+}
+
+.claimpdf-manycol {
+    width: 13%;
+    vertical-align: text-top;
+}
+
 .input-height {
     line-height: 25px;
 }

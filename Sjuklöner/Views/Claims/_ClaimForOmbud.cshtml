@@ -2,6 +2,11 @@
 
 @*<body>*@
 <div class="row">
+    <div class="col col-md-offset-2">
+        @Html.ActionLink("Skapa Pdf-dokument", "ClaimDetailsAsPdf", new { refNumber = Model.ReferenceNumber }, new { @class = "js-show-view-btn btn btn-primary btn-primary-wide" })
+    </div>    
+</div>
+<div class="row">
     <p class="col col-md-offset-2 page-header9">Ansökan</p>
 </div>
 <div class="row">
