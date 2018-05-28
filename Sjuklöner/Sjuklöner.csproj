@@ -444,7 +444,6 @@
     <Compile Include="Models\WatchLog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Browsers\qt.browser" />
     <None Include="Connected Services\BankIDService\configuration91.svcinfo" />
     <None Include="Connected Services\BankIDService\configuration.svcinfo" />
     <None Include="Connected Services\BankIDService\Reference.svcmap">
@@ -615,6 +614,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Browsers\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
