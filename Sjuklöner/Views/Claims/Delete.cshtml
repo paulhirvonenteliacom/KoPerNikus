@@ -8,258 +8,49 @@
     <p class="page-header8 col col-md-10">Ta bort ansökan</p>
     <nl class="col col-md-offset-2 font-size-16">Klicka på "Bekräfta" nedan för att ta bort denna ansökan</nl>
 </div>
+<hr class="claim-divider" />
 <div>
-    <hr class="claim-divider" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ReferenceNumber)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.ReferenceNumber, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.ReferenceNumber)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CustomerSSN)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.CustomerSSN, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.CustomerSSN)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StatusDate)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.StatusDate, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.StatusDate)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.QualifyingDate)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.QualifyingDate, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.QualifyingDate)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastDayOfSicknessDate)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.LastDayOfSicknessDate, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.LastDayOfSicknessDate)
-        </dd>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ClaimedSum)
-        </dt>
-
-        <dd>
+    <div class="row">
+        @Html.LabelFor(m => m.ClaimedSum, new { @class = "col-md-2 display-right-align control-label" })
+        <div class="col-small-left-padding col-md-10">
             @Html.DisplayFor(model => model.ClaimedSum)
-        </dd>
-
-        @*<dt>
-                @Html.DisplayNameFor(model => model.CustomerSSN)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.CustomerSSN)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HourlySalary)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HourlySalary)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HolidayPayRate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HolidayPayRate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.PayrollTaxRate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PayrollTaxRate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.InsuranceRate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.InsuranceRate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.PensionRate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PensionRate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.QualifyingDate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.QualifyingDate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.LastDayOfSicknessDate)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.LastDayOfSicknessDate)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HoursQualifyingDay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HoursQualifyingDay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HolidayPayQualDay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HolidayPayQualDay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.PayrollTaxQualDay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PayrollTaxQualDay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.InsuranceQualDay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.InsuranceQualDay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.PensionQualDay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PensionQualDay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.ClaimQualDay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.ClaimQualDay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HoursDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HoursDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HourlySickPay)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HourlySickPay)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.SickPayDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.SickPayDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.HolidayPayDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.HolidayPayDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.UnsocialHoursBonusDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.UnsocialHoursBonusDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.OnCallDutyDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.OnCallDutyDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.PayrollTaxDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PayrollTaxDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.InsuranceDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.InsuranceDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.PensionDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.PensionDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.ClaimDay2To14)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.ClaimDay2To14)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.ClaimSum)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.ClaimSum)
-            </dd>*@
-
-    </dl>
+        </div>
+    </div>
 
     @using (Html.BeginForm("Delete", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post))
     {

@@ -4,30 +4,30 @@
 @{
     ViewBag.Title = "Create2";
 }
+@*<body>*@
 
-<div class="row margin-breadcrumb">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Personuppgifter och sjukperiod", "Create1", new { refNumber = Model.ReferenceNumber }, new { @class = "breadcrumb-padding" })</li>
-            <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Timmar</li>
-        </ol>
-    </nav>
-</div>
-@using (Html.BeginForm("Create2", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+    <div class="row margin-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Ansökningar", "Index", null, new { @class = "breadcrumb-padding" })</li>
+                <li class="breadcrumb-item breadcrumb-font">@Html.ActionLink("Personuppgifter och sjukperiod", "Create1", new { refNumber = Model.ReferenceNumber }, new { @class = "breadcrumb-padding" })</li>
+                <li class="breadcrumb-item active breadcrumb-font breadcrumb-padding" aria-current="page">Timmar</li>
+            </ol>
+        </nav>
+    </div>
+    @using (Html.BeginForm("Create2", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post))
     {
-        //Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDateString);
-        @Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDate);
-        @Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].DayDate);
-        @Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowWeekDay);
-    }
-    @Html.HiddenFor(modelItem => modelItem.ReferenceNumber)
-    @Html.HiddenFor(modelItem => modelItem.NumberOfSubAssistants)
+        @Html.AntiForgeryToken()
+        for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
+        {
+            //Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDateString);
+            @Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowDate);
+            @Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].DayDate);
+            @Html.HiddenFor(modelItem => modelItem.ScheduleRowList[i].ScheduleRowWeekDay);
+        }
+        @Html.HiddenFor(modelItem => modelItem.ReferenceNumber)
+        @Html.HiddenFor(modelItem => modelItem.NumberOfSubAssistants)
 
-    <body>
         <div class="row">
             <p class="col col-md-2"></p>
             <p class="page-header11 col col-md-10">Ansökan om sjuklöneersättning</p>
@@ -339,19 +339,19 @@
                             <div class="col col-md-6 no-col-padding">
                                 <div class="row">
                                     <div class="col col-md-2 col-padding-15">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].Hours, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 hours" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].Hours, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 hours", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 1 + "')" } }) @*99 indicates to the javascript that it is the regular assistant *@
                                     </div>
                                     <div class="col col-md-2 col-padding-10 ">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialEvening, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-evening" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialEvening, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-evening", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 2 + "')" } })
                                     </div>
                                     <div class="col col-md-2 col-padding-5">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialNight, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-night" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialNight, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-night", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 3 + "')" } })
                                     </div>
                                     <div class="col col-md-2 col-md-nopadding">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekend, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-weekend" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekend, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-weekend", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 4 + "')" } })
                                     </div>
                                     <div class="col col-md-2 negative-left-margin2">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekend, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-grandweekend" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekend, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-grandweekend", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 5 + "')" } })
                                     </div>
                                     <div class="col-md-nopadding col col-md-2">
 
@@ -361,10 +361,10 @@
                             <div class="col col-md-3">
                                 <div class="row">
                                     <div class="col col-md-4">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallDay, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-day" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallDay, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-day", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 6 + "')" } })
                                     </div>
                                     <div class="col col-md-4 negative-left-margin6">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallNight, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-night" } })
+                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallNight, new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-night", onchange = "validateinput('" + i + "', '" + 99 + "', '" + 7 + "')" } })
                                     </div>
                                     <div class="col-md-nopadding col col-md-2">
                                     </div>
@@ -378,19 +378,19 @@
                             <div class="col col-md-6 no-col-padding">
                                 <div class="row row-height-30 small-row-margin4 line-height-07">
                                     <div class="small-errormessage no-col-padding col col-md-2">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].Hours, null, new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].Hours, null, new { @class = "text-danger font-size-11 hours-val" })
                                     </div>
                                     <div class="small-errormessage col col-md-2 col-padding-6 ">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialEvening, null, new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialEvening, null, new { @class = "text-danger font-size-11 unsocial-evening-val" })
                                     </div>
                                     <div class="small-errormessage col col-md-2 col-padding-10">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialNight, null, new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialNight, null, new { @class = "text-danger font-size-11 unsocial-night-val" })
                                     </div>
                                     <div class="small-errormessage col col-md-2 col-padding3">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekend, null, new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekend, null, new { @class = "text-danger font-size-11 unsocial-weekend-val" })
                                     </div>
                                     <div class="small-errormessage col col-md-2 col-padding2-20">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekend, null, new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekend, null, new { @class = "text-danger font-size-11 unsocial-grandweekend-val" })
                                     </div>
                                     <div class="small-errormessage col-md-nopadding col col-md-2">
                                     </div>
@@ -399,10 +399,10 @@
                             <div class="col col-md-3">
                                 <div class="row row-height-30 small-row-margin4 line-height-07">
                                     <div class="small-errormessage no-col-padding col col-md-4">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallDay, "", new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallDay, "", new { @class = "text-danger font-size-11 oncall-day-val" })
                                     </div>
                                     <div class="small-errormessage col col-md-4 col-padding-6">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallNight, "", new { @class = "text-danger font-size-11" })
+                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallNight, "", new { @class = "text-danger font-size-11 oncall-night-val" })
                                     </div>
                                     <div class="small-errormessage col-md-nopadding col col-md-2">
                                     </div>
@@ -557,19 +557,19 @@
                                 <div class="col col-md-6 no-col-padding">
                                     <div class="row">
                                         <div class="col col-md-2 col-padding-15">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].HoursSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 hours-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].HoursSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 hours-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 1 + "')" } })
                                         </div>
                                         <div class="col col-md-2 col-padding-10 ">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialEveningSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-evening-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialEveningSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-evening-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 2 + "')" } })
                                         </div>
                                         <div class="col col-md-2 col-padding-5">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialNightSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-night-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialNightSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-night-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 3 + "')" } })
                                         </div>
                                         <div class="col col-md-2 col-md-nopadding">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekendSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-weekend-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekendSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-weekend-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 4 + "')" } })
                                         </div>
                                         <div class="col col-md-2 negative-left-margin2">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekendSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-grandweekend-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekendSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 unsocial-grandweekend-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 5 + "')" } })
                                         </div>
                                         <div class="col-md-nopadding col col-md-2">
 
@@ -579,10 +579,10 @@
                                 <div class="col col-md-3">
                                     <div class="row">
                                         <div class="col col-md-4">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallDaySI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-day-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallDaySI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-day-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 6 + "')" } })
                                         </div>
                                         <div class="col col-md-4 negative-left-margin6">
-                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallNightSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-night-si" } })
+                                            @Html.EditorFor(modelItem => Model.ScheduleRowList[i].OnCallNightSI[k], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2 oncall-night-si", onchange = "validateinput('" + i + "', '" + k + "', '" + 7 + "')" } })
                                         </div>
                                         <div class="col-md-nopadding col col-md-2">
                                         </div>
@@ -596,19 +596,19 @@
                                 <div class="col col-md-6 no-col-padding">
                                     <div class="row row-height-30 small-row-margin4 line-height-07">
                                         <div class="small-errormessage col col-md-2 no-col-padding">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].HoursSI[k], null, new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].HoursSI[k], null, new { @class = "text-danger font-size-11 hours-si-val" })
                                         </div>
                                         <div class="small-errormessage col col-md-2 col-padding-6 ">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialEveningSI[k], null, new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialEveningSI[k], null, new { @class = "text-danger font-size-11 unsocial-evening-si-val" })
                                         </div>
                                         <div class="small-errormessage col col-md-2 col-padding-10">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialNightSI[k], null, new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialNightSI[k], null, new { @class = "text-danger font-size-11 unsocial-night-si-val" })
                                         </div>
                                         <div class="small-errormessage col col-md-2 col-padding3">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekendSI[k], null, new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialWeekendSI[k], null, new { @class = "text-danger font-size-11 unsocial-weekend-si-val" })
                                         </div>
                                         <div class="small-errormessage col col-md-2 col-padding2-20">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekendSI[k], null, new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].UnsocialGrandWeekendSI[k], null, new { @class = "text-danger font-size-11 unsocial-grandweekend-si-val" })
                                         </div>
                                         <div class="small-errormessage col-md-nopadding col col-md-2">
                                         </div>
@@ -617,10 +617,10 @@
                                 <div class="col col-md-3">
                                     <div class="row row-height-30 small-row-margin4 line-height-07">
                                         <div class="small-errormessage col col-md-4 no-col-padding">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallDaySI[k], "", new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallDaySI[k], "", new { @class = "text-danger font-size-11 oncall-day-si-val" })
                                         </div>
                                         <div class="small-errormessage col col-md-4 col-padding-6">
-                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallNightSI[k], "", new { @class = "text-danger font-size-11" })
+                                            @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[i].OnCallNightSI[k], "", new { @class = "text-danger font-size-11 oncall-night-si-val" })
                                         </div>
                                         <div class="small-errormessage col-md-nopadding col col-md-2">
                                         </div>
@@ -670,8 +670,9 @@
                 </div>
             </div>
         </div>
-    </body>
-}
+    }
+@*</body>*@
+
 <script type='text/javascript'>
     $(document).ready(function assignIdsToSubAssistants() {
         var numberOfHoursSI = document.getElementsByClassName("hours-si");
@@ -694,8 +695,7 @@
 
     });
 
-    function copyHoursToStandin() {
-
+    function validateinput(dayIdx, subIdx, typeOfHour) {
         var numberOfHours = document.getElementsByClassName("hours");
         var unsocialEvening = document.getElementsByClassName("unsocial-evening");
         var unsocialNight = document.getElementsByClassName("unsocial-night");
@@ -712,65 +712,150 @@
         var oncallDaySI = document.getElementsByClassName("oncall-day-si");
         var oncallNightSI = document.getElementsByClassName("oncall-night-si");
 
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfSickDays = numberOfHours.length;
+        var numberOfSubAssistants = numberOfHoursSI.length / numberOfSickDays;
 
-        for (var i = 0; i < data.ScheduleRowList.length; i++) {
-            if (numberOfHours[i].value != null) {
-                numberOfHoursSI[i].value = numberOfHours[i].value;
+        //check if the change was for the regular assistant (identified by subIdx = 99)
+        if (subIdx == 99) {
+            if (typeOfHour == 1) {
+                var hoursval = document.getElementsByClassName('hours-val');
+                hoursval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                numberOfHours[i].value = "0,00";
-                numberOfHoursSI[i].value = "0,00";
+            else if (typeOfHour == 2) {
+                var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
+                unsocialeveningval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-
-            if (unsocialEvening[i].value != null) {
-                unsocialEveningSI[i].value = unsocialEvening[i].value;
+            else if (typeOfHour == 3) {
+                var unsocialnightval = document.getElementsByClassName('unsocial-night-val');
+                unsocialnightval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                unsocialEvening[i].value = "0,00";
-                unsocialEveningSI[i].value = "0,00";
+            else if (typeOfHour == 4) {
+                var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-val');
+                unsocialweekendval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-
-            if (unsocialNight[i].value != null) {
-                unsocialNightSI[i].value = unsocialNight[i].value;
+            else if (typeOfHour == 5) {
+                var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-val');
+                unsocialgrandweekendval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                unsocialNight[i].value = "0,00";
-                unsocialNightSI[i].value = "0,00";
+            else if (typeOfHour == 6) {
+                var oncalldayval = document.getElementsByClassName('oncall-day-val');
+                oncalldayval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-
-            if (unsocialWeekend[i].value != null) {
-                unsocialWeekendSI[i].value = unsocialWeekend[i].value;
+            else if (typeOfHour == 7) {
+                var oncallnightval = document.getElementsByClassName('oncall-night-val');
+                oncallnightval[dayIdx].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                unsocialWeekend[i].value = "0,00";
-                unsocialWeekendSI[i].value = "0,00";
+        }
+        else {
+            if (typeOfHour == 1) {
+                var hoursval = document.getElementsByClassName('hours-si-val');
+                hoursval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
-
-            if (unsocialGrandWeekend[i].value != null) {
-                unsocialGrandWeekendSI[i].value = unsocialGrandWeekend[i].value;
+            else if (typeOfHour == 2) {
+                var unsocialeveningval = document.getElementsByClassName('unsocial-evening-si-val');
+                unsocialeveningval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                unsocialGrandWeekend[i].value = "0,00";
-                unsocialGrandWeekendSI[i].value = "0,00";
+            else if (typeOfHour == 3) {
+                var unsocialnightval = document.getElementsByClassName('unsocial-night-si-val');
+                unsocialnightval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
-
-            if (oncallDay[i].value != null) {
-                oncallDaySI[i].value = oncallDay[i].value;
+            else if (typeOfHour == 4) {
+                var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-si-val');
+                unsocialweekendval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                oncallDay[i].value = "0,00";
-                oncallDaySI[i].value = "0,00";
+            else if (typeOfHour == 5) {
+                var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-si-val');
+                unsocialgrandweekendval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
-
-            if (oncallNight[i].value != null) {
-                oncallNightSI[i].value = oncallNight[i].value;
+            else if (typeOfHour == 6) {
+                var oncalldayval = document.getElementsByClassName('oncall-day-si-val');
+                oncalldayval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
-            else {
-                oncallNight[i].value = "0,00";
-                oncallNightSI[i].value = "0,00";
+            else if (typeOfHour == 7) {
+                var oncallnightval = document.getElementsByClassName('oncall-night-si-val');
+                oncallnightval[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "Du ändrade detta värde!";
             }
         }
     }
+
+    //function copyHoursToStandin() {
+
+    //    var numberOfHours = document.getElementsByClassName("hours");
+    //    var unsocialEvening = document.getElementsByClassName("unsocial-evening");
+    //    var unsocialNight = document.getElementsByClassName("unsocial-night");
+    //    var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
+    //    var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
+    //    var oncallDay = document.getElementsByClassName("oncall-day");
+    //    var oncallNight = document.getElementsByClassName("oncall-night");
+
+    //    var numberOfHoursSI = document.getElementsByClassName("hours-si");
+    //    var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
+    //    var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
+    //    var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
+    //    var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
+    //    var oncallDaySI = document.getElementsByClassName("oncall-day-si");
+    //    var oncallNightSI = document.getElementsByClassName("oncall-night-si");
+
+
+    //    for (var i = 0; i < data.ScheduleRowList.length; i++) {
+    //        if (numberOfHours[i].value != null) {
+    //            numberOfHoursSI[i].value = numberOfHours[i].value;
+    //        }
+    //        else {
+    //            numberOfHours[i].value = "0,00";
+    //            numberOfHoursSI[i].value = "0,00";
+    //        }
+
+    //        if (unsocialEvening[i].value != null) {
+    //            unsocialEveningSI[i].value = unsocialEvening[i].value;
+    //        }
+    //        else {
+    //            unsocialEvening[i].value = "0,00";
+    //            unsocialEveningSI[i].value = "0,00";
+    //        }
+
+    //        if (unsocialNight[i].value != null) {
+    //            unsocialNightSI[i].value = unsocialNight[i].value;
+    //        }
+    //        else {
+    //            unsocialNight[i].value = "0,00";
+    //            unsocialNightSI[i].value = "0,00";
+    //        }
+
+    //        if (unsocialWeekend[i].value != null) {
+    //            unsocialWeekendSI[i].value = unsocialWeekend[i].value;
+    //        }
+    //        else {
+    //            unsocialWeekend[i].value = "0,00";
+    //            unsocialWeekendSI[i].value = "0,00";
+    //        }
+
+    //        if (unsocialGrandWeekend[i].value != null) {
+    //            unsocialGrandWeekendSI[i].value = unsocialGrandWeekend[i].value;
+    //        }
+    //        else {
+    //            unsocialGrandWeekend[i].value = "0,00";
+    //            unsocialGrandWeekendSI[i].value = "0,00";
+    //        }
+
+    //        if (oncallDay[i].value != null) {
+    //            oncallDaySI[i].value = oncallDay[i].value;
+    //        }
+    //        else {
+    //            oncallDay[i].value = "0,00";
+    //            oncallDaySI[i].value = "0,00";
+    //        }
+
+    //        if (oncallNight[i].value != null) {
+    //            oncallNightSI[i].value = oncallNight[i].value;
+    //        }
+    //        else {
+    //            oncallNight[i].value = "0,00";
+    //            oncallNightSI[i].value = "0,00";
+    //        }
+    //    }
+    //}
 
     function copyRestToStandin(pos) {
         var numberOfHours = document.getElementsByClassName("hours");
@@ -805,23 +890,48 @@
         for (var dayIdx = 0; dayIdx < numberOfSickDays; dayIdx++) {
             for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                 if (subIdx != pos) { //skip the hours for the substitute assistant to whom the remaining hours shall be written
-                    consumedHours += parseFloat(numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
-                    consumedUnsocialEvening += parseFloat(unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
-                    consumedUnsocialNight += parseFloat(unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
-                    consumedUnsocialWeekend += parseFloat(unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
-                    consumedUnsocialGrandWeekend += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
-                    consumedOnCallDay += parseFloat(oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
-                    consumedOnCallNight += parseFloat(oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].replace(/,/g, '.'));
+                    //consumedHours += parseFloat(numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(/,/g,'.'));
+
+                    if (numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+                    if (unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+                    if (unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+                    if (unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+                    if (unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+                    if (oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+                    if (oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value.toString() == "") {
+                        oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value = "0,00";
+                    }
+
+                    consumedHours += parseFloat(numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
+                    consumedUnsocialEvening += parseFloat(unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
+                    consumedUnsocialNight += parseFloat(unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
+                    consumedUnsocialWeekend += parseFloat(unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
+                    consumedUnsocialGrandWeekend += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
+                    consumedOnCallDay += parseFloat(oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
+                    consumedOnCallNight += parseFloat(oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value.toString().replace(',','.'));
                 }
             }
+
             //calculate the remaining number of hours and assign them to the selected substitute assistant
-            numberOfHoursSI[(pos * numberOfSickDays) + dayIdx].innerHTML = (parseFloat(numberOfHours[dayIdx].replace(/, /g, '.')) - consumedHours).toString().replace(/./g, ',');
-            unsocialEveningSI[(pos * numberOfSickDays) + dayIdx].innerHTML = parseFloat(unsocialEvening[dayIdx].replace(/, /g, '.')) - consumedUnsocialEvening;
-            unsocialNightSI[(pos * numberOfSickDays) + dayIdx].innerHTML = parseFloat(unsocialNight[dayIdx].replace(/, /g, '.')) - consumedUnsocialNight;
-            unsocialWeekendSI[(pos * numberOfSickDays) + dayIdx].innerHTML = parseFloat(unsocialWeekend[dayIdx].replace(/, /g, '.')) - consumedUnsocialWeekend;
-            unsocialGrandWeekendSI[(pos * numberOfSickDays) + dayIdx].innerHTML = parseFloat(unsocialGrandWeekend[dayIdx].replace(/, /g, '.')) - consumedUnsocialGrandWeekend;
-            oncallDaySI[(pos * numberOfSickDays) + dayIdx].innerHTML = parseFloat(oncallDay[dayIdx].replace(/, /g, '.')) - consumedOnCallDay;
-            oncallNightSI[(pos * numberOfSickDays) + dayIdx].innerHTML = parseFloat(oncallNight[dayIdx].replace(/, /g, '.')) - consumedOnCallNight;
+            numberOfHoursSI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(numberOfHours[dayIdx].value.toString().replace(',', '.')) - consumedHours;
+            unsocialEveningSI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(unsocialEvening[dayIdx].value.toString().replace(',','.')) - consumedUnsocialEvening;
+            unsocialNightSI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(unsocialNight[dayIdx].value.toString().replace(',','.')) - consumedUnsocialNight;
+            unsocialWeekendSI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(unsocialWeekend[dayIdx].value.toString().replace(',','.')) - consumedUnsocialWeekend;
+            unsocialGrandWeekendSI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(unsocialGrandWeekend[dayIdx].value.toString().replace(',','.')) - consumedUnsocialGrandWeekend;
+            oncallDaySI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(oncallDay[dayIdx].value.toString().replace(',','.')) - consumedOnCallDay;
+            oncallNightSI[(pos * numberOfSickDays) + dayIdx].value = parseFloat(oncallNight[dayIdx].value.toString().replace(',','.')) - consumedOnCallNight;
 
             //reset the values before calculating for the next day
             consumedHours = 0;
