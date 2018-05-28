@@ -1118,6 +1118,14 @@ namespace Sjuklöner.Controllers
         }
 
         //
+        // GET: /Account/BankIDLogin
+        [AllowAnonymous]
+        public ActionResult BankIDLogin()
+        {
+            return View();
+        }
+
+        //
         // POST: /Account/BankIDLogin
         [HttpPost]
         [AllowAnonymous]
@@ -1133,9 +1141,9 @@ namespace Sjuklöner.Controllers
                     ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
                     ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
                     ts.System = "helsingborg";
-                    //ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
-                    //ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
-                    //ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
+                    ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
+                    ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
+                    ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
                     ts.Authenticate(false, false);
                     assertion = ts.GetAssertion();
                     dn = assertion.Subject;
