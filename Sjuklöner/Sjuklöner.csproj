@@ -553,7 +553,6 @@
     <Content Include="Views\CollectiveAgreements\Delete.cshtml" />
     <Content Include="Views\CollectiveAgreements\Edit.cshtml" />
     <Content Include="Views\CollectiveAgreements\Index.cshtml" />
-    <Content Include="Views\Account\_BankIDLogin.cshtml" />
     <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
     <Content Include="Views\Assistants\Create.cshtml" />
     <Content Include="Views\Assistants\Delete.cshtml" />
@@ -572,8 +571,7 @@
     <Content Include="Views\ApplicationUsers\Index.cshtml" />
     <Content Include="Views\CareCompanies\IndexOmbud.cshtml" />
     <Content Include="Views\Account\CreateOmbud.cshtml" />
-    <Content Include="Views\Account\_BankIDLogin.cshtml" />
-    <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
+    <Content Include="Views\Account\BankIDLogin.cshtml" />
     <Content Include="Views\Claims\Create4.cshtml" />
     <Content Include="Views\Account\RegisterConfirm.cshtml" />
     <Content Include="Views\Account\NewAdmOff.cshtml" />

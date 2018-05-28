@@ -1,6 +1,6 @@
 ﻿<div class="row" id="loginForm">
     <section>
-        @using (Html.BeginForm("BankIDLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        @using (Html.BeginForm("BankIDLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal page-header1", role = "form" }))
         {
             @Html.AntiForgeryToken()
             <div class="form-group">

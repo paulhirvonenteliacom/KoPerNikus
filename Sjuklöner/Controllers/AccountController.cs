@@ -1118,6 +1118,14 @@ namespace Sjuklöner.Controllers
         }
 
         //
+        // GET: /Account/BankIDLogin
+        [AllowAnonymous]
+        public ActionResult BankIDLogin()
+        {
+            return View();
+        }
+
+        //
         // POST: /Account/BankIDLogin
         [HttpPost]
         [AllowAnonymous]
