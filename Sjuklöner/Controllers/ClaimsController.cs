@@ -3718,8 +3718,11 @@ namespace Sjuklöner.Controllers
             var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM);
             byte[] byteArray = viewPdf.BuildFile(ControllerContext);
 
-            SaveClaimPdf(byteArray, claim);       
-                          
+            SaveClaimPdf(byteArray, claim);
+
+            return RedirectToAction("Index", "Claims");
+
+            /*
             if (User.IsInRole("Ombud"))
             {
                 return RedirectToAction("IndexPageOmbud", "Claims");
@@ -3727,7 +3730,8 @@ namespace Sjuklöner.Controllers
             else
             {
                 return RedirectToAction("Recommend", new { claim.Id });
-            }          
+            }      
+            */
         }
 
         private void SaveClaimPdf(byte[] byteArray, Claim claim)
