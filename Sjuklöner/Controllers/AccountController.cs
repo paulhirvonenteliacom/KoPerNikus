@@ -1118,6 +1118,26 @@ namespace Sjuklöner.Controllers
         }
 
         //
+        // GET: /Account/BankIDLogin
+        [AllowAnonymous]
+        public ActionResult BankIDLogin()
+        {
+            using (TicketService.eID ts = new TicketService.eID())
+            {
+                ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
+                ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
+                ts.System = "helsingborg";
+                ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
+                ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
+                ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
+                ts.Authenticate(false, false);
+                //HttpContext.Current.Response.Write(dn.ToString());
+                //HttpContext.Current.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+            }
+            return View();
+        }
+
+        //
         // POST: /Account/BankIDLogin
         [HttpPost]
         [AllowAnonymous]
@@ -1126,25 +1146,16 @@ namespace Sjuklöner.Controllers
         {
             try
             {
-                TicketService.Assertion assertion;
-                TicketService.DistinguishedName dn;
                 using (TicketService.eID ts = new TicketService.eID())
                 {
-                    ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
-                    ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
-                    ts.System = "helsingborg";
-                    //ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
-                    //ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
-                    //ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
-                    ts.Authenticate(false, false);
+                    TicketService.Assertion assertion;
+                    TicketService.DistinguishedName dn;
                     assertion = ts.GetAssertion();
                     dn = assertion.Subject;
-                    HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
-                    //HttpContext.Current.Response.Write(dn.ToString());
-                    //HttpContext.Current.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+                    //HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+                    var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
+                    await SignInManager.SignInAsync(user, true, true);
                 }
-                var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
-                await SignInManager.SignInAsync(user, true, true);
                 if (!string.IsNullOrWhiteSpace(ReturnUrl))
                     return Redirect(ReturnUrl);
 

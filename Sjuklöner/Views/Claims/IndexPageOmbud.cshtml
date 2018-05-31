@@ -65,24 +65,25 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud">
                             Referensnummer
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud"></th>
+                        <th class="small-col-ombud">
                             Beslutsdatum
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud">
                             Kundens personnummer
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="ssmall-col-ombud">
                             Första sjukdag
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="ssmall-col-ombud">
                             Sista sjukdag
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud">
                             Yrkat belopp (Kr)
-                        </th>
+                        </th>                       
                         <th class="medium-col-ombud">
                             Godkänt belopp (Kr)
                         </th>
@@ -94,42 +95,45 @@
 
                     @foreach (var item in Model.DecidedClaims)
                     {
-                        <tr>
-                            <td>
-                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
-                                @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DecisionDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.QualifyingDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ClaimedSum)
-                            </td>
-                            <td class="highlight-green-bold">
-                                @Html.DisplayFor(modelItem => item.ApprovedSum)
-                            </td>
-                            <td class="highlight-red-bold">
-                                @Html.DisplayFor(modelItem => item.RejectedSum)
-                            </td>
-                            <td>
-                                @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success-small" }) |*@
-                                @*@Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })*@
-                                @*@if (item.RejectedSum > 1)
-                                    {
-                                        @Html.ActionLink("Överklaga", "Create", null, new { @class = "btn btn-warning btn-warning-small" })
-                                    }*@
-                                @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary-small" })*@
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                            @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                        </td>
+                        <td>
+                            @Html.ActionLink("Skapa Pdf", "ClaimDetailsAsPdf", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DecisionDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>                        
+                        <td class="highlight-green-bold">
+                            @Html.DisplayFor(modelItem => item.ApprovedSum)
+                        </td>
+                        <td class="highlight-red-bold">
+                            @Html.DisplayFor(modelItem => item.RejectedSum)
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success-small" }) |*@
+                            @*@Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })*@
+                            @*@if (item.RejectedSum > 1)
+            {
+                @Html.ActionLink("Överklaga", "Create", null, new { @class = "btn btn-warning btn-warning-small" })
+            }*@
+                            @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary-small" })*@
+                        </td>
+                    </tr>
                     }
 
                 </table>
@@ -157,15 +161,13 @@
                         <th class="small-col-ombud">
                             Referensnummer
                         </th>
+                        <th class="small-col-ombud"></th>
                         <th class="small-col-ombud">
                             Skapad datum
                         </th>
-                        <th class="small-col-ombud">
-                            Ombud
-                        </th>
-                        <th class="xsmall-col-ombud">
-                            Steg
-                        </th>
+                        @*<th class="small-col-ombud">
+            Ombud
+        </th>*@
                         <th class="small-col-ombud">
                             Kundens personnummer
                         </th>
@@ -176,10 +178,13 @@
                             Sista sjukdag
                         </th>
                         @*<th class="ssmall-col-ombud">
-                                Antal sjukdagar
-                            </th>*@
+            Antal sjukdagar
+        </th>*@
                         <th class="small-col-ombud">
                             Yrkat belopp (Kr)
+                        </th>
+                        <th class="xsmall-col-ombud">
+                            Steg
                         </th>
                         <th class="small-col-ombud"></th>
                         <th class="small-col-ombud"></th>
@@ -188,48 +193,51 @@
 
                     @foreach (var item in Model.DraftClaims)
                     {
-                        <tr>
-                            <td>
-                                @*@Html.ActionLink(item.ReferenceNumber, "_ShowClaim", "Claims", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
-                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CreationDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.OmbudEmail)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CompletionStage)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.QualifyingDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                            </td>
-                            @*<td>
-                                @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>*@
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ClaimedSum)
-                            </td>
-                            <td>
-                                @Html.ActionLink("Uppdatera", "Create1", new { refNumber = item.ReferenceNumber }, new { @role = "button", @class = "btn btn-secondary btn-secondary-small" })
-                            </td>
-                            <td>
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
-                            </td>
-                            <td>
-                                @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
-                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @*@Html.ActionLink(item.ReferenceNumber, "_ShowClaim", "Claims", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                        </td>
+                        <td>
+                            @Html.ActionLink("Skapa Pdf", "ClaimDetailsAsPdf", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreationDate)
+                        </td>
+                        @*<td>
+           @Html.DisplayFor(modelItem => item.OmbudEmail)
+        </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        @*<td>
+        @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+        </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompletionStage)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Uppdatera", "Create1", new { refNumber = item.ReferenceNumber }, new { @role = "button", @class = "btn btn-secondary btn-secondary-small" })
+                        </td>
+                        <td>
+                            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
+                        </td>
+                        <td>
+                            @*@Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                            @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                        </td>
+                    </tr>
                     }
 
                 </table>
@@ -254,64 +262,75 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud">
                             Referensnummer
                         </th>
-                        <th class="medium-col-ombud">
-                            Handläggare
-                        </th>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud"></th>
+                        @*<th class="medium-col-ombud">
+        Handläggare
+        </th>*@
+                        <th class="small-col-ombud">
                             Inskickad datum
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud">
                             Kundens personnummer
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="ssmall-col-ombud">
                             Första sjukdag
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="ssmall-col-ombud">
                             Sista sjukdag
                         </th>
-                        <th class="medium-col-ombud">
+                        <th class="small-col-ombud">
                             Yrkat belopp (Kr)
                         </th>
+                        <th class="xsmall-col-ombud"></th>                       
+                        <th class="small-col-ombud"></th>
+                        <th class="small-col-ombud"></th>
                         <th></th>
+                       
                     </tr>
 
                     @foreach (var item in Model.UnderReviewClaims)
                     {
-                        <tr>
-                            <td>
-                                @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
-                                @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AdmOffName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SentInDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.QualifyingDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ClaimedSum)
-                            </td>
-                            <td>
-                                @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" }) |
-                                    @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
-                                @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink(item.ReferenceNumber, "_ShowClaim", new { refNumber = item.ReferenceNumber }, new { @class = "btn-sm js-show-view-btn btn btn-primary btn-primary-small" })
+                            @*@Html.ActionLink(item.ReferenceNumber, "ShowClaimDetails", "Claims", new { referenceNumber = item.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-small" })*@
+                        </td>
+                        @*<td>
+                         @Html.DisplayFor(modelItem => item.AdmOffName)
+                        </td>*@
+                        <td>
+                            @Html.ActionLink("Skapa Pdf", "ClaimDetailsAsPdf", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SentInDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifyingDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClaimedSum)
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            @*@Html.ActionLink("Uppdatera", "Create", new { id = item.Id }, new { @class = "btn btn-success btn-success-small" }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" }) |
+            @Html.ActionLink("Skicka in", "SaveAmounts", new { id = item.Id }, new { @class = "btn btn-secondary btn-secondary-small" })*@
+                            @*@Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })*@
+                        </td>
+                    </tr>
                     }
                 </table>
             }

@@ -448,7 +448,6 @@
     <Compile Include="Models\WatchLog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Browsers\qt.browser" />
     <None Include="Connected Services\BankIDService\configuration91.svcinfo" />
     <None Include="Connected Services\BankIDService\configuration.svcinfo" />
     <None Include="Connected Services\BankIDService\Reference.svcmap">
@@ -570,7 +569,6 @@
     <Content Include="Views\CollectiveAgreements\Delete.cshtml" />
     <Content Include="Views\CollectiveAgreements\Edit.cshtml" />
     <Content Include="Views\CollectiveAgreements\Index.cshtml" />
-    <Content Include="Views\Account\_BankIDLogin.cshtml" />
     <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
     <Content Include="Views\Assistants\Create.cshtml" />
     <Content Include="Views\Assistants\Delete.cshtml" />
@@ -589,8 +587,7 @@
     <Content Include="Views\ApplicationUsers\Index.cshtml" />
     <Content Include="Views\CareCompanies\IndexOmbud.cshtml" />
     <Content Include="Views\Account\CreateOmbud.cshtml" />
-    <Content Include="Views\Account\_BankIDLogin.cshtml" />
-    <Content Include="Views\Account\BankIDWaitScreen.cshtml" />
+    <Content Include="Views\Account\BankIDLogin.cshtml" />
     <Content Include="Views\Claims\Create4.cshtml" />
     <Content Include="Views\Account\RegisterConfirm.cshtml" />
     <Content Include="Views\Account\NewAdmOff.cshtml" />
@@ -613,14 +610,13 @@
     <Content Include="Views\WatchLogs\DeleteAll.cshtml" />
     <Content Include="Views\WatchLogs\Delete.cshtml" />
     <Content Include="Views\Claims\RobotRecommend.cshtml" />
-    <Content Include="Views\Claims\ReceiptPDF.cshtml" />
     <Content Include="Views\Claims\ClaimDetailsPdf.cshtml" />
-    <Content Include="Views\Shared\_LayoutPdf.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Browsers\" />
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>

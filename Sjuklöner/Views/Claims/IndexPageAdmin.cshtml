@@ -23,6 +23,24 @@
         }
     </div>
     <br />
+    <br />
+    @if (TempData["PdfSuccess"] != null)
+    {
+        <div class="Event alert alert-success" id="PdfEventAdmin">
+            <h3>
+                @TempData["PdfSuccess"]
+            </h3>
+        </div>
+    }
+    @if (TempData["PdfFail"] != null)
+    {
+        <div class="Event alert alert-danger" id="PdfEventAdmin">
+            <h3>
+                @TempData["PdfFail"]
+            </h3>
+        </div>
+    }    
+
     <hr class="claim-divider" />
     <div class="row">
         <div class="col">
@@ -36,6 +54,10 @@
                         <th class="small-col">
                             Referensnummer
                         </th>
+                        <th class="small-col"></th>
+                        <th class="small-col">
+                            Handläggare
+                        </th>
                         <th class="small-col">
                             Inkommen datum
                         </th>
@@ -43,26 +65,25 @@
                             Assistansbolag
                         </th>
                         <th class="small-col">
-                            Handläggare
+                            Assistentens personnummer
                         </th>
-                        @*<th class="small-col">
-                                Assistentens personnummer
-                            </th>
-                            <th class="small-col">
-                                Kundens personnummer
-                            </th>
-                            <th class="small-col">
-                                Första sjukdag
-                            </th>
-                            <th class="small-col">
-                                Sista sjukdag
-                            </th>
-                            <th class="small-col">
+                        <th class="small-col">
+                            Kundens personnummer
+                        </th>
+                        <th class="small-col">
+                            Första sjukdag
+                        </th>
+                        <th class="small-col">
+                            Sista sjukdag
+                        </th>
+                        @*<th class="small-col-admin">
                                 Antal sjukdagar
-                            </th>
-                            <th class="medium-col">
-                                Yrkat belopp (Kr)
                             </th>*@
+                        <th class="small-col">
+                            Yrkat belopp (Kr)
+                        </th>
+                        <th class="small-col"></th>
+                        <th class="small-col"></th>
                         <th class="small-col"></th>
                     </tr>
 
@@ -73,39 +94,44 @@
                                 @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
+                                @Html.ActionLink("Skapa Pdf", "ClaimDetailsAsPdf", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdmOffName)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.SentInDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CompanyName)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.AdmOffName)
+                                @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CustomerSSN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             @*<td>
-                                    @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CustomerSSN)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.QualifyingDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ClaimedSum)
                                 </td>*@
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ClaimedSum)
+                            </td>
+                            <td></td>
+                            <td></td>
                             <td>
                                 @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
                             </td>
                             @*<td>
-                                    @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
-                                    @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
+                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
+                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
                                 </td>*@
                         </tr>
                     }
@@ -135,6 +161,10 @@
                         <th class="small-col">
                             Referensnummer
                         </th>
+                        <th class="small-col"></th>
+                        <th class="small-col">
+                            Handläggare
+                        </th>
                         <th class="small-col">
                             Inkommen datum
                         </th>
@@ -143,9 +173,6 @@
                         </th>
                         <th class="small-col">
                             Assistentens personnummer
-                        </th>
-                        <th class="small-col">
-                            Handläggare
                         </th>
                         <th class="small-col">
                             Kundens personnummer
@@ -157,12 +184,14 @@
                             Sista sjukdag
                         </th>
                         @*<th class="small-col-admin">
-            Antal sjukdagar
-        </th>*@
+                                Antal sjukdagar
+                            </th>*@
                         <th class="small-col">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col"></th>                       
+                        <th class="small-col"></th>
+                        <th class="small-col"></th>
+                        <th class="small-col"></th>
                     </tr>
 
                     @foreach (var item in Model.UnderReviewClaims)
@@ -172,6 +201,12 @@
                                 @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
+                                @Html.ActionLink("Skapa Pdf", "ClaimDetailsAsPdf", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdmOffName)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.SentInDate)
                             </td>
                             <td>
@@ -179,9 +214,6 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AdmOffName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
@@ -198,6 +230,8 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
+                            <td></td>
+                            <td></td>
                             <td>
                                 @Html.ActionLink("Ta bort", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-danger-small" })
                             </td>
@@ -231,43 +265,44 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="small-col-admin">
+                        <th class="small-col">
                             Referensnummer
                         </th>
-                        <th class="small-col-admin">
-                            Beslutsdatum
-                        </th>
-                        <th class="small-col-admin">
-                            Assistansbolag
-                        </th>
-                        <th class="small-col-admin">
-                            Assistentens personnummer
-                        </th>
-                        <th class="small-col-admin">
+                        <th class="small-col"></th>
+                        <th class="small-col">
                             Handläggare
                         </th>
-                        <th class="small-col-admin">
+                        <th class="small-col">
+                            Beslutsdatum
+                        </th>
+                        <th class="small-col">
+                            Assistansbolag
+                        </th>
+                        <th class="small-col">
+                            Assistentens personnummer
+                        </th>
+                        <th class="small-col">
                             Kundens personnummer
                         </th>
-                        <th class="small-col-admin">
+                        <th class="small-col">
                             Första sjukdag
                         </th>
-                        <th class="small-col-admin">
+                        <th class="small-col">
                             Sista sjukdag
                         </th>
                         @*<th class="small-col-admin">
                                 Antal sjukdagar
                             </th>*@
-                        <th class="small-col-admin">
+                        <th class="small-col">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col-admin">
+                        <th class="small-col">
                             Godkänt belopp (Kr)
                         </th>
-                        <th class="small-col-admin">
+                        <th class="small-col">
                             Avslaget belopp (Kr)
                         </th>
-                        <th></th>
+                        <th class="small-col"></th>
                     </tr>
 
                     @foreach (var item in Model.DecidedClaims)
@@ -277,6 +312,12 @@
                                 @Html.ActionLink(item.ReferenceNumber, "Recommend", "Claims", new { id = item.Id }, new { @class = "btn btn-primary btn-primary-small" })
                             </td>
                             <td>
+                                @Html.ActionLink("Skapa Pdf", "ClaimDetailsAsPdf", new { refNumber = item.ReferenceNumber }, new { @class = "btn btn-secondary btn-secondary-small" })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdmOffName)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.DecisionDate)
                             </td>
                             <td>
@@ -284,9 +325,6 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AdmOffName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
@@ -314,7 +352,7 @@
                             </td>
                             @*<td>
                                 @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
                                 @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
                                 </td>*@
                         </tr>
@@ -341,4 +379,6 @@
     </div>
 
 </body>
-
+<script type="text/javascript">
+    $('#PdfEventAdmin').delay(4000).hide(1500);
+</script>
