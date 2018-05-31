@@ -32,46 +32,49 @@ namespace Sjuklöner.Viewmodels
 
         public string ScheduleRowWeekDay { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string Hours { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string UnsocialEvening { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string UnsocialNight { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string UnsocialWeekend { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string UnsocialGrandWeekend { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string OnCallDay { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        [RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string OnCallNight { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] HoursSI { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] UnsocialEveningSI { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] UnsocialNightSI { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] UnsocialWeekendSI { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] UnsocialGrandWeekendSI { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] OnCallDaySI { get; set; }
 
-        [RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //[RegularExpression(@"\d{0,2}(\,\d{0,2})?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
         public string[] OnCallNightSI { get; set; }
+
+        //[RegularExpression(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$", ErrorMessage = "Fel format eller ogiltigt antal.")]
+        //public List<string> Test { get; set; }
     }
 }

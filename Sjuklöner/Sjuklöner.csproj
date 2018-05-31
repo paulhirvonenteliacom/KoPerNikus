@@ -372,6 +372,10 @@
     <Compile Include="Migrations\201805241347259_AddedInvestigationQueueClass.Designer.cs">
       <DependentUpon>201805241347259_AddedInvestigationQueueClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.cs" />
+    <Compile Include="Migrations\201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.Designer.cs">
+      <DependentUpon>201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -735,6 +739,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805241347259_AddedInvestigationQueueClass.resx">
       <DependentUpon>201805241347259_AddedInvestigationQueueClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.resx">
+      <DependentUpon>201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

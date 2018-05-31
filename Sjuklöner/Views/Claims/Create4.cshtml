@@ -15,10 +15,10 @@
     </nav>
 </div>
 
-@using (Html.BeginForm("Create4", "Claims", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create4", "Claims", new { noOfSubAssistants = Model.NumberOfSubAssistants }, FormMethod.Post, new { enctype = "multipart/form-data" } ))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(c => c.ClaimNumber)
+    @Html.HiddenFor(m => m.ClaimNumber)
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
@@ -30,6 +30,14 @@
     </div>
     <div class="row">
         <div class="form-horizontal">
+            <div class="row row-height-14">
+                <div class="col col-md-2">
+
+                </div>
+                <div class="col col-md-10">
+                    @Html.DisplayFor(modelItem => Model.RegAssistantSSNAndName)
+                </div>
+            </div>
             <div class="row row-height-26">
                 <div class="col bold-14 label-align-top display-right-align col-md-2">
                     Lönespecifikation, ordinarie assistent
@@ -38,43 +46,73 @@
                     <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default" />
                 </div>
             </div>
-            <div class="row row-height-14 row-margin">
+            <div class="row row-height-14 line-height-07">
                 <div class="col col-md-offset-2 col-md-10">
                     @Html.ValidationMessageFor(model => model.SalaryAttachment, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
+            <div class="row row-height-14">
+            </div>
 
             @if (Model.NumberOfSickDays > 7)
             {
-            <div class="row row-height-26">
-                <div class="col bold-14 padding-top-10 display-right-align col-md-2">
-                    Läkarintyg
+                <div class="row row-height-26 row-top-margin align-bottom4">
+                    <div class="col col-md-2">
+
+                    </div>
+                    <div class="col col-md-10">
+                        @Html.DisplayFor(modelItem => Model.RegAssistantSSNAndName)
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" />
+                <div class="row row-height-26">
+                    <div class="col bold-14 padding-top-10 display-right-align col-md-2">
+                        Läkarintyg
+                    </div>
+                    <div class="col-md-10">
+                        <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" />
+                    </div>
                 </div>
-            </div>
-                <div class="row row-height-14 row-margin">
+                <div class="row row-height-14 line-height-07">
                     <div class="col col-md-offset-2 col-md-10">
                         @Html.ValidationMessageFor(model => model.DoctorsCertificate, "", new { @class = "text-danger font-size-11" })
                     </div>
                 </div>
+                <div class="row row-height-14">
+                </div>
             }
 
-                <div class="row row-height-26">
-                    <div class="col bold-14 padding-top-10 display-right-align col-md-2">
-                        Sjukfrånvaroanmälan
-                    </div>
-                    <div class="col-md-10">
-                        <input type="file" name="SickLeaveNotification" id="SickLeaveNotification" class="wide-input btn btn-default" />
-                    </div>
+            <div class="row row-height-14 row-top-margin align-bottom4">
+                <div class="col col-md-2">
+
                 </div>
-            <div class="row row-height-14 row-margin">
+                <div class="col col-md-10">
+                    @Html.DisplayFor(modelItem => Model.RegAssistantSSNAndName)
+                </div>
+            </div>
+            <div class="row row-height-26">
+                <div class="col bold-14 padding-top-10 display-right-align col-md-2">
+                    Sjukfrånvaroanmälan
+                </div>
+                <div class="col-md-10">
+                    <input type="file" name="SickLeaveNotification" id="SickLeaveNotification" class="wide-input btn btn-default" />
+                </div>
+            </div>
+            <div class="row row-height-14 line-height-07">
                 <div class="col col-md-offset-2 col-md-10">
                     @Html.ValidationMessageFor(model => model.SickLeaveNotification, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
+            <div class="row row-height-14">
+            </div>
 
+            <div class="row row-height-14 row-top-margin align-bottom4">
+                <div class="col col-md-2">
+
+                </div>
+                <div class="col col-md-10">
+                    @Html.DisplayFor(modelItem => Model.RegAssistantSSNAndName)
+                </div>
+            </div>
             <div class="row row-height-26">
                 <div class="col bold-14 label-align-top display-right-align col-md-2">
                     Tidsredovisning, ordinarie assistent
@@ -83,15 +121,24 @@
                     <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default" />
                 </div>
             </div>
-            <div class="row row-height-14 row-margin">
+            <div class="row row-height-14 line-height-07">
                 <div class="col col-md-offset-2 col-md-10">
                     @Html.ValidationMessageFor(model => model.TimeReport, "", new { @class = "text-danger font-size-11" })
                 </div>
             </div>
+            <div class="row row-height-14">
+            </div>
 
             @for (int i = 0; i < Model.NumberOfSubAssistants; i++)
             {
+                <div class="row row-height-14 row-top-margin align-bottom4">
+                    <div class="col col-md-2">
 
+                    </div>
+                    <div class="col col-md-10">
+                        @Html.DisplayFor(modelItem => Model.SubAssistantSSNAndName[i])
+                    </div>
+                </div>
                 <div class="row row-height-26">
                     @if (Model.NumberOfSubAssistants == 1)
                     {
@@ -109,14 +156,16 @@
                         <input type="file" name="TimeReportStandIn" id="TimeReportStandIn" class="wide-input btn btn-default" />
                     </div>
                 </div>
-                <div class="row row-height-14 row-margin">
+                <div class="row row-height-14 line-height-07">
                     <div class="col col-md-offset-2 col-md-10">
                         @Html.ValidationMessageFor(model => model.TimeReportStandIn[i], "", new { @class = "text-danger font-size-11" })
                     </div>
                 </div>
+                <div class="row row-height-14">
+                </div>
             }
 
-            <div class="row">
+            <div class="row row-top-margin">
                 <div class="small-padding-left3 col col-md-offset-2 col-md-1">
                     <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
                 </div>
