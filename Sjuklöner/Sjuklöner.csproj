@@ -606,9 +606,7 @@
     <Content Include="Views\WatchLogs\DeleteAll.cshtml" />
     <Content Include="Views\WatchLogs\Delete.cshtml" />
     <Content Include="Views\Claims\RobotRecommend.cshtml" />
-    <Content Include="Views\Claims\ReceiptPDF.cshtml" />
     <Content Include="Views\Claims\ClaimDetailsPdf.cshtml" />
-    <Content Include="Views\Shared\_LayoutPdf.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
