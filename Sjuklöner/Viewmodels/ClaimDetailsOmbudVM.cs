@@ -334,7 +334,7 @@ namespace Sjuklöner.Viewmodels
         public string SalarySpecSubAssistantCheckMsg { get; set; }
 
         public bool SickleaveNotificationCheck { get; set; }
-        [Display(Name = "Kontroll av sjufrånvaroanmälan:")]
+        [Display(Name = "Kontroll av sjukfrånvaroanmälan:")]
         public string SickleaveNotificationCheckMsg { get; set; }
 
         public bool MedicalCertificateCheck { get; set; }
