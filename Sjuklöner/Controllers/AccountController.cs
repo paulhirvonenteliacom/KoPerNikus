@@ -1120,24 +1120,14 @@ namespace Sjuklöner.Controllers
         //
         // GET: /Account/BankIDLogin
         [AllowAnonymous]
-        public ActionResult BankIDLogin()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Account/BankIDLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> BankIDLogin(string ssn, string ReturnUrl, string type)
+        public async Task<ActionResult> BankIDLogin()
         {
             try
             {
-                TicketService.Assertion assertion;
-                TicketService.DistinguishedName dn;
                 using (TicketService.eID ts = new TicketService.eID())
                 {
+                    TicketService.Assertion assertion;
+                    TicketService.DistinguishedName dn;
                     ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
                     ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
                     ts.System = "helsingborg";
@@ -1147,14 +1137,12 @@ namespace Sjuklöner.Controllers
                     ts.Authenticate(false, false);
                     assertion = ts.GetAssertion();
                     dn = assertion.Subject;
-                    HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
-                    //HttpContext.Current.Response.Write(dn.ToString());
-                    //HttpContext.Current.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+                    //HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+                    var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
+                    await SignInManager.SignInAsync(user, true, true);
                 }
-                var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
-                await SignInManager.SignInAsync(user, true, true);
-                if (!string.IsNullOrWhiteSpace(ReturnUrl))
-                    return Redirect(ReturnUrl);
+                //if (!string.IsNullOrWhiteSpace(ReturnUrl))
+                    //return Redirect(ReturnUrl);
 
                 return RedirectToAction("Index", "Claims");
             }
@@ -1166,6 +1154,48 @@ namespace Sjuklöner.Controllers
             {
                 HttpContext.Response.Write(exception.Message);
             }
+            return View();
+        }
+
+        //
+        // POST: /Account/BankIDLogin
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> BankIDLogin(string ssn, string ReturnUrl, string type)
+        {
+            //try
+            //{
+            //    using (TicketService.eID ts = new TicketService.eID())
+            //    {
+            //        TicketService.Assertion assertion;
+            //        TicketService.DistinguishedName dn;
+            //        ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
+            //        ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
+            //        ts.System = "helsingborg";
+            //        ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
+            //        ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
+            //        ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
+            //        ts.Authenticate(false, false);
+            //        assertion = ts.GetAssertion();
+            //        dn = assertion.Subject;
+            //        //HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
+            //        var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
+            //        await SignInManager.SignInAsync(user, true, true);
+            //    }
+            //    if (!string.IsNullOrWhiteSpace(ReturnUrl))
+            //        return Redirect(ReturnUrl);
+
+            //    return RedirectToAction("Index", "Claims");
+            //}
+            //catch (System.Threading.ThreadAbortException)
+            //{
+            //    throw;
+            //}
+            //catch (System.SystemException exception)
+            //{
+            //    HttpContext.Response.Write(exception.Message);
+            //}
 
             return View();
             //return RedirectToAction("BankIDWaitScreen", new { SSN = ssn, returnUrl = ReturnUrl, Type = type });

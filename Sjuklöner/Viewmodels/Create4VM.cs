@@ -11,6 +11,8 @@ namespace Sjuklöner.Viewmodels
         [Required]
         public string ClaimNumber { get; set; }
 
+        public string RegAssistantSSNAndName { get; set; }
+
         [Display(Name = "Lönespecifikation, ordinarie assistent")]
         public HttpPostedFileBase SalaryAttachment { get; set; }
 
@@ -25,7 +27,9 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "Tidsredovisning, ordinarie assistent")]
         public HttpPostedFileBase TimeReport { get; set; }
-        
+
+        public string[] SubAssistantSSNAndName { get; set; }
+
         [Display(Name = "Tidsredovisning, vikarierande assistent")]
         public HttpPostedFileBase[] TimeReportStandIn { get; set; }
 
