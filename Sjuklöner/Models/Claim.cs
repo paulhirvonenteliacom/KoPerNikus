@@ -61,7 +61,7 @@ namespace Sjuklöner.Models
         [Display(Name = "Ort")]
         public string City { get; set; }
 
-        [Display(Name = "Bank-/Postgironummer")]
+        [Display(Name = "Bank-/Plusgironummer")]
         public string AccountNumber { get; set; }
 
         [Display(Name = "Tel.nummer (inkl. riktnr.)")]

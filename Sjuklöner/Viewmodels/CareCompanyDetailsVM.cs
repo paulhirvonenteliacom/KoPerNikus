@@ -30,7 +30,7 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Ort")]
         public string City { get; set; }
       
-        [Display(Name = "Bank-/Postgironummer")]
+        [Display(Name = "Bank-/Plusgironummer")]
         public string AccountNumber { get; set; }
 
         [Display(Name = "Kollektivavtal")]

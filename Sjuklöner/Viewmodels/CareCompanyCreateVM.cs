@@ -36,7 +36,7 @@ namespace Sjuklöner.Viewmodels
         public string City { get; set; }
 
         [Required]
-        [Display(Name = "Bank-/Postgironummer")]
+        [Display(Name = "Bank-/Plusgironummer")]
         public string AccountNumber { get; set; }
 
         [Required]

@@ -55,7 +55,7 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Organisationsnummer:")]
         public string OrganisationNumber { get; set; }
 
-        [Display(Name = "Bank-/postgironummer:")]
+        [Display(Name = "Bank-/plusgironummer:")]
         public string GiroNumber { get; set; }
 
         [Display(Name = "Företagets adress:")]
