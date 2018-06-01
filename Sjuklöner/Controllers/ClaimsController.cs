@@ -2135,8 +2135,8 @@ namespace Sjuklöner.Controllers
                 if (!CheckExistingDocument(claim, "SalaryAttachment", model.SalaryAttachment))
                     ModelState.AddModelError("SalaryAttachment", "Lönespecifikation för ordinarie assistent saknas.");
 
-                if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
-                    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas.");
+                //if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
+                //    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas.");
 
                 if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
                     ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas.");
@@ -2159,8 +2159,8 @@ namespace Sjuklöner.Controllers
                         if (model.SalaryAttachment != null)
                             NewDocument(model.SalaryAttachment, path, "SalaryAttachment", claim);
 
-                        if (model.SickLeaveNotification != null)
-                            NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
+                        //if (model.SickLeaveNotification != null)
+                        //    NewDocument(model.SickLeaveNotification, path, "SickLeaveNotification", claim);
 
                         if (model.DoctorsCertificate != null)
                             NewDocument(model.DoctorsCertificate, path, "DoctorsCertificate", claim);
@@ -2168,7 +2168,7 @@ namespace Sjuklöner.Controllers
                         if (model.TimeReport != null)
                             NewDocument(model.TimeReport, path, "TimeReport", claim);
 
-                        for (int i = 0; i < model.NumberOfSubAssistants; i++)
+                        for (int i = 0; i < noOfSubAssistants; i++)
                         {
                             if (model.TimeReportStandIn[i] != null)
                                 NewDocument(model.TimeReportStandIn[i], path, "TimeReportStandIn[" + i.ToString() + "]", claim);
@@ -2200,8 +2200,8 @@ namespace Sjuklöner.Controllers
                             //claim.SalarySpecSubAssistantCheck = false;
                             //claim.SalarySpecSubAssistantCheckMsg = "Kontroll ej utförd";
 
-                            claim.SickleaveNotificationCheck = false;
-                            claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
+                            //claim.SickleaveNotificationCheck = false;
+                            //claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
 
                             if (claim.NumberOfSickDays > 7)
                             {

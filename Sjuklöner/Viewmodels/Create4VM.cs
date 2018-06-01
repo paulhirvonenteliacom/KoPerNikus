@@ -19,8 +19,8 @@ namespace Sjuklöner.Viewmodels
         //[Display(Name = "Lönespecifikation, vikarierande assistent")]
         //public HttpPostedFileBase SalaryAttachmentStandIn { get; set; }
 
-        [Display(Name = "Sjukfrånvaroanmälan")]
-        public HttpPostedFileBase SickLeaveNotification { get; set; }
+        //[Display(Name = "Sjukfrånvaroanmälan")]
+        //public HttpPostedFileBase SickLeaveNotification { get; set; }
 
         [Display(Name = "Läkarintyg")]
         public HttpPostedFileBase DoctorsCertificate { get; set; }

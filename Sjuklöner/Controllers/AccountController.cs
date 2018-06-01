@@ -1138,7 +1138,9 @@ namespace Sjuklöner.Controllers
                     assertion = ts.GetAssertion();
                     dn = assertion.Subject;
                     //HttpContext.Response.Write(dn.Get(TicketService.DistinguishedName.SerialNumber));
-                    var user = UserManager.Users.Where(u => u.SSN == dn.Get(TicketService.DistinguishedName.SerialNumber)).FirstOrDefault();
+                    string dnSSN = dn.Get(TicketService.DistinguishedName.SerialNumber).Insert(8, "-");
+                    var user = UserManager.Users.Where(u => u.SSN == dnSSN).FirstOrDefault();
+                    ViewBag.serialNumber = user.SSN;
                     await SignInManager.SignInAsync(user, true, true);
                 }
                 //if (!string.IsNullOrWhiteSpace(ReturnUrl))
@@ -1389,6 +1391,29 @@ namespace Sjuklöner.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            try
+            {
+                using (TicketService.eID ts = new TicketService.eID())
+                {
+                    ts.AuthenticationAddress = "https://ticket-test1.siriusit.net";
+                    ts.ResolverAddress = "https://ticket-resolver2-test.siriusit.net:443";
+                    ts.System = "helsingborg";
+                    ts.Issuer = ConfigurationManager.AppSettings["Issuer"];
+                    ts.PostAuthnUrl = ConfigurationManager.AppSettings["PostAuthnUrl"];
+                    ts.PostLogoutUrl = ConfigurationManager.AppSettings["PostLogoutUrl"];
+                    ts.Abandon();
+                }
+                //if (!string.IsNullOrWhiteSpace(ReturnUrl))
+                //return Redirect(ReturnUrl);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                throw;
+            }
+            catch (System.SystemException exception)
+            {
+                HttpContext.Response.Write(exception.Message);
+            }
             return RedirectToAction("Index", "Home");
         }
 
