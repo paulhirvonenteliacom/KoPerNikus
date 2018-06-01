@@ -898,28 +898,28 @@
                 <br />
                 <table class="table2">
                     <tr>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Datum
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Arbetade timmar
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Varav OB, kväll
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Varav OB, natt
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Varav OB, helg
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Varav OB, storhelg
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Jour, dag
                         </th>
-                        <th class="claimdetails-col row-divider">
+                        <th class="claimpdf-manycol row-divider">
                             Jour, natt/helg
                         </th>
                         <th></th>
@@ -1053,28 +1053,28 @@
                         <br />                  
                         <table class="table2">
                             <tr>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Datum
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Arbetade timmar
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Varav OB, kväll
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Varav OB, natt
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Varav OB, helg
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Varav OB, storhelg
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Jour, dag
                                 </th>
-                                <th class="claimdetails-col row-divider">
+                                <th class="claimpdf-manycol row-divider">
                                     Jour, natt/helg
                                 </th>
                                 <th></th>
@@ -1395,129 +1395,74 @@
                                 </td>
                             </tr>
                         </table>
+                        <br />
+                        <table class="table2">
+                            <tr>
+                                <th class="claimpdf-col row-divider">
+                                    @Html.LabelFor(model => model.FKRegAssistantCheckMsg)
+                                </th>
+                            </tr>
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(model => model.FKRegAssistantCheckMsg)
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <table class="table2">
+                            <tr>
+                                <th class="claimpdf-col row-divider">
+                                    @Html.LabelFor(model => model.FKSubAssistantCheckMsg)
+                                </th>
+                            </tr>
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(model => model.FKSubAssistantCheckMsg)
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <table class="table2">
+                            <tr>
+                                <th class="claimpdf-col row-divider">
+                                    @Html.LabelFor(model => model.SickleaveNotificationCheckMsg)
+                                </th>
+                            </tr>
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(model => model.SickleaveNotificationCheckMsg)
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <table class="table2">
+                            <tr>
+                                <th class="claimpdf-col row-divider">
+                                    @Html.LabelFor(model => model.MedicalCertificateCheckMsg)
+                                </th>
+                            </tr>
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(model => model.MedicalCertificateCheckMsg)
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <table class="table2">
+                            <tr>
+                                <th class="claimpdf-col row-divider">
+                                    @Html.LabelFor(model => model.RejectReason)
+                                </th>
+                            </tr>
+                            <tr row-divider>
+                                <td>
+                                    @Html.DisplayFor(model => model.RejectReason)
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-2">
-                    </div>
-                    <div class="col col-md-9 form-group-div-frame">
-                        <div class="row form-group-heading">
-                            Automatiserade kontroller
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.IVOCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.IVOCheck)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                                    </div>
-                                    <div class="row display-padding6">
-                                        @Html.DisplayFor(m => m.ProxyCheck)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.AssistanceCheck)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.SalarySpecRegAssistantCheckMsg)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.SalarySpecSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                                    </div>
-                                    <div class="row display-padding6">
-                                        @Html.DisplayFor(m => m.SalarySpecSubAssistantCheckMsg)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.FKRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.FKRegAssistantCheckMsg)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.FKSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                                    </div>
-                                    <div class="row display-padding6">
-                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.SickleaveNotificationCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.SickleaveNotificationCheckMsg)
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                                    </div>
-                                    <div class="row display-padding6">
-                                        @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-5">
-                                <div class="form-group line-height-12">
-                                    <div class="row label-padding">
-                                        @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                                    </div>
-                                    <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.RejectReason)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div>               
 
                 <div class="row">
                     <div class="col col-md-12 form-group-div-frame">

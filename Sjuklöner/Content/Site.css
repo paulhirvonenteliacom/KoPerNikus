@@ -1917,6 +1917,10 @@ a:hover, a:focus {
     margin-top: 150px;
 }
 
+.ssmall-col-admin {
+    width: 7%;
+}
+
 .small-col-admin {
     width: 8%;
 }
