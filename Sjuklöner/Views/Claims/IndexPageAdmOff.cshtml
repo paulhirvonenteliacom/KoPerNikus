@@ -52,39 +52,36 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Referensnummer
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col">
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
                             Handläggare
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Inkommen datum
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Kundens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Första sjukdag
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Sista sjukdag
                         </th>
-                        @*<th class="small-col-admin">
-                                Antal sjukdagar
-                            </th>*@
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col"></th>                       
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
                     </tr>
 
                     @foreach (var item in Model.InInboxClaims)
@@ -117,14 +114,11 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
-                            @*<td>
-                                    @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td></td>
-                            <td></td>                            
+                            <td></td>
                             @*<td>
                                 @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
                                 @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
@@ -155,39 +149,36 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Referensnummer
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col">
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
                             Handläggare
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Inkommen datum
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Kundens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Första sjukdag
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Sista sjukdag
                         </th>
-                        @*<th class="small-col-admin">
-                                Antal sjukdagar
-                            </th>*@
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col"></th>                        
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
                     </tr>
 
                     @foreach (var item in Model.UnderReviewClaims)
@@ -227,7 +218,7 @@
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
                             <td></td>
-                            <td></td>                           
+                            <td></td>
                             @*<td>
                                 @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
                                 @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
@@ -258,43 +249,40 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Referensnummer
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col">
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
                             Handläggare
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Beslutsdatum
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Kundens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Första sjukdag
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Sista sjukdag
                         </th>
-                        @*<th class="small-col-admin">
-                                Antal sjukdagar
-                            </th>*@
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Godkänt belopp (Kr)
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Avslaget belopp (Kr)
-                        </th>                       
+                        </th>
                     </tr>
 
                     @foreach (var item in Model.DecidedClaims)
@@ -327,9 +315,6 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
-                            @*<td>
-                                    @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
@@ -338,7 +323,7 @@
                             </td>
                             <td class="highlight-red-bold">
                                 @Html.DisplayFor(modelItem => item.RejectedSum)
-                            </td>                           
+                            </td>
                             @*<td>
                                 @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
                                 @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
@@ -357,8 +342,7 @@
                 <br />
             }
         </div>
-    </div>    
-    
+    </div>
     <hr class="claim-divider" />
 
 </body>
