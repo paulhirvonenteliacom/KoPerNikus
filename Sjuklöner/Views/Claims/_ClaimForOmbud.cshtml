@@ -3,8 +3,8 @@
 @*<body>*@
 <div class="row">
     <div class="col col-md-offset-2">
-        @Html.ActionLink("Skapa Pdf-dokument", "ClaimDetailsAsPdf", new { refNumber = Model.ReferenceNumber }, new { @class = "js-show-view-btn btn btn-primary btn-primary-wide" })
-    </div>    
+        @Html.ActionLink("Skapa Pdf-dokument", "ClaimDetailsAsPdf", new { refNumber = Model.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-wide" })
+    </div>
 </div>
 <div class="row">
     <p class="col col-md-offset-2 page-header9">Ansökan</p>
@@ -1002,18 +1002,18 @@
                                 </a>
                             </div>
                         </div>
-                    </div>                          
-                   @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
-                   {
-                   <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding6">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
-                                    Läkarintyg
-                                </a>
+                    </div>
+                    @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
+                    {
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row display-padding6">
+                                    <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
+                                        Läkarintyg
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                   </div>
                     }
                 </div>
                 <div class="row">
