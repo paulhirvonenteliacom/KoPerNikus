@@ -3821,13 +3821,39 @@ namespace Sjuklöner.Controllers
             //Save the Pdf Document
             SaveClaimPdf(byteArray, claim);
 
-            // If the Pdf Request was made from the Recommend view
+            if (User.IsInRole("Ombud"))
+            {
+                // Check which view the Pdf Request was made from
+                if (Request.UrlReferrer.ToString().Contains("Create1"))
+                {
+                    return RedirectToAction("Create1", new { refNumber });
+                }
+                else if (Request.UrlReferrer.ToString().Contains("Create2"))
+                {
+                    return RedirectToAction("Create2", new { refNumber });
+                }
+                else if (Request.UrlReferrer.ToString().Contains("Create3"))
+                {
+                    return RedirectToAction("Create3", new { refNumber });
+                }
+                else if (Request.UrlReferrer.ToString().Contains("Create4"))
+                {
+                    return RedirectToAction("Create4", new { ClaimNumber = refNumber });
+                }
+                else
+                {
+                    return RedirectToAction("IndexPageOmbud");
+                }
+            }
+
+            // Logged in as Admin or AdmOff
+            // Check if the Pdf Request was made from the Recommend view
             if (Request.UrlReferrer.ToString().Contains("Recommend"))
             {
                 return RedirectToAction("Recommend", new { claim.Id });
             }
 
-            return RedirectToAction("Index", "Claims");
+            return RedirectToAction("Index");
         }
 
         private void SaveClaimPdf(byte[] byteArray, Claim claim)

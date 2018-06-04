@@ -1,9 +1,11 @@
 ﻿@model Sjuklöner.Viewmodels.Create3VM
 @using Newtonsoft.Json
 @{
-    /**/
+                /**/
 
-    ViewBag.Title = "Create3";
+                /**/
+
+                ViewBag.Title = "Create3";
 }
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
@@ -28,6 +30,22 @@
         <br>
         @*<p class="col col-md-offset-2 col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>*@
     </div>
+    if (TempData["PdfSuccess"] != null)
+    {
+        <div class="Event alert alert-success" id="PdfEventOmbudCreate3">
+            <h3>
+                @TempData["PdfSuccess"]
+            </h3>
+        </div>
+    }
+    if (TempData["PdfFail"] != null)
+    {
+        <div class="Event alert alert-danger" id="PdfEventOmbudCreate3">
+            <h3>
+                @TempData["PdfFail"]
+            </h3>
+        </div>
+    }
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="col col-md-4 second-page-header3">Steg 3 av 4: Ange belopp</p>
@@ -138,6 +156,9 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+    $('#PdfEventOmbudCreate3').delay(4000).hide(1500);
+</script>
 <script type='text/javascript'>
     function calculateSum() {
 

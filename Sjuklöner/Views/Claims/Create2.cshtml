@@ -33,6 +33,23 @@
         <p class="col col-md-2"></p>
         <p class="page-header11 col col-md-10">Ansökan om sjuklöneersättning</p>
     </div>
+
+    if (TempData["PdfSuccess"] != null)
+    {
+        <div class="Event alert alert-success" id="PdfEventOmbudCreate2">
+            <h3>
+                @TempData["PdfSuccess"]
+            </h3>
+        </div>
+    }
+    if (TempData["PdfFail"] != null)
+    {
+        <div class="Event alert alert-danger" id="PdfEventOmbudCreate2">
+            <h3>
+                @TempData["PdfFail"]
+            </h3>
+        </div>
+    }
     <div class="row">
         <p class="col-md-nopadding col col-md-2"></p>
         <p class="negative-left-margin4 second-page-header6 col-md-nopadding col col-md-10">Steg 2 av 4: Ange antal timmar</p>
@@ -520,7 +537,9 @@
     </div>
 }
 @*</body>*@
-
+<script type="text/javascript">
+    $('#PdfEventOmbudCreate2').delay(4000).hide(1500);
+</script>
 <script type='text/javascript'>
     $(document).ready(function assignIdsToSubAssistants() {
         var numberOfHoursSI = document.getElementsByClassName("hours-si");
@@ -1208,7 +1227,7 @@
                     for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                         //if (unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ordinarie assistent måste fyllas i först." ||
                         //    unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
-                            checkUnsocialHours(subIdx, dayIndex, hourType);
+                        checkUnsocialHours(subIdx, dayIndex, hourType);
                         //}
                     }
                 }
@@ -1684,7 +1703,7 @@
         else {
             hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
-    
+
         if (tooManyHours && hourType == 2) {
             unsocialeveningvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
@@ -1698,7 +1717,7 @@
             unsocialnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
         if (tooManyHours && hourType == 4) {
-        unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
+            unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
         else {
             unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
