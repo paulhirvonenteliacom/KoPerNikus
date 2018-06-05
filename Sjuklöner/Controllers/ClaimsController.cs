@@ -2553,8 +2553,8 @@ namespace Sjuklöner.Controllers
                 //recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
                 //recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
 
-                recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
-                recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+                //recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
+                //recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
 
                 recommendationVM.MedicalCertificateCheck = claim.MedicalCertificateCheck;
                 recommendationVM.MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg;
@@ -2605,7 +2605,7 @@ namespace Sjuklöner.Controllers
                     recommendationVM.InInbox = true;
 
                     if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                        !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                        !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                     {
                         recommendationVM.ApprovedSum = "0,00";
                         recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
@@ -2865,8 +2865,8 @@ namespace Sjuklöner.Controllers
                 //recommendationVM.SalarySpecSubAssistantCheck = claim.SalarySpecSubAssistantCheck;
                 //recommendationVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
 
-                recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
-                recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+                //recommendationVM.SickleaveNotificationCheck = claim.SickleaveNotificationCheck;
+                //recommendationVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
 
                 recommendationVM.MedicalCertificateCheck = claim.MedicalCertificateCheck;
                 recommendationVM.MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg;
@@ -2891,7 +2891,7 @@ namespace Sjuklöner.Controllers
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
                 if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                    !recommendationVM.SickleaveNotificationCheck || !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
                 {
                     recommendationVM.ApprovedSum = "0,00";
                     claim.ApprovedSum = 0;
@@ -3006,10 +3006,10 @@ namespace Sjuklöner.Controllers
             //{
             //    resultMsg += "Kontroll av vikarierande assistents lönespecifikation gav negativt resultat. ";
             //}
-            if (!claim.SickleaveNotificationCheck)
-            {
-                resultMsg += "Kontroll av sjukfrånvaroanmälan gav negativt resultat. ";
-            }
+            //if (!claim.SickleaveNotificationCheck)
+            //{
+            //    resultMsg += "Kontroll av sjukfrånvaroanmälan gav negativt resultat. ";
+            //}
             if (!claim.MedicalCertificateCheck)
             {
                 resultMsg += "Kontroll av sjukintyg gav negativt resultat. ";
@@ -3306,10 +3306,15 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.ProxyCheck = claim.ProxyCheckMsg;
                 claimDetailsOmbudVM.AssistanceCheck = claim.AssistanceCheckMsg;
                 claimDetailsOmbudVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
-                //claimDetailsOmbudVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg;
+
+                //Not Used
+                //claimDetailsOmbudVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg
                 claimDetailsOmbudVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
                 claimDetailsOmbudVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
-                claimDetailsOmbudVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+
+                //Not Used
+                //claimDetailsOmbudVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
+
                 claimDetailsOmbudVM.MedicalCertificateCheckMsg = claim.MedicalCertificateCheckMsg;
                 claimDetailsOmbudVM.RejectReason = claim.RejectReason;
 

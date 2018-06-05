@@ -329,13 +329,13 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kontroll av lönespecifikation, ordinarie assistent:")]
         public string SalarySpecRegAssistantCheckMsg { get; set; }
 
-        public bool SalarySpecSubAssistantCheck { get; set; }
-        [Display(Name = "Kontroll av lönespecifikation, vikarierande assistent:")]
-        public string SalarySpecSubAssistantCheckMsg { get; set; }
+        //public bool SalarySpecSubAssistantCheck { get; set; }
+        //[Display(Name = "Kontroll av lönespecifikation, vikarierande assistent:")]
+        //public string SalarySpecSubAssistantCheckMsg { get; set; }
 
-        public bool SickleaveNotificationCheck { get; set; }
-        [Display(Name = "Kontroll av sjukfrånvaroanmälan:")]
-        public string SickleaveNotificationCheckMsg { get; set; }
+        //public bool SickleaveNotificationCheck { get; set; }
+        //[Display(Name = "Kontroll av sjukfrånvaroanmälan:")]
+        //public string SickleaveNotificationCheckMsg { get; set; }
 
         public bool MedicalCertificateCheck { get; set; }
         [Display(Name = "Kontroll av läkarintyg:")]

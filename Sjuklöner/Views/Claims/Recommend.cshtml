@@ -267,7 +267,7 @@
                     }
                 </div>*@
 
-            <div class="form-group margin-bottom-small col line-height-06">
+            @*<div class="form-group margin-bottom-small col line-height-06">
                 @Html.LabelFor(model => model.SickleaveNotificationCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
                 @if (!Model.SickleaveNotificationCheck)
                 {
@@ -281,7 +281,7 @@
                         <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.SickleaveNotificationCheckMsg)
                     </div>
                 }
-            </div>
+            </div>*@
 
             @if (Model.NumberOfSickDays > 7)
             {

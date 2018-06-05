@@ -1362,10 +1362,16 @@
                                 <th class="claimpdf-col row-divider">
                                     @Html.LabelFor(model => model.AssistanceCheck)
                                 </th>
+                                <th class="claimpdf-col row-divider">
+                                    @Html.LabelFor(model => model.MedicalCertificateCheckMsg)
+                                </th>
                             </tr>
                             <tr row-divider>
                                 <td>
                                     @Html.DisplayFor(model => model.AssistanceCheck)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.MedicalCertificateCheckMsg)
                                 </td>
                             </tr>
                         </table>
@@ -1375,17 +1381,12 @@
                                 <th class="claimpdf-col row-divider">
                                     @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg)
                                 </th>
-                                <th class="claimpdf-col row-divider">
-                                    @Html.LabelFor(model => model.SalarySpecSubAssistantCheckMsg)
-                                </th>
+                                
                             </tr>
                             <tr row-divider>
                                 <td>
                                     @Html.DisplayFor(model => model.SalarySpecRegAssistantCheckMsg)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => model.SalarySpecSubAssistantCheckMsg)
-                                </td>
+                                </td>                                
                             </tr>
                         </table>
                         <br />
@@ -1413,34 +1414,8 @@
                                     @Html.DisplayFor(model => model.FKSubAssistantCheckMsg)
                                 </td>
                             </tr>
-                        </table>
-                        <br />
-                        <table class="table2">
-                            <tr>
-                                <th class="claimpdf-col row-divider">
-                                    @Html.LabelFor(model => model.SickleaveNotificationCheckMsg)
-                                </th>
-                            </tr>
-                            <tr row-divider>
-                                <td>
-                                    @Html.DisplayFor(model => model.SickleaveNotificationCheckMsg)
-                                </td>
-                            </tr>
-                        </table>
-                        <br/>
-                        <table class="table2">
-                            <tr>
-                                <th class="claimpdf-col row-divider">
-                                    @Html.LabelFor(model => model.MedicalCertificateCheckMsg)
-                                </th>
-                            </tr>
-                            <tr row-divider>
-                                <td>
-                                    @Html.DisplayFor(model => model.MedicalCertificateCheckMsg)
-                                </td>
-                            </tr>
-                        </table>
-                        <br/>
+                        </table>                                               
+                        <br/>                        
                         <table class="table2">
                             <tr>
                                 <th class="claimpdf-col row-divider">
