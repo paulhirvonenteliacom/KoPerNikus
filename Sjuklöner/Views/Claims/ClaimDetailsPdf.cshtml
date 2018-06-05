@@ -25,31 +25,10 @@
             <p class="col col-md-offset-2 display-padding bold-14">Status: @Model.StatusName</p>
         }
     </div>    
-    <div class="form-horizontal">
-        @if (Model.CompletionStage > 4)
-    {
-        <div class="row">
-            <div class="col col-md-offset-2 col-md-10 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Kommentarer
-                </div>
-                <div class="row form-group">
-                    <div class="col col-md-2">
-                        <label>Datum</label>
-                    </div>
-                    <div class="col col-md-2">
-                        <label>Användare</label>
-                    </div>
-                    <div class="col col-md-8">
-                        <label>Kommentar</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-}
+    <div class="form-horizontal">    
 
         @if (Model.CompletionStage >= 1)
-    {
+       {
         <div class="row">
             <div class="col col-md-2">
             </div>
@@ -60,10 +39,10 @@
 
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.Council)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.Administration)
                         </th>
                     </tr>
@@ -110,6 +89,7 @@
                 </div>
             </div>
         </div>*@
+        <br/>
         <div class="row">
             <div class="col col-md-2">
             </div>
@@ -119,13 +99,13 @@
                 </div>
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CustomerName)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CustomerSSN)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CustomerPhoneNumber)
                         </th>
                     </tr>
@@ -187,6 +167,7 @@
                 </div>
             </div>
         </div>*@
+        <br/>
         <div class="row">
             <div class="col col-md-2">
             </div>
@@ -196,10 +177,10 @@
                 </div>
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.OmbudName)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.OmbudPhoneNumber)
                         </th>
                     </tr>
@@ -245,6 +226,7 @@
                 </div>
             </div>
         </div>*@
+        <br/>
         <div class="row">
             <div class="col col-md-2">
             </div>
@@ -252,16 +234,15 @@
                 <div class="row form-group-heading">
                     Assistansanordnare
                 </div>
-
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CompanyName)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.OrganisationNumber)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CompanyAddress)
                         </th>
                     </tr>
@@ -280,13 +261,13 @@
                 <br />
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CompanyPhoneNumber)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.GiroNumber)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-threecol row-divider">
                             @Html.LabelFor(model => model.CollectiveAgreement)
                         </th>
                     </tr>
@@ -379,6 +360,7 @@
                 </div>
             </div>
         </div>*@
+        <br />
         <div class="row">
             <div class="col col-md-2">
             </div>
@@ -388,10 +370,10 @@
                 </div>
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.RegAssistantName)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.RegAssistantSSN)
                         </th>
                     </tr>
@@ -407,10 +389,10 @@
                 <br />
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.RegPhoneNumber)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.RegEmail)
                         </th>
                     </tr>
@@ -426,10 +408,10 @@
                 <br />
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.QualifyingDayDate)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.LastDayOfSicknessDate)
                         </th>
                     </tr>
@@ -445,10 +427,10 @@
                 <br />
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.SickPayRateAsString)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.HolidayPayRateAsString)
                         </th>
                     </tr>
@@ -461,17 +443,15 @@
                         </td>
                     </tr>
                 </table>
+                <br/>
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.SocialFeeRateAsString)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.PensionAndInsuranceRateAsString)
-                        </th>
-                        <th class="claimpdf-col row-divider">
-                            @Html.LabelFor(model => model.HourlySalaryAsString)
-                        </th>
+                        </th>                       
                     </tr>
                     <tr row-divider>
                         <td>
@@ -479,7 +459,17 @@
                         </td>
                         <td>
                             @Html.DisplayFor(model => model.PensionAndInsuranceRateAsString)
-                        </td>
+                        </td>                        
+                    </tr>
+                </table>
+                <br/>
+                <table class="table2">
+                    <tr>
+                        <th class="claimpdf-col row-divider">
+                            @Html.LabelFor(model => model.HourlySalaryAsString)
+                        </th>
+                    </tr>
+                    <tr row-divider>
                         <td>
                             @Html.DisplayFor(model => model.HourlySalaryAsString)
                         </td>
@@ -618,6 +608,7 @@
                 </div>
             </div>
         </div>*@
+        <br/>
         <div class="row">
             <div class="col col-md-2">
             </div>
@@ -636,10 +627,10 @@
     }
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.SubAssistantName)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.SubAssistantSSN)
                         </th>
                     </tr>
@@ -655,10 +646,10 @@
                 <br />
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.SubPhoneNumber)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.SubEmail)
                         </th>
                     </tr>
@@ -749,11 +740,11 @@
                     </div>
                     <table class="table2">
                         <tr>
-                            <th class="claimpdf-col row-divider">
+                            <th class="claimpdf-twocol row-divider">
                                 Namn:
                                 @*@Html.LabelFor(model => model.SubstituteAssistantName[i])*@
                             </th>
-                            <th class="claimpdf-col row-divider">
+                            <th class="claimpdf-twocol row-divider">
                                 Personnummer:
                                 @*@Html.LabelFor(model => model.SubstituteAssistantSSN[i])*@
                             </th>
@@ -770,11 +761,11 @@
                     <br />
                     <table class="table2">
                         <tr>
-                            <th class="claimpdf-col row-divider">
+                            <th class="claimpdf-twocol row-divider">
                                 Telefonnummer (inkl. riktnr.):
                                 @*@Html.LabelFor(model => model.SubstituteAssistantPhoneNumber[i])*@
                             </th>
-                            <th class="claimpdf-col row-divider">
+                            <th class="claimpdf-twocol row-divider">
                                 E-postadress:
                                 @*@Html.LabelFor(model => model.SubstituteAssistantEmail[i])*@
                             </th>
@@ -879,10 +870,10 @@
                 </table>
                 <table class="table2">
                     <tr>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.NumberOfUnsocialHours)
                         </th>
-                        <th class="claimpdf-col row-divider">
+                        <th class="claimpdf-twocol row-divider">
                             @Html.LabelFor(model => model.NumberOfOnCallHours)
                         </th>
                     </tr>
@@ -1018,8 +1009,7 @@
                 <div class="row form-group-heading">
                     Antal timmar, vikarierande assistent @(k + 1)
                 </div>
-                }
-               
+                }               
                         <table class="table2">
                             <tr>
                                 <th class="claimpdf-col row-divider">
@@ -1034,10 +1024,10 @@
                         </table>
                         <table class="table2">
                             <tr>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.NumberOfUnsocialHoursSI)
                                 </th>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.NumberOfOnCallHoursSI)
                                 </th>
                             </tr>
@@ -1141,10 +1131,10 @@
                         </div>
                         <table class="table2">
                             <tr>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.Sickpay)
                                 </th>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.HolidayPay)
                                 </th>
                             </tr>
@@ -1160,10 +1150,10 @@
                         <br />
                         <table class="table2">
                             <tr>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.SocialFees)
                                 </th>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.PensionAndInsurance)
                                 </th>
                             </tr>
@@ -1340,10 +1330,10 @@
                         </div>
                         <table class="table2">
                             <tr>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.IVOCheck)
                                 </th>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.ProxyCheck)
                                 </th>
                             </tr>
@@ -1359,10 +1349,10 @@
                         <br />
                         <table class="table2">
                             <tr>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.AssistanceCheck)
                                 </th>
-                                <th class="claimpdf-col row-divider">
+                                <th class="claimpdf-twocol row-divider">
                                     @Html.LabelFor(model => model.MedicalCertificateCheckMsg)
                                 </th>
                             </tr>
@@ -1826,7 +1816,7 @@
             {
                 <div>
                     @if (i == 0)
-                {
+            {
                     <div class="row form-group-subheading">
                         @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
                     </div>
@@ -1836,7 +1826,7 @@
                 <div class="row form-group-subheading">
                     @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
                 </div>
-        }
+            }
                 </div>
                 <br />
 

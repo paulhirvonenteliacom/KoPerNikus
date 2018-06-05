@@ -1971,6 +1971,16 @@ a:hover, a:focus {
     vertical-align: text-top;
 }
 
+.claimpdf-twocol {
+    width: 320px;
+    vertical-align: text-top;
+}
+
+.claimpdf-threecol {
+    width: 214px;
+    vertical-align: text-top;
+}
+
 .claimpdf-manycol {
     width: 13%;
     vertical-align: text-top;
