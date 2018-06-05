@@ -3502,7 +3502,14 @@ namespace Sjuklöner.Controllers
             FileStream fileStream = null;
             try
             {
-                var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM);                
+                // Specify parameters for Page footers in the generated Pdf File 
+                string footer = "--footer-right \"Date: [date] [time]\" " + "--footer-center \"Page: [page] of [toPage]\" --footer-line --footer-font-size \"9\" --footer-spacing 5 --footer-font-name \"calibri light\"";
+               
+                var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM)
+                {                   
+                    CustomSwitches = footer
+                };
+
                 byte[] byteArray = viewPdf.BuildFile(ControllerContext);
 
                 // Save the pdf-document in the same directory as the Claim attachments 
