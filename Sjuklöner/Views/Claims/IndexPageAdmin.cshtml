@@ -34,12 +34,12 @@
     }
     @if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventAdmin">
+        <div class="Event alert alert-danger" id="PdfEventAdminFail">
             <h3>
                 @TempData["PdfFail"]
             </h3>
         </div>
-    }    
+    }
 
     <hr class="claim-divider" />
     <div class="row">
@@ -50,41 +50,41 @@
             @if (Model.InInboxClaims?.Count() > 0)
             {
                 <table class="table">
-                    <tr>
-                        <th class="small-col">
+                    <tr>                        
+                        <th class="small-col-admin">
                             Referensnummer
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col">
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
                             Handläggare
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Inkommen datum
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Kundens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Första sjukdag
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Sista sjukdag
                         </th>
                         @*<th class="small-col-admin">
-                                Antal sjukdagar
-                            </th>*@
-                        <th class="small-col">
+            Antal sjukdagar
+        </th>*@
+                        <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col"></th>
-                        <th class="small-col"></th>
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
                     </tr>
 
                     @foreach (var item in Model.InInboxClaims)
@@ -158,40 +158,40 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Referensnummer
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col">
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
                             Handläggare
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Inkommen datum
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Kundens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Första sjukdag
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Sista sjukdag
                         </th>
                         @*<th class="small-col-admin">
                                 Antal sjukdagar
                             </th>*@
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col"></th>
-                        <th class="small-col"></th>
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
                     </tr>
 
                     @foreach (var item in Model.UnderReviewClaims)
@@ -265,44 +265,44 @@
             {
                 <table class="table">
                     <tr>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Referensnummer
                         </th>
-                        <th class="small-col"></th>
-                        <th class="small-col">
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
                             Handläggare
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Beslutsdatum
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistansbolag
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Kundens personnummer
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Första sjukdag
                         </th>
-                        <th class="small-col">
+                        <th class="ssmall-col-admin">
                             Sista sjukdag
                         </th>
                         @*<th class="small-col-admin">
                                 Antal sjukdagar
                             </th>*@
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Godkänt belopp (Kr)
                         </th>
-                        <th class="small-col">
+                        <th class="small-col-admin">
                             Avslaget belopp (Kr)
                         </th>
-                        <th class="small-col"></th>
+                        <th class="small-col-admin"></th>
                     </tr>
 
                     @foreach (var item in Model.DecidedClaims)
@@ -368,8 +368,8 @@
                 <br />
             }
         </div>
-    </div>
-
+    </div>   
+ 
     <hr class="claim-divider" />
 
     <div class="row row-padding2">
@@ -381,4 +381,7 @@
 </body>
 <script type="text/javascript">
     $('#PdfEventAdmin').delay(4000).hide(1500);
+</script>
+<script type="text/javascript">
+    $('#PdfEventAdminFail').delay(100000).hide(1500);
 </script>

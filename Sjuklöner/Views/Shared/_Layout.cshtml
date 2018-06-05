@@ -129,11 +129,12 @@
         }
     }
 
-
     <div class="container body-content">
         @RenderBody()
-        @if (Url.Action().ToString().Length < 15 || Url.Action().ToString().ToLower() != "/claims/stodsystemlogin" && Url.Action().ToString().ToLower().Remove(14) != "/claims/decide" & Url.Action().ToString().ToLower() != "/claims/stodsystemlogout")
+        @if (!Url.Action().ToString().ToLower().Contains("pdf"))   // Pdf document should not contain this Footer
         {
+            if (Url.Action().ToString().Length < 15 || Url.Action().ToString().ToLower() != "/claims/stodsystemlogin" && Url.Action().ToString().ToLower().Remove(14) != "/claims/decide" & Url.Action().ToString().ToLower() != "/claims/stodsystemlogout")
+            {
             <hr />
             <footer>
                 <div class="row">
@@ -146,8 +147,8 @@
 
                 </div>
             </footer>
+            }
         }
-    </div>
-
+     </div>
 </body>
 </html>

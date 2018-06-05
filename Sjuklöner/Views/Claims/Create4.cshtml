@@ -1,6 +1,8 @@
 ﻿@model Sjuklöner.Viewmodels.Create4VM
 @{
-    ViewBag.Title = "Bilagor";
+                /**/
+
+                ViewBag.Title = "Bilagor";
 }
 
 <div class="row margin-breadcrumb">
@@ -15,7 +17,7 @@
     </nav>
 </div>
 
-@using (Html.BeginForm("Create4", "Claims", new { noOfSubAssistants = Model.NumberOfSubAssistants }, FormMethod.Post, new { enctype = "multipart/form-data" } ))
+@using (Html.BeginForm("Create4", "Claims", new { noOfSubAssistants = Model.NumberOfSubAssistants }, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ClaimNumber)
@@ -24,6 +26,22 @@
         <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
         <br>
     </div>
+    if (TempData["PdfSuccess"] != null)
+    {
+        <div class="Event alert alert-success" id="PdfEventOmbudCreate4">
+            <h3>
+                @TempData["PdfSuccess"]
+            </h3>
+        </div>
+    }
+    if (TempData["PdfFail"] != null)
+    {
+        <div class="Event alert alert-danger" id="PdfEventOmbudCreate4Fail">
+            <h3>
+                @TempData["PdfFail"]
+            </h3>
+        </div>
+    }
     <div class="row">
         <p class="col col-md-2"></p>
         <p class="col col-md-10 second-page-header2">Steg 4 av 4: Ladda upp bilagor och skicka in ansökan</p>
@@ -81,7 +99,7 @@
                 </div>
             }
 
-            <div class="row row-height-14 row-top-margin align-bottom4">
+            <!--<div class="row row-height-14 row-top-margin align-bottom4">
                 <div class="col col-md-2">
 
                 </div>
@@ -99,11 +117,11 @@
             </div>
             <div class="row row-height-14 line-height-07">
                 <div class="col col-md-offset-2 col-md-10">
-                    @Html.ValidationMessageFor(model => model.SickLeaveNotification, "", new { @class = "text-danger font-size-11" })
+                    @*Html.ValidationMessageFor(model => model.SickLeaveNotification, "", new { @class = "text-danger font-size-11" })*@
                 </div>
             </div>
             <div class="row row-height-14">
-            </div>
+            </div>-->
 
             <div class="row row-height-14 row-top-margin align-bottom4">
                 <div class="col col-md-2">
@@ -198,6 +216,12 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script type="text/javascript">
+    $('#PdfEventOmbudCreate4').delay(4000).hide(1500);
+</script>
+<script type="text/javascript">
+    $('#PdfEventCreate4Fail').delay(100000).hide(1500);
+</script>
 <script>
     $(function () {
         $(".js-show-view-btn").click(function (e) {

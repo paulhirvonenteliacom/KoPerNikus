@@ -3,8 +3,8 @@
 @*<body>*@
 <div class="row">
     <div class="col col-md-offset-2">
-        @Html.ActionLink("Skapa Pdf-dokument", "ClaimDetailsAsPdf", new { refNumber = Model.ReferenceNumber }, new { @class = "js-show-view-btn btn btn-primary btn-primary-wide" })
-    </div>    
+        @Html.ActionLink("Skapa Pdf-dokument", "ClaimDetailsAsPdf", new { refNumber = Model.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-wide" })
+    </div>
 </div>
 <div class="row">
     <p class="col col-md-offset-2 page-header9">Ansökan</p>
@@ -1003,17 +1003,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SickLeaveNotification").FirstOrDefault().Filename}")">
-                                    Sjukfrånvaroanmälan
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                     @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
                     {
                         <div class="col col-md-5">
@@ -1040,7 +1029,7 @@
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row display-padding6">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn").FirstOrDefault().Filename}")">
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn[0]").FirstOrDefault().Filename}")">
                                     Tidsredovisning, Försäkringskassan, vikarierande assistent
                                 </a>
                             </div>
@@ -1111,10 +1100,10 @@
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row label-padding">
-                                @Html.LabelFor(model => model.SalarySpecSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
                             </div>
                             <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.SalarySpecSubAssistantCheckMsg)
+                                @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
                             </div>
                         </div>
                     </div>
@@ -1140,29 +1129,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.SickleaveNotificationCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.SickleaveNotificationCheckMsg)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                            </div>
-                            <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div>                
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">

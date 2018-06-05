@@ -1917,6 +1917,10 @@ a:hover, a:focus {
     margin-top: 150px;
 }
 
+.ssmall-col-admin {
+    width: 7%;
+}
+
 .small-col-admin {
     width: 8%;
 }
@@ -1964,6 +1968,16 @@ a:hover, a:focus {
 
 .claimpdf-col {
     width: 5%;
+    vertical-align: text-top;
+}
+
+.claimpdf-twocol {
+    width: 320px;
+    vertical-align: text-top;
+}
+
+.claimpdf-threecol {
+    width: 214px;
     vertical-align: text-top;
 }
 

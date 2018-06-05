@@ -1,13 +1,5 @@
-﻿<div class="row" id="loginForm">
+﻿<div class="row page-header1" id="loginForm">
     <section>
-        @using (Html.BeginForm("BankIDLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal page-header1", role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Logga in" class="btn btn-primary btn-primary-small" id="login" onsubmit="hide" />
-                </div>
-            </div>
-        }
+        <p>@ViewBag.serialNumber</p>
     </section>
 </div>
