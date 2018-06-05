@@ -3078,14 +3078,6 @@ namespace Sjuklöner.Controllers
             // Create a pdf document with Claim Details
             CreateClaimPdf(claim);
 
-            /*
-            ClaimDetailsOmbudVM claimDetailsOmbudVM = CreateVMClaimDetails(claim);                  
-                       
-            var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM);
-            byte[] byteArray = viewPdf.BuildFile(ControllerContext);
-          
-            */
-
             if (User.IsInRole("Ombud"))
             {
                 // Check from which view the Pdf Request was made
@@ -3539,39 +3531,6 @@ namespace Sjuklöner.Controllers
                 }
             }
         }
-
-        /*
-        private void SaveClaimPdf(byte[] byteArray, Claim claim)
-        {
-            // Save the pdf-document  in the same directory as the Claim attachments 
-            if (!Directory.Exists(Server.MapPath("~/Uploads")))
-                Directory.CreateDirectory(Server.MapPath("~/Uploads"));
-            if (!Directory.Exists(Server.MapPath($"~/Uploads/{claim.ReferenceNumber}")))
-                Directory.CreateDirectory(Server.MapPath($"~/Uploads/{claim.ReferenceNumber}"));
-
-            FileStream fileStream = null;
-            try
-            {
-                string path = Server.MapPath($"~/Uploads/{claim.ReferenceNumber}");
-                string title = "Ansökan";
-
-                fileStream = new FileStream(Path.Combine(path, $"{title}_{claim.ReferenceNumber}.pdf"), FileMode.Create, FileAccess.Write);
-                fileStream.Write(byteArray, 0, byteArray.Length);
-                TempData["PdfSuccess"] = "Pdf-dokument har skapats för ansökan med Referensnummer: " + claim.ReferenceNumber;
-            }
-            catch (Exception ex)
-            {
-                TempData["PdfFail"] = "Det misslyckades att skapa ett Pdf-dokument för ansökan med Referensnummer: " + claim.ReferenceNumber;
-            }
-            finally
-            {
-                if (fileStream != null)
-                {
-                    fileStream.Close();
-                }
-            }
-        }
-        */
 
         public ActionResult ShowClaimDetails(string referenceNumber)
         {
