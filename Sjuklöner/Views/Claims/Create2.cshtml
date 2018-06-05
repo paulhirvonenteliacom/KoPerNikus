@@ -543,6 +543,9 @@
 
     });
 
+
+    //a new implementation is attempted. checkInput2 is now called by validateInput instead of checkInput.
+
     function validateInput(dayIdx, subIdx, typeOfHour) {
         var numberOfHours = document.getElementsByClassName("hours");
         var unsocialEvening = document.getElementsByClassName("unsocial-evening");
@@ -568,61 +571,61 @@
         if (subIdx == 99) {
             if (typeOfHour == 1) {
                 var hoursval = document.getElementsByClassName('hours-val');
-                checkInput(numberOfHours[dayIdx], hoursval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(numberOfHours[dayIdx], hoursval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 2) {
                 var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
-                checkInput(unsocialEvening[dayIdx], unsocialeveningval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialEvening[dayIdx], unsocialeveningval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 3) {
                 var unsocialnightval = document.getElementsByClassName('unsocial-night-val');
-                checkInput(unsocialNight[dayIdx], unsocialnightval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialNight[dayIdx], unsocialnightval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 4) {
                 var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-val');
-                checkInput(unsocialWeekend[dayIdx], unsocialweekendval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialWeekend[dayIdx], unsocialweekendval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 5) {
                 var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-val');
-                checkInput(unsocialGrandWeekend[dayIdx], unsocialgrandweekendval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialGrandWeekend[dayIdx], unsocialgrandweekendval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 6) {
                 var oncalldayval = document.getElementsByClassName('oncall-day-val');
-                checkInput(oncallDay[dayIdx], oncalldayval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(oncallDay[dayIdx], oncalldayval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 7) {
                 var oncallnightval = document.getElementsByClassName('oncall-night-val');
-                checkInput(oncallNight[dayIdx], oncallnightval[dayIdx], typeOfHour, dayIdx, subIdx);
+                checkInput2(oncallNight[dayIdx], oncallnightval[dayIdx], typeOfHour, dayIdx, subIdx);
             }
         }
-        else {
+        else if (subIdx != 99) {
             if (typeOfHour == 1) {
                 var hoursval = document.getElementsByClassName('hours-si-val');
-                checkInput(numberOfHoursSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], hoursval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(numberOfHoursSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], hoursval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 2) {
                 var unsocialeveningval = document.getElementsByClassName('unsocial-evening-si-val');
-                checkInput(unsocialEveningSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialeveningval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialEveningSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialeveningval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 3) {
                 var unsocialnightval = document.getElementsByClassName('unsocial-night-si-val');
-                checkInput(unsocialNightSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialnightval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialNightSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialnightval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 4) {
                 var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-si-val');
-                checkInput(unsocialWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialweekendval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialweekendval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 5) {
                 var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-si-val');
-                checkInput(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialgrandweekendval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], unsocialgrandweekendval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 6) {
                 var oncalldayval = document.getElementsByClassName('oncall-day-si-val');
-                checkInput(oncallDaySI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], oncalldayval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(oncallDaySI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], oncalldayval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
             else if (typeOfHour == 7) {
                 var oncallnightval = document.getElementsByClassName('oncall-night-si-val');
-                checkInput(oncallNightSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], oncallnightval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
+                checkInput2(oncallNightSI[(subIdx * numberOfSickDays) + parseInt(dayIdx)], oncallnightval[(subIdx * numberOfSickDays) + parseInt(dayIdx)], typeOfHour, dayIdx, subIdx);
             }
         }
 
@@ -692,6 +695,1458 @@
             }
         }
     }
+
+    function checkInput2(noOfHours, valInfo, hourType, dayIndex, subIndex) {
+        //check if there is a point
+        //check if there is a comma
+        //check that string length is maximum 5
+        //try parsing to float if no point and no comma and check that result is not greater than 25
+        //if there is a comma check try parsing digits before the comma and check that the result is not greater than 25 and try parsing digits after comma and check that the result is not greater than 99.
+
+        var amount = noOfHours.value;
+        var amountInt = 0;
+        var amountDec = 0;
+        var failValidation = false;
+        if (amount != "") {
+            if (amount.length > 5) {
+                valInfo.innerHTML = "Ogiltigt format eller värde.";
+                failValidation = true;
+            }
+        }
+        if (!failValidation && amount.search("\\.") != -1) { //contains a dot
+            valInfo.innerHTML = "Ogiltigt format eller värde.";
+            failValidation = true;
+        }
+        if (!failValidation) {
+            pos = amount.search(",");
+            if (pos != -1) { //contains a comma
+                if (!pos == 0) { //comma is not in first position, check int part
+                    amountInt = amount.substring(0, pos);
+                    if (!isNaN(amountInt)) {
+                        if (parseInt(amountInt) > 25 || parseInt(amountInt) < 0) {
+                            valInfo.innerHTML = "Ogiltigt format eller värde.";
+                            failValidation = true;
+                        }
+                    }
+                    else {
+                        valInfo.innerHTML = "Ogiltigt format eller värde.";
+                        failValidation = true;
+                    }
+                }
+                if (!failValidation) {
+                    if (pos != amount.length - 1) { //comma is not in last position, check dec part
+                        amountDec = amount.substring(pos + 1);
+                        if (!isNaN(amountDec)) {
+                            if (parseInt(amountDec) > 99 || parseInt(amountDec) < 0) {
+                                valInfo.innerHTML = "Ogiltigt format eller värde.";
+                                failValidation = true;
+                            }
+                        }
+                        else {
+                            valInfo.innerHTML = "Ogiltigt format eller värde.";
+                            failValidation = true;
+                        }
+                    }
+                }
+            }
+            else { //does not contain a comma
+                if (isNaN(amount)) {
+                    valInfo.innerHTML = "Ogiltigt format eller värde.";
+                    failValidation = true;
+                }
+                else if (parseInt(amount) > 25 || parseInt(amount) < 0) {
+                    valInfo.innerHTML = "Ogiltigt format eller värde.";
+                    failValidation = true;
+                }
+            }
+        }
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+        var numberOfSubAssistants = numberOfHoursSI.length / numberOfSickDays;
+
+        //Check that there are no format errors for that dayIdx. If allowed, format errors would prevent a correct calculation of the "consumed" hours
+        var unsocialEvening = document.getElementsByClassName("unsocial-evening");
+        var unsocialNight = document.getElementsByClassName("unsocial-night");
+        var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
+        var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
+        var oncallDay = document.getElementsByClassName("oncall-day");
+        var oncallNight = document.getElementsByClassName("oncall-night");
+
+        var hoursval = document.getElementsByClassName('hours-val');
+        var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
+        var unsocialnightval = document.getElementsByClassName('unsocial-night-val');
+        var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-val');
+        var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-val');
+        var oncalldayval = document.getElementsByClassName('oncall-day-val');
+        var oncallnightval = document.getElementsByClassName('oncall-night-val');
+
+        var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
+        var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
+        var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
+        var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
+        var oncallDaySI = document.getElementsByClassName("oncall-day-si");
+        var oncallNightSI = document.getElementsByClassName("oncall-night-si");
+
+        var hoursvalsi = document.getElementsByClassName('hours-si-val');
+        var unsocialeveningvalsi = document.getElementsByClassName('unsocial-evening-si-val');
+        var unsocialnightvalsi = document.getElementsByClassName('unsocial-night-si-val');
+        var unsocialweekendvalsi = document.getElementsByClassName('unsocial-weekend-si-val');
+        var unsocialgrandweekendvalsi = document.getElementsByClassName('unsocial-grandweekend-si-val');
+        var oncalldayvalsi = document.getElementsByClassName('oncall-day-si-val');
+        var oncallnightvalsi = document.getElementsByClassName('oncall-night-si-val');
+
+        if (!failValidation) {
+            var otherFault = false;
+            var subIdx = 0;
+            if (hourType == 1) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (hoursval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (hoursval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        hoursval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+            else if (hourType == 2) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (unsocialeveningval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (unsocialeveningval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialeveningval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+            else if (hourType == 3) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (unsocialnightval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (unsocialnightval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialnightval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+            else if (hourType == 4) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (unsocialweekendval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (unsocialweekendval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialweekendval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+            else if (hourType == 5) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialgrandweekendval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+            else if (hourType == 6) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (oncalldayval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (oncalldayval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        oncalldayval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+            else if (hourType == 7) {
+                while (!otherFault && subIdx < numberOfSubAssistants) {
+                    if (subIdx != subIndex &&
+                        oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                    subIdx++;
+                }
+                if (!otherFault) {
+                    if (oncallnightval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                        valInfo.innerHTML = "Annat fält måste rättas.";
+                        otherFault = true;
+                    }
+                }
+                if (!otherFault) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                            oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            valInfo.innerHTML = "";
+                        }
+                    }
+                    if (oncallnightval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        oncallnightval[parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                else {
+                    failValidation = true;
+                }
+            }
+        }
+
+        //check if comparison between regular assistant's hours and substitute assistants' hours is possible.
+        var subAndRegHourComparisonPossible = false;
+        var calcUnsocialHoursPossible = false;
+        var calcWorkAndOncallHoursPossible = false;
+        var tooManySubHours = false;
+        var tooManyUH = true; //short for tooManyUnsocialHours
+        var UHcalculated = false; //Unsocial Hours has been calculated
+        var tooManyHD = true; //short for tooManyHoursInTheDay (working hours including oncall hours)
+        var HDcalculated = false; //Hours for the day has been calculated
+        if (!failValidation) {
+            subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIndex);
+
+            //check if substitutes' hours are greater than regular assistant's hours
+            if (subAndRegHourComparisonPossible) {
+                tooManySubHours = compareSubAndRegHours(amount, valInfo, hourType, dayIndex, subIndex);
+            }
+
+            if (tooManySubHours) {
+                if (hourType == 1 || hourType == 2 || hourType == 3 || hourType == 4 || hourType == 5) {
+                    //check if possible to calculate unsocial hours
+                    calcUnsocialHoursPossible = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                    if (calcUnsocialHoursPossible) {
+                        //calculate unsocial hours and check if the sum is greater than the number of working hours
+                        tooManyUH = calcUnsocialHours(hourType, dayIndex, subIndex);
+                        UHcalculated = true;
+                    }
+                    if (UHcalculated && !tooManyUH) {
+                        //replace "För högt antal OB-timmar" with "" if not too many unsocial hours
+                        clearUnsocialHoursValMsg(hourType, dayIndex, subIndex);
+                    }
+                }
+                if (hourType == 1 || hourType == 6 || hourType == 7) {
+                    //check if possible to calculate working hours including oncall hours for the day
+                    calcWorkAndOncallHoursPossible = checkWorkAndOncallHours(hourType, dayIndex, subIndex);
+                    if (calcWorkAndOncallHoursPossible) {
+                        //calculate unsocial hours and check if the sum is greater than the number of working hours
+                        tooManyHD = calcWorkAndOncallHours(hourType, dayIndex, subIndex);
+                        HDcalculated = true;
+                    }
+                    if (HDcalculated && !tooManyHD) {
+                        //replace "För högt antal timmar för dagen." with "" where relevant
+                        updateWorkAndOncallHoursValMsg(hourType, dayIndex, subIndex, tooManyUH);
+                    }
+                }
+                valInfo.innerHTML = "För högt antal vikarietimmar.";
+            }
+            else {
+                //number of substitutes' hours is less or equal to the number of the regular assistant's hours
+                if (hourType == 1 || hourType == 2 || hourType == 3 || hourType == 4 || hourType == 5) {
+                    //check if possible to calculate unsocial hours
+                    calcUnsocialHoursPossible = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                    if (calcUnsocialHoursPossible) {
+                        //calculate unsocial hours and check if the sum is greater than the number of working hours
+                        tooManyUH = calcUnsocialHours(hourType, dayIndex, subIndex);
+                        UHcalculated = true;
+                    }
+                    if (UHcalculated && !tooManyUH) {
+                        //replace "För högt antal OB-timmar" with "" if not too many unsocial hours for other hourTypes than the current for the current assistant
+                        clearUnsocialHoursValMsg(hourType, dayIndex, subIndex);
+                    }
+                }
+                if (hourType == 1 || hourType == 6 || hourType == 7) {
+                    calcWorkAndOncallHoursPossible = checkWorkAndOncallHours(hourType, dayIndex, subIndex);
+                    if (calcWorkAndOncallHoursPossible) {
+                        //calculate unsocial hours and check if the sum is greater than the number of working hours
+                        tooManyHD = calcWorkAndOncallHours(hourType, dayIndex, subIndex);
+                        HDcalculated = true;
+                    }
+                    if (HDcalculated && !tooManyHD) {
+                        //replace "För högt antal timmar för dagen." with "" where relevant for other hourTypes than the current for the current assistant
+                        updateWorkAndOncallHoursValMsg(hourType, dayIndex, subIndex, tooManyUH);
+                    }
+                }
+                if (hourType == 1 || hourType == 2 || hourType == 3 || hourType == 4 || hourType == 5) {
+                    //assign validation info to current assistant and current hourType
+                    if (UHcalculated && HDcalculated && !tooManyUH && !tooManyHD) {
+                        valInfo.innerHTML = "";
+                    }
+                    else if (hourType == 1 && UHcalculated && HDcalculated && !tooManyUH && tooManyHD) {
+                        valInfo.innerHTML = "För högt antal timmar för dagen.";
+                    }
+                    else if (UHcalculated && tooManyUH) {
+                        valInfo.innerHTML = "För högt antal OB-timmar.";
+                    }
+                    else if (hourType == 1 && (valInfo.value == "" || valInfo.value == "För högt antal vikarietimmar.") && UHcalculated && HDcalculated && tooManyUH && tooManyHD) {
+                        valInfo.innerHTML = "För högt antal timmar för dagen."
+                    }
+                }
+                if (hourType == 6 || hourType == 7) {
+                    //assign validation info to current assistant and current hourType
+                    if (HDcalculated && !tooManyHD) {
+                        valInfo.innerHTML = "";
+                    }
+                    else if (HDcalculated && tooManyHD) {
+                        valInfo.innerHTML = "För högt antal timmar för dagen.";
+                    }
+                }
+                //update validation info for the current hourType for all other assistants than the current
+                var calcUnsocialHoursPossibleOtherAss = false;
+                var calcWorkAndOncallHoursPossibleOtherAss = false;
+                var tooManyUHOtherAss = true; //short for tooManyUnsocialHours
+                var UHcalculatedOtherAss = false; //Unsocial Hours has been calculated
+                var tooManyHDOtherAss = true; //short for tooManyHoursInTheDay (working hours including oncall hours)
+                var HDcalculatedOtherAss = false; //Hours for the day has been calculated
+                if (subIndex != 99) {
+                    //this is the case if the current assistant is one of the substitute assistants, then the regular assistant's validation info must be updated
+                    if (hourType == 1) {
+                        if (hoursval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIndex);
+                                UHcalculatedOtherAss = true;
+                            }
+                            //if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                            //    //replace "För högt antal OB-timmar" with "" if not too many unsocial hours
+                            //    clearUnsocialHoursValMsg(hourType, dayIndex, subIndex);
+                            //}
+                            calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIndex);
+                            if (calcWorkAndOncallHoursPossibleOtherAss) {
+                                //calculate work hours including oncall hours and check if the sum is greater than 25
+                                tooManyHDOtherAss = calcWorkAndOncallHours(hourType, dayIndex, subIndex);
+                                HDcalculatedOtherAss = true;
+                            }
+                            //if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
+                            //    //replace "För högt antal timmar för dagen." with "" where relevant for other hourTypes than the current for the assistant
+                            //    updateWorkAndOncallHoursValMsg(hourType, dayIndex, subIndex, tooManyUHOtherAss);
+                            //}
+                            if (HDcalculatedOtherAss && tooManyHDOtherAss) {
+                                hoursval[parseInt(dayIndex)].innerHTML = "För högt antal timmar för dagen.";
+                            }
+                            else {
+                                if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                    hoursval[parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                                }
+                                else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                    hoursval[parseInt(dayIndex)].innerHTML = "";
+                                }
+                            }
+                        }
+                    }
+                    else if (hourType == 2) {
+                        if (unsocialeveningval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIndex);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialeveningval[parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialeveningval[parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                    else if (hourType == 3) {
+                        if (unsocialnightval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIndex);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialnightval[parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialnightval[parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                    else if (hourType == 4) {
+                        if (unsocialweekendval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIndex);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialweekendval[parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialweekendval[parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                    else if (hourType == 5) {
+                        if (unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIndex);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIndex);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialgrandweekendval[parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialgrandweekendval[parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                    else if (hourType == 6) {
+                        if (oncalldayval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIndex);
+                            if (calcWorkAndOncallHoursPossibleOtherAss) {
+                                //calculate work hours including oncall hours and check if the sum is greater than 25
+                                tooManyHDOtherAss = calcWorkAndOncallHours(hourType, dayIndex, subIndex);
+                                HDcalculatedOtherAss = true;
+                            }
+                            if (HDcalculatedOtherAss && tooManyHDOtherAss) {
+                                oncalldayval[parseInt(dayIndex)].innerHTML = "För högt antal timmar för dagen."
+                            }
+                            else if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
+                                oncalldayval[parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                    else if (hourType == 7) {
+                        if (oncallnightval[parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIndex);
+                            if (calcWorkAndOncallHoursPossibleOtherAss) {
+                                //calculate work hours including oncall hours and check if the sum is greater than 25
+                                tooManyHDOtherAss = calcWorkAndOncallHours(hourType, dayIndex, subIndex);
+                                HDcalculatedOtherAss = true;
+                            }
+                            if (HDcalculatedOtherAss && tooManyHDOtherAss) {
+                                oncallnightval[parseInt(dayIndex)].innerHTML = "För högt antal timmar för dagen."
+                            }
+                            else if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
+                                oncallnightval[parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+                //update the substitute assistants' validation info (except for the current assistant)
+                calcUnsocialHoursPossibleOtherAss = false;
+                calcWorkAndOncallHoursPossibleOtherAss = false;
+                tooManyUHOtherAss = true; //short for tooManyUnsocialHours
+                UHcalculatedOtherAss = false; //Unsocial Hours has been calculated
+                tooManyHDOtherAss = true; //short for tooManyHoursInTheDay (working hours including oncall hours)
+                HDcalculatedOtherAss = false; //Hours for the day has been calculated
+                if (hourType == 1) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIdx);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIdx);
+                                UHcalculatedOtherAss = true;
+                            }
+                            //if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                            //    //replace "För högt antal OB-timmar" with "" if not too many unsocial hours
+                            //    clearUnsocialHoursValMsg(hourType, dayIndex, subIndex);
+                            //}
+                            calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIdx);
+                            if (calcWorkAndOncallHoursPossibleOtherAss) {
+                                //calculate work hours including oncall hours and check if the sum is greater than 25
+                                tooManyHDOtherAss = calcWorkAndOncallHours(hourType, dayIndex, subIdx);
+                                HDcalculatedOtherAss = true;
+                            }
+                            //if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
+                            //    //replace "För högt antal timmar för dagen." with "" where relevant for other hourTypes than the current for the assistant
+                            //    updateWorkAndOncallHoursValMsg(hourType, dayIndex, subIndex, tooManyUHOtherAss);
+                            //}
+                            if (HDcalculatedOtherAss && tooManyHDOtherAss) {
+                                hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal timmar för dagen.";
+                            }
+                            else {
+                                if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                    hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                                }
+                                else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                    hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (hourType == 2) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIdx);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIdx);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+                else if (hourType == 3) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIdx);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIdx);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+                else if (hourType == 4) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIdx);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIdx);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+                else if (hourType == 5) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            //check if possible to calculate unsocial hours
+                            calcUnsocialHoursPossibleOtherAss = checkUnsocialHours2(hourType, dayIndex, subIdx);
+                            if (calcUnsocialHoursPossibleOtherAss) {
+                                //calculate unsocial hours and check if the sum is greater than the number of working hours
+                                tooManyUHOtherAss = calcUnsocialHours(hourType, dayIndex, subIdx);
+                                UHcalculatedOtherAss = true;
+                            }
+                            if (UHcalculatedOtherAss && tooManyUHOtherAss) {
+                                unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar."
+                            }
+                            else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
+                                unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+                else if (hourType == 6) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIdx);
+                            if (calcWorkAndOncallHoursPossibleOtherAss) {
+                                //calculate work hours including oncall hours and check if the sum is greater than 25
+                                tooManyHDOtherAss = calcWorkAndOncallHours(hourType, dayIndex, subIdx);
+                                HDcalculatedOtherAss = true;
+                            }
+                            if (HDcalculatedOtherAss && tooManyHDOtherAss) {
+                                oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal timmar för dagen."
+                            }
+                            else if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
+                                oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+                else if (hourType == 7) {
+                    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                        if (subIdx != subIndex && oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal vikarietimmar.") {
+                            calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIdx);
+                            if (calcWorkAndOncallHoursPossibleOtherAss) {
+                                //calculate work hours including oncall hours and check if the sum is greater than 25
+                                tooManyHDOtherAss = calcWorkAndOncallHours(hourType, dayIndex, subIdx);
+                                HDcalculatedOtherAss = true;
+                            }
+                            if (HDcalculatedOtherAss && tooManyHDOtherAss) {
+                                oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal timmar för dagen."
+                            }
+                            else if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
+                                oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function updateWorkAndOncallHoursValMsg(hourType, dayIndex, subIndex, tooManyUH) {
+
+        var hoursval = document.getElementsByClassName('hours-val');
+        var oncalldayval = document.getElementsByClassName('oncall-day-val');
+        var oncallnightval = document.getElementsByClassName('oncall-night-val');
+
+        var hoursvalsi = document.getElementsByClassName('hours-si-val');
+        var oncalldayvalsi = document.getElementsByClassName('oncall-day-si-val');
+        var oncallnightvalsi = document.getElementsByClassName('oncall-night-si-val');
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+
+        if (subIndex != 99) {
+            if (hourType != 1 && hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal timmar för dagen.") {
+                if (!tooManyUH) {
+                    hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                }
+                else {
+                    hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
+                }
+            }
+
+            if (hourType != 6 && oncalldayvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal timmar för dagen.") {
+                oncalldayvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 7 && oncallnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal timmar för dagen.") {
+                oncallnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+        }
+        else if (subIndex == 99) {
+            if (hourType != 1 && hoursval[parseInt(dayIndex)].innerHTML == "För högt antal timmar för dagen.") {
+                if (!tooManyUH) {
+                    hoursval[parseInt(dayIndex)].innerHTML = "";
+                }
+                else {
+                    hoursval[parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
+                }
+            }
+
+            if (hourType != 6 && oncalldayval[parseInt(dayIndex)].innerHTML == "För högt antal timmar för dagen.") {
+                oncalldayval[parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 7 && oncallnightval[parseInt(dayIndex)].innerHTML == "För högt antal timmar för dagen.") {
+                oncallnightval[parseInt(dayIndex)].innerHTML = "";
+            }
+        }
+    }
+
+    function calcWorkAndOncallHours(hourType, dayIndex, subIndex) {
+
+        var oncallDay = document.getElementsByClassName("oncall-day");
+        var oncallNight = document.getElementsByClassName("oncall-night");
+
+        var oncallDaySI = document.getElementsByClassName("oncall-day-si");
+        var oncallNightSI = document.getElementsByClassName("oncall-night-si");
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+
+        var sumWorkAndOncallHours = 0;
+        var tooManyHours = false;
+        if (subIndex != 99) {
+            if (oncallDaySI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumWorkAndOncallHours += parseFloat(oncallDaySI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (oncallNightSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumWorkAndOncallHours += parseFloat(oncallNightSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumWorkAndOncallHours += parseFloat(numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (sumWorkAndOncallHours > 25) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (subIndex == 99) {
+            if (oncallDay[parseInt(dayIndex)].value != "") {
+                sumWorkAndOncallHours += parseFloat(oncallDay[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (oncallNight[parseInt(dayIndex)].value != "") {
+                sumWorkAndOncallHours += parseFloat(oncallNight[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (numberOfHours[parseInt(dayIndex)].value != "") {
+                sumWorkAndOncallHours += parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (sumWorkAndOncallHours > 25) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function checkWorkAndOncallHours(hourType, dayIndex, subIndex) {
+
+        var hoursval = document.getElementsByClassName('hours-val');
+        var oncalldayval = document.getElementsByClassName('oncall-day-val');
+        var oncallnightval = document.getElementsByClassName('oncall-night-val');
+
+        var hoursvalsi = document.getElementsByClassName('hours-si-val');
+        var oncalldayvalsi = document.getElementsByClassName('oncall-day-si-val');
+        var oncallnightvalsi = document.getElementsByClassName('oncall-night-si-val');
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+
+        if (subIndex != 99) {
+            if (hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                oncalldayvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                oncallnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
+                return true;
+            }
+        }
+        else if (subIndex == 99) {
+            if (hoursval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                oncalldayval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                oncallnightval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    function clearUnsocialHoursValMsg(hourType, dayIndex, subIndex) {
+
+        var hoursval = document.getElementsByClassName('hours-val');
+        var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
+        var unsocialnightval = document.getElementsByClassName('unsocial-night-val');
+        var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-val');
+        var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-val');
+
+        var hoursvalsi = document.getElementsByClassName('hours-si-val');
+        var unsocialeveningvalsi = document.getElementsByClassName('unsocial-evening-si-val');
+        var unsocialnightvalsi = document.getElementsByClassName('unsocial-night-si-val');
+        var unsocialweekendvalsi = document.getElementsByClassName('unsocial-weekend-si-val');
+        var unsocialgrandweekendvalsi = document.getElementsByClassName('unsocial-grandweekend-si-val');
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+
+        if (subIndex != 99) {
+            if (hourType != 1 && hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 2 && unsocialeveningvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialeveningvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 3 && unsocialnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 4 && unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 5 && unsocialgrandweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialgrandweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+            }
+        }
+        else if (subIndex == 99) {
+            if (hourType != 1 && hoursval[parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                hoursval[parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 2 && unsocialeveningval[parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialeveningval[parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 3 && unsocialnightval[parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialnightval[parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 4 && unsocialweekendval[parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialweekendval[parseInt(dayIndex)].innerHTML = "";
+            }
+
+            if (hourType != 5 && unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
+                unsocialgrandweekendval[parseInt(dayIndex)].innerHTML = "";
+            }
+        }
+    }
+
+    function calcUnsocialHours(hourType, dayIndex, subIndex) {
+
+        var unsocialEvening = document.getElementsByClassName("unsocial-evening");
+        var unsocialNight = document.getElementsByClassName("unsocial-night");
+        var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
+        var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
+
+        var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
+        var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
+        var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
+        var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+
+        var sumUnsocialHours = 0;
+        var tooManyHours = false;
+        if (subIndex != 99) {
+            if (unsocialEveningSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialEveningSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (unsocialNightSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialNightSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (unsocialWeekendSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialWeekendSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (unsocialGrandWeekendSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialGrandWeekendSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+            }
+
+            if ((sumUnsocialHours > 0 && numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value == "") || (sumUnsocialHours > parseFloat(numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.')))) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (subIndex == 99) {
+            if (unsocialEvening[parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialEvening[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (unsocialNight[parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialNight[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (unsocialWeekend[parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialWeekend[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+            if (unsocialGrandWeekend[parseInt(dayIndex)].value != "") {
+                sumUnsocialHours += parseFloat(unsocialGrandWeekend[parseInt(dayIndex)].value.replace(',', '.'));
+            }
+
+            if ((sumUnsocialHours > 0 && numberOfHours[parseInt(dayIndex)].value == "") || (sumUnsocialHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.')))) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function checkUnsocialHours2(hourType, dayIndex, subIndex) {
+        var hoursval = document.getElementsByClassName('hours-val');
+        var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
+        var unsocialnightval = document.getElementsByClassName('unsocial-night-val');
+        var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-val');
+        var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-val');
+
+        var hoursvalsi = document.getElementsByClassName('hours-si-val');
+        var unsocialeveningvalsi = document.getElementsByClassName('unsocial-evening-si-val');
+        var unsocialnightvalsi = document.getElementsByClassName('unsocial-night-si-val');
+        var unsocialweekendvalsi = document.getElementsByClassName('unsocial-weekend-si-val');
+        var unsocialgrandweekendvalsi = document.getElementsByClassName('unsocial-grandweekend-si-val');
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+
+        if (subIndex != 99) {
+            if (unsocialeveningvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                unsocialnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                unsocialgrandweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (subIndex == 99) {
+            if (unsocialeveningval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                unsocialnightval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                unsocialweekendval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde." &&
+                unsocialgrandweekendval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function compareSubAndRegHours(amount, valInfo, hourType, dayIndex, subIndex) {
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+        var numberOfSubAssistants = numberOfHoursSI.length / numberOfSickDays;
+
+        var failValidation = false;
+        var sumSIHours = 0;
+        if (hourType == 1) {
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) > 0 && amount != "0,00" && numberOfHours[dayIndex].value == "") {
+                    //valInfo.innerHTML = "Ordinarie assistent måste fyllas i först."; This line is needed instead of the next line if it is necessary to distinguish between
+                    //too high sub hours in general and the special case when no hours has yet been filled in for the regular assistant
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (numberOfHoursSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(numberOfHoursSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (sumSIHours > 0 && sumSIHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+        else if (hourType == 2) {
+            var unsocialEvening = document.getElementsByClassName("unsocial-evening");
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialEvening[dayIndex].value == "") {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (unsocialEveningSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(unsocialEveningSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialEvening[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+        else if (hourType == 3) {
+            var unsocialNight = document.getElementsByClassName("unsocial-night");
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialNight[dayIndex].value == "") {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (unsocialNightSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(unsocialNightSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialNight[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+        else if (hourType == 4) {
+            var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialWeekend[dayIndex].value == "") {
+                    valInfo.innerHTML = "Ordinarie assistent måste fyllas i först.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (unsocialWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(unsocialWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(unsocialWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+        else if (hourType == 5) {
+            var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialGrandWeekend[dayIndex].value == "") {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialGrandWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+        else if (hourType == 6) {
+            var oncallDay = document.getElementsByClassName("oncall-day");
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && oncallDay[dayIndex].value == "") {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                var oncallDaySI = document.getElementsByClassName("oncall-day-si");
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (oncallDaySI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(oncallDaySI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (sumSIHours > 0 && sumSIHours > parseFloat(oncallDay[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+        else if (hourType == 7) {
+            var oncallNight = document.getElementsByClassName("oncall-night");
+            if (subIndex != 99) {
+                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && oncallNight[dayIndex].value == "") {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+            if (!failValidation) {
+                var oncallNightSI = document.getElementsByClassName("oncall-night-si");
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (oncallNightSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value != "") {
+                        sumSIHours += parseFloat(oncallNightSI[(subIdx * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    }
+                }
+                if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(oncallNight[parseInt(dayIndex)].value.replace(',', '.'))) {
+                    valInfo.innerHTML = "För högt antal vikarietimmar.";
+                    failValidation = true;
+                }
+            }
+        }
+
+        if (failValidation) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function checkSubAndRegHours(hourType, dayIndex, subIndex) {
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+        var numberOfSubAssistants = numberOfHoursSI.length / numberOfSickDays;
+
+        var hoursval = document.getElementsByClassName('hours-val');
+        var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
+        var unsocialnightval = document.getElementsByClassName('unsocial-night-val');
+        var unsocialweekendval = document.getElementsByClassName('unsocial-weekend-val');
+        var unsocialgrandweekendval = document.getElementsByClassName('unsocial-grandweekend-val');
+        var oncalldayval = document.getElementsByClassName('oncall-day-val');
+        var oncallnightval = document.getElementsByClassName('oncall-night-val');
+
+        var hoursvalsi = document.getElementsByClassName('hours-si-val');
+        var unsocialeveningvalsi = document.getElementsByClassName('unsocial-evening-si-val');
+        var unsocialnightvalsi = document.getElementsByClassName('unsocial-night-si-val');
+        var unsocialweekendvalsi = document.getElementsByClassName('unsocial-weekend-si-val');
+        var unsocialgrandweekendvalsi = document.getElementsByClassName('unsocial-grandweekend-si-val');
+        var oncalldayvalsi = document.getElementsByClassName('oncall-day-si-val');
+        var oncallnightvalsi = document.getElementsByClassName('oncall-night-si-val');
+
+        var otherFault = false;
+        var failValidation = false;
+        var subIdx = 0;
+        if (hourType == 1) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (hoursval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (hoursval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    hoursval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+        else if (hourType == 2) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (unsocialeveningval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialeveningvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (unsocialeveningval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    unsocialeveningval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+        else if (hourType == 3) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (unsocialnightval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (unsocialnightval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    unsocialnightval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+        else if (hourType == 4) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (unsocialweekendval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (unsocialweekendval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    unsocialweekendval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+        else if (hourType == 5) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    unsocialgrandweekendval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+        else if (hourType == 6) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (oncalldayval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (oncalldayval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    oncalldayval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+        else if (hourType == 7) {
+            while (!otherFault && subIdx < numberOfSubAssistants) {
+                if (subIdx != subIndex &&
+                    oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+                subIdx++;
+            }
+            if (!otherFault) {
+                if (oncallnightval[parseInt(dayIndex)].innerHTML == "Ogiltigt format eller värde.") {
+                    valInfo.innerHTML = "Annat fält måste rättas.";
+                    otherFault = true;
+                }
+            }
+            if (!otherFault) {
+                for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                    if (subIdx != subIndex && oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                        oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                        valInfo.innerHTML = "";
+                    }
+                }
+                if (oncallnightval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
+                    oncallnightval[parseInt(dayIndex)].innerHTML = "";
+                    valInfo.innerHTML = "";
+                }
+            }
+            else {
+                failValidation = true;
+            }
+        }
+
+        if (failValidation) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
 
     function checkInput(noOfHours, valInfo, hourType, dayIndex, subIndex) {
         //check if there is a point
@@ -1036,24 +2491,27 @@
                 if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För högt antal vikarietimmar.";
                     clearHoursPerDayMsg(subIndex, dayIndex, hourType);
+                    checkUnsocialHours(subIndex, dayIndex, hourType, false);
                     failValidation = true;
                 }
                 else {
                     //var hoursvalsi = document.getElementsByClassName('hours-si-val');
                     for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                         if (hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
-                            hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            checkUnsocialHours(subIdx, dayIndex, hourType, true);
+                            //hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
                         }
                     }
                     if (subIndex != 99 &&
                         hoursval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
+                        checkUnsocialHours(subIndex, dayIndex, hourType, true);
                         hoursval[parseInt(dayIndex)].innerHTML = "";
                     }
                 }
                 if (subIndex == 99) {
                     for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                         if (hoursvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ordinarie assistent måste fyllas i först.") {
-                            checkUnsocialHours(subIdx, dayIndex, hourType);
+                            checkUnsocialHours(subIdx, dayIndex, hourType, true);
                         }
                     }
                 }
@@ -1118,12 +2576,14 @@
                     //var unsocialnightvalsi = document.getElementsByClassName('unsocial-night-si-val');
                     for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                         if (unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
-                            unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
+                            checkUnsocialHours(subIdx, dayIndex, hourType, true);
+                            //unsocialnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
                         }
                     }
                     if (subIndex != 99 &&
                         unsocialnightval[parseInt(dayIndex)].innerHTML != "Ogiltigt format eller värde.") {
-                        unsocialnightval[parseInt(dayIndex)].innerHTML = "";
+                        checkUnsocialHours(subIndex, dayIndex, hourType, true);
+                        //unsocialnightval[parseInt(dayIndex)].innerHTML = "";
                     }
                 }
                 if (subIndex == 99) {
@@ -1208,7 +2668,7 @@
                     for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                         //if (unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "Ordinarie assistent måste fyllas i först." ||
                         //    unsocialgrandweekendvalsi[(subIdx * numberOfSickDays) + parseInt(dayIndex)].innerHTML == "För högt antal OB-timmar.") {
-                            checkUnsocialHours(subIdx, dayIndex, hourType);
+                        checkUnsocialHours(subIdx, dayIndex, hourType);
                         //}
                     }
                 }
@@ -1428,7 +2888,7 @@
 
                         var sumUnsocialSIHours = 0;
                         if (!failValidation) {
-                            if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && numberOfHoursSI[dayIndex].value == "") {
+                            if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value == "") {
                                 hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "Arbetstimmar måste fyllas i först."; //should this msg be on valinfo?
                                 failValidation = true;
                             }
@@ -1447,7 +2907,7 @@
                                 }
 
                             }
-                            if (!failValidation && sumUnsocialSIHours > 0 && sumUnsocialSIHours > parseFloat(numberOfHoursSI[parseInt(dayIndex)].value.replace(',', '.'))) {
+                            if (!failValidation && sumUnsocialSIHours > 0 && sumUnsocialSIHours > parseFloat(numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'))) {
                                 valInfo.innerHTML = "För högt antal OB-timmar.";
                                 failValidation = true;
                             }
@@ -1587,7 +3047,7 @@
 
                         var sumUnsocialSIHours = 0;
                         if (!failValidation) {
-                            if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && numberOfHoursSI[dayIndex].value == "") {
+                            if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value == "") {
                                 hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "Arbetstimmar måste fyllas i först."; //should this msg be on valinfo?
                                 failValidation = true;
                             }
@@ -1606,7 +3066,7 @@
                                 }
 
                             }
-                            if (!failValidation && sumUnsocialSIHours > 0 && sumUnsocialSIHours > parseFloat(numberOfHoursSI[parseInt(dayIndex)].value.replace(',', '.'))) {
+                            if (!failValidation && sumUnsocialSIHours > 0 && sumUnsocialSIHours > parseFloat(numberOfHoursSI[(subIndex * numberOfSickDays) + parseInt(dayIndex)].value.replace(',', '.'))) {
                                 valInfo.innerHTML = "För högt antal OB-timmar.";
                                 failValidation = true;
                             }
@@ -1640,7 +3100,7 @@
         }
     }
 
-    function checkUnsocialHours(subIndex, dayIndex, hourType) {
+    function checkUnsocialHours(subIndex, dayIndex, hourType, clearVal) {
         var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
         var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
         var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
@@ -1681,32 +3141,32 @@
         if (tooManyHours && hourType == 1) {
             hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
-        else {
+        else if (!tooManyHours && hourType == 1 && clearVal) {
             hoursvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
-    
+
         if (tooManyHours && hourType == 2) {
             unsocialeveningvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
-        else {
+        else if (!tooManyHours && hourType == 2 && clearVal) {
             unsocialeveningvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
         if (tooManyHours && hourType == 3) {
             unsocialnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
-        else {
+        else if (!tooManyHours && hourType == 3 && clearVal) {
             unsocialnightvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
         if (tooManyHours && hourType == 4) {
-        unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
+            unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
-        else {
+        else if (!tooManyHours && hourType == 4 && clearVal) {
             unsocialweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
         if (tooManyHours && hourType == 5) {
             unsocialgrandweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "För högt antal OB-timmar.";
         }
-        else {
+        else if (!tooManyHours && hourType == 5 && clearVal) {
             unsocialgrandweekendvalsi[(subIndex * numberOfSickDays) + parseInt(dayIndex)].innerHTML = "";
         }
     }
