@@ -44,7 +44,7 @@
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudCreate2">
+        <div class="Event alert alert-danger" id="PdfEventOmbudCreate2Fail">
             <h3>
                 @TempData["PdfFail"]
             </h3>
@@ -539,6 +539,9 @@
 @*</body>*@
 <script type="text/javascript">
     $('#PdfEventOmbudCreate2').delay(4000).hide(1500);
+</script>
+<script type="text/javascript">
+    $('#PdfEventCreate2Fail').delay(100000).hide(1500);
 </script>
 <script type='text/javascript'>
     $(document).ready(function assignIdsToSubAssistants() {

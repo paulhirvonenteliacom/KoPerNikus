@@ -35,7 +35,7 @@
     }
     @if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventAdmOff">
+        <div class="Event alert alert-danger" id="PdfEventAdmOffFail">
             <h3>
                 @TempData["PdfFail"]
             </h3>
@@ -348,5 +348,8 @@
 </body>
 <script type="text/javascript">
     $('#PdfEventAdmOff').delay(4000).hide(1500);
+</script>
+<script type="text/javascript">
+    $('#PdfEventAdmOffFail').delay(100000).hide(1500);
 </script>
 

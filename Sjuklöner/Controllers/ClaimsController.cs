@@ -3074,19 +3074,21 @@ namespace Sjuklöner.Controllers
         public ActionResult ClaimDetailsAsPdf(string refNumber)
         {
             Claim claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == refNumber).FirstOrDefault();
-           
-            ClaimDetailsOmbudVM claimDetailsOmbudVM = CreateVMClaimDetails(claim);                    
 
-            // Use the View ClaimDetailsPdf.cshtml to create a pdf view 
+            // Create a pdf document with Claim Details
+            CreateClaimPdf(claim);
+
+            /*
+            ClaimDetailsOmbudVM claimDetailsOmbudVM = CreateVMClaimDetails(claim);                  
+                       
             var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM);
             byte[] byteArray = viewPdf.BuildFile(ControllerContext);
-
-            //Save the Pdf Document
-            SaveClaimPdf(byteArray, claim);
+          
+            */
 
             if (User.IsInRole("Ombud"))
             {
-                // Check which view the Pdf Request was made from
+                // Check from which view the Pdf Request was made
                 if (Request.UrlReferrer.ToString().Contains("Create1"))
                 {
                     return RedirectToAction("Create1", new { refNumber });
@@ -3499,8 +3501,46 @@ namespace Sjuklöner.Controllers
             }
 
             return claimDetailsOmbudVM;
-        }        
+        }       
+        
+        private void CreateClaimPdf(Claim claim)
+        {
+            ClaimDetailsOmbudVM claimDetailsOmbudVM = CreateVMClaimDetails(claim);
 
+            FileStream fileStream = null;
+            try
+            {
+                var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM);                
+                byte[] byteArray = viewPdf.BuildFile(ControllerContext);
+
+                // Save the pdf-document in the same directory as the Claim attachments 
+                if (!Directory.Exists(Server.MapPath("~/Uploads")))
+                    Directory.CreateDirectory(Server.MapPath("~/Uploads"));
+                if (!Directory.Exists(Server.MapPath($"~/Uploads/{claim.ReferenceNumber}")))
+                    Directory.CreateDirectory(Server.MapPath($"~/Uploads/{claim.ReferenceNumber}"));
+
+                string path = Server.MapPath($"~/Uploads/{claim.ReferenceNumber}");
+                string title = "Ansökan";
+
+                fileStream = new FileStream(Path.Combine(path, $"{title}_{claim.ReferenceNumber}.pdf"), FileMode.Create, FileAccess.Write);
+                fileStream.Write(byteArray, 0, byteArray.Length);
+
+                TempData["PdfSuccess"] = "Pdf-dokument har skapats för ansökan med Referensnummer: " + claim.ReferenceNumber;
+            }
+            catch (Exception ex)
+            {
+                TempData["PdfFail"] = "Det misslyckades att skapa Pdf-dokument. Exception: " + ex.ToString();
+            }
+            finally
+            {
+                if (fileStream != null)
+                {
+                    fileStream.Close();
+                }
+            }
+        }
+
+        /*
         private void SaveClaimPdf(byte[] byteArray, Claim claim)
         {
             // Save the pdf-document  in the same directory as the Claim attachments 
@@ -3531,6 +3571,7 @@ namespace Sjuklöner.Controllers
                 }
             }
         }
+        */
 
         public ActionResult ShowClaimDetails(string referenceNumber)
         {
