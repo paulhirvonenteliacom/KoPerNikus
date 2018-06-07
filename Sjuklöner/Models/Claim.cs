@@ -211,6 +211,10 @@ namespace Sjuklöner.Models
         public bool FKSubAssistantCheck { get; set; }
         public string FKSubAssistantCheckMsg { get; set; }
 
+        //These two properties handle attachment results for multiple substitute assistants 
+        public string FKSubAssistantCheckBoolConcat { get; set; }
+        public string FKSubAssistantCheckMsgConcat { get; set; }
+
         public bool BasisForDecision { get; set; }
         public string BasisForDecisionMsg { get; set; }
         public DateTime BasisForDecisionTransferStartTimeStamp { get; set; }

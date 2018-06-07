@@ -3025,6 +3025,30 @@ namespace Sjuklöner.Controllers
             return resultMsg;
         }
 
+        //RobotDeleteClaim is used by the robot for auto-deletion of claims one year after the decision date
+        //The robot needs to call this action once every night
+        [AllowAnonymous]
+        public ActionResult RobotDeleteClaim()
+        {
+            //Find claims that have a decision and where the decision date is one year old or older
+            var claims = db.Claims.Where(c => c.ClaimStatusId == 1).Where(c => c.DecisionDate >= DateTime.Now.AddYears(-1)).ToList();
+
+            foreach (var claim in claims)
+            {  
+                db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+                db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
+
+                if (claim.Documents.Count() > 0)
+                {
+                    db.Documents.RemoveRange(db.Documents.Where(d => d.ReferenceNumber == claim.ReferenceNumber));
+                }
+
+                db.Claims.Remove(claim);
+                db.SaveChanges();
+            }
+            return View(); //Return the dummy view RobotDeleteClaim
+        }
+
         public ActionResult _Message(Message message)
         {
             ApplicationUser user = db.Users.Where(u => u.Id == message.applicationUser.Id).FirstOrDefault();
@@ -3112,8 +3136,8 @@ namespace Sjuklöner.Controllers
 
             return RedirectToAction("Index");
         }
-        
-        private ClaimDetailsOmbudVM CreateVMClaimDetails(Claim claim)       
+
+        private ClaimDetailsOmbudVM CreateVMClaimDetails(Claim claim)
         {
             ClaimDetailsOmbudVM claimDetailsOmbudVM = new ClaimDetailsOmbudVM();
 
@@ -3301,10 +3325,31 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.AssistanceCheck = claim.AssistanceCheckMsg;
                 claimDetailsOmbudVM.SalarySpecRegAssistantCheckMsg = claim.SalarySpecRegAssistantCheckMsg;
 
-                //Not Used
-                //claimDetailsOmbudVM.SalarySpecSubAssistantCheckMsg = claim.SalarySpecSubAssistantCheckMsg
                 claimDetailsOmbudVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
                 claimDetailsOmbudVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
+
+                //FK attachment checks for substitute assistants 2 - 20
+                string[] fkAttachmentSubAssistantsAsString = new string[20];
+                bool[] fkAttachmentSubAssistants = new bool[20];
+                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                for (int i = 0; i < claim.NumberOfSubAssistants; i++)
+                {
+                    if (fkAttachmentSubAssistantsAsString[i] == "true")
+                    {
+                        fkAttachmentSubAssistants[i] = true;
+                    }
+                    else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                    {
+                        fkAttachmentSubAssistants[i] = false;
+                    }
+                }
+
+                string[] fkAttachmentSubAssistantsMsg = new string[20];
+                fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
+
+                claimDetailsOmbudVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
+                claimDetailsOmbudVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
 
                 //Not Used
                 //claimDetailsOmbudVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
@@ -3493,8 +3538,8 @@ namespace Sjuklöner.Controllers
             }
 
             return claimDetailsOmbudVM;
-        }       
-        
+        }
+
         private void CreateClaimPdf(Claim claim)
         {
             ClaimDetailsOmbudVM claimDetailsOmbudVM = CreateVMClaimDetails(claim);
@@ -3504,9 +3549,9 @@ namespace Sjuklöner.Controllers
             {
                 // Specify parameters for Page footers in the generated Pdf File 
                 string footer = "--footer-right \"Date: [date] [time]\" " + "--footer-center \"Page: [page] of [toPage]\" --footer-line --footer-font-size \"9\" --footer-spacing 5 --footer-font-name \"calibri light\"";
-               
+
                 var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM)
-                {                   
+                {
                     CustomSwitches = footer
                 };
 

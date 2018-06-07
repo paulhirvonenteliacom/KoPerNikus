@@ -651,6 +651,11 @@
             }
         }
 
+        //clear validation errors for +rest buttons if possible
+        checkValidationErrors();   
+    }
+
+    function checkValidationErrors() {
         //check if there are any validation errors. If not the error "Fel måste rättas först." must be cleared.
         var hoursval = document.getElementsByClassName('hours-val');
         var unsocialeveningval = document.getElementsByClassName('unsocial-evening-val');
@@ -669,6 +674,12 @@
         var oncallnightvalsi = document.getElementsByClassName('oncall-night-si-val');
 
         var restvalsi = document.getElementsByClassName('rest-val');
+
+        //calculate number of sickdays and number of substitute assistants
+        var numberOfHours = document.getElementsByClassName("hours");
+        var numberOfHoursSI = document.getElementsByClassName("hours-si");
+        var numberOfSickDays = numberOfHours.length;
+        var numberOfSubAssistants = numberOfHoursSI.length / numberOfSickDays;
 
         var validationErrorFound = false;
         var pos = ((subIdx * numberOfSickDays) + parseInt(dayIdx) / numberOfSubAssistants);
@@ -710,7 +721,7 @@
             subIdx = 0;
         }
 
-        //clear validation errors if any
+        //clear validation errors for +rest buttons if no errors found
         if (!validationErrorFound) {
             for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                 restvalsi[subIdx].innerHTML = "";
@@ -3521,6 +3532,9 @@
             oncalldayval[parseInt(dayIdx)].innerHTML = "";
             oncallnightval[parseInt(dayIdx)].innerHTML = "";
         }
+
+        //clear validation errors for +rest buttons if possible
+        checkValidationErrors(); 
     }
 
     function resetHoursSI(subIdx) {
@@ -3562,6 +3576,9 @@
             oncalldayvalsi[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "";
             oncallnightvalsi[(subIdx * numberOfSickDays) + parseInt(dayIdx)].innerHTML = "";
         }
+
+        //clear validation errors for +rest buttons if possible
+        checkValidationErrors(); 
     }
 
     $(function () {

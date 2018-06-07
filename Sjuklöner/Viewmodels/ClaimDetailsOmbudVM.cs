@@ -349,6 +349,10 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent:")]
         public string FKSubAssistantCheckMsg { get; set; }
 
+        public bool[] FKSubAssistantCheckBoolArray { get; set; }
+        [Display(Name = "Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent:")]
+        public string[] FKSubAssistantCheckMsgArray { get; set; }
+
         [Display(Name = "Motivering för avslag:")]
         public string RejectReason { get; set; }
 

@@ -376,6 +376,10 @@
     <Compile Include="Migrations\201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.Designer.cs">
       <DependentUpon>201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806070622057_AddPropertiesInClaimForMultipleFKAttachments.cs" />
+    <Compile Include="Migrations\201806070622057_AddPropertiesInClaimForMultipleFKAttachments.Designer.cs">
+      <DependentUpon>201806070622057_AddPropertiesInClaimForMultipleFKAttachments.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -611,6 +615,7 @@
     <Content Include="Views\WatchLogs\Delete.cshtml" />
     <Content Include="Views\Claims\RobotRecommend.cshtml" />
     <Content Include="Views\Claims\ClaimDetailsPdf.cshtml" />
+    <Content Include="Views\Claims\RobotDeleteClaim.cshtml" />
     <None Include="Web.CustomProfile1.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -738,6 +743,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.resx">
       <DependentUpon>201805291423502_RenamedPostgiroToPlusgiroInCareCompanyClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806070622057_AddPropertiesInClaimForMultipleFKAttachments.resx">
+      <DependentUpon>201806070622057_AddPropertiesInClaimForMultipleFKAttachments.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
