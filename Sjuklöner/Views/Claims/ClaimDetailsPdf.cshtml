@@ -1284,37 +1284,65 @@
                         <div class="row form-group-heading">
                             Bilagor
                         </div>
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    Lönespecifikation, ordinarie
-                                </div>
+                        @if (Model.Documents.Where(d => d.Title == "SalaryAttachment").Any())
+    {
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                Lönespecifikation, ordinarie
                             </div>
-                        </div>                       
+                        </div>
+                    </div>
+}
+
                         @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
-                        {
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    Läkarintyg
-                                </div>
+    {
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                Läkarintyg
                             </div>
                         </div>
-                        }
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    Tidsredovisning, Försäkringskassan, ordinarie assistent
-                                </div>
+                    </div>
+}
+                        @if (Model.Documents.Where(d => d.Title == "TimeReport").Any())
+    {
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                Tidsredovisning, ordinarie assistent, @Model.RegAssistantSSN, @Model.RegAssistantName
                             </div>
                         </div>
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    Tidsredovisning, Försäkringskassan, vikarierande assistent
-                                </div>
+                    </div>
+}               
+    
+        @if (Model.Documents.Where(d => d.Title == "TimeReportStandIn[0]").Any())
+        {
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                Tidsredovisning, vikarierande assistent 1, @Model.SubAssistantSSN, @Model.SubAssistantName
                             </div>
                         </div>
+                    </div>
+        }
+
+        @for (int k = 0; k < Model.NumberOfSubAssistants - 1; k++)
+        {
+        if (Model.Documents.Where(d => d.Title == "TimeReportStandIn[" + (k + 1) + "]").Any())
+        {
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                Tidsredovisning, vikarierande assistent @(k+2), @Model.SubstituteAssistantSSN[k], @Model.SubstituteAssistantName[k]
+                            </div>
+                        </div>
+                    </div>
+        }
+}
+
+
+
                     </div>
                 </div>
         }
