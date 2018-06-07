@@ -2217,9 +2217,21 @@ namespace Sjuklöner.Controllers
                             claim.FKRegAssistantCheck = false;
                             claim.FKRegAssistantCheckMsg = "Kontroll ej utförd";
 
-                            //THE NEXT TWO LINES MUST BE MODIFIED TO HANDLE MULTIPLE SUB ASSISTANTS
                             claim.FKSubAssistantCheck = false;
                             claim.FKSubAssistantCheckMsg = "Kontroll ej utförd";
+
+                            //FK attachment checks for substitute assistants 2 - 20
+                            string fkCheckBool = "";
+                            string fkCheckMsg = "";
+
+                            for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                            {
+                                fkCheckBool += "false£";
+                                fkCheckMsg += "Kontroll ej utförd£";
+                            }
+
+                            claim.FKSubAssistantCheckMsgConcat = fkCheckMsg;
+                            claim.FKSubAssistantCheckBoolConcat = fkCheckBool;
 
                             //Set default values for transfers
                             claim.BasisForDecision = false;
@@ -2565,6 +2577,30 @@ namespace Sjuklöner.Controllers
                 recommendationVM.FKSubAssistantCheck = claim.FKSubAssistantCheck;
                 recommendationVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
 
+                //handle multiple substitute assistants 2 - 20
+                string[] fkAttachmentSubAssistantsAsString = new string[20];
+                bool[] fkAttachmentSubAssistants = new bool[20];
+                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    if (fkAttachmentSubAssistantsAsString[i] == "true")
+                    {
+                        fkAttachmentSubAssistants[i] = true;
+                    }
+                    else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                    {
+                        fkAttachmentSubAssistants[i] = false;
+                    }
+                }
+
+                string[] fkAttachmentSubAssistantsMsg = new string[20];
+                fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
+
+                recommendationVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
+                recommendationVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
+
+                recommendationVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
                 recommendationVM.NumberOfSickDays = claim.NumberOfSickDays;
 
                 //Results of transfers
@@ -2604,8 +2640,20 @@ namespace Sjuklöner.Controllers
                 {
                     recommendationVM.InInbox = true;
 
+                    //Handle FK attachments for multiple substitute assistants
+                    bool FKSubAssistantAttachmentOK = true;
+                    int index = 0;
+                    while (index < claim.NumberOfSubAssistants - 1 && FKSubAssistantAttachmentOK)
+                    {
+                        if (recommendationVM.FKSubAssistantCheckBoolArray[index] == false)
+                        {
+                            FKSubAssistantAttachmentOK = false;
+                        }
+                        index++;
+                    }
+
                     if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                        !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                        !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
                     {
                         recommendationVM.ApprovedSum = "0,00";
                         recommendationVM.RejectedSum = recommendationVM.ClaimSum.ToString();
@@ -2877,6 +2925,30 @@ namespace Sjuklöner.Controllers
                 recommendationVM.FKSubAssistantCheck = claim.FKSubAssistantCheck;
                 recommendationVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
 
+                //handle multiple substitute assistants 2 - 20
+                string[] fkAttachmentSubAssistantsAsString = new string[20];
+                bool[] fkAttachmentSubAssistants = new bool[20];
+                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    if (fkAttachmentSubAssistantsAsString[i] == "true")
+                    {
+                        fkAttachmentSubAssistants[i] = true;
+                    }
+                    else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                    {
+                        fkAttachmentSubAssistants[i] = false;
+                    }
+                }
+
+                string[] fkAttachmentSubAssistantsMsg = new string[20];
+                fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
+
+                recommendationVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
+                recommendationVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
+
+                recommendationVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
                 recommendationVM.NumberOfSickDays = claim.NumberOfSickDays;
 
                 //Results of transfers
@@ -2890,8 +2962,21 @@ namespace Sjuklöner.Controllers
                 recommendationVM.ModelSum = claim.ModelSum;
                 //recommendationVM.ModelSum = Convert.ToDecimal(claim.TotalCostD1T14);
                 recommendationVM.ClaimSum = claim.ClaimedSum;
+
+                //Handle FK attachments for multiple substitute assistants
+                bool FKSubAssistantAttachmentOK = true;
+                int index = 0;
+                while (index < claim.NumberOfSubAssistants - 1 && FKSubAssistantAttachmentOK)
+                {
+                    if (recommendationVM.FKSubAssistantCheckBoolArray[index] == false)
+                    {
+                        FKSubAssistantAttachmentOK = false;
+                    }
+                    index++;
+                }
+
                 if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
-                    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck)
+                    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
                 {
                     recommendationVM.ApprovedSum = "0,00";
                     claim.ApprovedSum = 0;
@@ -3016,11 +3101,32 @@ namespace Sjuklöner.Controllers
             }
             if (!claim.FKRegAssistantCheck)
             {
-                resultMsg += "Kontroll av ordinarie assistents tidsredovisning (FK) gav negativt resultat. ";
+                resultMsg += "Kontroll av tidsredovisning för ordinarie assistent gav negativt resultat. ";
             }
-            if (!claim.FKSubAssistantCheck)
+            if (claim.NumberOfSubAssistants == 1)
             {
-                resultMsg += "Kontroll av vikarierande assistents tidsredovisning (FK) gav negativt resultat. ";
+                if (!claim.FKSubAssistantCheck)
+                {
+                    resultMsg += "Kontroll av tidsredovisning för vikarierande assistent gav negativt resultat. ";
+                }
+            }
+            if (claim.NumberOfSubAssistants > 1)
+            {
+                if (!claim.FKSubAssistantCheck)
+                {
+                    resultMsg += "Kontroll av tidsredovisning för vikarierande assistent 1 gav negativt resultat. ";
+                }
+
+                string[] fkAttachmentSubAssistantsAsString = new string[20];
+                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    if (fkAttachmentSubAssistantsAsString[i] == "false")
+                    {
+                        resultMsg += "Kontroll av tidsredovisning för vikarierande assistent " + (i + 2).ToString() + " gav negativt resultat. ";
+                    }
+                }
             }
             return resultMsg;
         }
@@ -3034,7 +3140,7 @@ namespace Sjuklöner.Controllers
             var claims = db.Claims.Where(c => c.ClaimStatusId == 1).Where(c => c.DecisionDate >= DateTime.Now.AddYears(-1)).ToList();
 
             foreach (var claim in claims)
-            {  
+            {
                 db.ClaimDays.RemoveRange(db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
                 db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
 
@@ -3333,7 +3439,7 @@ namespace Sjuklöner.Controllers
                 bool[] fkAttachmentSubAssistants = new bool[20];
                 fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
 
-                for (int i = 0; i < claim.NumberOfSubAssistants; i++)
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                 {
                     if (fkAttachmentSubAssistantsAsString[i] == "true")
                     {

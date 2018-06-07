@@ -1129,7 +1129,62 @@
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                @*Show FK attachment check results for substitute assistant beyond the first substitute assistant if there is more than one of them*@
+                @if (Model.NumberOfSubAssistants > 1)
+                {
+                    for (int i = 0; i < (Model.NumberOfSubAssistants - 1) / 2; i++)
+                    {
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align">
+                                            Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @(2 * (i + 1)):
+                                        </div>
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[2 * i])
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align2">
+                                            Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @((2 * (i + 1)) + 1):
+                                        </div>
+                                    </div>
+                                    <div class="row display-padding6">
+                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[(2 * i) + 1])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    //If there is an odd number of substitute assistants beyond the first substitute assistant then the last susbstitute's FK attachment check result is shown here
+                    if ((Model.NumberOfSubAssistants - 1) % 2 != 0)
+                    {
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        <div class="col col-md-12 control-label-left-align">
+                                            Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @Model.NumberOfSubAssistants:
+                                        </div>
+                                    </div>
+                                    <div class="row display-padding6">
+                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[@Model.NumberOfSubAssistants - 2])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-5">
+                        </div>
+                    }
+                }
+
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">

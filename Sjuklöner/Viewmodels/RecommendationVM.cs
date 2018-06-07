@@ -47,13 +47,21 @@ namespace Sjuklöner.Viewmodels
 
         public int NumberOfSickDays { get; set; }
 
-        [Display(Name = "Tidsredovisning FK, ordinarie assistent:")]
+        [Display(Name = "Tidsredovisning, ordinarie assistent:")]
         public bool FKRegAssistantCheck { get; set; }
         public string FKRegAssistantCheckMsg { get; set; }
 
-        [Display(Name = "Tidsredovisning FK, vikarierande assistent:")]
+        [Display(Name = "Tidsredovisning, vikarierande assistent:")]
         public bool FKSubAssistantCheck { get; set; }
         public string FKSubAssistantCheckMsg { get; set; }
+
+        //The two arrays handle substitute assistants 2 - 20
+        public bool[] FKSubAssistantCheckBoolArray { get; set; }
+
+        [Display(Name = "Tidsredovisning, vikarierande assistent:")]
+        public string[] FKSubAssistantCheckMsgArray { get; set; }
+
+        public int NumberOfSubAssistants { get; set; }
 
         [Display(Name = "Beslutsunderlag till Procapita:")]
         public bool BasisForDecision { get; set; }
