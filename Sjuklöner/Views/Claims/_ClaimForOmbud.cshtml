@@ -271,7 +271,7 @@
             <div class="col col-md-9 form-group-div-frame">
                 <div class="row form-group-heading">
                     Insjuknad ordinarie assistent
-                </div>
+                </div>                
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
@@ -541,7 +541,15 @@
                     Antal timmar, ordinarie assistent
                 </div>
                 <div class="row">
-
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">                               
+                                @Model.RegAssistantSSN, @Model.RegAssistantName
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row label-padding">
@@ -604,34 +612,34 @@
                         <th></th>
                     </tr>
                     @for (int i = 0; i < Model.NumberOfSickDays; i++)
-                    {
-                        <tr row-divider>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].DateString)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].Hours)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialEvening)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialNight)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialWeekend)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].UnsocialGrandWeekend)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].OnCallDay)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => m.ClaimDays[i].OnCallNight)
-                            </td>
-                        </tr>
-                    }
+        {
+            <tr row-divider>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].DateString)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].Hours)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialEvening)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialNight)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialWeekend)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialGrandWeekend)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].OnCallDay)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.ClaimDays[i].OnCallNight)
+                </td>
+            </tr>
+}
                 </table>
             </div>
         </div>
@@ -747,9 +755,7 @@
                     </table>
                 </div>
             </div>*@
-
-
-        //TEST
+       
         for (int k = 0; k < Model.NumberOfSubAssistants; k++)
         {
 
@@ -757,20 +763,48 @@
                 <div class="col col-md-2">
                 </div>
                 <div class="col col-md-9 form-group-div-frame">
-                    @if (k == 0 && Model.NumberOfSubAssistants == 1)
-                    {
-                        <div class="row form-group-heading">
-                            Antal timmar, vikarierande assistent
+                    @if (k == 0)
+    {
+        if (Model.NumberOfSubAssistants == 1)
+        {
+                <div class="row form-group-heading">
+                    Antal timmar, vikarierande assistent
+                </div>
+}
+else
+{
+                <div class="row form-group-heading">
+                    Antal timmar, vikarierande assistent 1
+                </div>
+}
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">
+                                @Model.SubAssistantSSN, @Model.SubAssistantName
+                            </div>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="row form-group-heading">
-                            Antal timmar, vikarierande assistent @(k + 1)
-                        </div>
-                    }
-                    <div class="row">
+                    </div>
+                </div>
 
+
+}
+else
+{
+                <div class="row form-group-heading">
+                    Antal timmar, vikarierande assistent @(k + 1)
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">
+                                @Model.SubstituteAssistantSSN[k - 1], @Model.SubstituteAssistantName[k - 1]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+}
+                    <div class="row">
                         <div class="col col-md-5">
                             <div class="form-group line-height-12">
                                 <div class="row label-padding">
@@ -833,48 +867,48 @@
                             <th></th>
                         </tr>
                         @for (int i = 0; i < Model.NumberOfSickDays; i++)
-                        {
-                            <tr row-divider>
-                                <td>
-                                    @Html.DisplayFor(m => m.ClaimDays[i].DateString)
-                                </td>
-                                <td>
-                                    @Model.HoursSIPerSubAndDay[k, i]
+        {
+                <tr row-divider>
+                    <td>
+                        @Html.DisplayFor(m => m.ClaimDays[i].DateString)
+                    </td>
+                    <td>
+                        @Model.HoursSIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.HoursSIPerSubAndDay[k, i])*@
-                                </td>
-                                <td>
-                                    @Model.UnsocialEveningSIPerSubAndDay[k, i]
+                        @*@Html.DisplayFor(m => m.HoursSIPerSubAndDay[k, i])*@
+                    </td>
+                    <td>
+                        @Model.UnsocialEveningSIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.UnsocialEveningSIPerSubAndDay[k, i])*@
-                                </td>
-                                <td>
-                                    @Model.UnsocialNightSIPerSubAndDay[k, i]
+                        @*@Html.DisplayFor(m => m.UnsocialEveningSIPerSubAndDay[k, i])*@
+                    </td>
+                    <td>
+                        @Model.UnsocialNightSIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.UnsocialNightSIPerSubAndDay[k, i])*@
-                                </td>
-                                <td>
-                                    @Model.UnsocialWeekendSIPerSubAndDay[k, i]
+                        @*@Html.DisplayFor(m => m.UnsocialNightSIPerSubAndDay[k, i])*@
+                    </td>
+                    <td>
+                        @Model.UnsocialWeekendSIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.UnsocialWeekendSIPerSubAndDay[k, i])*@
-                                </td>
-                                <td>
-                                    @Model.UnsocialGrandWeekendSIPerSubAndDay[k, i]
+                        @*@Html.DisplayFor(m => m.UnsocialWeekendSIPerSubAndDay[k, i])*@
+                    </td>
+                    <td>
+                        @Model.UnsocialGrandWeekendSIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.UnsocialGrandWeekendSIPerSubAndDay[k, i])*@
-                                </td>
-                                <td>
-                                    @Model.OnCallDaySIPerSubAndDay[k, i]
+                        @*@Html.DisplayFor(m => m.UnsocialGrandWeekendSIPerSubAndDay[k, i])*@
+                    </td>
+                    <td>
+                        @Model.OnCallDaySIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.OnCallDaySIPerSubAndDay[k, i])*@
-                                </td>
-                                <td>
-                                    @Model.OnCallNightSIPerSubAndDay[k, i]
+                        @*@Html.DisplayFor(m => m.OnCallDaySIPerSubAndDay[k, i])*@
+                    </td>
+                    <td>
+                        @Model.OnCallNightSIPerSubAndDay[k, i]
 
-                                    @*@Html.DisplayFor(m => m.OnCallNightSIPerSubAndDay[k, i])*@
-                                </td>
-                            </tr>
-                        }
+                        @*@Html.DisplayFor(m => m.OnCallNightSIPerSubAndDay[k, i])*@
+                    </td>
+                </tr>
+}
                     </table>
                 </div>
             </div>
@@ -994,1193 +1028,1232 @@
                     Bilagor
                 </div>
                 <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachment").FirstOrDefault().Filename}")">
-                                    Lönespecifikation, ordinarie
-                                </a>
-                            </div>
-                        </div>
+                    @if (Model.Documents.Where(d => d.Title == "SalaryAttachment").Any())
+        {
+            <div class="col col-md-5">
+                <div class="form-group line-height-12">
+                    <div class="row display-padding">
+                        <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "SalaryAttachment").FirstOrDefault().Filename}")">
+                            Lönespecifikation, ordinarie
+                        </a>
                     </div>
-                    @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
-                    {
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row display-padding6">
-                                    <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
-                                        Läkarintyg
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
                 </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReport").FirstOrDefault().Filename}")">
-                                    Tidsredovisning, Försäkringskassan, ordinarie assistent
-                                </a>
-                            </div>
-                        </div>
+            </div>
+}
+                    @if (Model.Documents.Where(d => d.Title == "DoctorsCertificate").Any())
+        {
+            <div class="col col-md-5">
+                <div class="form-group line-height-12">
+                    <div class="row display-padding6">
+                        <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "DoctorsCertificate").FirstOrDefault().Filename}")">
+                            Läkarintyg
+                        </a>
                     </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row display-padding6">
-                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn[0]").FirstOrDefault().Filename}")">
-                                    Tidsredovisning, Försäkringskassan, vikarierande assistent
-                                </a>
-                            </div>
+                </div>
+            </div>
+}
+                </div>
+                @if (Model.Documents.Where(d => d.Title == "TimeReport").Any())
+    {
+            <div class="row">
+                <div class="col col-md-10">
+                    <div class="form-group line-height-12">
+                        <div class="row display-padding">
+                            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReport").FirstOrDefault().Filename}")">
+                                Tidsredovisning, ordinarie assistent, @Model.RegAssistantSSN, @Model.RegAssistantName
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+}
+                @if (Model.Documents.Where(d => d.Title == "TimeReportStandIn[0]").Any())
+    {
+            <div class="row">
+                <div class="col col-md-10">
+                    <div class="form-group line-height-12">
+                        <div class="row display-padding">
+                            @if (Model.NumberOfSubAssistants > 1)
+                {
+                    <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn[0]").FirstOrDefault().Filename}")">
+                        Tidsredovisning, vikarierande assistent 1, @Model.SubAssistantSSN, @Model.SubAssistantName
+                    </a>
     }
+    else
+    {
+            <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn[0]").FirstOrDefault().Filename}")">
+                Tidsredovisning, vikarierande assistent, @Model.SubAssistantSSN, @Model.SubAssistantName
+            </a>
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+}
+            @for (int k = 0; k < Model.NumberOfSubAssistants - 1; k++)
+            {
+                if (Model.Documents.Where(d => d.Title == "TimeReportStandIn[" + (k + 1) + "]").Any())
+                {
+                <div class="row">
+                    <div class="col col-md-10">
+                        <div class="form-group line-height-12">
+                            <div class="row display-padding">                              
+                                <a target="_blank" href="@Href($"~/Uploads/{Model.ReferenceNumber}/{Model.Documents.Where(d => d.Title == "TimeReportStandIn[" + (k + 1) + "]").FirstOrDefault().Filename}")">
+                                    Tidsredovisning, vikarierande assistent  @(k + 2),  @Model.SubstituteAssistantSSN[k], @Model.SubstituteAssistantName[k]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            }
+       
 
+            </div>
+        </div>
+    }      
+    
     @if (Model.CompletionStage >= 4 && (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin")))
     {
 
-        <div class="row">
-            <div class="col col-md-2">
-            </div>
-            <div class="col col-md-9 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Automatiserade kontroller
-                </div>
                 <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.IVOCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.IVOCheck)
-                            </div>
+                    <div class="col col-md-2">
+                    </div>
+                    <div class="col col-md-9 form-group-div-frame">
+                        <div class="row form-group-heading">
+                            Automatiserade kontroller
                         </div>
-                    </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                            </div>
-                            <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.ProxyCheck)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.AssistanceCheck)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-5">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.SalarySpecRegAssistantCheckMsg)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                            </div>
-                            <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.FKRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.FKRegAssistantCheckMsg)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.FKSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
-                            </div>
-                            <div class="row display-padding6">
-                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @*Show FK attachment check results for substitute assistant beyond the first substitute assistant if there is more than one of them*@
-                @if (Model.NumberOfSubAssistants > 1)
-                {
-                    for (int i = 0; i < (Model.NumberOfSubAssistants - 1) / 2; i++)
-                    {
                         <div class="row">
                             <div class="col col-md-5">
                                 <div class="form-group line-height-12">
                                     <div class="row label-padding">
-                                        <div class="col col-md-12 control-label-left-align">
-                                            Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @(2 * (i + 1)):
-                                        </div>
+                                        @Html.LabelFor(model => model.IVOCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                                     </div>
                                     <div class="row display-padding">
-                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[2 * i])
+                                        @Html.DisplayFor(m => m.IVOCheck)
                                     </div>
                                 </div>
                             </div>
                             <div class="col col-md-5">
                                 <div class="form-group line-height-12">
                                     <div class="row label-padding">
-                                        <div class="col col-md-12 control-label-left-align2">
-                                            Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @((2 * (i + 1)) + 1):
-                                        </div>
+                                        @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
                                     </div>
                                     <div class="row display-padding6">
-                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[(2 * i) + 1])
+                                        @Html.DisplayFor(m => m.ProxyCheck)
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    }
-
-                    //If there is an odd number of substitute assistants beyond the first substitute assistant then the last susbstitute's FK attachment check result is shown here
-                    if ((Model.NumberOfSubAssistants - 1) % 2 != 0)
-                    {
                         <div class="row">
                             <div class="col col-md-5">
                                 <div class="form-group line-height-12">
                                     <div class="row label-padding">
-                                        <div class="col col-md-12 control-label-left-align">
-                                            Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @Model.NumberOfSubAssistants:
-                                        </div>
+                                        @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.AssistanceCheck)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-5">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.SalarySpecRegAssistantCheckMsg)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
                                     </div>
                                     <div class="row display-padding6">
-                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[@Model.NumberOfSubAssistants - 2])
+                                        @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-5">
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.FKRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.FKRegAssistantCheckMsg)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.FKSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                                    </div>
+                                    <div class="row display-padding6">
+                                        @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    }
-                }
-
+                        @*Show FK attachment check results for substitute assistant beyond the first substitute assistant if there is more than one of them*@
+                        @if (Model.NumberOfSubAssistants > 1)
+        {
+            for (int i = 0; i < (Model.NumberOfSubAssistants - 1) / 2; i++)
+            {
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row label-padding">
-                                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                <div class="col col-md-12 control-label-left-align">
+                                    Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @(2 * (i + 1)):
+                                </div>
                             </div>
                             <div class="row display-padding">
-                                @Html.DisplayFor(m => m.RejectReason)
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[2 * i])
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                <div class="col col-md-12 control-label-left-align2">
+                                    Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @((2 * (i + 1)) + 1):
+                                </div>
+                            </div>
+                            <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[(2 * i) + 1])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+}
+
+//If there is an odd number of substitute assistants beyond the first substitute assistant then the last susbstitute's FK attachment check result is shown here
+if ((Model.NumberOfSubAssistants - 1) % 2 != 0)
+{
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                <div class="col col-md-12 control-label-left-align">
+                                    Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @Model.NumberOfSubAssistants:
+                                </div>
+                            </div>
+                            <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[@Model.NumberOfSubAssistants - 2])
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col col-md-5">
                 </div>
-            </div>
-        </div>
+}
+}
 
-
-
-        <div class="row">
-            <div class="col col-md-12 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Beräkning av ersättningsbelopp
+                        <div class="row">
+                            <div class="col col-md-5">
+                                <div class="form-group line-height-12">
+                                    <div class="row label-padding">
+                                        @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                                    </div>
+                                    <div class="row display-padding">
+                                        @Html.DisplayFor(m => m.RejectReason)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-5">
+                        </div>
+                    </div>
                 </div>
-                @for (int i = 0; i < Model.ClaimCalculations.Count(); i++)
-                {
-
-                    <br />
-                    <div class="row">
-                        <div class="col col-md-12">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-20">
-                                    OB- och jourersättningar för perioden @Model.ClaimCalculations[0].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString() enligt kollektivavtalet @Model.CollectiveAgreement
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-14">
-                                    OB-ersättning, kväll, per timme
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6">
-                            <div class="row">
-                                <div class="col col-md-8">
-                                    @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialEvening) Kr
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-14">
-                                    OB-ersättning, natt, per timme
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6">
-                            <div class="row">
-                                <div class="col col-md-8">
-                                    @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialNight) Kr
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-14">
-                                    OB-ersättning, helg, per timme
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6">
-                            <div class="row">
-                                <div class="col col-md-8">
-                                    @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialWeekend) Kr
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-14">
-                                    OB-ersättning, storhelg, per timme
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6">
-                            <div class="row">
-                                <div class="col col-md-8">
-                                    @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialHoliday) Kr
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-14">
-                                    Jour-ersättning, dag, per timme
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6">
-                            <div class="row">
-                                <div class="col col-md-8">
-                                    @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourOnCallWeekday) Kr
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="row">
-                                <div class="col col-md-12 col-small-left-padding2 bold-14">
-                                    Jour-ersättning, natt/helg, per timme
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6">
-                            <div class="row">
-                                <div class="col col-md-8">
-                                    @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourOnCallWeekend) Kr
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-
-                    if (i == 0)
-                    {
-                        <div class="row form-group-subheading">
-                            Karensdag, @Model.ClaimCalculations[0].StartDate.ToShortDateString()
-                        </div>
-
-                        <div class="row">
-                            <div class="col col-md-12 col-small-left-padding2">
-                                För karensdagen tar kontrollberäkningen hänsyn till antalet timmar som överstiger 8,00 av summan av antalet arbetstimmar och jourtimmar. För karensdagen tar kontrollberäkningen också hänsyn till antalet OB-timmar som överstiger 8,00 av summan av antalet OB-timmar av olika slag.
-                            </div>
-                        </div>
-                        <br />
-
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Lön, 80% på ordinarie timlön:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
 
 
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, kväll:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, natt:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, helg:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, storhelg:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <hr class="hr-low-margin" />
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Summa OB-ersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
 
+                <div class="row">
+                    <div class="col col-md-12 form-group-div-frame">
+                        <div class="row form-group-heading">
+                            Beräkning av ersättningsbelopp
+                        </div>
+                        @for (int i = 0; i < Model.ClaimCalculations.Count(); i++)
+        {
 
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Jour-ersättning, dag:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Jour-ersättning, natt/helg:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <hr class="hr-low-margin" />
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Summa Jour-ersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-
-
-                        <div class="row">
-                            <hr class="hr-low-margin" />
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Summa sjuklön:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayQD) Kr
-                            </div>
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Semesterersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayQD) Kr
-                            </div>
-
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Lagstadgad arbetsgivaravgift:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesQD) Kr
-                            </div>
-
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Avtalade pensioner och försäkringar:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceQD) Kr
-                            </div>
-                            @*@if (Model.ClaimCalculations.Count() == 1)
-                                {*@
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                        Summa, karensdag:
-                                    </div>
-                                </div>
-                            </div>
-                            @*}*@
-                            @*else
-                                {
-                                    if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays == 1)
-                                    {
-                                        <div class="col col-md-4">
-                                            <div class="row">
-                                                <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                    Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString()
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    else if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays > 1)
-                                    {
-                                        <div class="col col-md-4">
-                                            <div class="row">
-                                                <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                    Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    else if (Model.ClaimCalculations[i].NumberOfSickDays == 1)
-                                    {
-                                        <div class="col col-md-4">
-                                            <div class="row">
-                                                <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                    Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString()
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="col col-md-4">
-                                            <div class="row">
-                                                <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                    Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                }*@
-
-
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].CostCalcQD)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right bold-18">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].CostQD) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        if (Model.NumberOfSickDays > 1)
-                        {
-                            <div class="row form-group-subheading">
-                                Dag 2 - Dag 14
-                            </div>
-                        }
-                    }
-                    if (Model.NumberOfSickDays > 1)
-                    {
-                        <div>
-                            @if (i == 0)
-                            {
-                                <div class="row form-group-subheading">
-                                    @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="row form-group-subheading">
-                                    @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                </div>
-                            }
-                        </div>
-
-                        <br />
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Lön, 80% på ordinarie timlön:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, kväll:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, natt:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, helg:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        OB-ersättning, storhelg:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <hr class="hr-low-margin" />
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Summa OB-ersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayCalcD2T14) Kr
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Jour-ersättning, dag:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Jour-ersättning, natt/helg:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <hr class="hr-low-margin" />
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Summa Jour-ersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayCalcD2T14) Kr
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <hr class="hr-low-margin" />
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Summa sjuklön:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayD2T14) Kr
-                            </div>
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Semesterersättning:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayD2T14) Kr
-                            </div>
-
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Lagstadgad arbetsgivaravgift:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesD2T14) Kr
-                            </div>
-
-                            <div class="col col-md-4">
-                                <div class="row">
-                                    <div class="col col-md-12 control-label-left-small-padding">
-                                        Avtalade pensioner och försäkringar:
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-md-2 text-right bold-18">
-                                @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceD2T14) Kr
-                            </div>
-                            @if (Model.ClaimCalculations.Count() == 1)
-                            {
-                                <div class="col col-md-4">
-                                    <div class="row">
-                                        <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                            Summa, dag 2 till dag 14:
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays == 1)
-                                {
-                                    <div class="col col-md-4">
-                                        <div class="row">
-                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString()
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                else if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays > 1)
-                                {
-                                    <div class="col col-md-4">
-                                        <div class="row">
-                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                else if (Model.ClaimCalculations[i].NumberOfSickDays == 1)
-                                {
-                                    <div class="col col-md-4">
-                                        <div class="row">
-                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString()
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col col-md-4">
-                                        <div class="row">
-                                            <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            <div class="col col-md-6">
-                                <div class="row">
-                                    <div class="col col-md-8">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].CostCalcD2T14)
-                                    </div>
-                                    <div class="col col-md-1">
-                                        =
-                                    </div>
-                                    <div class="col col-md-3 text-right bold-18">
-                                        @Html.DisplayFor(m => m.ClaimCalculations[i].CostD2T14) Kr
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
                 <br />
+                <div class="row">
+                    <div class="col col-md-12">
+                        <div class="row">
+                            <div class="col col-md-12 col-small-left-padding2 bold-20">
+                                OB- och jourersättningar för perioden @Model.ClaimCalculations[0].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString() enligt kollektivavtalet @Model.CollectiveAgreement
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col col-md-4">
                         <div class="row">
-                            <div class="col col-md-12 control-label-left-small-padding form-group-subheading">
-                                Summa sjukperioden:
+                            <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                OB-ersättning, kväll, per timme
                             </div>
                         </div>
                     </div>
                     <div class="col col-md-6">
                         <div class="row">
-                            <div class="col col-md-8 calc-padding-top">
-                                @Html.DisplayFor(m => m.TotalCostCalcD1T14) Kr
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialEvening) Kr
                             </div>
-                            <div class="col col-md-1 calc-padding-top">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                OB-ersättning, natt, per timme
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialNight) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                OB-ersättning, helg, per timme
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialWeekend) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                OB-ersättning, storhelg, per timme
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourUnsocialHoliday) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                Jour-ersättning, dag, per timme
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourOnCallWeekday) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 col-small-left-padding2 bold-14">
+                                Jour-ersättning, natt/helg, per timme
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PerHourOnCallWeekend) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+if (i == 0)
+{
+                <div class="row form-group-subheading">
+                    Karensdag, @Model.ClaimCalculations[0].StartDate.ToShortDateString()
+                </div>
+
+                <div class="row">
+                    <div class="col col-md-12 col-small-left-padding2">
+                        För karensdagen tar kontrollberäkningen hänsyn till antalet timmar som överstiger 8,00 av summan av antalet arbetstimmar och jourtimmar. För karensdagen tar kontrollberäkningen också hänsyn till antalet OB-timmar som överstiger 8,00 av summan av antalet OB-timmar av olika slag.
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Lön, 80% på ordinarie timlön:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryCalcQD)
+                            </div>
+                            <div class="col col-md-1">
                                 =
                             </div>
-                            <div class="col col-md-3 text-right bold-18">
-                                @Html.DisplayFor(m => m.TotalCostD1T14) Kr
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, kväll:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, natt:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, helg:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, storhelg:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr class="hr-low-margin" />
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Summa OB-ersättning:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Jour-ersättning, dag:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Jour-ersättning, natt/helg:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr class="hr-low-margin" />
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Summa Jour-ersättning:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <hr class="hr-low-margin" />
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Summa sjuklön:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayQD) Kr
                             </div>
                         </div>
                     </div>
                     <div class="col col-md-2 text-right bold-18">
-                        @Html.DisplayFor(m => m.TotalCostD1T14) Kr
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayQD) Kr
                     </div>
-                    @if (Model.DefaultCollectiveAgreement)
-                    {
-                        <br />
-                        <br />
-                        <div class="row display-padding5">
-                            Defaultvärden för OB- och jourersättningar har använts i beräkningen.@Html.ActionLink("Klicka här ", "Index", "CollectiveAgreements", null, new { @class = "breadcrumb-padding" })för att lägga in aktuella ersättningsbelopp enligt kollektivavtal.
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-
-<div class="form-horizontal">
-
-
-</div>
-
-
-
-@*<div class="form-horizontal">
-            @if (Model.CompletionStage > 4)
-            {
-                <div class="row">
-                    <div class="col col-md-12 form-group-div-frame">
-                        <div class="row form-group-heading">
-                            Kommentarer
-                        </div>
-                        <div class="row form-group">
-                            <div class="col col-md-2">
-                                <label>Datum</label>
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Semesterersättning:
                             </div>
-                            <div class="col col-md-2">
-                                <label>Användare</label>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
                             <div class="col col-md-8">
-                                <label>Kommentar</label>
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayQD) Kr
                             </div>
                         </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayQD) Kr
+                    </div>
 
-                        @if (Model.messages.Count > 0)
-                        {
-                            foreach (var item in Model.messages)
-                            {
-                                @Html.Action("_Message", new { message = item })
-                            }
-                            @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
-                        }
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Lagstadgad arbetsgivaravgift:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesQD) Kr
+                    </div>
+
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Avtalade pensioner och försäkringar:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceQD) Kr
+                    </div>
+                    @*@if (Model.ClaimCalculations.Count() == 1)
+        {*@
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding bold-18">
+                                Summa, karensdag:
+                            </div>
+                        </div>
+                    </div>
+                    @*}*@
+                    @*else
+        {
+            if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays == 1)
+            {
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString()
+                        </div>
                     </div>
                 </div>
             }
-        </div>
-    @*</body>*@
-<script type='text/javascript'>
+            else if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays > 1)
+            {
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.ClaimCalculations[i].NumberOfSickDays == 1)
+            {
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+            }
+        }*@
 
-</script>
+
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].CostCalcQD)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right bold-18">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].CostQD) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+if (Model.NumberOfSickDays > 1)
+{
+                <div class="row form-group-subheading">
+                    Dag 2 - Dag 14
+                </div>
+}
+}
+if (Model.NumberOfSickDays > 1)
+{
+                <div>
+                    @if (i == 0)
+    {
+                <div class="row form-group-subheading">
+                    @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                </div>
+}
+else
+{
+                <div class="row form-group-subheading">
+                    @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                </div>
+}
+                </div>
+
+                <br />
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Lön, 80% på ordinarie timlön:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, kväll:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialEveningPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, natt:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialNightPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, helg:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialWeekendPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                OB-ersättning, storhelg:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialGrandWeekendPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr class="hr-low-margin" />
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Summa OB-ersättning:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayCalcD2T14) Kr
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].UnsocialSumPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Jour-ersättning, dag:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallDayPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Jour-ersättning, natt/helg:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallNightPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr class="hr-low-margin" />
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Summa Jour-ersättning:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayCalcD2T14) Kr
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].OnCallSumPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <hr class="hr-low-margin" />
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Summa sjuklön:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayD2T14) Kr
+                    </div>
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Semesterersättning:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].HolidayPayD2T14) Kr
+                    </div>
+
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Lagstadgad arbetsgivaravgift:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].SocialFeesD2T14) Kr
+                    </div>
+
+                    <div class="col col-md-4">
+                        <div class="row">
+                            <div class="col col-md-12 control-label-left-small-padding">
+                                Avtalade pensioner och försäkringar:
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 text-right bold-18">
+                        @Html.DisplayFor(m => m.ClaimCalculations[i].PensionAndInsuranceD2T14) Kr
+                    </div>
+                    @if (Model.ClaimCalculations.Count() == 1)
+    {
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, dag 2 till dag 14:
+                        </div>
+                    </div>
+                </div>
+}
+else
+{
+if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays == 1)
+{
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+}
+else if (i == 0 && Model.ClaimCalculations[i].NumberOfSickDays > 1)
+{
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+}
+else if (Model.ClaimCalculations[i].NumberOfSickDays == 1)
+{
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+}
+else
+{
+                <div class="col col-md-4">
+                    <div class="row">
+                        <div class="col col-md-12 control-label-left-small-padding bold-18">
+                            Summa, @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+}
+}
+                    <div class="col col-md-6">
+                        <div class="row">
+                            <div class="col col-md-8">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].CostCalcD2T14)
+                            </div>
+                            <div class="col col-md-1">
+                                =
+                            </div>
+                            <div class="col col-md-3 text-right bold-18">
+                                @Html.DisplayFor(m => m.ClaimCalculations[i].CostD2T14) Kr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+}
+}
+                        <br />
+                        <div class="row">
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding form-group-subheading">
+                                        Summa sjukperioden:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8 calc-padding-top">
+                                        @Html.DisplayFor(m => m.TotalCostCalcD1T14) Kr
+                                    </div>
+                                    <div class="col col-md-1 calc-padding-top">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right bold-18">
+                                        @Html.DisplayFor(m => m.TotalCostD1T14) Kr
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-2 text-right bold-18">
+                                @Html.DisplayFor(m => m.TotalCostD1T14) Kr
+                            </div>
+                            @if (Model.DefaultCollectiveAgreement)
+            {
+                <br />
+                <br />
+                <div class="row display-padding5">
+                    Defaultvärden för OB- och jourersättningar har använts i beräkningen.@Html.ActionLink("Klicka här ", "Index", "CollectiveAgreements", null, new { @class = "breadcrumb-padding" })för att lägga in aktuella ersättningsbelopp enligt kollektivavtal.
+                </div>
+}
+                        </div>
+                    </div>
+                </div>
+}
+                </div>
+
+
+            <div class="form-horizontal">
+
+
+            </div>
+
+
+
+            @*<div class="form-horizontal">
+                @if (Model.CompletionStage > 4)
+                {
+                    <div class="row">
+                        <div class="col col-md-12 form-group-div-frame">
+                            <div class="row form-group-heading">
+                                Kommentarer
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-2">
+                                    <label>Datum</label>
+                                </div>
+                                <div class="col col-md-2">
+                                    <label>Användare</label>
+                                </div>
+                                <div class="col col-md-8">
+                                    <label>Kommentar</label>
+                                </div>
+                            </div>
+
+                            @if (Model.messages.Count > 0)
+                            {
+                                foreach (var item in Model.messages)
+                                {
+                                    @Html.Action("_Message", new { message = item })
+                                }
+                                @Html.Action("_SendMessage", new { claimRefNr = Model.ReferenceNumber })
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        @*</body>*@
+            <script type='text/javascript'>
+
+            </script>
