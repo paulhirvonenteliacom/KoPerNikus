@@ -4,7 +4,7 @@
     ViewBag.Title = "ClaimDetailsPdf";
 }
 
-<body>    
+<body>
     <div class="row">
         <p class="col col-md-offset-2 page-header9">Ansökan</p>
     </div>
@@ -24,7 +24,7 @@
         {
             <p class="col col-md-offset-2 display-padding bold-14">Status: @Model.StatusName</p>
         }
-    </div>    
+    </div>
     <div class="form-horizontal">
 
         @if (Model.CompletionStage >= 1)
@@ -518,7 +518,7 @@
                 </table>
             </div>
         </div>
-        for (int k = 0; k < Model.NumberOfSubAssistants; k++)
+    for (int k = 0; k < Model.NumberOfSubAssistants; k++)
     {
         <div class="row">
             <div class="col col-md-2">
@@ -652,7 +652,7 @@ else
                         </td>
                     </tr>
             }
-                </table>               
+                </table>
             </div>
         </div>
 }
@@ -851,6 +851,167 @@ else
                 <div class="row form-group-heading">
                     Automatiserade kontroller
                 </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.IVOCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.IVOCheck)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row">
+                                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.ProxyCheck)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.AssistanceCheck)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.SalarySpecRegAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row">
+                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.FKRegAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.FKRegAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row">
+                                @Html.LabelFor(model => model.FKSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*Show FK attachment check results for substitute assistant beyond the first substitute assistant if there is more than one of them*@
+                @if (Model.NumberOfSubAssistants > 1)
+            {
+                for (int i = 0; i < (Model.NumberOfSubAssistants - 1) / 2; i++)
+                {
+                    <div class="row">
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    <div class="col col-md-12 control-label-left-align">
+                                        Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @(2 * (i + 1)):
+                                    </div>
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[2 * i])
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-5">
+                            <div class="form-group line-height-12">
+                                <div class="row label-padding">
+                                    <div class="col col-md-12 control-label-left-align2">
+                                        Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @((2 * (i + 1)) + 1):
+                                    </div>
+                                </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[(2 * i) + 1])
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            }
+
+            //If there is an odd number of substitute assistants beyond the first substitute assistant then the last susbstitute's FK attachment check result is shown here
+            if ((Model.NumberOfSubAssistants - 1) % 2 != 0)
+            {
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                <div class="col col-md-12 control-label-left-align">
+                                    Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @Model.NumberOfSubAssistants:
+                                </div>
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[@Model.NumberOfSubAssistants - 2])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-5">
+                </div>
+        }
+    }
+
+                <div class="row">
+                    <div class="col col-md-5">
+                        <div class="form-group line-height-12">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                            </div>
+                            <div class="row display-padding">
+                                @Html.DisplayFor(m => m.RejectReason)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-5">
+                </div>
+            </div>
+        </div>
+
+
+
+        @*<div class="row">
+            <div class="col col-md-2">
+            </div>
+            <div class="col col-md-9 form-group-div-frame">
+                <div class="row form-group-heading">
+                    Automatiserade kontroller
+                </div>
                 <table class="table2">
                     <tr>
                         <th class="claimpdf-twocol row-divider">
@@ -943,7 +1104,7 @@ else
                 </table>
                 <br />
             </div>
-        </div>
+        </div>*@
 
         <div class="row">
             <div class="col col-md-12 form-group-div-frame">
@@ -1670,4 +1831,4 @@ else
         </div>
 }
     </div>
-</body>
+    </body>
