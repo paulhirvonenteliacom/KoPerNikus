@@ -492,39 +492,39 @@
                         <th></th>
                     </tr>
                     @for (int i = 0; i < Model.NumberOfSickDays; i++)
-        {
-            <tr row-divider>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].DateString)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].Hours)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialEvening)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialNight)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialWeekend)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].UnsocialGrandWeekend)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].OnCallDay)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].OnCallNight)
-                </td>
-            </tr>
-}
+                {
+                    <tr row-divider>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].DateString)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].Hours)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].UnsocialEvening)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].UnsocialNight)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].UnsocialWeekend)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].UnsocialGrandWeekend)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].OnCallDay)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].OnCallNight)
+                        </td>
+                    </tr>
+            }
                 </table>
 
             </div>
         </div>
-        
+
     for (int k = 0; k < Model.NumberOfSubAssistants; k++)
     {
         <div class="row">
@@ -532,43 +532,43 @@
             </div>
             <div class="col col-md-9 form-group-div-frame">
                 @if (k == 0)
-    {
-        if (Model.NumberOfSubAssistants == 1)
-        {
-            <div class="row form-group-heading">
-                Antal timmar, vikarierande assistent
-            </div>
-}
-else
-{
-            <div class="row form-group-heading">
-                Antal timmar, vikarierande assistent 1
-            </div>
-}
-            <div class="row">
-                <div class="col col-md-5">
-                    <div class="form-group line-height-12">
-                        <div class="row display-padding">
-                            @Model.SubAssistantSSN, @Model.SubAssistantName
-                        </div>
+            {
+                if (Model.NumberOfSubAssistants == 1)
+                {
+                    <div class="row form-group-heading">
+                        Antal timmar, vikarierande assistent
+                    </div>
+            }
+            else
+            {
+                <div class="row form-group-heading">
+                    Antal timmar, vikarierande assistent 1
+                </div>
+        }
+        <div class="row">
+            <div class="col col-md-5">
+                <div class="form-group line-height-12">
+                    <div class="row display-padding">
+                        @Model.SubAssistantSSN, @Model.SubAssistantName
                     </div>
                 </div>
             </div>
+        </div>
 }
 else
 {
-            <div class="row form-group-heading">
-                Antal timmar, vikarierande assistent @(k + 1)
-            </div>
-            <div class="row">
-                <div class="col col-md-5">
-                    <div class="form-group line-height-12">
-                        <div class="row display-padding">
-                            @Model.SubstituteAssistantSSN[k - 1], @Model.SubstituteAssistantName[k - 1]
-                        </div>
-                    </div>
+    <div class="row form-group-heading">
+        Antal timmar, vikarierande assistent @(k + 1)
+    </div>
+    <div class="row">
+        <div class="col col-md-5">
+            <div class="form-group line-height-12">
+                <div class="row display-padding">
+                    @Model.SubstituteAssistantSSN[k - 1], @Model.SubstituteAssistantName[k - 1]
                 </div>
             </div>
+        </div>
+    </div>
 }
                 <div class="row">
                     <div class="col col-md-5">
@@ -605,7 +605,7 @@ else
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
 
                 <table class="table2">
                     <tr>
@@ -637,34 +637,34 @@ else
                     </tr>
 
                     @for (int i = 0; i < Model.NumberOfSickDays; i++)
-        {
-            <tr row-divider>
-                <td>
-                    @Html.DisplayFor(m => m.ClaimDays[i].DateString)
-                </td>
-                <td>
-                    @Model.HoursSIPerSubAndDay[k, i]
-                </td>
-                <td>
-                    @Model.UnsocialEveningSIPerSubAndDay[k, i]
-                </td>
-                <td>
-                    @Model.UnsocialNightSIPerSubAndDay[k, i]
-                </td>
-                <td>
-                    @Model.UnsocialWeekendSIPerSubAndDay[k, i]
-                </td>
-                <td>
-                    @Model.UnsocialGrandWeekendSIPerSubAndDay[k, i]
-                </td>
-                <td>
-                    @Model.OnCallDaySIPerSubAndDay[k, i]
-                </td>
-                <td>
-                    @Model.OnCallNightSIPerSubAndDay[k, i]
-                </td>
-            </tr>
-}
+                {
+                    <tr row-divider>
+                        <td>
+                            @Html.DisplayFor(m => m.ClaimDays[i].DateString)
+                        </td>
+                        <td>
+                            @Model.HoursSIPerSubAndDay[k, i]
+                        </td>
+                        <td>
+                            @Model.UnsocialEveningSIPerSubAndDay[k, i]
+                        </td>
+                        <td>
+                            @Model.UnsocialNightSIPerSubAndDay[k, i]
+                        </td>
+                        <td>
+                            @Model.UnsocialWeekendSIPerSubAndDay[k, i]
+                        </td>
+                        <td>
+                            @Model.UnsocialGrandWeekendSIPerSubAndDay[k, i]
+                        </td>
+                        <td>
+                            @Model.OnCallDaySIPerSubAndDay[k, i]
+                        </td>
+                        <td>
+                            @Model.OnCallNightSIPerSubAndDay[k, i]
+                        </td>
+                    </tr>
+            }
                 </table>
             </div>
         </div>
@@ -876,14 +876,20 @@ else
                         </div>
                     </div>
                     <div class="col col-md-5">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
                         <div class="form-group line-height-12">
-                            <div class="row">
-                                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.ProxyCheck, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
                             <div class="row display-padding">
                                 @Html.DisplayFor(m => m.ProxyCheck)
                             </div>
                         </div>
+                    </div>
+                    <div class="col col-md-5">
                     </div>
                 </div>
                 <div class="row">
@@ -912,14 +918,20 @@ else
                         </div>
                     </div>
                     <div class="col col-md-5">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
                         <div class="form-group line-height-12">
-                            <div class="row">
-                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.MedicalCertificateCheckMsg, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
                             </div>
                             <div class="row display-padding">
                                 @Html.DisplayFor(m => m.MedicalCertificateCheckMsg)
                             </div>
                         </div>
+                    </div>
+                    <div class="col col-md-5">
                     </div>
                 </div>
                 <div class="row">
@@ -934,191 +946,75 @@ else
                         </div>
                     </div>
                     <div class="col col-md-5">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-5">
                         <div class="form-group line-height-12">
-                            <div class="row">
-                                @Html.LabelFor(model => model.FKSubAssistantCheckMsg, htmlAttributes: new { @class = "control-label-left-align2 col-md-12" })
+                            <div class="row label-padding">
+                                @if (Model.NumberOfSubAssistants == 1)
+    {
+                            <div class="col col-md-12 control-label-left-align">
+                                Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent:
                             </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
+}
+else
+{
+                            <div class="col col-md-12 control-label-left-align">
+                                Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent 1:
+                            </div>
+}
+                            </div>
+                                <div class="row display-padding">
+                                    @Html.DisplayFor(m => m.FKSubAssistantCheckMsg)
+                                </div>
                             </div>
                         </div>
+                    <div class="col col-md-5">
                     </div>
                 </div>
                 @*Show FK attachment check results for substitute assistant beyond the first substitute assistant if there is more than one of them*@
-                @if (Model.NumberOfSubAssistants > 1)
-            {
-                for (int i = 0; i < (Model.NumberOfSubAssistants - 1) / 2; i++)
+                @for (int i = 0; i < Model.NumberOfSubAssistants - 1; i++)
                 {
-                    <div class="row">
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    <div class="col col-md-12 control-label-left-align">
-                                        Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @(2 * (i + 1)):
-                                    </div>
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[2 * i])
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-5">
-                            <div class="form-group line-height-12">
-                                <div class="row label-padding">
-                                    <div class="col col-md-12 control-label-left-align2">
-                                        Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @((2 * (i + 1)) + 1):
-                                    </div>
-                                </div>
-                                <div class="row display-padding">
-                                    @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[(2 * i) + 1])
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            }
-
-            //If there is an odd number of substitute assistants beyond the first substitute assistant then the last susbstitute's FK attachment check result is shown here
-            if ((Model.NumberOfSubAssistants - 1) % 2 != 0)
-            {
                 <div class="row">
                     <div class="col col-md-5">
                         <div class="form-group line-height-12">
                             <div class="row label-padding">
                                 <div class="col col-md-12 control-label-left-align">
-                                    Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @Model.NumberOfSubAssistants:
+                                    Kontroll av tidsredovisning Försäkringskassan, vikarierande assistent @(2 + i):
                                 </div>
-                            </div>
+                            </div>                            
                             <div class="row display-padding">
-                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[@Model.NumberOfSubAssistants - 2])
+                                @Html.DisplayFor(m => m.FKSubAssistantCheckMsgArray[i])
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col col-md-5">
-                </div>
-        }
-    }
-
-                <div class="row">
                     <div class="col col-md-5">
-                        <div class="form-group line-height-12">
-                            <div class="row label-padding">
-                                @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
-                            </div>
-                            <div class="row display-padding">
-                                @Html.DisplayFor(m => m.RejectReason)
-                            </div>
+                    </div>
+                </div>
+                }           
+
+            @if (Model.RejectReason != null)
+{
+            <div class="row">
+                <div class="col col-md-5">
+                    <div class="form-group line-height-12">
+                        <div class="row label-padding">
+                            @Html.LabelFor(model => model.RejectReason, htmlAttributes: new { @class = "control-label-left-align col-md-12" })
+                        </div>
+                        <div class="row display-padding">
+                            @Html.DisplayFor(m => m.RejectReason)
                         </div>
                     </div>
                 </div>
-                <div class="col col-md-5">
-                </div>
+            </div>
+            <div class="col col-md-5">
+            </div>
+}
+
             </div>
         </div>
-
-
-
-        @*<div class="row">
-            <div class="col col-md-2">
-            </div>
-            <div class="col col-md-9 form-group-div-frame">
-                <div class="row form-group-heading">
-                    Automatiserade kontroller
-                </div>
-                <table class="table2">
-                    <tr>
-                        <th class="claimpdf-twocol row-divider">
-                            @Html.LabelFor(model => model.IVOCheck)
-                        </th>
-                        <th class="claimpdf-twocol row-divider">
-                            @Html.LabelFor(model => model.ProxyCheck)
-                        </th>
-                    </tr>
-                    <tr row-divider>
-                        <td>
-                            @Html.DisplayFor(model => model.IVOCheck)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => model.ProxyCheck)
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <table class="table2">
-                    <tr>
-                        <th class="claimpdf-twocol row-divider">
-                            @Html.LabelFor(model => model.AssistanceCheck)
-                        </th>
-                        <th class="claimpdf-twocol row-divider">
-                            @Html.LabelFor(model => model.MedicalCertificateCheckMsg)
-                        </th>
-                    </tr>
-                    <tr row-divider>
-                        <td>
-                            @Html.DisplayFor(model => model.AssistanceCheck)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => model.MedicalCertificateCheckMsg)
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <table class="table2">
-                    <tr>
-                        <th class="claimpdf-col row-divider">
-                            @Html.LabelFor(model => model.SalarySpecRegAssistantCheckMsg)
-                        </th>
-
-                    </tr>
-                    <tr row-divider>
-                        <td>
-                            @Html.DisplayFor(model => model.SalarySpecRegAssistantCheckMsg)
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <table class="table2">
-                    <tr>
-                        <th class="claimpdf-col row-divider">
-                            @Html.LabelFor(model => model.FKRegAssistantCheckMsg)
-                        </th>
-                    </tr>
-                    <tr row-divider>
-                        <td>
-                            @Html.DisplayFor(model => model.FKRegAssistantCheckMsg)
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <table class="table2">
-                    <tr>
-                        <th class="claimpdf-col row-divider">
-                            @Html.LabelFor(model => model.FKSubAssistantCheckMsg)
-                        </th>
-                    </tr>
-                    <tr row-divider>
-                        <td>
-                            @Html.DisplayFor(model => model.FKSubAssistantCheckMsg)
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <table class="table2">
-                    <tr>
-                        <th class="claimpdf-col row-divider">
-                            @Html.LabelFor(model => model.RejectReason)
-                        </th>
-                    </tr>
-                    <tr row-divider>
-                        <td>
-                            @Html.DisplayFor(model => model.RejectReason)
-                        </td>
-                    </tr>
-                </table>
-                <br />
-            </div>
-        </div>*@
-
+        
         <div class="row">
             <div class="col col-md-12 form-group-div-frame">
                 <div class="row form-group-heading">
