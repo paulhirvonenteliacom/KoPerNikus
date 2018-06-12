@@ -19,6 +19,14 @@ namespace Sjuklöner.Viewmodels
         public string[] SubAssistantSSNAndName { get; set; }
 
         public int NumberOfSubAssistants { get; set; }
+
+        //Check if the string contains anything at all
+        [RegularExpression(@"()$")]
+        public string ValErrorInfoConcat { get; set; }
+
+        //Check if the string contains anything at all
+        [RegularExpression(@"()$")]
+        public string ValErrorPosConcat { get; set; }
     }
 
     public class ScheduleRow

@@ -227,6 +227,10 @@ namespace Sjuklöner.Models
         [Display(Name = "Motivering för avslag")]
         public string RejectReason { get; set; }
 
+        //This property is true if a qualifying day is applicable to the claim and to false if it is not applicable.
+        //A qualifying day is not applicable if a new sickleaveperiod occurs within 5 days of a previous sickleaveperiod 
+        public bool QualifyingDayApplicable { get; set; }
+
         //[Required]
         [Display(Name = "Vikarierande assistents personnummer")]
         //[RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^ 0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]

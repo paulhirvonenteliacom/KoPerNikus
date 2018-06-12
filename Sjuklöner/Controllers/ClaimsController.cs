@@ -509,9 +509,10 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
             }
-            if (OverlappingClaim(refNumber, create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN))
+            string regAssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
+            if (OverlappingClaim(refNumber, create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN, regAssistantSSN))
             {
-                ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund.");
+                ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund och samma ordinarie assistent.");
             }
             //Check if no substitute was selected in the substitutes beyond the first mandatory substitute assistant
             for (int i = 0; i < create1VM.NumberOfSubAssistants - 1; i++)
@@ -1292,432 +1293,437 @@ namespace Sjuklöner.Controllers
         [Authorize(Roles = "Ombud")]
         public ActionResult Create2(Create2VM create2VM, string refNumber, string submitButton)
         {
-            int idx = 0;
-            foreach (var row in create2VM.ScheduleRowList)
-            {
-                //For some reason these properties appear in the model validation even though they are not used and should therefore not be causing a validation error.
-                //Since these non-array properties are not used in any way in the action/model, they are removed from the validation.
-                //Array properties with the same names are used and also validated.
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].HoursSI");
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI");
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI");
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI");
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI");
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI");
-                ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI");
-
-                //Set all empty hour properties to zero
-                if (row.Hours == "")
-                {
-                    row.Hours = "0";
-                }
-                if (row.UnsocialEvening == "")
-                {
-                    row.UnsocialEvening = "0";
-                }
-                if (row.UnsocialNight == "")
-                {
-                    row.UnsocialNight = "0";
-                }
-                if (row.UnsocialWeekend == "")
-                {
-                    row.UnsocialWeekend = "0";
-                }
-                if (row.UnsocialGrandWeekend == "")
-                {
-                    row.UnsocialGrandWeekend = "0";
-                }
-                if (row.OnCallDay == "")
-                {
-                    row.OnCallDay = "0";
-                }
-                if (row.OnCallNight == "")
-                {
-                    row.OnCallNight = "0";
-                }
-
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.HoursSI[i] == "")
-                    {
-                        row.HoursSI[i] = "0";
-                    }
-                    if (row.UnsocialEveningSI[i] == "")
-                    {
-                        row.UnsocialEveningSI[i] = "0";
-                    }
-                    if (row.UnsocialNightSI[i] == "")
-                    {
-                        row.UnsocialNightSI[i] = "0";
-                    }
-                    if (row.UnsocialWeekendSI[i] == "")
-                    {
-                        row.UnsocialWeekendSI[i] = "0";
-                    }
-                    if (row.UnsocialGrandWeekendSI[i] == "")
-                    {
-                        row.UnsocialGrandWeekendSI[i] = "0";
-                    }
-                    if (row.OnCallDaySI[i] == "")
-                    {
-                        row.OnCallDaySI[i] = "0";
-                    }
-                    if (row.OnCallNightSI[i] == "")
-                    {
-                        row.OnCallNightSI[i] = "0";
-                    }
-                }
-                idx++;
-            }
-
-            idx = 0;
-            //Check that each entry has a correct format
-            Regex regex = new Regex(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$");
-            //Regex regex = new Regex(@"\d{0,2}(\,\d{0,2})?$");
-            foreach (var row in create2VM.ScheduleRowList)
-            {
-                if (row.Hours != null)
-                {
-                    Match match = regex.Match(row.Hours);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Ogiltigt .");
-                    }
-                }
-                if (row.UnsocialEvening != null)
-                {
-                    Match match = regex.Match(row.UnsocialEvening);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEvening", "Ogiltigt format eller värde.");
-                    }
-                }
-                if (row.UnsocialNight != null)
-                {
-                    Match match = regex.Match(row.UnsocialNight);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNight", "Ogiltigt format eller värde.");
-                    }
-                }
-                if (row.UnsocialWeekend != null)
-                {
-                    Match match = regex.Match(row.UnsocialWeekend);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekend", "Ogiltigt format eller värde.");
-                    }
-                }
-                if (row.UnsocialGrandWeekend != null)
-                {
-                    Match match = regex.Match(row.UnsocialGrandWeekend);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekend", "Ogiltigt format eller värde.");
-                    }
-                }
-                if (row.OnCallDay != null)
-                {
-                    Match match = regex.Match(row.OnCallDay);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDay", "Ogiltigt format eller värde.");
-                    }
-                }
-                if (row.OnCallNight != null)
-                {
-                    Match match = regex.Match(row.OnCallNight);
-                    if (!match.Success)
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "Ogiltigt format eller värde.");
-                    }
-                }
-
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.HoursSI[i] != null)
-                    {
-                        Match match = regex.Match(row.HoursSI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.UnsocialEveningSI[i] != null)
-                    {
-                        Match match = regex.Match(row.UnsocialEveningSI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.UnsocialNightSI[i] != null)
-                    {
-                        Match match = regex.Match(row.UnsocialNightSI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.UnsocialWeekendSI[i] != null)
-                    {
-                        Match match = regex.Match(row.UnsocialWeekendSI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.UnsocialGrandWeekendSI[i] != null)
-                    {
-                        Match match = regex.Match(row.UnsocialGrandWeekendSI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.OnCallDaySI[i] != null)
-                    {
-                        Match match = regex.Match(row.OnCallDaySI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    if (row.OnCallNightSI[i] != null)
-                    {
-                        Match match = regex.Match(row.OnCallNightSI[i]);
-                        if (!match.Success)
-                        {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
-                        }
-                    }
-                }
-                idx++;
-            }
-
-            idx = 0;
             if (ModelState.IsValid)
             {
-                //Check that no day has more than 25 hours of work
+
+                int idx = 0;
                 foreach (var row in create2VM.ScheduleRowList)
                 {
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                    //For some reason these properties appear in the model validation even though they are not used and should therefore not be causing a validation error.
+                    //Since these non-array properties are not used in any way in the action/model, they are removed from the validation.
+                    //Array properties with the same names are used and also validated.
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].HoursSI");
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI");
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI");
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI");
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI");
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI");
+                    ModelState.Remove("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI");
+
+                    //Set all empty hour properties to zero
+                    if (row.Hours == "")
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För högt antal timmar.");
+                        row.Hours = "0";
                     }
+                    if (row.UnsocialEvening == "")
+                    {
+                        row.UnsocialEvening = "0";
+                    }
+                    if (row.UnsocialNight == "")
+                    {
+                        row.UnsocialNight = "0";
+                    }
+                    if (row.UnsocialWeekend == "")
+                    {
+                        row.UnsocialWeekend = "0";
+                    }
+                    if (row.UnsocialGrandWeekend == "")
+                    {
+                        row.UnsocialGrandWeekend = "0";
+                    }
+                    if (row.OnCallDay == "")
+                    {
+                        row.OnCallDay = "0";
+                    }
+                    if (row.OnCallNight == "")
+                    {
+                        row.OnCallNight = "0";
+                    }
+
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI[i]) > 25)
+                        if (row.HoursSI[i] == "")
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            row.HoursSI[i] = "0";
+                        }
+                        if (row.UnsocialEveningSI[i] == "")
+                        {
+                            row.UnsocialEveningSI[i] = "0";
+                        }
+                        if (row.UnsocialNightSI[i] == "")
+                        {
+                            row.UnsocialNightSI[i] = "0";
+                        }
+                        if (row.UnsocialWeekendSI[i] == "")
+                        {
+                            row.UnsocialWeekendSI[i] = "0";
+                        }
+                        if (row.UnsocialGrandWeekendSI[i] == "")
+                        {
+                            row.UnsocialGrandWeekendSI[i] = "0";
+                        }
+                        if (row.OnCallDaySI[i] == "")
+                        {
+                            row.OnCallDaySI[i] = "0";
+                        }
+                        if (row.OnCallNightSI[i] == "")
+                        {
+                            row.OnCallNightSI[i] = "0";
                         }
                     }
                     idx++;
                 }
 
-                //Check that no single item has more than 25 hours
                 idx = 0;
+                //Check that each entry has a correct format
+                Regex regex = new Regex(@"^([0-9]|1[0-9]|2[0-5])?([,]|[,][0-9]|[,][0-9][0-9])?$");
+                //Regex regex = new Regex(@"\d{0,2}(\,\d{0,2})?$");
                 foreach (var row in create2VM.ScheduleRowList)
                 {
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) > 25)
+                    if (row.Hours != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För högt antal timmar.");
+                        Match match = regex.Match(row.Hours);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "Ogiltigt format eller värde.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) > 25)
+                    if (row.UnsocialEvening != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEvening", "För högt antal timmar.");
+                        Match match = regex.Match(row.UnsocialEvening);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEvening", "Ogiltigt format eller värde.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) > 25)
+                    if (row.UnsocialNight != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNight", "För högt antal timmar.");
+                        Match match = regex.Match(row.UnsocialNight);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNight", "Ogiltigt format eller värde.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) > 25)
+                    if (row.UnsocialWeekend != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekend", "För högt antal timmar.");
+                        Match match = regex.Match(row.UnsocialWeekend);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekend", "Ogiltigt format eller värde.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > 25)
+                    if (row.UnsocialGrandWeekend != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekend", "För högt antal timmar.");
+                        Match match = regex.Match(row.UnsocialGrandWeekend);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekend", "Ogiltigt format eller värde.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) > 25)
+                    if (row.OnCallDay != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDay", "För högt antal timmar.");
+                        Match match = regex.Match(row.OnCallDay);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDay", "Ogiltigt format eller värde.");
+                        }
                     }
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                    if (row.OnCallNight != null)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "För högt antal timmar.");
+                        Match match = regex.Match(row.OnCallNight);
+                        if (!match.Success)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "Ogiltigt format eller värde.");
+                        }
                     }
+
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]) > 25)
+                        if (row.HoursSI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.HoursSI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]) > 25)
+                        if (row.UnsocialEveningSI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.UnsocialEveningSI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]) > 25)
+                        if (row.UnsocialNightSI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.UnsocialNightSI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]) > 25)
+                        if (row.UnsocialWeekendSI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.UnsocialWeekendSI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]) > 25)
+                        if (row.UnsocialGrandWeekendSI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.UnsocialGrandWeekendSI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) > 25)
+                        if (row.OnCallDaySI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.OnCallDaySI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI[i]) > 25)
+                        if (row.OnCallNightSI[i] != null)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI[" + i.ToString() + "]", "För högt antal timmar.");
+                            Match match = regex.Match(row.OnCallNightSI[i]);
+                            if (!match.Success)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI[" + i.ToString() + "]", "Ogiltigt format eller värde.");
+                            }
                         }
                     }
                     idx++;
                 }
 
-                //Check that the sum of hours for all substitute assistants is not greater than the number of hours for the regular assistant for each day
-                int numberOfSickdays = create2VM.ScheduleRowList.Count();
-                int numberOfSubAssistants = create2VM.NumberOfSubAssistants;
-                decimal[] subSum = new decimal[7];
-                for (int dayIdx = 0; dayIdx < numberOfSickdays; dayIdx++)
-                {
-                    for (int i = 0; i < 7; i++)
-                    {
-                        subSum[i] = 0;
-                    }
-                    for (int subIdx = 0; subIdx < create2VM.NumberOfSubAssistants; subIdx++)
-                    {
-                        subSum[0] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].HoursSI[subIdx]);
-                        subSum[1] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialEveningSI[subIdx]);
-                        subSum[2] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialNightSI[subIdx]);
-                        subSum[3] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialWeekendSI[subIdx]);
-                        subSum[4] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialGrandWeekendSI[subIdx]);
-                        subSum[5] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallDaySI[subIdx]);
-                        subSum[6] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallNightSI[subIdx]);
-                    }
-
-                    if (subSum[0] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].Hours))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].Hours", "För högt antal vikarietimmar.");
-                    }
-                    if (subSum[1] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialEvening))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialEvening", "För högt antal vikarietimmar.");
-                    }
-                    if (subSum[2] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialNight))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialNight", "För högt antal vikarietimmar.");
-                    }
-                    if (subSum[3] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialWeekend))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialWeekend", "För högt antal vikarietimmar.");
-                    }
-                    if (subSum[4] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialGrandWeekend))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialGrandWeekend", "För högt antal vikarietimmar.");
-                    }
-                    if (subSum[5] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallDay))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].OnCallDay", "För högt antal vikarietimmar.");
-                    }
-                    if (subSum[6] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallNight))
-                    {
-                        ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].OnCallNight", "För högt antal vikarietimmar.");
-                    }
-                }
-
-                //Check that there are not more unsocial hours than working hours for each day
                 idx = 0;
-                foreach (var row in create2VM.ScheduleRowList)
+                if (ModelState.IsValid)
                 {
-                    if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours))
+                    //Check that no day has more than 25 hours of work
+                    foreach (var row in create2VM.ScheduleRowList)
                     {
-                        ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För många OB-timmar.");
-                    }
-                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                    {
-                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]))
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
                         {
-                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För många OB-timmar.");
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För många timmar.");
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        idx++;
+                    }
+
+                    //Check that no single item has more than 25 hours
+                    idx = 0;
+                    foreach (var row in create2VM.ScheduleRowList)
+                    {
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För många timmar.");
+                        }
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEvening", "För många timmar.");
+                        }
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNight", "För många timmar.");
+                        }
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekend", "För många timmar.");
+                        }
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekend", "För många timmar.");
+                        }
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDay) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDay", "För många timmar.");
+                        }
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNight) > 25)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNight", "För många timmar.");
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialEveningSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialNightSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialWeekendSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].UnsocialGrandWeekendSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallDaySI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].OnCallNightSI[i]) > 25)
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].OnCallNightSI[" + i.ToString() + "]", "För många timmar.");
+                            }
+                        }
+                        idx++;
+                    }
+
+                    //Check that the sum of hours for all substitute assistants is not greater than the number of hours for the regular assistant for each day
+                    int numberOfSickdays = create2VM.ScheduleRowList.Count();
+                    int numberOfSubAssistants = create2VM.NumberOfSubAssistants;
+                    decimal[] subSum = new decimal[7];
+                    for (int dayIdx = 0; dayIdx < numberOfSickdays; dayIdx++)
+                    {
+                        for (int i = 0; i < 7; i++)
+                        {
+                            subSum[i] = 0;
+                        }
+                        for (int subIdx = 0; subIdx < create2VM.NumberOfSubAssistants; subIdx++)
+                        {
+                            subSum[0] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].HoursSI[subIdx]);
+                            subSum[1] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialEveningSI[subIdx]);
+                            subSum[2] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialNightSI[subIdx]);
+                            subSum[3] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialWeekendSI[subIdx]);
+                            subSum[4] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialGrandWeekendSI[subIdx]);
+                            subSum[5] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallDaySI[subIdx]);
+                            subSum[6] += Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallNightSI[subIdx]);
+                        }
+
+                        if (subSum[0] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].Hours))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].Hours", "För många vikarietimmar.");
+                        }
+                        if (subSum[1] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialEvening))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialEvening", "För många vikarietimmar.");
+                        }
+                        if (subSum[2] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialNight))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialNight", "För många vikarietimmar.");
+                        }
+                        if (subSum[3] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialWeekend))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialWeekend", "För många vikarietimmar.");
+                        }
+                        if (subSum[4] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].UnsocialGrandWeekend))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].UnsocialGrandWeekend", "För många vikarietimmar.");
+                        }
+                        if (subSum[5] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallDay))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].OnCallDay", "För många vikarietimmar.");
+                        }
+                        if (subSum[6] > Convert.ToDecimal(create2VM.ScheduleRowList[dayIdx].OnCallNight))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + dayIdx.ToString() + "].OnCallNight", "För många vikarietimmar.");
                         }
                     }
-                    idx++;
-                }
 
-                //Check that some working hours have been filled in for the regular and substitute assistants
-                bool hoursFound = false;
-                idx = 0;
-                do
-                {
-                    if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
+                    //Check that there are not more unsocial hours than working hours for each day
+                    idx = 0;
+                    foreach (var row in create2VM.ScheduleRowList)
                     {
-                        hoursFound = true;
+                        if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEvening) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNight) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekend) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekend) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].Hours))
+                        {
+                            ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].Hours", "För många OB-timmar.");
+                        }
+                        for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                        {
+                            if (Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialEveningSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialNightSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialWeekendSI[i]) + Convert.ToDecimal(create2VM.ScheduleRowList[idx].UnsocialGrandWeekendSI[i]) > Convert.ToDecimal(create2VM.ScheduleRowList[idx].HoursSI[i]))
+                            {
+                                ModelState.AddModelError("ScheduleRowList[" + idx.ToString() + "].HoursSI[" + i.ToString() + "]", "För många OB-timmar.");
+                            }
+                        }
+                        idx++;
                     }
-                    idx++;
-                } while (!hoursFound && idx < create2VM.ScheduleRowList.Count());
-                if (!hoursFound)
-                {
-                    ModelState.AddModelError("ScheduleRowList[0].Hours", "Inga timmar ifyllda.");
-                }
-                for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
-                {
-                    bool hoursSIFound = false;
+
+                    //Check that some working hours have been filled in for the regular and substitute assistants
+                    bool hoursFound = false;
                     idx = 0;
                     do
                     {
-                        if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI[i]) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI[i]))
+                        if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].Hours) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDay) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNight))
                         {
-                            hoursSIFound = true;
+                            hoursFound = true;
                         }
                         idx++;
-                    } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
-                    if (!hoursSIFound)
+                    } while (!hoursFound && idx < create2VM.ScheduleRowList.Count());
+                    if (!hoursFound)
                     {
-                        ModelState.AddModelError("ScheduleRowList[0].HoursSI[" + i.ToString() + "]", "Inga timmar ifyllda.");
+                        ModelState.AddModelError("ScheduleRowList[0].Hours", "Inga timmar ifyllda.");
+                    }
+                    for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
+                    {
+                        bool hoursSIFound = false;
+                        idx = 0;
+                        do
+                        {
+                            if (!string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].HoursSI[i]) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallDaySI[i]) || !string.IsNullOrEmpty(create2VM.ScheduleRowList[idx].OnCallNightSI[i]))
+                            {
+                                hoursSIFound = true;
+                            }
+                            idx++;
+                        } while (!hoursSIFound && idx < create2VM.ScheduleRowList.Count());
+                        if (!hoursSIFound)
+                        {
+                            ModelState.AddModelError("ScheduleRowList[0].HoursSI[" + i.ToString() + "]", "Inga timmar ifyllda.");
+                        }
                     }
                 }
+
             }
 
             if (ModelState.IsValid)
@@ -4283,17 +4289,17 @@ namespace Sjuklöner.Controllers
             return RedirectToAction("Index");
         }
 
-        private bool OverlappingClaim(string referenceNumber, DateTime firstDayOfSicknessDate, DateTime lastDayOfSicknessDate, string SSN)
+        private bool OverlappingClaim(string referenceNumber, DateTime firstDayOfSicknessDate, DateTime lastDayOfSicknessDate, string CustomerSSN, string AssistantSSN)
         {
             //Check if a claim for overlapping dates already exists for the same customer.
             List<Claim> claims = new List<Claim>();
             if (referenceNumber == null) //New claim
             {
-                claims = db.Claims.Where(c => c.CustomerSSN == SSN).ToList();
+                claims = db.Claims.Where(c => c.CustomerSSN == CustomerSSN).Where(c => c.RegAssistantSSN == AssistantSSN).ToList();
             }
             else //Update of existing claim. The already stored claim must be excluded from the list of claims to be checked for overlaps
             {
-                claims = db.Claims.Where(c => c.CustomerSSN == SSN).Where(c => c.ReferenceNumber != referenceNumber).ToList();
+                claims = db.Claims.Where(c => c.CustomerSSN == CustomerSSN).Where(c => c.ReferenceNumber != referenceNumber).ToList();
             }
             if (claims != null)
             {

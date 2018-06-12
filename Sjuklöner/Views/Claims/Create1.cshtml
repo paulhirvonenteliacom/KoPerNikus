@@ -274,7 +274,7 @@
 
         <div class="row row-validation-20 line-height-07">
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.CustomerSSN, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.CustomerSSN, "", new { @class = "text-danger font-size-11", id = "customer-SSN-val" })
             </div>
             <div class="col col-md-6">
                 @Html.ValidationMessageFor(model => model.FirstDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
@@ -332,7 +332,7 @@
                 {
                     <div class="row">
                         <div class="btn-left-margin-15">
-                            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })                           
+                            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
                         </div>
                     </div>
                 }
@@ -340,7 +340,7 @@
         </div>
 
         <div class="row row-validation-20 line-height-07">
-            <div class="col col-md-8">
+            <div class="col col-md-8 text-danger font-size-11" id="valerror-on-page">
             </div>
             <div class="col col-md-4">
             </div>
@@ -375,11 +375,9 @@
 }
 <script type="text/javascript">
     $('#PdfEventOmbudCreate1').delay(4000).hide(1500);
-</script>
-<script type="text/javascript">
+
     $('#PdfEventCreate1Fail').delay(100000).hide(1500);
-</script>
-<script type='text/javascript'>
+
     $(document).ready(function createSubAssistants() {
         //get the number of sub assistants (1 is the default)
         var assistantddlcounter = document.getElementById('ddl-counter');
@@ -395,7 +393,90 @@
                 addSubAssistant(newddl, numOfRow, notRemoveButton);
             }
         }
+
+        var form = document.getElementsByTagName("form");
+        for (var i = 0; i < form.length; i++) {
+            form[i].id = "form";
+        }
+
+        $("form").submit(function (e) {
+            checkIfSubSelected();
+            if (!checkValidationErrors()) {
+                var erroronpage = document.getElementById('valerror-on-page');
+                erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 2.";
+                e.preventDefault();
+            }
+        });
     });
+
+    //this function checks if there are ddls where no selection has been made or the selection is "Ingen vald"
+    function checkIfSubSelected() {
+        var regAssistant = document.getElementById('SelectedRegAssistantId')
+        var regAssistantVal = document.getElementById('regular-assistant-val');
+
+        //check if regular assistant has been selected
+        var regAssistantSelected = true;
+        if (regAssistant.selectedIndex == 0) {
+            regAssistantVal.innerText = 'Ordinarie assistent måste väljas.';
+            regAssistantSelected = false;
+        }
+
+        //check if first sub assistant has been selected
+        var firstSub = document.getElementById('subassistant1-ddl')
+        var firstSubVal = document.getElementById('first-subassistant-val');
+        var firstSubAssistantSelected = true;
+        if (firstSub.selectedIndex == 0) {
+            firstSubVal.innerText = 'Vikarierande assistent måste väljas.';
+            firstSubAssistantSelected = false;
+        }
+
+        //check if all other sub assistants have been selected
+        var items = document.getElementsByClassName('selecteditem');
+        var subAssVal = document.getElementsByClassName('check-val');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].innerText == "0") {
+                subAssVal[i].innerText = 'Vikarierande assistent måste väljas.';
+            }
+        }
+
+        //if (!regAssistantSelected || !firstSubAssistantSelected) {
+        //    return false;
+        //}
+        //else {
+        //    return true;
+        //}
+    }
+
+    //this function checks if there are any validation errors on the page
+    function checkValidationErrors() {
+        var validationErrorFound = false;
+        var customerSSNVal = document.getElementById('customer-SSN-val');
+        var regAssistantVal = document.getElementById('regular-assistant-val');
+        var firstSubVal = document.getElementById('first-subassistant-val');
+
+        var assistantddlcounter = document.getElementById('ddl-counter');
+        var subassddlcounterInt = parseInt(assistantddlcounter.value);
+
+        if (customerSSNVal.innerHTML != "" || regAssistantVal.innerHTML != "" || firstSubVal.innerHTML != "") {
+            validationErrorFound = true;
+        }
+
+        var subAssVal = document.getElementsByClassName('check-val');
+        var idx = 0;
+        while (!validationErrorFound && idx < subassddlcounterInt - 1) {
+            if (subAssVal[idx].innerHTML != "") {
+                validationErrorFound = true;
+            }
+            idx++;
+        }
+
+        if (!validationErrorFound) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     function select_regular_assistant() {
         var regAssistant = document.getElementById('SelectedRegAssistantId')
@@ -430,6 +511,31 @@
             }
         }
 
+        //check if the first sub assistant's validation message needs to be reset
+        var firstSub = document.getElementById('subassistant1-ddl')
+        var firstSubVal = document.getElementById('first-subassistant-val');
+        if (firstSub.selectedIndex != 0) {
+            //check if the selected first subassistant already has been selected
+            var assistantFound = false;
+            var assIdx = 0;
+            while (!assistantFound && assIdx < items.length) {
+                if (firstSub.selectedIndex == items[assIdx].innerText) {
+                    assistantFound = true;
+                }
+                assIdx++;
+            }
+            if (!assistantFound) {
+                //check if the selected first subassistant already has been selected as the regular assistant
+                if (regAssistant.selectedIndex == firstSub.selectedIndex) {
+                    assistantFound = true;
+                }
+            }
+            if (!assistantFound) {
+                //reset the validation message for the first subassistant
+                firstSubVal.innerText = '';
+            }
+        }
+
         //reset validation message 'Assistenten är redan vald' where relevant
         var startIdx = items.length - 2;
         var k = 0;
@@ -466,18 +572,24 @@
             }
             startIdx--;
         }
+
+        //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
+        if (checkValidationErrors()) {
+            var erroronpage = document.getElementById('valerror-on-page');
+            erroronpage.innerHTML = "";
+        }
     }
 
     function select_first_subassistant() {
         var firstSub = document.getElementById('subassistant1-ddl')
         var firstSubVal = document.getElementById('first-subassistant-val');
+        var items = document.getElementsByClassName('selecteditem');
         if (firstSub.selectedIndex == 0) {
             //reset the validation message for the first subassistant
             firstSubVal.innerText = '';
         }
         else {
             //check if the selected first subassistant already has been selected
-            var items = document.getElementsByClassName('selecteditem');
             var assistantFound = false;
             var assIdx = 0;
             while (!assistantFound && assIdx < items.length) {
@@ -498,6 +610,31 @@
             if (!assistantFound) {
                 //reset the validation message for the first subassistant
                 firstSubVal.innerText = '';
+            }
+        }
+
+        //check if the regular assistant's validation message needs to be reset
+        var regAssistant = document.getElementById('SelectedRegAssistantId')
+        var regAssistantVal = document.getElementById('regular-assistant-val');
+        if (regAssistant.selectedIndex != 0) {
+            //check if the selected regular assistant already has been selected
+            var assistantFound = false;
+            var assIdx = 0;
+            while (!assistantFound && assIdx < items.length) {
+                if (regAssistant.selectedIndex == items[assIdx].innerText) {
+                    assistantFound = true;
+                }
+                assIdx++;
+            }
+            if (!assistantFound) {
+                //check if the selected regular assistant already has been selected as the first substitute assistant
+                if (regAssistant.selectedIndex == firstSub.selectedIndex) {
+                    assistantFound = true;
+                }
+            }
+            if (!assistantFound) {
+                //reset the validation message for the regular assistant
+                regAssistantVal.innerText = '';
             }
         }
 
@@ -538,6 +675,12 @@
             }
             startIdx--;
         }
+
+        //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
+        if (checkValidationErrors()) {
+            var erroronpage = document.getElementById('valerror-on-page');
+            erroronpage.innerHTML = "";
+        }
     }
 
     function addsubassistant_onclick() {
@@ -548,6 +691,109 @@
         var subassddlcounterInt = parseInt(assistantddlcounter.value);
         numOfRow = subassddlcounterInt + 1;
         addSubAssistant(newddl, numOfRow, notRemoveButton);
+    }
+
+    function UpdateSelectedItem(e) {
+
+        //var assistantSelectList = $('select#ddl' + numOfRow); // new line
+        //var selectIdx = $('option:selected', assistantSelectList).val(); //new line
+        //var idx = this.className.substring(6);
+        //var selectIdx = this.value;
+
+        var idx = e.id.substring(3);
+        var selectIdx = e.value;
+
+        var selectedItemSpan = document.getElementById('span' + idx);
+        selectedItemSpan.innerText = selectIdx;
+
+        //update the array that holds the selected sub assistant indeces
+        //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
+        var assistantddlcounter = document.getElementById('ddl-counter');
+        var subassddlcounterInt = parseInt(assistantddlcounter.value);
+
+        var items = document.getElementsByClassName('selecteditem');
+        var selectedItems = document.getElementsByClassName('selectedSubIndex');
+        var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+
+        for (var idx3 = 0; idx3 < subassddlcounterInt - 1; idx3++) {
+            selectedItems[idx3].value = 9999;
+            selectedAssistants[idx3].value = "";
+        }
+
+        //load current indeces
+        var selectedItems = document.getElementsByClassName('selectedSubIndex');
+        for (var idx1 = 0; idx1 < subassddlcounterInt - 1; idx1++) {
+            selectedItems[idx1].value = parseInt(items[idx1].innerText);
+        }
+
+        //load the selectedAssistants
+        var items = document.getElementsByClassName('selecteditem');
+        var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+        for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
+            if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
+                var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
+                selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
+            }
+        }
+
+        //update validation messages
+        var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+        var items = document.getElementsByClassName('selecteditem');
+        if (selectedItemSpan.innerText != "0") {
+            selectedSubAssistantVal[parseInt(idx) - 2].innerText = "";
+            var subAssVal = document.getElementById('innerValDiv' + idx).children;
+            subAssVal[0].innerText = "";
+        }
+
+        for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
+            if (selectedSubAssistantVal[idx2].innerText != "") {
+                var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
+                subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
+            }
+        }
+
+        //check if the assistant already has been selected
+        var subAssVal = document.getElementById('innerValDiv' + idx).children;
+
+        if (selectIdx == 0 && selectedSubAssistantVal[parseInt(idx) - 2].innerText == "") {
+            //reset the validation message
+            subAssVal[0].innerText = '';
+        }
+        else {
+            var items = document.getElementsByClassName('selecteditem');
+            var itemFound = false;
+            var itemIdx = 0;
+            while (!itemFound && itemIdx < items.length) {
+                if (selectIdx == parseInt(items[itemIdx].innerText) && idx != (2 + itemIdx).toString()) {
+                    subAssVal[0].innerText = 'Assistenten är redan vald.';
+                    itemFound = true;
+                }
+                itemIdx++;
+            }
+            //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+            if (!itemFound) {
+                var firstSub = document.getElementById('subassistant1-ddl')
+                if (selectIdx == firstSub.selectedIndex) {
+                    subAssVal[0].innerText = 'Assistenten är redan vald.';
+                    itemFound = true;
+                }
+            }
+            if (!itemFound) {
+                var firstSub = document.getElementById('SelectedRegAssistantId')
+                if (selectIdx == firstSub.selectedIndex) {
+                    subAssVal[0].innerText = 'Assistenten är redan vald.';
+                    itemFound = true;
+                }
+            }
+
+            if (!itemFound) {
+                //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
+                if (checkValidationErrors()) {
+                    var erroronpage = document.getElementById('valerror-on-page');
+                    erroronpage.innerHTML = "";
+                }
+            }
+        }
     }
 
     function addSubAssistant(newddl, numOfRow, notRemoveButton) {
@@ -598,13 +844,14 @@
         var newDropDownList = document.createElement('select');
         newDropDownList.id = 'ddl' + numOfRow;
         newDropDownList.setAttribute('class', 'display-inline-block form-control subass-ddl');
+        newDropDownList.setAttribute('onchange', 'UpdateSelectedItem(this)'); //new line
         newDropDownList.setAttribute('data-val', 'true');
         newDropDownList.setAttribute('data-val-range-min', '1');
         newDropDownList.setAttribute('data-val-range-max', '999999');
         newDropDownList.setAttribute('data-val-range', 'En vikarierande assistent måste väljas');
 
         var newSpan = document.createElement('span');
-        newSpan.setAttribute('class', 'field-validation-valid text-danger font-size-11');
+        newSpan.setAttribute('class', 'field-validation-valid text-danger font-size-11 check-val');
         newSpan.setAttribute('data-valmsg-replace', 'true');
         newSpan.setAttribute('data-valmsg-for', '');
 
@@ -621,95 +868,106 @@
             option.value = i;
             //}
             option.setAttribute('class', 'option' + numOfRow);
-            option.onclick = function UpdateSelectedItem() {
-                var idx = this.className.substring(6);
-                var selectIdx = this.value;
+            //option.onclick = function UpdateSelectedItem() {
 
-                var selectedItemSpan = document.getElementById('span' + idx);
-                selectedItemSpan.innerText = selectIdx;
+            //    //var assistantSelectList = $('select#ddl' + numOfRow); // new line
+            //    //var selectIdx = $('option:selected', assistantSelectList).val(); //new line
 
-                //update the array that holds the selected sub assistant indeces
-                //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
-                var assistantddlcounter = document.getElementById('ddl-counter');
-                var subassddlcounterInt = parseInt(assistantddlcounter.value);
+            //    var idx = this.className.substring(6);
+            //    var selectIdx = this.value;
 
-                var items = document.getElementsByClassName('selecteditem');
-                var selectedItems = document.getElementsByClassName('selectedSubIndex');
-                var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
-                //var selectedAssistantVals = document.getElementsByClassName('selectedSubAssistantVal')
+            //    var selectedItemSpan = document.getElementById('span' + idx);
+            //    selectedItemSpan.innerText = selectIdx;
 
-                for (var idx3 = 0; idx3 < subassddlcounterInt - 1; idx3++) {
-                    selectedItems[idx3].value = 9999;
-                    selectedAssistants[idx3].value = "";
-                }
+            //    //update the array that holds the selected sub assistant indeces
+            //    //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
+            //    var assistantddlcounter = document.getElementById('ddl-counter');
+            //    var subassddlcounterInt = parseInt(assistantddlcounter.value);
 
-                //load current indeces
-                var selectedItems = document.getElementsByClassName('selectedSubIndex');
-                for (var idx1 = 0; idx1 < subassddlcounterInt - 1; idx1++) {
-                    selectedItems[idx1].value = parseInt(items[idx1].innerText);
-                }
+            //    var items = document.getElementsByClassName('selecteditem');
+            //    var selectedItems = document.getElementsByClassName('selectedSubIndex');
+            //    var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
 
-                //load the selectedAssistants
-                var items = document.getElementsByClassName('selecteditem');
-                var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
-                for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
-                    if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
-                        var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
-                        selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
-                    }
-                }
+            //    for (var idx3 = 0; idx3 < subassddlcounterInt - 1; idx3++) {
+            //        selectedItems[idx3].value = 9999;
+            //        selectedAssistants[idx3].value = "";
+            //    }
 
-                //update validation messages
-                var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
-                var items = document.getElementsByClassName('selecteditem');
-                if (selectedItemSpan.innerText != "0") {
-                    selectedSubAssistantVal[parseInt(idx) - 2].innerText = "";
-                    var subAssVal = document.getElementById('innerValDiv' + idx).children;
-                    subAssVal[0].innerText = "";
-                }
+            //    //load current indeces
+            //    var selectedItems = document.getElementsByClassName('selectedSubIndex');
+            //    for (var idx1 = 0; idx1 < subassddlcounterInt - 1; idx1++) {
+            //        selectedItems[idx1].value = parseInt(items[idx1].innerText);
+            //    }
 
-                for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
-                    if (selectedSubAssistantVal[idx2].innerText != "") {
-                        var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
-                        subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
-                    }
-                }
+            //    //load the selectedAssistants
+            //    var items = document.getElementsByClassName('selecteditem');
+            //    var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+            //    for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
+            //        if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
+            //            var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
+            //            selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
+            //        }
+            //    }
 
-                //check if the assistant already has been selected
-                var subAssVal = document.getElementById('innerValDiv' + idx).children;
+            //    //update validation messages
+            //    var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+            //    var items = document.getElementsByClassName('selecteditem');
+            //    if (selectedItemSpan.innerText != "0") {
+            //        selectedSubAssistantVal[parseInt(idx) - 2].innerText = "";
+            //        var subAssVal = document.getElementById('innerValDiv' + idx).children;
+            //        subAssVal[0].innerText = "";
+            //    }
 
-                if (selectIdx == 0 && selectedSubAssistantVal[parseInt(idx) - 2].innerText == "") {
-                    //reset the validation message
-                    subAssVal[0].innerText = '';
-                }
-                else {
-                    var items = document.getElementsByClassName('selecteditem');
-                    var itemFound = false;
-                    var itemIdx = 0;
-                    while (!itemFound && itemIdx < items.length) {
-                        if (selectIdx == parseInt(items[itemIdx].innerText) && idx != (2 + itemIdx).toString()) {
-                            subAssVal[0].innerText = 'Assistenten är redan vald.';
-                            itemFound = true;
-                        }
-                        itemIdx++;
-                    }
-                    //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
-                    if (!itemFound) {
-                        var firstSub = document.getElementById('subassistant1-ddl')
-                        if (selectIdx == firstSub.selectedIndex) {
-                            subAssVal[0].innerText = 'Assistenten är redan vald.';
-                            itemFound = true;
-                        }
-                    }
-                    if (!itemFound) {
-                        var firstSub = document.getElementById('SelectedRegAssistantId')
-                        if (selectIdx == firstSub.selectedIndex) {
-                            subAssVal[0].innerText = 'Assistenten är redan vald.';
-                            itemFound = true;
-                        }
-                    }
-                }
-            }
+            //    for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
+            //        if (selectedSubAssistantVal[idx2].innerText != "") {
+            //            var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
+            //            subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
+            //        }
+            //    }
+
+            //    //check if the assistant already has been selected
+            //    var subAssVal = document.getElementById('innerValDiv' + idx).children;
+
+            //    if (selectIdx == 0 && selectedSubAssistantVal[parseInt(idx) - 2].innerText == "") {
+            //        //reset the validation message
+            //        subAssVal[0].innerText = '';
+            //    }
+            //    else {
+            //        var items = document.getElementsByClassName('selecteditem');
+            //        var itemFound = false;
+            //        var itemIdx = 0;
+            //        while (!itemFound && itemIdx < items.length) {
+            //            if (selectIdx == parseInt(items[itemIdx].innerText) && idx != (2 + itemIdx).toString()) {
+            //                subAssVal[0].innerText = 'Assistenten är redan vald.';
+            //                itemFound = true;
+            //            }
+            //            itemIdx++;
+            //        }
+            //        //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+            //        if (!itemFound) {
+            //            var firstSub = document.getElementById('subassistant1-ddl')
+            //            if (selectIdx == firstSub.selectedIndex) {
+            //                subAssVal[0].innerText = 'Assistenten är redan vald.';
+            //                itemFound = true;
+            //            }
+            //        }
+            //        if (!itemFound) {
+            //            var firstSub = document.getElementById('SelectedRegAssistantId')
+            //            if (selectIdx == firstSub.selectedIndex) {
+            //                subAssVal[0].innerText = 'Assistenten är redan vald.';
+            //                itemFound = true;
+            //            }
+            //        }
+
+            //        if (!itemFound) {
+            //            //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
+            //            if (checkValidationErrors()) {
+            //                var erroronpage = document.getElementById('valerror-on-page');
+            //                erroronpage.innerHTML = "";
+            //            }
+            //        }
+            //    }
+            //}
             newDropDownList.add(option, newDropDownList.options[i]);
         }
 
@@ -723,13 +981,8 @@
         }
         else {
             //This code is executed at load of the page
-            //var items = document.getElementsByClassName('selecteditem');
             var selectedItems = document.getElementsByClassName('selectedSubIndex');
             newDropDownList.selectedIndex = selectedItems[numOfRow - 2].value;
-
-            //load the selectedAssistants
-            //var items = document.getElementsByClassName('selecteditem');
-            //var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
         }
 
         //create remove button for each email adress
@@ -744,15 +997,7 @@
             var idx = this.id.substring(3);
 
             //remove() method is not supported by IE. Therefore the following code is used.
-            //var labelDiv = document.getElementById('outerLabelDiv' + idx);
-            //labelDiv.remove();
-
-            //var ddlDiv = document.getElementById('outerDdlDiv' + idx);
-            //ddlDiv.remove();
-
-            //var valDiv = document.getElementById('outerValDiv' + idx);
-            //valDiv.remove();
-
+            
             var labelDiv = document.getElementById('outerLabelDiv' + idx);
             labelDiv.parentNode.removeChild(labelDiv);
 
@@ -787,7 +1032,6 @@
             //load current indeces
             for (var i = 0; i < subassddlcounterInt - 2; i++) {
                 selectedItems[i].value = parseInt(items[i].innerText);
-                //selectedAssistants[i].value = items[i].innerText; continue here
             }
 
             //rename ids for label-, ddl- and validationmessage divs, rename options classes, rename ids for selecteditem spans and for minusbuttons
@@ -833,7 +1077,6 @@
             //load current assistants
             for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
                 if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
-                    //if (items[idx2].innerText != "0") {
                     var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
                     selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
                 }
@@ -904,6 +1147,12 @@
             var minusbuttons = document.getElementsByClassName('minusbutton');
             for (var i = 0; i < subassddlcounterInt - 2; i++) {
                 minusbuttons[i].id = 'btn' + (i + 2).toString();
+            }
+
+            //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
+            if (checkValidationErrors()) {
+                var erroronpage = document.getElementById('valerror-on-page');
+                erroronpage.innerHTML = "";
             }
         }
 

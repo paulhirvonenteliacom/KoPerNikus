@@ -380,6 +380,10 @@
     <Compile Include="Migrations\201806070622057_AddPropertiesInClaimForMultipleFKAttachments.Designer.cs">
       <DependentUpon>201806070622057_AddPropertiesInClaimForMultipleFKAttachments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.cs" />
+    <Compile Include="Migrations\201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.Designer.cs">
+      <DependentUpon>201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -746,6 +750,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806070622057_AddPropertiesInClaimForMultipleFKAttachments.resx">
       <DependentUpon>201806070622057_AddPropertiesInClaimForMultipleFKAttachments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.resx">
+      <DependentUpon>201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

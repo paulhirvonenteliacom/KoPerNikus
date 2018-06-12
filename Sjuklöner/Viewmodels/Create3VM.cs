@@ -13,26 +13,26 @@ namespace Sjuklöner.Viewmodels
 
         //[Required]
         [Display(Name = "Sjuklön (Kr):")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string SickPay { get; set; }
 
         //[Required]
         [Display(Name = "Semesterersättning (Kr):")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string HolidayPay { get; set; }
 
         //[Required]
         [Display(Name = "Sociala avgifter (Kr):")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string SocialFees { get; set; }
 
         //[Required]
         [Display(Name = "Övriga avtalsbundna kostnader (Kr):")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string PensionAndInsurance { get; set; }
 
         [Display(Name = "Yrkat belopp (Kr):")]
-        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Fel format.")]
+        [RegularExpression(@"\d{0,5}(\,\d{0,2})?$", ErrorMessage = "Ogiltigt format eller värde.")]
         public string ClaimSum { get; set; }
 
         public bool ShowCalculatedValues { get; internal set; }

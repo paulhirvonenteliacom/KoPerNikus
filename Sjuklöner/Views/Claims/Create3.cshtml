@@ -1,11 +1,11 @@
 ﻿@model Sjuklöner.Viewmodels.Create3VM
 @using Newtonsoft.Json
 @{
-                /**/
+    /**/
 
-                /**/
+    /**/
 
-                ViewBag.Title = "Create3";
+    ViewBag.Title = "Create3";
 }
 <div class="row margin-breadcrumb">
     <nav aria-label="breadcrumb">
@@ -67,39 +67,49 @@
             @*<div class="col col-md-6">*@
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
-            <div class="form-group">
+            <div class="form-group small-bottom-margin">
                 @Html.LabelFor(model => model.SickPay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.SickPay, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.SickPay, id = "sickpay", onchange = "calculateSum()", onblur = "calculateSum()" } })
-                    @Html.ValidationMessageFor(model => model.SickPay, "", new { @class = "text-danger font-size-11" })
+                    <div class="row row-height-14 line-height-07 col-left-padding-15">
+                        @Html.ValidationMessageFor(model => model.SickPay, null, new { @class = "text-danger font-size-11", id = "sickpay-val" })
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group small-bottom-margin">
                 @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.HolidayPay, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.HolidayPay, id = "holidaypay", onchange = "calculateSum()", onblur = "calculateSum()" } })
-                    @Html.ValidationMessageFor(model => model.HolidayPay, "", new { @class = "text-danger font-size-11" })
+                    <div class="row row-height-14 line-height-07 col-left-padding-15">
+                        @Html.ValidationMessageFor(model => model.HolidayPay, null, new { @class = "text-danger font-size-11", id = "holidaypay-val" })
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group small-bottom-margin">
                 @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.SocialFees, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.SocialFees, id = "socialfees", onchange = "calculateSum()", onblur = "calculateSum()" } })
-                    @Html.ValidationMessageFor(model => model.SocialFees, "", new { @class = "text-danger font-size-11" })
+                    <div class="row row-height-14 line-height-07 col-left-padding-15">
+                        @Html.ValidationMessageFor(model => model.SocialFees, null, new { @class = "text-danger font-size-11", id = "socialfees-val" })
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group small-bottom-margin">
                 @Html.LabelFor(model => model.PensionAndInsurance, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.PensionAndInsurance, new { htmlAttributes = new { @class = "form-control align-bottom2", @placeholder = Model.PensionAndInsurance, id = "pensionandinsurance", onchange = "calculateSum()", onblur = "calculateSum()" } })
-                    @Html.ValidationMessageFor(model => model.PensionAndInsurance, "", new { @class = "text-danger font-size-11" })
+                    <div class="row row-height-14 line-height-07 col-left-padding-15">
+                        @Html.ValidationMessageFor(model => model.PensionAndInsurance, null, new { @class = "text-danger font-size-11", id = "pensionandinsurance-val" })
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group small-bottom-margin">
                 @Html.LabelFor(model => model.ClaimSum, htmlAttributes: new { @class = "control-label control-label-large col-md-2" })
-                <div class="col-md-4 align-bottom3 display-large-font1" id="claimamount">
+                <div class="col-md-1 align-bottom3 display-large-font1" id="claimamount">
                     @Html.DisplayFor(model => Model.ClaimSum)
-                    @Html.ValidationMessageFor(model => model.ClaimSum, "", new { @class = "text-danger font-size-11" })
+                    @*<div class="row row-height-14 line-height-07 col-left-padding-15 text-danger font-size-11" id="claimsum-validation">*@
+                    @*@Html.ValidationMessageFor(model => model.ClaimSum, null, new { @class = "text-danger font-size-11", id = "claimsum-validation" })*@
+                    @*</div>*@
                 </div>
             </div>
         </div>
@@ -120,6 +130,10 @@
                             parClaimReference = Model.ReferenceNumber }, new { @class = "btn btn-default" })
         </div>*@
     <div>
+        <div class="row row row-height-14 line-height-07">
+            <div class="col col-md-offset-2 col-md-6 text-danger font-size-11" id="claimsum-val">
+            </div>
+        </div>
         <div class="row">
             <div class="small-padding-left3 col col-md-offset-2 col-md-1">
                 @*<input class="btn btn-primary btn-primary-small" type="submit" name="submitButton" value="Skicka in" id="assistance-claim-btn" />*@
@@ -148,6 +162,10 @@
                     </div>
                 </div>
             </div>
+            <div class="row row-validation-20 line-height-07">
+                <div class="col col-md-offset-2 col-md-8 text-danger font-size-11 small-col-padding2" id="valerror-on-page">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -158,100 +176,161 @@
 }
 <script type="text/javascript">
     $('#PdfEventOmbudCreate3').delay(4000).hide(1500);
-</script>
-<script type="text/javascript">
+
     $('#PdfEventCreate3Fail').delay(100000).hide(1500);
-</script>
-<script type='text/javascript'>
+
+    $(document).ready(function assignIdsToSubAssistants() {
+        var form = document.getElementsByTagName("form");
+        for (var i = 0; i < form.length; i++) {
+            form[i].id = "form";
+        }
+
+        $("form").submit(function (e) {
+            if (!checkValidationErrors()) {
+                var erroronpage = document.getElementById('valerror-on-page');
+                erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 4.";
+                e.preventDefault();
+            }
+        });
+    });
+
+    function checkValidationErrors() {
+        var validationErrorFound = false;
+
+        var sickpayval = document.getElementById('sickpay-val');
+        var holidaypayval = document.getElementById('holidaypay-val');
+        var socialfeesval = document.getElementById('socialfees-val');
+        var pensionandinsuranceval = document.getElementById('pensionandinsurance-val');
+        //var claimsumval = document.getElementById('claimsum-val');
+
+        if (sickpayval.innerHTML != "" ||
+            holidaypayval.innerHTML != "" ||
+            socialfeesval.innerHTML != "" ||
+            pensionandinsuranceval.innerHTML != "") {
+            validationErrorFound = true;
+        }
+
+        if (!validationErrorFound) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     function calculateSum() {
+
+        var sickpayval2 = document.getElementById('sickpay-val');
+        var holidaypayval2 = document.getElementById('holidaypay-val');
+        var socialfeesval2 = document.getElementById('socialfees-val');
+        var pensionandinsuranceval2 = document.getElementById('pensionandinsurance-val');
+        var claimsumval2 = document.getElementById('claimsum-val');
 
         var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
         var claimSum = document.getElementById("claimamount");
-        var sickPay = document.getElementById("sickpay").value;
-        var holidayPay = document.getElementById("holidaypay").value;
-        var socialFees = document.getElementById("socialfees").value;
-        var pensionAndInsurance = document.getElementById("pensionandinsurance").value;
 
-        var sickPayInt = 0;
-        var sickPayDec = 0;
+        var erroronpage2 = document.getElementById('valerror-on-page');
 
-        var holidayPayInt = 0;
-        var holidayPayDec = 0;
+        if (checkValidationErrors()) {
+            sickpayval2.innerHTML = "";
+            holidaypayval2.innerHTML = "";
+            socialfeesval2.innerHTML = "";
+            pensionandinsuranceval2.innerHTML = "";
+            claimsumval2.innerHTML = "";
+            erroronpage2.innerHTML = "";
 
-        var socialFeesInt = 0;
-        var socialFeesDec = 0;
+            claimSum.style.display = 'block';
 
-        var pensionAndInsuranceInt = 0;
-        var pensionAndInsuranceDec = 0;
+            var sickPay = document.getElementById("sickpay").value;
+            var holidayPay = document.getElementById("holidaypay").value;
+            var socialFees = document.getElementById("socialfees").value;
+            var pensionAndInsurance = document.getElementById("pensionandinsurance").value;
 
-        var claimSumInt = 0;
-        var claimSumDec = 0;
+            var sickPayInt = 0;
+            var sickPayDec = 0;
 
-        var extraInt = 0;
+            var holidayPayInt = 0;
+            var holidayPayDec = 0;
 
-        var pos = sickPay.search(",");
-        if (pos === -1 || pos === sickPay.length - 1) {
-            //No comma char in the string or if the comma is the last char
-            sickPayInt = parseInt(sickPay);
-        }
-        else {
-            sickPayInt = parseInt(sickPay.substring(0, pos));
-            sickPayDec = parseInt(sickPay.substring(pos + 1));
-        }
+            var socialFeesInt = 0;
+            var socialFeesDec = 0;
 
-        pos = holidayPay.search(",");
-        if (pos === -1 || pos === holidayPay.length - 1) {
-            //No comma char in the string or if the comma is the last char
-            holidayPayInt = parseInt(holidayPay);
-        }
-        else {
-            holidayPayInt = parseInt(holidayPay.substring(0, pos));
-            holidayPayDec = parseInt(holidayPay.substring(pos + 1));
-        }
+            var pensionAndInsuranceInt = 0;
+            var pensionAndInsuranceDec = 0;
 
-        pos = socialFees.search(",");
-        if (pos === -1 || pos === socialFees.length - 1) {
-            //No comma char in the string or if the comma is the last char
-            socialFeesInt = parseInt(socialFees);
-        }
-        else {
-            socialFeesInt = parseInt(socialFees.substring(0, pos));
-            socialFeesDec = parseInt(socialFees.substring(pos + 1));
-        }
+            var claimSumInt = 0;
+            var claimSumDec = 0;
 
-        pos = pensionAndInsurance.search(",");
-        if (pos === -1 || pos === pensionAndInsurance.length - 1) {
-            //No comma char in the string or if the comma is the last char
-            pensionAndInsuranceInt = parseInt(pensionAndInsurance);
-        }
-        else {
-            pensionAndInsuranceInt = parseInt(pensionAndInsurance.substring(0, pos));
-            pensionAndInsuranceDec = parseInt(pensionAndInsurance.substring(pos + 1));
-        }
+            var extraInt = 0;
 
-        claimSumDec = sickPayDec + holidayPayDec + socialFeesDec + pensionAndInsuranceDec;
-        if (!isNaN(claimSumDec)) {
-            if (claimSumDec > 99) {
-                extraInt = parseInt(claimSumDec.toString().substring(0, 1));
-                claimSumDec = parseInt(claimSumDec.toString().substring(1));
-            }
-        }
-
-        claimSumInt = sickPayInt + holidayPayInt + socialFeesInt + pensionAndInsuranceInt + extraInt;
-
-        if (isNaN(claimSumInt) || isNaN(claimSumDec)) {
-            claimSum.innerHTML = "00,00";
-        }
-        else {
-            if (claimSumDec === 0) {
-                claimSum.innerHTML = claimSumInt.toString() + ",00";
-            }
-            else if (claimSumDec < 10) {
-                claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+            var pos = sickPay.search(",");
+            if (pos === -1 || pos === sickPay.length - 1) {
+                //No comma char in the string or if the comma is the last char
+                sickPayInt = parseInt(sickPay);
             }
             else {
-                claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+                sickPayInt = parseInt(sickPay.substring(0, pos));
+                sickPayDec = parseInt(sickPay.substring(pos + 1));
             }
+
+            pos = holidayPay.search(",");
+            if (pos === -1 || pos === holidayPay.length - 1) {
+                //No comma char in the string or if the comma is the last char
+                holidayPayInt = parseInt(holidayPay);
+            }
+            else {
+                holidayPayInt = parseInt(holidayPay.substring(0, pos));
+                holidayPayDec = parseInt(holidayPay.substring(pos + 1));
+            }
+
+            pos = socialFees.search(",");
+            if (pos === -1 || pos === socialFees.length - 1) {
+                //No comma char in the string or if the comma is the last char
+                socialFeesInt = parseInt(socialFees);
+            }
+            else {
+                socialFeesInt = parseInt(socialFees.substring(0, pos));
+                socialFeesDec = parseInt(socialFees.substring(pos + 1));
+            }
+
+            pos = pensionAndInsurance.search(",");
+            if (pos === -1 || pos === pensionAndInsurance.length - 1) {
+                //No comma char in the string or if the comma is the last char
+                pensionAndInsuranceInt = parseInt(pensionAndInsurance);
+            }
+            else {
+                pensionAndInsuranceInt = parseInt(pensionAndInsurance.substring(0, pos));
+                pensionAndInsuranceDec = parseInt(pensionAndInsurance.substring(pos + 1));
+            }
+
+            claimSumDec = sickPayDec + holidayPayDec + socialFeesDec + pensionAndInsuranceDec;
+            if (!isNaN(claimSumDec)) {
+                if (claimSumDec > 99) {
+                    extraInt = parseInt(claimSumDec.toString().substring(0, 1));
+                    claimSumDec = parseInt(claimSumDec.toString().substring(1));
+                }
+            }
+
+            claimSumInt = sickPayInt + holidayPayInt + socialFeesInt + pensionAndInsuranceInt + extraInt;
+
+            if (isNaN(claimSumInt) || isNaN(claimSumDec)) {
+                claimSum.innerHTML = "00,00";
+            }
+            else {
+                if (claimSumDec === 0) {
+                    claimSum.innerHTML = claimSumInt.toString() + ",00";
+                }
+                else if (claimSumDec < 10) {
+                    claimSum.innerHTML = claimSumInt.toString() + ",0" + claimSumDec.toString();
+                }
+                else {
+                    claimSum.innerHTML = claimSumInt.toString() + "," + claimSumDec.toString();
+                }
+            }
+        }
+        else {
+            claimsumval2.innerHTML = "Fel i ett eller flera fält måste rättas innan det yrkade beloppet kan beräknas.";
+            claimSum.style.display = 'none';
         }
     }
 

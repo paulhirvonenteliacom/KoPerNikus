@@ -913,8 +913,37 @@ li a {
     padding-left: 15px;
 }
 
+.hidden-row {
+    display: none;
+}
+
+.small-bottom-margin {
+    margin-bottom: 6px;
+}
+
+.claimsum-error {
+    margin-left: 30px;
+    padding-top: 14px;
+}
+
+#claimsum-val {
+    padding-left: 8px;
+}
+
+#val-errorinfo-concat {
+    display: none;
+}
+
+#val-errorpos-concat {
+    display: none;
+}
+
 #ddl-counter {
     width: 40px;
+    display: none;
+}
+
+.hidden-field {
     display: none;
 }
 
@@ -932,6 +961,10 @@ li a {
 .selectedSubAssistantVal {
     display: none;
     font-weight: 100;
+}
+
+#valerror-on-page {
+    padding-top: 2px;
 }
 
 .display-inline-block {
@@ -1522,6 +1555,13 @@ li a {
     font-size: 14px;
 }
 
+.height-18-4 {
+    margin-left: -28px;
+    padding-top: 2px;
+    height: 18px;
+    font-size: 11px;
+}
+
 .height-14 {
     height: 14px;
 }
@@ -1810,6 +1850,11 @@ li a {
 
 .small-col-padding {
     padding-left: 10px;
+}
+
+.small-col-padding2 {
+    padding-left: 17px;
+    margin-top: 2px;
 }
 
 .xsmall-col-padding {
