@@ -33,18 +33,6 @@
         <p class="page-header11 col col-md-10">Ansökan om sjuklöneersättning</p>
     </div>
 
-    <div class="row hidden-row">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
-        <div class="col col-md-1 no-col-padding">
-            @*This hidden field is used for saving all validation error messages (concatenated) so that they can be reproduced in the same way after saving*@
-            @Html.EditorFor(model => model.ValErrorInfoConcat, new { htmlAttributes = new { @class = "form-control", id = "val-errorinfo-concat" } })
-        </div>
-        <div class="col col-md-1 no-col-padding">
-            @*This hidden field is used for saving all validation error message positions (concatenated) so that the error messages can be reproduced in the same position after saving*@
-            @Html.EditorFor(model => model.ValErrorPosConcat, new { htmlAttributes = new { @class = "form-control", id = "val-errorpos-concat" } })
-        </div>
-    </div>
-
     if (TempData["PdfSuccess"] != null)
     {
         <div class="Event alert alert-success" id="PdfEventOmbudCreate2">
@@ -93,7 +81,7 @@
                         </div>
                     </div>
                     <div class="col col-md-3 no-col-padding">
-                        <div class="height-18-4 text-danger font-size-11 reg-assistant-val">
+                        <div class="height-18-4 text-danger font-size-11">
                         </div>
                     </div>
                     <div class="col col-md-3">
@@ -103,7 +91,7 @@
                     </div>
                 </div>
 
-                <div class="row line-height-08 margin-bottom-small2">
+                <div class="row line-height-08">
                     <div class="col col-md-2">
                     </div>
                     <div class="col col-md-5 no-col-padding">
@@ -111,9 +99,18 @@
                         </div>
                     </div>
                     <div class="col col-md-1">
-                    </div>
+                        </div>
                     <div class="col col-md-2">
                         <div class="bottom-border">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row row-height-14-3 line-height-08 margin-bottom-small4">
+                    <div class="col col-md-2">
+                    </div>
+                    <div class="col col-md-6 no-col-padding">
+                        <div class="reg-assistant-val text-danger font-size-11">
                         </div>
                     </div>
                 </div>
@@ -271,35 +268,6 @@
                         </div>
                     </div>
                 }
-
-                @*Test*@
-                @*@foreach (var item in Model.ScheduleRowList[0].Test)
-                    {
-                        <div class="row line-height-10">
-                            <div class="schedule-date date-left-padding col col-md-2">
-                            </div>
-                            <div class="col col-md-6 no-col-padding">
-                                <div class="row">
-                                    <div class="col col-md-2 col-padding-15">
-                                        @Html.EditorFor(modelItem => Model.ScheduleRowList[0].Test[t], new { htmlAttributes = new { placeholder = "0,00", @class = "form-control small-form-control-time3 low-form-control2" } })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="date-left-padding col col-md-2">
-                            </div>
-                            <div class="col col-md-6 no-col-padding">
-                                <div class="row row-height-30 small-row-margin4 line-height-07">
-                                    <div class="small-errormessage3 no-col-padding col col-md-2">
-                                        @Html.ValidationMessageFor(modelItem => Model.ScheduleRowList[0].Test[t], null, new { @class = "text-danger font-size-11" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        t++;
-                    }*@
                 <div class="row line-height-04">
                 </div>
 
@@ -585,7 +553,9 @@
         }
 
         $("form").submit(function (e) {
-            checkIfEmptyRegAssistant();
+            if (!checkIfEmptyRegAssistant()) {
+                check5DayGap();
+            }
             if (!checkValidationErrors()) {
                 var erroronpage = document.getElementById('valerror-on-page');
                 erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 3.";
@@ -595,6 +565,49 @@
 
     });
 
+    //Check if there is at least one 5 day gap in the regular assistant's hours. It is not allowed.A new claim needs to be written in that case.
+    //The qualifying day is then handled correctly.
+    function check5DayGap() {
+        var numberOfHours = document.getElementsByClassName("hours");
+        var unsocialEvening = document.getElementsByClassName("unsocial-evening");
+        var unsocialNight = document.getElementsByClassName("unsocial-night");
+        var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
+        var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
+        var oncallDay = document.getElementsByClassName("oncall-day");
+        var oncallNight = document.getElementsByClassName("oncall-night");
+        var numberOfSickDays = numberOfHours.length;
+
+        var dayIdx = 0;
+        var gapCounter = 0;
+
+        while (gapCounter < 5 && dayIdx < numberOfSickDays) {
+            if ((numberOfHours[dayIdx].value == "" || parseFloat(numberOfHours[dayIdx].value.replace(',', '.')) == 0) &&
+                (unsocialEvening[dayIdx].value == "" || parseFloat(unsocialEvening[dayIdx].value.replace(',', '.')) == 0) &&
+                (unsocialNight[dayIdx].value == "" || parseFloat(unsocialNight[dayIdx].value.replace(',', '.')) == 0) &&
+                (unsocialWeekend[dayIdx].value == "" || parseFloat(unsocialWeekend[dayIdx].value.replace(',', '.')) == 0) &&
+                (unsocialGrandWeekend[dayIdx].value == "" || parseFloat(unsocialGrandWeekend[dayIdx].value.replace(',', '.')) == 0) &&
+                (oncallDay[dayIdx].value == "" || parseFloat(oncallDay[dayIdx].value.replace(',', '.')) == 0) &&
+                (oncallNight[dayIdx].value == "" || parseFloat(oncallNight[dayIdx].value.replace(',', '.')) == 0)) {
+                gapCounter++;
+            }
+            else {
+                gapCounter = 0;
+            }
+            dayIdx++;
+        }
+
+        var regassistantval = document.getElementsByClassName('reg-assistant-val');
+        if (gapCounter == 5) {
+            regassistantval[0].innerHTML = "Det finns minst 5 på varandra följande dagar utan timmar. En separat ansökan måste göras för en ny sjukperiod.";
+            return false;
+        }
+        else {
+            regassistantval[0].innerHTML = "";
+            return true;
+        }
+    }
+
+    //check that at least one field has been filled in for each substitute assistant
     function checkIfEmptyRegAssistant() {
         var numberOfHours = document.getElementsByClassName("hours");
         var unsocialEvening = document.getElementsByClassName("unsocial-evening");
@@ -609,13 +622,13 @@
         var hoursFound = false;
         //check if at least one field has been filled in for the regular assistant
         while (!hoursFound && dayIdx < numberOfSickDays) {
-            if ((numberOfHours[dayIdx].value != "" && parseFloat(numberOfHours[dayIdx].value) > 0) ||
-                (unsocialEvening[dayIdx].value != "" && parseFloat(unsocialEvening[dayIdx].value) > 0) ||
-                (unsocialNight[dayIdx].value != "" && parseFloat(unsocialNight[dayIdx].value) > 0) ||
-                (unsocialWeekend[dayIdx].value != "" && parseFloat(unsocialWeekend[dayIdx].value) > 0) ||
-                (unsocialGrandWeekend[dayIdx].value != "" && parseFloat(unsocialGrandWeekend[dayIdx].value) > 0) ||
-                (oncallDay[dayIdx].value != "" && parseFloat(oncallDay[dayIdx].value) > 0) ||
-                (oncallNight[dayIdx].value != "" && parseFloat(oncallNight[dayIdx].value) > 0)) {
+            if ((numberOfHours[dayIdx].value != "" && parseFloat(numberOfHours[dayIdx].value.replace(',', '.')) > 0) ||
+                (unsocialEvening[dayIdx].value != "" && parseFloat(unsocialEvening[dayIdx].value.replace(',', '.')) > 0) ||
+                (unsocialNight[dayIdx].value != "" && parseFloat(unsocialNight[dayIdx].value.replace(',', '.')) > 0) ||
+                (unsocialWeekend[dayIdx].value != "" && parseFloat(unsocialWeekend[dayIdx].value.replace(',', '.')) > 0) ||
+                (unsocialGrandWeekend[dayIdx].value != "" && parseFloat(unsocialGrandWeekend[dayIdx].value.replace(',', '.')) > 0) ||
+                (oncallDay[dayIdx].value != "" && parseFloat(oncallDay[dayIdx].value.replace(',', '.')) > 0) ||
+                (oncallNight[dayIdx].value != "" && parseFloat(oncallNight[dayIdx].value.replace(',', '.')) > 0)) {
                 hoursFound = true;
             }
             dayIdx++;
@@ -625,7 +638,7 @@
         if (!checkIfEmptySubAssistants()) {
             subAssistantHoursExist = true;
         }
-        
+
         var regassistantval = document.getElementsByClassName('reg-assistant-val');
         if (!hoursFound && subAssistantHoursExist) {
             regassistantval[0].innerHTML = "Inga timmar ifyllda för ordinarie assistent.";
@@ -658,13 +671,13 @@
         var hoursFound = false;
         while (!hoursFound && dayIdx < numberOfSickDays) {
             while (!hoursFound && subIdx < numberOfSubAssistants) {
-                if ((numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value) > 0) ||
-                    (unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value) > 0) ||
-                    (unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value) > 0) ||
-                    (unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value) > 0) ||
-                    (unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value) > 0) ||
-                    (oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value) > 0) ||
-                    (oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value) > 0)) {
+                if ((numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(numberOfHoursSI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                    (unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialEveningSI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                    (unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialNightSI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                    (unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                    (unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                    (oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(oncallDaySI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                    (oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value != "" && parseFloat(oncallNightSI[(subIdx * numberOfSickDays) + dayIdx].value.replace(',', '.')) > 0)) {
                     hoursFound = true;
                 }
                 subIdx++;
@@ -679,7 +692,6 @@
         else {
             return true;
         }
-
     }
 
     function validateInput(dayIdx, subIdx, typeOfHour) {
@@ -1907,7 +1919,8 @@
         var sumSIHours = 0;
         if (hourType == 1) {
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) > 0 && amount != "0,00" && numberOfHours[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (numberOfHours[dayIndex].value == "" || numberOfHours[dayIndex].value == "0" || numberOfHours[dayIndex].value == "0,0" || numberOfHours[dayIndex].value == "00,00" || numberOfHours[dayIndex].value == "0,00")) {
                     //valInfo.innerHTML = "Ordinarie assistent måste fyllas i först."; This line is needed instead of the next line if it is necessary to distinguish between
                     //too high sub hours in general and the special case when no hours has yet been filled in for the regular assistant
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -1929,7 +1942,8 @@
         else if (hourType == 2) {
             var unsocialEvening = document.getElementsByClassName("unsocial-evening");
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialEvening[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (unsocialEvening[dayIndex].value == "" || unsocialEvening[dayIndex].value == "0" || unsocialEvening[dayIndex].value == "0,0" || unsocialEvening[dayIndex].value == "00,00" || unsocialEvening[dayIndex].value == "0,00")) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -1950,7 +1964,8 @@
         else if (hourType == 3) {
             var unsocialNight = document.getElementsByClassName("unsocial-night");
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialNight[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (unsocialNight[dayIndex].value == "" || unsocialNight[dayIndex].value == "0" || unsocialNight[dayIndex].value == "0,0" || unsocialNight[dayIndex].value == "00,00" || unsocialNight[dayIndex].value == "0,00")) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -1971,7 +1986,8 @@
         else if (hourType == 4) {
             var unsocialWeekend = document.getElementsByClassName("unsocial-weekend");
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialWeekend[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (unsocialWeekend[dayIndex].value == "" || unsocialWeekend[dayIndex].value == "0" || unsocialWeekend[dayIndex].value == "0,0" || unsocialWeekend[dayIndex].value == "00,00" || unsocialWeekend[dayIndex].value == "0,00")) {
                     valInfo.innerHTML = "Ordinarie assistent måste fyllas i först.";
                     failValidation = true;
                 }
@@ -1992,7 +2008,8 @@
         else if (hourType == 5) {
             var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && unsocialGrandWeekend[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (unsocialGrandWeekend[dayIndex].value == "" || unsocialGrandWeekend[dayIndex].value == "0" || unsocialGrandWeekend[dayIndex].value == "0,0" || unsocialGrandWeekend[dayIndex].value == "00,00" || unsocialGrandWeekend[dayIndex].value == "0,00")) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2013,7 +2030,8 @@
         else if (hourType == 6) {
             var oncallDay = document.getElementsByClassName("oncall-day");
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && oncallDay[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (oncallDay[dayIndex].value == "" || oncallDay[dayIndex].value == "0" || oncallDay[dayIndex].value == "0,0" || oncallDay[dayIndex].value == "00,00" || oncallDay[dayIndex].value == "0,00")) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2034,7 +2052,8 @@
         else if (hourType == 7) {
             var oncallNight = document.getElementsByClassName("oncall-night");
             if (subIndex != 99) {
-                if (amount != "" && parseFloat(amount) != 0 && amount != "0,00" && oncallNight[dayIndex].value == "") {
+                if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
+                    (oncallNight[dayIndex].value == "" || oncallNight[dayIndex].value == "0" || oncallNight[dayIndex].value == "0,0" || oncallNight[dayIndex].value == "00,00" || oncallNight[dayIndex].value == "0,00")) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
