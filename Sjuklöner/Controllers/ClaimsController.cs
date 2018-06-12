@@ -3660,7 +3660,7 @@ namespace Sjuklöner.Controllers
             try
             {
                 // Specify parameters for Page footers in the generated Pdf File 
-                string footer = "--footer-right \"Date: [date] [time]\" " + "--footer-center \"Page: [page] of [toPage]\" --footer-line --footer-font-size \"9\" --footer-spacing 5 --footer-font-name \"calibri light\"";
+                string footer = "--footer-right \"Datum: [date] [time]\" " + "--footer-center \"Sida: [page] av [toPage]\" --footer-line --footer-font-size \"9\" --footer-spacing 5 --footer-font-name \"calibri light\"";
 
                 var viewPdf = new Rotativa.ViewAsPdf("ClaimDetailsPdf", claimDetailsOmbudVM)
                 {
