@@ -463,8 +463,8 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
             }
-            //Check that the number of calendar days in the claim is maximum 64. This takes the 5-day rule into consideration. 
-            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 63)
+            //Check that the number of calendar days in the claim is maximum 70. This takes the 5-day rule into consideration. 
+            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 69)
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Antalet kalenderdagar överstiger gränsen för vad som är möjligt.");
             }
@@ -1178,13 +1178,13 @@ namespace Sjuklöner.Controllers
             string[] onCallDaySIArray = new string[20];
             string[] onCallNightSIArray = new string[20];
 
-            string[,] hoursSIPerSubAndDay = new string[20, 64];
-            string[,] unsocialEveningSIPerSubAndDay = new string[20, 64];
-            string[,] unsocialNightSIPerSubAndDay = new string[20, 64];
-            string[,] unsocialWeekendSIPerSubAndDay = new string[20, 64];
-            string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 64];
-            string[,] onCallDaySIPerSubAndDay = new string[20, 64];
-            string[,] onCallNightSIPerSubAndDay = new string[20, 64];
+            string[,] hoursSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialEveningSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialNightSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialWeekendSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 70];
+            string[,] onCallDaySIPerSubAndDay = new string[20, 70];
+            string[,] onCallNightSIPerSubAndDay = new string[20, 70];
 
             if (claim.CompletionStage >= 2)
             {
@@ -3362,13 +3362,13 @@ namespace Sjuklöner.Controllers
                 string[] onCallDaySIArrayPerDay = new string[20];
                 string[] onCallNightSIArrayPerDay = new string[20];
 
-                string[,] hoursSIPerSubAndDay = new string[20, 64];
-                string[,] unsocialEveningSIPerSubAndDay = new string[20, 64];
-                string[,] unsocialNightSIPerSubAndDay = new string[20, 64];
-                string[,] unsocialWeekendSIPerSubAndDay = new string[20, 64];
-                string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 64];
-                string[,] onCallDaySIPerSubAndDay = new string[20, 64];
-                string[,] onCallNightSIPerSubAndDay = new string[20, 64];
+                string[,] hoursSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialEveningSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialNightSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialWeekendSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 70];
+                string[,] onCallDaySIPerSubAndDay = new string[20, 70];
+                string[,] onCallNightSIPerSubAndDay = new string[20, 70];
 
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
                 int index = 0;
