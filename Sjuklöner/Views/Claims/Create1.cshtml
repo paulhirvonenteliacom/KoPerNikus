@@ -55,21 +55,17 @@
 
     if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventOmbudCreate1">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventCreate1">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudCreate1Fail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventCreate1Fail">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
-
+    
     <div class="row">
         <p class="col col-md-10 second-page-header5">Steg 1 av 4: Ange personuppgifter och sjukperiod</p>
     </div>
@@ -384,9 +380,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script type="text/javascript">
-    $('#PdfEventOmbudCreate1').delay(4000).hide(1500);
+    $('#PdfEventCreate1').delay(10000).hide(0);
 
-    $('#PdfEventCreate1Fail').delay(100000).hide(1500);
+    $('#PdfEventCreate1Fail').delay(100000).hide(0);
 
     $(document).ready(function createSubAssistants() {
         //get the number of sub assistants (1 is the default)

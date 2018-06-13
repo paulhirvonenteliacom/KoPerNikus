@@ -22,24 +22,20 @@
             </div>
         }
     </div>
-    <br />
-    <br />
     @if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventAdmin">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventAdmin">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     @if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventAdminFail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventAdminFail">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
+    <br />
+    <br />    
 
     <hr class="claim-divider" />
     <div class="row">
@@ -50,7 +46,7 @@
             @if (Model.InInboxClaims?.Count() > 0)
             {
                 <table class="table">
-                    <tr>                        
+                    <tr>
                         <th class="small-col-admin">
                             Referensnummer
                         </th>
@@ -77,8 +73,8 @@
                             Sista sjukdag
                         </th>
                         @*<th class="small-col-admin">
-            Antal sjukdagar
-        </th>*@
+                                Antal sjukdagar
+                            </th>*@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
@@ -368,8 +364,8 @@
                 <br />
             }
         </div>
-    </div>   
- 
+    </div>
+
     <hr class="claim-divider" />
 
     <div class="row row-padding2">
@@ -380,8 +376,6 @@
 
 </body>
 <script type="text/javascript">
-    $('#PdfEventAdmin').delay(4000).hide(1500);
-</script>
-<script type="text/javascript">
-    $('#PdfEventAdminFail').delay(100000).hide(1500);
+    $('#PdfEventAdmin').delay(10000).hide(0);
+    $('#PdfEventAdminFail').delay(100000).hide(0);
 </script>

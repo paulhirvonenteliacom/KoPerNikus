@@ -29,21 +29,20 @@
         @*<nl class="col col-md-offset-2 font-size-12">Vård- och omsorgsförvaltningen i Helsingborgs kommun</nl>*@
         <br>
         @*<p class="col col-md-offset-2 col-md-10 second-page-header2">Steg 3: Ange belopp och skicka in ansökan</p>*@
-    </div>
+    </div>    
+
     if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventOmbudCreate3">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventCreate3">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin2 col col-md-10 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudCreate3Fail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventCreate3Fail">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin2 col col-md-10 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
     <div class="row">
@@ -175,9 +174,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script type="text/javascript">
-    $('#PdfEventOmbudCreate3').delay(4000).hide(1500);
+    $('#PdfEventCreate3').delay(10000).hide(0);
 
-    $('#PdfEventCreate3Fail').delay(100000).hide(1500);
+    $('#PdfEventCreate3Fail').delay(100000).hide(0);
 
     $(document).ready(function assignIdsToSubAssistants() {
         var form = document.getElementsByTagName("form");
