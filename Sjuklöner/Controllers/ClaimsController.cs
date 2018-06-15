@@ -4272,7 +4272,7 @@ namespace Sjuklöner.Controllers
                             {
                                 db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
                             }
-                            if (claim.CompletionStage >= 4)
+                            if (claim.CompletionStage >= 3)
                             {
                                 if (claim.Documents.Count() > 0)
                                 {
