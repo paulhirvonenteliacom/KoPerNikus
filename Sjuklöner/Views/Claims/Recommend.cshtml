@@ -30,18 +30,16 @@
 
     if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEvent">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventRecommend">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin5 col col-md-10 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEvent">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventRecommendFail">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin5 col col-md-10 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
 
@@ -397,9 +395,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script type="text/javascript">
-    $('#PdfEvent').delay(4000).hide(1500);
-</script>
-<script type='text/javascript'>
+    $('#PdfEventRecommend').delay(10000).hide(0);
+    $('#PdfEventRecommendFail').delay(100000).hide(0);
+
     function calculateSum(id) {
         var data = @Html.Raw(JsonConvert.SerializeObject(this.Model));
         var claimSum = document.getElementById("claimsum");

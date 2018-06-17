@@ -25,21 +25,20 @@
         <p class="col col-md-2"></p>
         <p class="page-header3 col col-md-10">Ansökan om sjuklöneersättning</p>
         <br>
-    </div>
+    </div>    
+
     if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventOmbudCreate4">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventCreate4">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin2 col col-md-10 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudCreate4Fail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventCreate4Fail">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin2 col col-md-10 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
     <div class="row">
@@ -255,12 +254,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script type="text/javascript">
-    $('#PdfEventOmbudCreate4').delay(4000).hide(1500);
-@*</script>
-<script type="text/javascript">*@
-    $('#PdfEventCreate4Fail').delay(100000).hide(1500);
-@*</script>
-<script>*@
+    $('#PdfEventCreate4').delay(10000).hide(0);
+    $('#PdfEventCreate4Fail').delay(100000).hide(0);
+
     $(document).ready(function assignIdsToSubAssistants() {
         var form = document.getElementsByTagName("form");
         for (var i = 0; i < form.length; i++) {

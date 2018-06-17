@@ -463,10 +463,10 @@ namespace Sjuklöner.Controllers
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
             }
-            //Check that the number of days in the sickleave period is maximum 14
-            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 13)
+            //Check that the number of calendar days in the claim is maximum 70. This takes the 5-day rule into consideration. 
+            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 69)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning för mer än 14 dagar.");
+                ModelState.AddModelError("LastDayOfSicknessDate", "Antalet kalenderdagar överstiger gränsen för vad som är möjligt.");
             }
             //Check that the last day in the sickleave period is not older than one year
             //First check if one of the 3 previous years is a leap year
@@ -1178,13 +1178,13 @@ namespace Sjuklöner.Controllers
             string[] onCallDaySIArray = new string[20];
             string[] onCallNightSIArray = new string[20];
 
-            string[,] hoursSIPerSubAndDay = new string[20, 14];
-            string[,] unsocialEveningSIPerSubAndDay = new string[20, 14];
-            string[,] unsocialNightSIPerSubAndDay = new string[20, 14];
-            string[,] unsocialWeekendSIPerSubAndDay = new string[20, 14];
-            string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 14];
-            string[,] onCallDaySIPerSubAndDay = new string[20, 14];
-            string[,] onCallNightSIPerSubAndDay = new string[20, 14];
+            string[,] hoursSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialEveningSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialNightSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialWeekendSIPerSubAndDay = new string[20, 70];
+            string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 70];
+            string[,] onCallDaySIPerSubAndDay = new string[20, 70];
+            string[,] onCallNightSIPerSubAndDay = new string[20, 70];
 
             if (claim.CompletionStage >= 2)
             {
@@ -3424,13 +3424,13 @@ namespace Sjuklöner.Controllers
                 string[] onCallDaySIArrayPerDay = new string[20];
                 string[] onCallNightSIArrayPerDay = new string[20];
 
-                string[,] hoursSIPerSubAndDay = new string[20, 14];
-                string[,] unsocialEveningSIPerSubAndDay = new string[20, 14];
-                string[,] unsocialNightSIPerSubAndDay = new string[20, 14];
-                string[,] unsocialWeekendSIPerSubAndDay = new string[20, 14];
-                string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 14];
-                string[,] onCallDaySIPerSubAndDay = new string[20, 14];
-                string[,] onCallNightSIPerSubAndDay = new string[20, 14];
+                string[,] hoursSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialEveningSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialNightSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialWeekendSIPerSubAndDay = new string[20, 70];
+                string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 70];
+                string[,] onCallDaySIPerSubAndDay = new string[20, 70];
+                string[,] onCallNightSIPerSubAndDay = new string[20, 70];
 
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
                 int index = 0;
@@ -4334,7 +4334,7 @@ namespace Sjuklöner.Controllers
                             {
                                 db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
                             }
-                            if (claim.CompletionStage >= 4)
+                            if (claim.CompletionStage >= 3)
                             {
                                 if (claim.Documents.Count() > 0)
                                 {

@@ -55,21 +55,17 @@
 
     if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventOmbudCreate1">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventCreate1">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudCreate1Fail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventCreate1Fail">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
-
+    
     <div class="row">
         <p class="col col-md-10 second-page-header5">Steg 1 av 4: Ange personuppgifter och sjukperiod</p>
     </div>
@@ -332,7 +328,7 @@
                 {
                     <div class="row">
                         <div class="btn-left-margin-15">
-                            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small"})
+                            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
                         </div>
                     </div>
                 }
@@ -384,9 +380,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script type="text/javascript">
-    $('#PdfEventOmbudCreate1').delay(4000).hide(1500);
+    $('#PdfEventCreate1').delay(10000).hide(0);
 
-    $('#PdfEventCreate1Fail').delay(100000).hide(1500);
+    $('#PdfEventCreate1Fail').delay(100000).hide(0);
 
     $(document).ready(function createSubAssistants() {
         //get the number of sub assistants (1 is the default)
@@ -448,13 +444,6 @@
                 subAssVal[i].innerText = 'Vikarierande assistent måste väljas.';
             }
         }
-
-        //if (!regAssistantSelected || !firstSubAssistantSelected) {
-        //    return false;
-        //}
-        //else {
-        //    return true;
-        //}
     }
 
     //this function checks if there are any validation errors on the page
@@ -704,12 +693,6 @@
     }
 
     function UpdateSelectedItem(e) {
-
-        //var assistantSelectList = $('select#ddl' + numOfRow); // new line
-        //var selectIdx = $('option:selected', assistantSelectList).val(); //new line
-        //var idx = this.className.substring(6);
-        //var selectIdx = this.value;
-
         var idx = e.id.substring(3);
         var selectIdx = e.value;
 
@@ -816,389 +799,293 @@
         //get the number of substitute assistants used in this claim
         var assistantddlcounter = document.getElementById('ddl-counter');
         var subassddlcounterInt = parseInt(assistantddlcounter.value);
-        //numOfRow = subassddlcounterInt + 1;
 
-        //get the reference of the anchor div
-        var mainDiv = document.getElementById('anchor-beyond4ddls');
+        //allow maximum 20 substitute assistants
+        if (subassddlcounterInt < 20) {
+            //get the reference of the anchor div
+            var mainDiv = document.getElementById('anchor-beyond4ddls');
 
-        //create new div that will work as an outer container for the label
-        var newOuterLabelDiv = document.createElement('div');
-        newOuterLabelDiv.setAttribute('id', 'outerLabelDiv' + numOfRow);
-        newOuterLabelDiv.setAttribute('class', 'row subass-outerlabel');
+            //create new div that will work as an outer container for the label
+            var newOuterLabelDiv = document.createElement('div');
+            newOuterLabelDiv.setAttribute('id', 'outerLabelDiv' + numOfRow);
+            newOuterLabelDiv.setAttribute('class', 'row subass-outerlabel');
 
-        var newInnerLabelDiv = document.createElement('div');
-        newInnerLabelDiv.setAttribute('id', 'innerLabelDiv' + numOfRow);
-        newInnerLabelDiv.setAttribute('class', 'col col-md-12 subass-innerlabel');
+            var newInnerLabelDiv = document.createElement('div');
+            newInnerLabelDiv.setAttribute('id', 'innerLabelDiv' + numOfRow);
+            newInnerLabelDiv.setAttribute('class', 'col col-md-12 subass-innerlabel');
 
-        var newOuterDdlDiv = document.createElement('div');
-        newOuterDdlDiv.setAttribute('id', 'outerDdlDiv' + numOfRow);
-        newOuterDdlDiv.setAttribute('class', 'row row-height-36 subass-outerddl');
+            var newOuterDdlDiv = document.createElement('div');
+            newOuterDdlDiv.setAttribute('id', 'outerDdlDiv' + numOfRow);
+            newOuterDdlDiv.setAttribute('class', 'row row-height-36 subass-outerddl');
 
-        var newInnerDdlDiv = document.createElement('div');
-        newInnerDdlDiv.setAttribute('id', 'innerDdlDiv' + numOfRow);
-        newInnerDdlDiv.setAttribute('class', 'col col-md-12 right-col-padding-42 subass-innerddl');
+            var newInnerDdlDiv = document.createElement('div');
+            newInnerDdlDiv.setAttribute('id', 'innerDdlDiv' + numOfRow);
+            newInnerDdlDiv.setAttribute('class', 'col col-md-12 right-col-padding-42 subass-innerddl');
 
-        var newOuterValDiv = document.createElement('div');
-        newOuterValDiv.setAttribute('id', 'outerValDiv' + numOfRow);
-        newOuterValDiv.setAttribute('class', 'row row-validation-20 row-height-20 line-height-07 subass-outerval');
+            var newOuterValDiv = document.createElement('div');
+            newOuterValDiv.setAttribute('id', 'outerValDiv' + numOfRow);
+            newOuterValDiv.setAttribute('class', 'row row-validation-20 row-height-20 line-height-07 subass-outerval');
 
-        var newInnerValDiv = document.createElement('div');
-        newInnerValDiv.setAttribute('id', 'innerValDiv' + numOfRow);
-        newInnerValDiv.setAttribute('class', 'col col-md-12 subass-innerval');
+            var newInnerValDiv = document.createElement('div');
+            newInnerValDiv.setAttribute('id', 'innerValDiv' + numOfRow);
+            newInnerValDiv.setAttribute('class', 'col col-md-12 subass-innerval');
 
 
-        var newLabel = document.createElement('label');
-        newLabel.setAttribute('class', 'create1-label control-label subass-label');
-        newLabel.innerText = "Vikarierande assistent " + numOfRow.toString();
+            var newLabel = document.createElement('label');
+            newLabel.setAttribute('class', 'create1-label control-label subass-label');
+            newLabel.innerText = "Vikarierande assistent " + numOfRow.toString();
 
-        var newDropDownList = document.createElement('select');
-        newDropDownList.id = 'ddl' + numOfRow;
-        newDropDownList.setAttribute('class', 'display-inline-block form-control subass-ddl');
-        newDropDownList.setAttribute('onchange', 'UpdateSelectedItem(this)'); //new line
-        newDropDownList.setAttribute('data-val', 'true');
-        newDropDownList.setAttribute('data-val-range-min', '1');
-        newDropDownList.setAttribute('data-val-range-max', '999999');
-        newDropDownList.setAttribute('data-val-range', 'En vikarierande assistent måste väljas');
+            var newDropDownList = document.createElement('select');
+            newDropDownList.id = 'ddl' + numOfRow;
+            newDropDownList.setAttribute('class', 'display-inline-block form-control subass-ddl');
+            newDropDownList.setAttribute('onchange', 'UpdateSelectedItem(this)');
+            newDropDownList.setAttribute('data-val', 'true');
+            newDropDownList.setAttribute('data-val-range-min', '1');
+            newDropDownList.setAttribute('data-val-range-max', '999999');
+            newDropDownList.setAttribute('data-val-range', 'En vikarierande assistent måste väljas');
 
-        var newSpan = document.createElement('span');
-        newSpan.setAttribute('class', 'field-validation-valid text-danger font-size-11 check-val');
-        newSpan.setAttribute('data-valmsg-replace', 'true');
-        newSpan.setAttribute('data-valmsg-for', '');
+            var newSpan = document.createElement('span');
+            newSpan.setAttribute('class', 'field-validation-valid text-danger font-size-11 check-val');
+            newSpan.setAttribute('data-valmsg-replace', 'true');
+            newSpan.setAttribute('data-valmsg-for', '');
 
-        var newSpan2 = document.createElement('span');
-        newSpan2.setAttribute('class', 'selecteditem');
-        newSpan2.id = 'span' + numOfRow;
-        newSpan2.innerText = 0;
+            var newSpan2 = document.createElement('span');
+            newSpan2.setAttribute('class', 'selecteditem');
+            newSpan2.id = 'span' + numOfRow;
+            newSpan2.innerText = 0;
 
-        //copy options to the new ddl
-        for (var i = 0; i < assistantcounter; i++) {
-            var option = document.createElement('option');
-            option.text = ddl1[i].innerText;
-            //if (i === 0) {
-            option.value = i;
-            //}
-            option.setAttribute('class', 'option' + numOfRow);
-            //option.onclick = function UpdateSelectedItem() {
-
-            //    //var assistantSelectList = $('select#ddl' + numOfRow); // new line
-            //    //var selectIdx = $('option:selected', assistantSelectList).val(); //new line
-
-            //    var idx = this.className.substring(6);
-            //    var selectIdx = this.value;
-
-            //    var selectedItemSpan = document.getElementById('span' + idx);
-            //    selectedItemSpan.innerText = selectIdx;
-
-            //    //update the array that holds the selected sub assistant indeces
-            //    //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
-            //    var assistantddlcounter = document.getElementById('ddl-counter');
-            //    var subassddlcounterInt = parseInt(assistantddlcounter.value);
-
-            //    var items = document.getElementsByClassName('selecteditem');
-            //    var selectedItems = document.getElementsByClassName('selectedSubIndex');
-            //    var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
-
-            //    for (var idx3 = 0; idx3 < subassddlcounterInt - 1; idx3++) {
-            //        selectedItems[idx3].value = 9999;
-            //        selectedAssistants[idx3].value = "";
-            //    }
-
-            //    //load current indeces
-            //    var selectedItems = document.getElementsByClassName('selectedSubIndex');
-            //    for (var idx1 = 0; idx1 < subassddlcounterInt - 1; idx1++) {
-            //        selectedItems[idx1].value = parseInt(items[idx1].innerText);
-            //    }
-
-            //    //load the selectedAssistants
-            //    var items = document.getElementsByClassName('selecteditem');
-            //    var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
-            //    for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
-            //        if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
-            //            var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
-            //            selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
-            //        }
-            //    }
-
-            //    //update validation messages
-            //    var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
-            //    var items = document.getElementsByClassName('selecteditem');
-            //    if (selectedItemSpan.innerText != "0") {
-            //        selectedSubAssistantVal[parseInt(idx) - 2].innerText = "";
-            //        var subAssVal = document.getElementById('innerValDiv' + idx).children;
-            //        subAssVal[0].innerText = "";
-            //    }
-
-            //    for (var idx2 = 0; idx2 < subassddlcounterInt - 1; idx2++) {
-            //        if (selectedSubAssistantVal[idx2].innerText != "") {
-            //            var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
-            //            subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
-            //        }
-            //    }
-
-            //    //check if the assistant already has been selected
-            //    var subAssVal = document.getElementById('innerValDiv' + idx).children;
-
-            //    if (selectIdx == 0 && selectedSubAssistantVal[parseInt(idx) - 2].innerText == "") {
-            //        //reset the validation message
-            //        subAssVal[0].innerText = '';
-            //    }
-            //    else {
-            //        var items = document.getElementsByClassName('selecteditem');
-            //        var itemFound = false;
-            //        var itemIdx = 0;
-            //        while (!itemFound && itemIdx < items.length) {
-            //            if (selectIdx == parseInt(items[itemIdx].innerText) && idx != (2 + itemIdx).toString()) {
-            //                subAssVal[0].innerText = 'Assistenten är redan vald.';
-            //                itemFound = true;
-            //            }
-            //            itemIdx++;
-            //        }
-            //        //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
-            //        if (!itemFound) {
-            //            var firstSub = document.getElementById('subassistant1-ddl')
-            //            if (selectIdx == firstSub.selectedIndex) {
-            //                subAssVal[0].innerText = 'Assistenten är redan vald.';
-            //                itemFound = true;
-            //            }
-            //        }
-            //        if (!itemFound) {
-            //            var firstSub = document.getElementById('SelectedRegAssistantId')
-            //            if (selectIdx == firstSub.selectedIndex) {
-            //                subAssVal[0].innerText = 'Assistenten är redan vald.';
-            //                itemFound = true;
-            //            }
-            //        }
-
-            //        if (!itemFound) {
-            //            //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
-            //            if (checkValidationErrors()) {
-            //                var erroronpage = document.getElementById('valerror-on-page');
-            //                erroronpage.innerHTML = "";
-            //            }
-            //        }
-            //    }
-            //}
-            newDropDownList.add(option, newDropDownList.options[i]);
-        }
-
-        if (newddl) {
-            //This code is executed when a new ddl is added
-            //set the selected value in the ddl to zero
-            newDropDownList.selectedIndex = 0;
-
-            //increment the counter holding the number of sub assistant ddls
-            assistantddlcounter.value = subassddlcounterInt + 1;
-        }
-        else {
-            //This code is executed at load of the page
-            var selectedItems = document.getElementsByClassName('selectedSubIndex');
-            newDropDownList.selectedIndex = selectedItems[numOfRow - 2].value;
-        }
-
-        //create remove button for each email adress
-        var newButton = document.createElement('input');
-        newButton.type = 'button';
-        newButton.value = '-';
-        newButton.id = 'btn' + numOfRow;
-        newButton.setAttribute('class', 'btn btn-primary btn-primary-xsmall6 float-right minusbutton');
-
-        //attach event for remove button click
-        newButton.onclick = function RemoveEntry() {
-            var idx = this.id.substring(3);
-
-            //remove() method is not supported by IE. Therefore the following code is used.
-            
-            var labelDiv = document.getElementById('outerLabelDiv' + idx);
-            labelDiv.parentNode.removeChild(labelDiv);
-
-            var ddlDiv = document.getElementById('outerDdlDiv' + idx);
-            ddlDiv.parentNode.removeChild(ddlDiv);
-
-            var valDiv = document.getElementById('outerValDiv' + idx);
-            valDiv.parentNode.removeChild(valDiv);
-
-            //decrement the counter holding the number of sub assistant ddls
-            var subassddlcounterInt = parseInt(assistantddlcounter.value);
-            assistantddlcounter.value = subassddlcounterInt - 1;
-
-            var labels = document.getElementsByClassName('subass-label');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                labels[i].innerText = "Vikarierande assistent " + (i + 2).toString();
+            //copy options to the new ddl
+            for (var i = 0; i < assistantcounter; i++) {
+                var option = document.createElement('option');
+                option.text = ddl1[i].innerText;
+                option.value = i;
+                option.setAttribute('class', 'option' + numOfRow);
+                newDropDownList.add(option, newDropDownList.options[i]);
             }
 
-            //update the array that holds the selected sub assistant indeces
-            //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
-            //reset validation messages
-            var items = document.getElementsByClassName('selecteditem');
-            var selectedItems = document.getElementsByClassName('selectedSubIndex');
-            var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
-            var selectedAssistantVals = document.getElementsByClassName('selectedSubAssistantVal')
-            for (var i = 0; i < subassddlcounterInt - 1; i++) {
-                selectedItems[i].value = 9999;
-                selectedAssistants[i].value = "";
-                selectedAssistantVals[i].innerText = "";
+            if (newddl) {
+                //This code is executed when a new ddl is added
+                //set the selected value in the ddl to zero
+                newDropDownList.selectedIndex = 0;
+
+                //increment the counter holding the number of sub assistant ddls
+                assistantddlcounter.value = subassddlcounterInt + 1;
+            }
+            else {
+                //This code is executed at load of the page
+                var selectedItems = document.getElementsByClassName('selectedSubIndex');
+                newDropDownList.selectedIndex = selectedItems[numOfRow - 2].value;
             }
 
-            //load current indeces
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                selectedItems[i].value = parseInt(items[i].innerText);
-            }
+            //create remove button for each email adress
+            var newButton = document.createElement('input');
+            newButton.type = 'button';
+            newButton.value = '-';
+            newButton.id = 'btn' + numOfRow;
+            newButton.setAttribute('class', 'btn btn-primary btn-primary-xsmall6 float-right minusbutton');
 
-            //rename ids for label-, ddl- and validationmessage divs, rename options classes, rename ids for selecteditem spans and for minusbuttons
-            var innerlabels = document.getElementsByClassName('subass-innerlabel');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                innerlabels[i].id = 'innerLabelDiv' + (i + 2).toString();
-            }
+            //attach event for remove button click
+            newButton.onclick = function RemoveEntry() {
+                var idx = this.id.substring(3);
 
-            var outerlabels = document.getElementsByClassName('subass-outerlabel');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                outerlabels[i].id = 'outerLabelDiv' + (i + 2).toString();
-            }
+                //remove() method is not supported by IE. Therefore the following code is used.
 
-            var innerddls = document.getElementsByClassName('subass-innerddl');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                innerddls[i].id = 'innerDdlDiv' + (i + 2).toString();
-            }
+                var labelDiv = document.getElementById('outerLabelDiv' + idx);
+                labelDiv.parentNode.removeChild(labelDiv);
 
-            var outerddls = document.getElementsByClassName('subass-outerddl');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                outerddls[i].id = 'outerDdlDiv' + (i + 2).toString();
-            }
+                var ddlDiv = document.getElementById('outerDdlDiv' + idx);
+                ddlDiv.parentNode.removeChild(ddlDiv);
 
-            var innervals = document.getElementsByClassName('subass-innerval');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                innervals[i].id = 'innerValDiv' + (i + 2).toString();
-            }
+                var valDiv = document.getElementById('outerValDiv' + idx);
+                valDiv.parentNode.removeChild(valDiv);
 
-            var outervals = document.getElementsByClassName('subass-outerval');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                outervals[i].id = 'outerValDiv' + (i + 2).toString();
-            }
+                //decrement the counter holding the number of sub assistant ddls
+                var subassddlcounterInt = parseInt(assistantddlcounter.value);
+                assistantddlcounter.value = subassddlcounterInt - 1;
 
-            var ddl = document.getElementsByClassName('subass-ddl');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                ddl[i].id = 'ddl' + (i + 2).toString();
-                var options = ddl[i].children;
-                for (var k = 0; k < options.length; k++) {
-                    options[k].className = 'option' + (i + 2).toString();
+                var labels = document.getElementsByClassName('subass-label');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    labels[i].innerText = "Vikarierande assistent " + (i + 2).toString();
                 }
-            }
 
-            //load current assistants
-            for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
-                if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
-                    var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
-                    selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
+                //update the array that holds the selected sub assistant indeces
+                //reset all indeces to make sure that no indeces that have been removed and still remain in selectedSubIndex also are removed
+                //reset validation messages
+                var items = document.getElementsByClassName('selecteditem');
+                var selectedItems = document.getElementsByClassName('selectedSubIndex');
+                var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+                var selectedAssistantVals = document.getElementsByClassName('selectedSubAssistantVal')
+                for (var i = 0; i < subassddlcounterInt - 1; i++) {
+                    selectedItems[i].value = 9999;
+                    selectedAssistants[i].value = "";
+                    selectedAssistantVals[i].innerText = "";
                 }
-            }
 
-            //load validation messages
-            var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
-            for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
-                if (selectedSubAssistantVal[idx2].innerText != "") {
-                    var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
-                    subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
+                //load current indeces
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    selectedItems[i].value = parseInt(items[i].innerText);
                 }
-            }
 
-            //reset validation message 'Assistenten är redan vald' where relevant
-            var startIdx = items.length - 2;
-            var k = 0;
-            var sameSubAssFound = false;
-            var sameAsFirstSub = false;
-            var sameAsRegAss = false;
-            for (var i = items.length - 1; i >= 0; i--) {
-                if (items[i].innerText != "0" && items[i].innerText != "9999") {
-                    var subAssVal = document.getElementById('innerValDiv' + (i + 2).toString()).children;
-                    if (subAssVal[0].innerText == "Assistenten är redan vald.") {
-                        sameSubAssFound = false;
-                        k = startIdx;
-                        while (k >= 0 && !sameSubAssFound) {
-                            if (items[i].innerText == items[k].innerText) {
-                                sameSubAssFound = true;
-                            }
-                            k--;
-                        }
-                        //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
-                        if (!sameSubAssFound) {
-                            var firstSub = document.getElementById('subassistant1-ddl')
-                            if (items[i].innerText == firstSub.selectedIndex) {
-                                sameSubAssFound = true;
-                                sameAsFirstSub = true;
-                            }
-                        }
-                        if (!sameSubAssFound) {
-                            var firstSub = document.getElementById('SelectedRegAssistantId')
-                            if (items[i].innerText == firstSub.selectedIndex) {
-                                sameSubAssFound = true;
-                                sameAsRegAss = true;
-                            }
-                        }
-                        if (!sameSubAssFound) {
-                            subAssVal[0].innerText = "";
-                        }
+                //rename ids for label-, ddl- and validationmessage divs, rename options classes, rename ids for selecteditem spans and for minusbuttons
+                var innerlabels = document.getElementsByClassName('subass-innerlabel');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    innerlabels[i].id = 'innerLabelDiv' + (i + 2).toString();
+                }
+
+                var outerlabels = document.getElementsByClassName('subass-outerlabel');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    outerlabels[i].id = 'outerLabelDiv' + (i + 2).toString();
+                }
+
+                var innerddls = document.getElementsByClassName('subass-innerddl');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    innerddls[i].id = 'innerDdlDiv' + (i + 2).toString();
+                }
+
+                var outerddls = document.getElementsByClassName('subass-outerddl');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    outerddls[i].id = 'outerDdlDiv' + (i + 2).toString();
+                }
+
+                var innervals = document.getElementsByClassName('subass-innerval');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    innervals[i].id = 'innerValDiv' + (i + 2).toString();
+                }
+
+                var outervals = document.getElementsByClassName('subass-outerval');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    outervals[i].id = 'outerValDiv' + (i + 2).toString();
+                }
+
+                var ddl = document.getElementsByClassName('subass-ddl');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    ddl[i].id = 'ddl' + (i + 2).toString();
+                    var options = ddl[i].children;
+                    for (var k = 0; k < options.length; k++) {
+                        options[k].className = 'option' + (i + 2).toString();
                     }
                 }
-                startIdx--;
-            }
-            //check if the validation message first substitute assistant and/or the regular assistant needs to be reset
-            if (!sameAsFirstSub) {
-                select_first_subassistant();
-            }
-            if (!sameAsRegAss) {
-                select_regular_assistant();
+
+                //load current assistants
+                for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
+                    if (items[idx2].innerText != "0" && items[idx2].innerText != "9999") {
+                        var options = document.getElementsByClassName('option' + (idx2 + 2).toString());
+                        selectedAssistants[idx2].value = options[parseInt(items[idx2].innerText)].innerText;
+                    }
+                }
+
+                //load validation messages
+                var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+                for (var idx2 = 0; idx2 < subassddlcounterInt - 2; idx2++) {
+                    if (selectedSubAssistantVal[idx2].innerText != "") {
+                        var subAssVal = document.getElementById('innerValDiv' + (idx2 + 2).toString()).children;
+                        subAssVal[0].innerText = selectedSubAssistantVal[idx2].innerText;
+                    }
+                }
+
+                //reset validation message 'Assistenten är redan vald' where relevant
+                var startIdx = items.length - 2;
+                var k = 0;
+                var sameSubAssFound = false;
+                var sameAsFirstSub = false;
+                var sameAsRegAss = false;
+                for (var i = items.length - 1; i >= 0; i--) {
+                    if (items[i].innerText != "0" && items[i].innerText != "9999") {
+                        var subAssVal = document.getElementById('innerValDiv' + (i + 2).toString()).children;
+                        if (subAssVal[0].innerText == "Assistenten är redan vald.") {
+                            sameSubAssFound = false;
+                            k = startIdx;
+                            while (k >= 0 && !sameSubAssFound) {
+                                if (items[i].innerText == items[k].innerText) {
+                                    sameSubAssFound = true;
+                                }
+                                k--;
+                            }
+                            //check also if the selected assistant is equal to the regular assistant or the first substitute assistant
+                            if (!sameSubAssFound) {
+                                var firstSub = document.getElementById('subassistant1-ddl')
+                                if (items[i].innerText == firstSub.selectedIndex) {
+                                    sameSubAssFound = true;
+                                    sameAsFirstSub = true;
+                                }
+                            }
+                            if (!sameSubAssFound) {
+                                var firstSub = document.getElementById('SelectedRegAssistantId')
+                                if (items[i].innerText == firstSub.selectedIndex) {
+                                    sameSubAssFound = true;
+                                    sameAsRegAss = true;
+                                }
+                            }
+                            if (!sameSubAssFound) {
+                                subAssVal[0].innerText = "";
+                            }
+                        }
+                    }
+                    startIdx--;
+                }
+                //check if the validation message first substitute assistant and/or the regular assistant needs to be reset
+                if (!sameAsFirstSub) {
+                    select_first_subassistant();
+                }
+                if (!sameAsRegAss) {
+                    select_regular_assistant();
+                }
+
+                var selecteditems = document.getElementsByClassName('selecteditem');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    selecteditems[i].id = 'span' + (i + 2).toString();
+                }
+
+                var minusbuttons = document.getElementsByClassName('minusbutton');
+                for (var i = 0; i < subassddlcounterInt - 2; i++) {
+                    minusbuttons[i].id = 'btn' + (i + 2).toString();
+                }
+
+                //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
+                if (checkValidationErrors()) {
+                    var erroronpage = document.getElementById('valerror-on-page');
+                    erroronpage.innerHTML = "";
+                }
             }
 
-            var selecteditems = document.getElementsByClassName('selecteditem');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                selecteditems[i].id = 'span' + (i + 2).toString();
-            }
+            newInnerLabelDiv.appendChild(newLabel);
+            newOuterLabelDiv.appendChild(newInnerLabelDiv);
+            newInnerDdlDiv.appendChild(newDropDownList);
+            newInnerDdlDiv.appendChild(newSpan2);
+            newInnerDdlDiv.appendChild(newButton);
+            newOuterDdlDiv.appendChild(newInnerDdlDiv);
+            newInnerValDiv.appendChild(newSpan);
+            newOuterValDiv.appendChild(newInnerValDiv);
 
-            var minusbuttons = document.getElementsByClassName('minusbutton');
-            for (var i = 0; i < subassddlcounterInt - 2; i++) {
-                minusbuttons[i].id = 'btn' + (i + 2).toString();
-            }
+            // finally append the new div to the main div
+            mainDiv.appendChild(newOuterLabelDiv);
+            mainDiv.appendChild(newOuterDdlDiv);
+            mainDiv.appendChild(newOuterValDiv);
 
-            //clear a possible validation error below the "Spara" and "Gå till steg 2" buttons if no validation errors on the page
-            if (checkValidationErrors()) {
-                var erroronpage = document.getElementById('valerror-on-page');
-                erroronpage.innerHTML = "";
+            if (!newddl && notRemoveButton) {
+                //This code is executed at load of the page
+
+                //set the selected value in the span
+                var items = document.getElementsByClassName('selecteditem');
+                var selectedItems = document.getElementsByClassName('selectedSubIndex');
+                items[numOfRow - 2].innerText = selectedItems[numOfRow - 2].value;
+
+                var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
+                if (selectedSubAssistantVal[numOfRow - 2].innerText != "") {
+                    var subAssVal = document.getElementById('innerValDiv' + numOfRow.toString()).children;
+                    subAssVal[0].innerText = selectedSubAssistantVal[numOfRow - 2].innerText;
+                }
+
+                var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
+                if (items[numOfRow - 2].innerText != "0" && items[numOfRow - 2].innerText != "9999") {
+                    var options = document.getElementsByClassName('option' + (numOfRow).toString());
+                    selectedAssistants[numOfRow - 2].value = options[parseInt(items[numOfRow - 2].innerText)].innerText;
+                }
             }
         }
-
-        newInnerLabelDiv.appendChild(newLabel);
-        newOuterLabelDiv.appendChild(newInnerLabelDiv);
-        newInnerDdlDiv.appendChild(newDropDownList);
-        newInnerDdlDiv.appendChild(newSpan2);
-        newInnerDdlDiv.appendChild(newButton);
-        newOuterDdlDiv.appendChild(newInnerDdlDiv);
-        newInnerValDiv.appendChild(newSpan);
-        newOuterValDiv.appendChild(newInnerValDiv);
-
-        // finally append the new div to the main div
-        mainDiv.appendChild(newOuterLabelDiv);
-        mainDiv.appendChild(newOuterDdlDiv);
-        mainDiv.appendChild(newOuterValDiv);
-
-        if (!newddl && notRemoveButton) {
-            //This code is executed at load of the page
-
-            //set the selected value in the span
-            var items = document.getElementsByClassName('selecteditem');
-            var selectedItems = document.getElementsByClassName('selectedSubIndex');
-            items[numOfRow - 2].innerText = selectedItems[numOfRow - 2].value;
-
-            var selectedSubAssistantVal = document.getElementsByClassName('selectedSubAssistantVal');
-            if (selectedSubAssistantVal[numOfRow - 2].innerText != "") {
-                var subAssVal = document.getElementById('innerValDiv' + numOfRow.toString()).children;
-                subAssVal[0].innerText = selectedSubAssistantVal[numOfRow - 2].innerText;
-            }
-
-            var selectedAssistants = document.getElementsByClassName('selectedSubAssistant');
-            if (items[numOfRow - 2].innerText != "0" && items[numOfRow - 2].innerText != "9999") {
-                var options = document.getElementsByClassName('option' + (numOfRow).toString());
-                selectedAssistants[numOfRow - 2].value = options[parseInt(items[numOfRow - 2].innerText)].innerText;
-            }
+        else {
+            var firstSubVal = document.getElementById('first-subassistant-val');
+            firstSubVal.innerText = 'Max antal vikarierande assistenter är 20.';
         }
     }
 
