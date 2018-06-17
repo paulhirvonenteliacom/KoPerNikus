@@ -16,6 +16,8 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Lönespecifikation, ordinarie assistent")]
         public HttpPostedFileBase SalaryAttachment { get; set; }
 
+        public bool SalaryAttachmentExists { get; set; }
+
         //[Display(Name = "Lönespecifikation, vikarierande assistent")]
         //public HttpPostedFileBase SalaryAttachmentStandIn { get; set; }
 
@@ -25,13 +27,18 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Läkarintyg")]
         public HttpPostedFileBase DoctorsCertificate { get; set; }
 
+        public bool DoctorsCertificateExists { get; set; }
+
         [Display(Name = "Tidsredovisning, ordinarie assistent")]
         public HttpPostedFileBase TimeReport { get; set; }
+        public bool TimeReportExists { get; set; }
 
         public string[] SubAssistantSSNAndName { get; set; }
 
         [Display(Name = "Tidsredovisning, vikarierande assistent")]
         public HttpPostedFileBase[] TimeReportStandIn { get; set; }
+        public List<bool> TimeReportStandInExists { get; set; }
+        public bool[] AssistantHasFile { get; set; }
 
         public int NumberOfSickDays { get; set; }
 

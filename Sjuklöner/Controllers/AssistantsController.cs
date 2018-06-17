@@ -139,8 +139,8 @@ namespace Sjuklöner.Controllers
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
             if (!errorFound)
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
-                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+                var twinAssistant = db.Assistants.Where(a => (a.AssistantSSN == assistantCreateVM.AssistantSSN) && (a.CareCompanyId == currentUser.CareCompanyId)).FirstOrDefault();
+                if (twinAssistant != null)                
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
                     errorFound = true;
@@ -250,9 +250,9 @@ namespace Sjuklöner.Controllers
 
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
             if (!errorFound)
-            {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantCreateVM.AssistantSSN).FirstOrDefault();
-                if (twinAssistant != null && twinAssistant.CareCompanyId == assistantCreateVM.SelectedCompanyId)
+            {                
+                var twinAssistant = db.Assistants.Where(a => (a.AssistantSSN == assistantCreateVM.AssistantSSN) && (a.CareCompanyId == assistantCreateVM.SelectedCompanyId)).FirstOrDefault();
+                if (twinAssistant != null)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
                     errorFound = true;
@@ -390,8 +390,8 @@ namespace Sjuklöner.Controllers
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
             if (!errorFound)
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).Where(a => a.Id != assistantEditVM.Id).FirstOrDefault();
-                if (twinAssistant != null && twinAssistant.CareCompanyId == currentUser.CareCompanyId)
+                var twinAssistant = db.Assistants.Where(a => (a.AssistantSSN == assistantEditVM.AssistantSSN) && (a.CareCompanyId == currentUser.CareCompanyId)).Where(a => a.Id != assistantEditVM.Id).FirstOrDefault();
+                if (twinAssistant != null)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
                     errorFound = true;
@@ -524,8 +524,8 @@ namespace Sjuklöner.Controllers
             //Check if there is an assistant with the same SSN already in the company. The same assistant is allowed in another company.
             if (!errorFound)
             {
-                var twinAssistant = db.Assistants.Where(a => a.AssistantSSN == assistantEditVM.AssistantSSN).Where(a => a.Id != assistantEditVM.Id).FirstOrDefault();
-                if (twinAssistant != null && twinAssistant.CareCompanyId == assistantEditVM.CompanyId)
+                var twinAssistant = db.Assistants.Where(a => (a.AssistantSSN == assistantEditVM.AssistantSSN) && (a.CareCompanyId == assistantEditVM.CompanyId)).Where(a => a.Id != assistantEditVM.Id).FirstOrDefault();
+                if (twinAssistant != null)
                 {
                     ModelState.AddModelError("AssistantSSN", "Det finns redan en assistent med detta personnummer");
                     errorFound = true;

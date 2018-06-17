@@ -7,25 +7,21 @@
     <div class="row index-page-margin">
         <p class="page-header col col-md-10">Ansökningar</p>
     </div>
-    <br />
-    <br />
-
+   
     @if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventOmbud">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventOmbud">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     @if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudFail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventOmbudFail">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
+    <br />
+    <br />
 
     <div class="row">
         @if (Model.AssistantsExist)
@@ -110,10 +106,10 @@
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.FirstClaimDate)
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.LastClaimDate)
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
@@ -211,10 +207,10 @@
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.FirstClaimDate)
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.LastClaimDate)
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             @*<td>
                                 @Html.DisplayFor(modelItem => item.NumberOfSickDays)
@@ -311,10 +307,10 @@
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.FirstClaimDate)
+                                @Html.DisplayFor(modelItem => item.QualifyingDate)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.LastClaimDate)
+                                @Html.DisplayFor(modelItem => item.LastDayOfSicknessDate)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
@@ -362,12 +358,9 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script type="text/javascript">
-    $('#PdfEventOmbud').delay(4000).hide(1500);
-</script>
-<script type="text/javascript">
-    $('#PdfEventOmbudFail').delay(100000).hide(1500);
-</script>
-<script>
+    $('#PdfEventOmbud').delay(10000).hide(0);
+    $('#PdfEventOmbudFail').delay(100000).hide(0);
+
     $(function () {
         $(".js-show-view-btn").click(function (e) {
             e.preventDefault();

@@ -2047,25 +2047,25 @@ namespace Sjuklöner.Controllers
                     CalculateModelSum(claim, claimDays, null, null);
                 }
 
-                var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
-                List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
+            var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.StartDate).ToList();
+            List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
 
-                for (int i = 0; i < claimCalculations.Count(); i++)
+            for (int i = 0; i < claimCalculations.Count(); i++)
+            {
+                if (i == 0)
                 {
-                    if (i == 0)
-                    {
-                        //QUALIFYING DAY
-                        totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayQD);
-                        totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayQD);
-                        totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
-                        totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
-                    }
-                    //DAY 2 TO DAY 14
-                    totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
-                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
-                    totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
-                    totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
+                    //QUALIFYING DAY
+                    totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayQD);
+                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayQD);
+                    totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
+                    totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
                 }
+                //DAY 2 TO DAY 14
+                totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
+                totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
+                totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
+                totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
+            }
 
                 //Calculated values according to Collective Agreement should be shown in the View 
                 create3VM.SickPay = String.Format("{0:0.00}", totalSickPayCalc);
@@ -2195,12 +2195,23 @@ namespace Sjuklöner.Controllers
         {
             //This get action needs to be updated to handle the case where attachments have been added to the claim but the claim was only saved with attachments, not submitted.
             var VM = new Create4VM();
+
             VM.ClaimNumber = ClaimNumber;
             var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
             VM.NumberOfCalendarDays = claim.NumberOfCalendarDays;
             VM.NumberOfSickDays = claim.NumberOfSickDays;
             VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
+            VM.SalaryAttachmentExists = CheckExistingDocument(claim, "SalaryAttachment");
+            VM.TimeReportExists = CheckExistingDocument(claim, "TimeReport");
+            VM.DoctorsCertificateExists = (CheckExistingDocument(claim, "DoctorsCertificate") && claim.NumberOfSickDays > 7);
+
+            VM.TimeReportStandInExists = new List<bool>();
+
+            for (int idx = 0; idx < VM.NumberOfSubAssistants; idx++)
+            {
+                VM.TimeReportStandInExists.Insert(idx, CheckExistingDocument(claim, "TimeReportStandIn[" + idx + "]"));
+            }
             VM.RegAssistantSSNAndName = claim.RegAssistantSSN + ", " + claim.RegFirstName + " " + claim.RegLastName;
 
             string[] subAssistantSSN = new string[20];
@@ -2226,7 +2237,7 @@ namespace Sjuklöner.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Ombud")]
-        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn")]Create4VM model, string submitButton, int noOfSubAssistants)
+        public ActionResult Create4([Bind(Include = "ClaimNumber, SalaryAttachment, SickLeaveNotification, DoctorsCertificate, TimeReport, TimeReportStandIn, AssistantHasFile")]Create4VM model, string submitButton, int noOfSubAssistants)
         {
             if (submitButton == "Skicka in" || submitButton == "Spara")
             {
@@ -2249,10 +2260,23 @@ namespace Sjuklöner.Controllers
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
                     ModelState.AddModelError("TimeReport", "Tidsredovisning för ordinarie assistent saknas.");
 
-                for (int i = 0; i < noOfSubAssistants; i++)
+                if (model.TimeReportStandIn != null)
                 {
-                    if (!CheckExistingDocument(claim, "TimeReportStandIn[" + i.ToString() + "]", model.TimeReportStandIn[i]))
-                        ModelState.AddModelError("TimeReportStandIn[" + i.ToString() + "]", "Tidsredovisning för vikarierande assistent saknas.");
+                    for (int i = 0; i < noOfSubAssistants; i++)
+                    {
+                        if(model.AssistantHasFile[i] == false && !CheckExistingDocument(claim, "TimeReportStandIn[" + i.ToString() + "]"))
+                        {
+                            ModelState.AddModelError("TimeReportStandIn[" + i.ToString() + "]", "Tidsredovisning för vikarierande assistent saknas."); //This should hopefully never happen
+                        }
+                    }
+                }
+                else //Needs to be redone
+                {
+                    for (int i = 0; i < noOfSubAssistants; i++)
+                    {
+                        if (!CheckExistingDocument(claim, "TimeReportStandIn[" + i.ToString() + "]"))
+                            ModelState.AddModelError("TimeReportStandIn[" + i.ToString() + "]", "Tidsredovisning för vikarierande assistent saknas.");
+                    }
                 }
 
                 if (ModelState.IsValid)
@@ -2273,10 +2297,18 @@ namespace Sjuklöner.Controllers
                         if (model.TimeReport != null)
                             NewDocument(model.TimeReport, path, "TimeReport", claim);
 
-                        for (int i = 0; i < noOfSubAssistants; i++)
+                        if (model.TimeReportStandIn != null)
                         {
-                            if (model.TimeReportStandIn[i] != null)
-                                NewDocument(model.TimeReportStandIn[i], path, "TimeReportStandIn[" + i.ToString() + "]", claim);
+                            int filesUploaded = 0;
+                            for (int i = 0; i < noOfSubAssistants; i++)
+                            {
+                                if (model.AssistantHasFile[i] == true)
+                                {
+                                    CheckExistingDocument(claim, "TimeReportStandIn[" + i.ToString() + "]", model.TimeReportStandIn[filesUploaded]);
+                                    NewDocument(model.TimeReportStandIn[filesUploaded], path, "TimeReportStandIn[" + i.ToString() + "]", claim);
+                                    filesUploaded++;
+                                }
+                            }
                         }
 
                         if (claim.CompletionStage < 4)
@@ -2353,10 +2385,39 @@ namespace Sjuklöner.Controllers
                         }
                         else
                         {
+                            model.NumberOfSubAssistants = claim.NumberOfSubAssistants;
+
+                            model.RegAssistantSSNAndName = claim.RegAssistantSSN + ", " + claim.RegFirstName + " " + claim.RegLastName;
+
+                            string[] subAssistantSSN = new string[20];
+                            string[] subAssistantName = new string[20];
+                            string[] subAssistantSSNAndName = new string[20];
+
+                            subAssistantSSN = claim.SubAssistantsSSNConcat.Split('£').ToArray();
+                            subAssistantName = claim.SubAssistantsNameConcat.Split('£').ToArray();
+                            subAssistantSSNAndName[0] = claim.SubAssistantSSN + ", " + claim.SubFirstName + " " + claim.SubLastName;
+
+                            for (int i = 1; i < claim.NumberOfSubAssistants; i++)
+                            {
+                                subAssistantSSNAndName[i] = subAssistantSSN[i - 1] + ", " + subAssistantName[i - 1];
+                            }
+
+                            model.SubAssistantSSNAndName = subAssistantSSNAndName;
                             claim.StatusDate = DateTime.Now;
                             claim.CreationDate = DateTime.Now;
                             db.Entry(claim).State = EntityState.Modified;
                             db.SaveChanges();
+
+                            model.SalaryAttachmentExists = CheckExistingDocument(claim, "SalaryAttachment");
+                            model.TimeReportExists = CheckExistingDocument(claim, "TimeReport");
+                            model.DoctorsCertificateExists = (CheckExistingDocument(claim, "DoctorsCertificate") && claim.NumberOfSickDays > 7);
+
+                            model.TimeReportStandInExists = new List<bool>();
+                            for (int idx = 0; idx < model.NumberOfSubAssistants; idx++)
+                            {
+                                model.TimeReportStandInExists.Insert(idx, CheckExistingDocument(claim, "TimeReportStandIn[" + idx + "]"));
+                            }
+
                             return View("Create4", model);
                         }
                     }
@@ -2386,6 +2447,16 @@ namespace Sjuklöner.Controllers
 
                     model.SubAssistantSSNAndName = subAssistantSSNAndName;
 
+                    model.SalaryAttachmentExists = CheckExistingDocument(claim, "SalaryAttachment");
+                    model.TimeReportExists = CheckExistingDocument(claim, "TimeReport");
+                    model.DoctorsCertificateExists = (CheckExistingDocument(claim, "DoctorsCertificate") && claim.NumberOfSickDays > 7);
+
+                    model.TimeReportStandInExists = new List<bool>();
+                    for (int idx = 0; idx < model.NumberOfSubAssistants; idx++)
+                    {
+                        model.TimeReportStandInExists.Insert(idx, CheckExistingDocument(claim, "TimeReportStandIn[" + idx + "]"));
+                    }
+
                     return View("Create4", model);
                 }
             }
@@ -2404,7 +2475,13 @@ namespace Sjuklöner.Controllers
                 db.SaveChanges();
             }
             return true;
-
+        }
+        private bool CheckExistingDocument(Claim claim, string queryValue)
+        {
+            var linqQuery = claim.Documents.Where(d => d.Title == queryValue);
+            if (!linqQuery.Any())
+                return false;
+            return true;
         }
 
         private void NewDocument(HttpPostedFileBase file, string path, string title, Claim claim)
@@ -3249,8 +3326,10 @@ namespace Sjuklöner.Controllers
         [AllowAnonymous]
         public ActionResult RobotDeleteClaim()
         {
+            var date = DateTime.Now.AddYears(-1); //DateTime.Now.AddDays(-1)
             //Find claims that have a decision and where the decision date is one year old or older
-            var claims = db.Claims.Where(c => c.ClaimStatusId == 1).Where(c => c.DecisionDate >= DateTime.Now.AddYears(-1)).ToList();
+            var claims = db.Claims.Where(c => c.ClaimStatusId == 1).Where(c => c.DecisionDate <= date).ToList(); //This is the production line
+            //var claims = db.Claims.Where(c => c.ClaimStatusId == 1).Where(c => c.DecisionDate >= date).ToList(); //This exists mostly for test purposes
 
             foreach (var claim in claims)
             {
@@ -4389,7 +4468,7 @@ namespace Sjuklöner.Controllers
                             {
                                 db.ClaimCalculations.RemoveRange(db.ClaimCalculations.Where(c => c.ReferenceNumber == claim.ReferenceNumber));
                             }
-                            if (claim.CompletionStage >= 4)
+                            if (claim.CompletionStage >= 3)
                             {
                                 if (claim.Documents.Count() > 0)
                                 {

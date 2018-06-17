@@ -35,20 +35,19 @@
 
     if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventOmbudCreate2">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventCreate2">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin9 col col-md-10 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventOmbudCreate2Fail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventCreate2Fail">
+            <p class="col-md-nopadding col col-md-2"></p>
+            <p class="negative-left-margin9 col col-md-10 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
+
     <div class="row">
         <p class="col-md-nopadding col col-md-2"></p>
         <p class="negative-left-margin4 second-page-header6 col-md-nopadding col col-md-10">Steg 2 av 4: Ange antal timmar</p>
@@ -535,9 +534,9 @@
     </div>
 }
 <script type="text/javascript">
-    $('#PdfEventOmbudCreate2').delay(4000).hide(1500);
+    $('#PdfEventCreate2').delay(10000).hide(0);
 
-    $('#PdfEventCreate2Fail').delay(100000).hide(1500);
+    $('#PdfEventCreate2Fail').delay(100000).hide(0);
 
     $(document).ready(function assignIdsToSubAssistants() {
         var form = document.getElementsByTagName("form");

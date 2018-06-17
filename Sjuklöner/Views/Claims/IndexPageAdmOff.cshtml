@@ -23,24 +23,20 @@
             </div>
         }
     </div>
-    <br />
-    <br />
     @if (TempData["PdfSuccess"] != null)
     {
-        <div class="Event alert alert-success" id="PdfEventAdmOff">
-            <h3>
-                @TempData["PdfSuccess"]
-            </h3>
+        <div class="alert positive-result row" id="PdfEventAdmOff">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfSuccess"]</p>
         </div>
     }
     @if (TempData["PdfFail"] != null)
     {
-        <div class="Event alert alert-danger" id="PdfEventAdmOffFail">
-            <h3>
-                @TempData["PdfFail"]
-            </h3>
+        <div class="alert negative-result row" id="PdfEventAdmOffFail">
+            <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
+    <br />
+    <br />    
 
     <hr class="claim-divider" />
     <div class="row">
@@ -347,9 +343,7 @@
 
 </body>
 <script type="text/javascript">
-    $('#PdfEventAdmOff').delay(4000).hide(1500);
-</script>
-<script type="text/javascript">
-    $('#PdfEventAdmOffFail').delay(100000).hide(1500);
+    $('#PdfEventAdmOff').delay(10000).hide(0);
+    $('#PdfEventAdmOffFail').delay(100000).hide(0);
 </script>
 
