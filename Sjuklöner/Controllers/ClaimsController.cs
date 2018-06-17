@@ -249,8 +249,8 @@ namespace Sjuklöner.Controllers
                 create1VM.SelectedSubIndeces = subIndeces;
                 create1VM.SelectedSubAssistants = selectedSubAssistants;
 
-                create1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-1);
-                create1VM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
+                create1VM.FirstClaimDate = DateTime.Now.AddDays(-1);
+                create1VM.LastClaimDate = DateTime.Now.AddDays(-1);
                 return View("Create1", create1VM);
             }
             else if (refNumber != null) //This is an existing claim (either demo or no demo)
@@ -358,8 +358,8 @@ namespace Sjuklöner.Controllers
             create1VM.CustomerSSN = claim.CustomerSSN;
             //create1VM.CustomerAddress = claim.CustomerAddress;
             create1VM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
-            create1VM.FirstDayOfSicknessDate = claim.QualifyingDate;
-            create1VM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+            create1VM.FirstClaimDate = claim.FirstClaimDate;
+            create1VM.LastClaimDate = claim.LastClaimDate;
             create1VM.OrganisationNumber = claim.OrganisationNumber;
             create1VM.ClaimNumber = claim.ReferenceNumber;
             create1VM.CompletionStage = (int)claim.CompletionStage;
@@ -390,8 +390,8 @@ namespace Sjuklöner.Controllers
             defaultValuesCreate1VM.NumberOfSubAssistants = 1;
 
             defaultValuesCreate1VM.CustomerSSN = "391025-7246";
-            defaultValuesCreate1VM.FirstDayOfSicknessDate = DateTime.Now.AddDays(-4);
-            defaultValuesCreate1VM.LastDayOfSicknessDate = DateTime.Now.AddDays(-1);
+            defaultValuesCreate1VM.FirstClaimDate = DateTime.Now.AddDays(-4);
+            defaultValuesCreate1VM.LastClaimDate = DateTime.Now.AddDays(-1);
 
             return defaultValuesCreate1VM;
         }
@@ -450,21 +450,21 @@ namespace Sjuklöner.Controllers
             }
 
             //Check if the sickleave period is in the future.
-            if (create1VM.FirstDayOfSicknessDate.Date >= DateTime.Now.Date)
+            if (create1VM.FirstClaimDate.Date >= DateTime.Now.Date)
             {
-                ModelState.AddModelError("FirstDayOfSicknessDate", "Datumet får vara senast gårdagens datum.");
+                ModelState.AddModelError("FirstClaimDate", "Datumet får vara senast gårdagens datum.");
             }
-            if (create1VM.LastDayOfSicknessDate.Date >= DateTime.Now.Date)
+            if (create1VM.LastClaimDate.Date >= DateTime.Now.Date)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Datumet får vara senast gårdagens datum.");
+                ModelState.AddModelError("LastClaimDate", "Datumet får vara senast gårdagens datum.");
             }
             //Check that the last day of sickness is equal to or greater than the first day of sickness
-            if (create1VM.FirstDayOfSicknessDate.Date > create1VM.LastDayOfSicknessDate.Date)
+            if (create1VM.FirstClaimDate.Date > create1VM.LastClaimDate.Date)
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
             }
             //Check that the number of calendar days in the claim is maximum 70. This takes the 5-day rule into consideration. 
-            if ((create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days > 69)
+            if ((create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days > 69)
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Antalet kalenderdagar överstiger gränsen för vad som är möjligt.");
             }
@@ -490,7 +490,7 @@ namespace Sjuklöner.Controllers
             {
                 numberOfDays++;
             }
-            if ((DateTime.Now.Date - create1VM.LastDayOfSicknessDate.Date).Days > numberOfDays)
+            if ((DateTime.Now.Date - create1VM.LastClaimDate.Date).Days > numberOfDays)
             {
                 ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än tre år tillbaka i tiden.");
             }
@@ -510,7 +510,7 @@ namespace Sjuklöner.Controllers
                 ModelState.AddModelError("SubstituteAssistants", "Vikarierande assistent får inte vara samma som ordinarie assistent.");
             }
             string regAssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
-            if (OverlappingClaim(refNumber, create1VM.FirstDayOfSicknessDate, create1VM.LastDayOfSicknessDate, create1VM.CustomerSSN, regAssistantSSN))
+            if (OverlappingClaim(refNumber, create1VM.FirstClaimDate, create1VM.LastClaimDate, create1VM.CustomerSSN, regAssistantSSN))
             {
                 ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund och samma ordinarie assistent.");
             }
@@ -637,11 +637,11 @@ namespace Sjuklöner.Controllers
         private void AdjustClaimDays(Create1VM create1VM)
         {
             //Find existing claim days
-            var existingClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).OrderBy(c => c.SickDayNumber).ToList();
+            var existingClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
             //Calculate offsets at the beginning and end of the date range for the existing claim days
-            var offsetStart = (create1VM.FirstDayOfSicknessDate.Date - existingClaimDays[0].Date.Date).Days;
-            var offsetEnd = (create1VM.LastDayOfSicknessDate.Date - existingClaimDays.Last().Date.Date).Days;
+            var offsetStart = (create1VM.FirstClaimDate.Date - existingClaimDays[0].Date.Date).Days;
+            var offsetEnd = (create1VM.LastClaimDate.Date - existingClaimDays.Last().Date.Date).Days;
             int claimDayPos = 1;
             int maxIdx;
 
@@ -649,31 +649,31 @@ namespace Sjuklöner.Controllers
 
             if (offsetStart < 0) //Add new claim days to the beginning of the sickleave period 
             {
-                if (create1VM.LastDayOfSicknessDate.Date < existingClaimDays[0].Date.Date)
+                if (create1VM.LastClaimDate.Date < existingClaimDays[0].Date.Date)
                 {
-                    maxIdx = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+                    maxIdx = 1 + (create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days;
                 }
                 else
                 {
-                    maxIdx = (existingClaimDays[0].Date.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+                    maxIdx = (existingClaimDays[0].Date.Date - create1VM.FirstClaimDate.Date).Days;
                 }
                 for (int i = 0; i < maxIdx; i++)
                 {
                     ClaimDay claimDay = new ClaimDay();
-                    claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(i);
-                    claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(i).ToString(format: "ddd d MMM");
+                    claimDay.Date = create1VM.FirstClaimDate.AddDays(i);
+                    claimDay.DateString = create1VM.FirstClaimDate.AddDays(i).ToString(format: "ddd d MMM");
                     claimDay.ReferenceNumber = create1VM.ClaimNumber;
-                    claimDay.SickDayNumber = i + 1;
+                    claimDay.CalendarDayNumber = i + 1;
                     InitializeHoursInClaimDay(claimDay);
                     newClaimDays.Add(claimDay);
                     claimDayPos++;
                 }
                 //Copy relevant existing claim days to the new claim day list
-                if (create1VM.LastDayOfSicknessDate.Date >= existingClaimDays[0].Date.Date)
+                if (create1VM.LastClaimDate.Date >= existingClaimDays[0].Date.Date)
                 {
-                    if (create1VM.LastDayOfSicknessDate.Date < existingClaimDays.Last().Date)
+                    if (create1VM.LastClaimDate.Date < existingClaimDays.Last().Date)
                     {
-                        maxIdx = 1 + (create1VM.LastDayOfSicknessDate.Date - existingClaimDays[0].Date.Date).Days;
+                        maxIdx = 1 + (create1VM.LastClaimDate.Date - existingClaimDays[0].Date.Date).Days;
                     }
                     else
                     {
@@ -681,7 +681,7 @@ namespace Sjuklöner.Controllers
                     }
                     for (int i = 0; i < maxIdx; i++)
                     {
-                        existingClaimDays[0].SickDayNumber = claimDayPos;
+                        existingClaimDays[0].CalendarDayNumber = claimDayPos;
                         db.Entry(existingClaimDays[0]).State = EntityState.Modified;
                         existingClaimDays.Remove(existingClaimDays[0]);
                         claimDayPos++;
@@ -694,9 +694,9 @@ namespace Sjuklöner.Controllers
                     {
                         ClaimDay claimDay = new ClaimDay();
                         claimDay.ReferenceNumber = create1VM.ClaimNumber;
-                        claimDay.SickDayNumber = claimDayPos;
-                        claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
-                        claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
+                        claimDay.CalendarDayNumber = claimDayPos;
+                        claimDay.Date = create1VM.FirstClaimDate.AddDays(claimDayPos - 1);
+                        claimDay.DateString = create1VM.FirstClaimDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
                         InitializeHoursInClaimDay(claimDay);
                         newClaimDays.Add(claimDay);
                         claimDayPos++;
@@ -707,11 +707,11 @@ namespace Sjuklöner.Controllers
             {
                 if (offsetEnd <= 0)
                 {
-                    maxIdx = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+                    maxIdx = 1 + (create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days;
                 }
                 else
                 {
-                    maxIdx = existingClaimDays.Last().SickDayNumber;
+                    maxIdx = existingClaimDays.Last().CalendarDayNumber;
                 }
                 for (int i = 0; i < maxIdx; i++)
                 {
@@ -724,9 +724,9 @@ namespace Sjuklöner.Controllers
                     {
                         ClaimDay claimDay = new ClaimDay();
                         claimDay.ReferenceNumber = create1VM.ClaimNumber;
-                        claimDay.SickDayNumber = claimDayPos;
-                        claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
-                        claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
+                        claimDay.CalendarDayNumber = claimDayPos;
+                        claimDay.Date = create1VM.FirstClaimDate.AddDays(claimDayPos - 1);
+                        claimDay.DateString = create1VM.FirstClaimDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
                         InitializeHoursInClaimDay(claimDay);
                         newClaimDays.Add(claimDay);
                         claimDayPos++;
@@ -737,15 +737,15 @@ namespace Sjuklöner.Controllers
             {
                 if (offsetEnd <= 0)
                 {
-                    maxIdx = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+                    maxIdx = 1 + (create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days;
                 }
                 else
                 {
-                    maxIdx = 1 + (existingClaimDays.Last().Date.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+                    maxIdx = 1 + (existingClaimDays.Last().Date.Date - create1VM.FirstClaimDate.Date).Days;
                 }
                 for (int i = 0; i < maxIdx; i++)
                 {
-                    existingClaimDays[offsetStart].SickDayNumber = claimDayPos;
+                    existingClaimDays[offsetStart].CalendarDayNumber = claimDayPos;
                     db.Entry(existingClaimDays[offsetStart]).State = EntityState.Modified;
                     existingClaimDays.Remove(existingClaimDays[offsetStart]);
                     claimDayPos++;
@@ -757,9 +757,9 @@ namespace Sjuklöner.Controllers
                     {
                         ClaimDay claimDay = new ClaimDay();
                         claimDay.ReferenceNumber = create1VM.ClaimNumber;
-                        claimDay.SickDayNumber = claimDayPos;
-                        claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1);
-                        claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
+                        claimDay.CalendarDayNumber = claimDayPos;
+                        claimDay.Date = create1VM.FirstClaimDate.AddDays(claimDayPos - 1);
+                        claimDay.DateString = create1VM.FirstClaimDate.AddDays(claimDayPos - 1).ToString(format: "ddd d MMM");
                         InitializeHoursInClaimDay(claimDay);
                         newClaimDays.Add(claimDay);
                         claimDayPos++;
@@ -768,14 +768,14 @@ namespace Sjuklöner.Controllers
             }
             else //The updated sickleave period is later than the existing and the old and new do not overlap.
             {
-                maxIdx = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+                maxIdx = 1 + (create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days;
                 for (int i = 0; i < maxIdx; i++)
                 {
                     ClaimDay claimDay = new ClaimDay();
-                    claimDay.Date = create1VM.FirstDayOfSicknessDate.AddDays(i);
-                    claimDay.DateString = create1VM.FirstDayOfSicknessDate.AddDays(i).ToString(format: "ddd d MMM");
+                    claimDay.Date = create1VM.FirstClaimDate.AddDays(i);
+                    claimDay.DateString = create1VM.FirstClaimDate.AddDays(i).ToString(format: "ddd d MMM");
                     claimDay.ReferenceNumber = create1VM.ClaimNumber;
-                    claimDay.SickDayNumber = i + 1;
+                    claimDay.CalendarDayNumber = i + 1;
                     InitializeHoursInClaimDay(claimDay);
                     newClaimDays.Add(claimDay);
                 }
@@ -787,6 +787,25 @@ namespace Sjuklöner.Controllers
             }
             db.ClaimDays.AddRange(newClaimDays);
             db.SaveChanges();
+
+            //The code below is probably not needed since this update is done after create2 post.
+            //Update SickDayNumber in claimdays. Very likely the previous numbering is not valid after changing first and/or last date of the sickleave period.
+            //var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create1VM.ClaimNumber).OrderBy(c => c.CalendarDayNumber).ToList();
+            //int sickDayCounter = 1;
+            //foreach (var day in claimDays)
+            //{
+            //    if (!day.Well)
+            //    {
+            //        day.SickDayNumber = sickDayCounter;
+            //        sickDayCounter++;
+            //        db.Entry(day).State = EntityState.Modified;
+            //    }
+            //    else
+            //    {
+            //        day.SickDayNumber = null;
+            //    }
+            //}
+            //db.SaveChanges();
         }
 
         private void InitializeHoursInClaimDay(ClaimDay claimDay)
@@ -836,9 +855,9 @@ namespace Sjuklöner.Controllers
 
             claim.CreationDate = DateTime.Now;
             claim.StatusDate = DateTime.Now;
-            claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
-            claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
-            claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+            claim.FirstClaimDate = create1VM.FirstClaimDate;
+            claim.LastClaimDate = create1VM.LastClaimDate;
+            claim.NumberOfCalendarDays = 1 + (create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days;
 
             // Need to set start values for theses 3 properties to avoid DbUpdateException
             claim.BasisForDecisionTransferFinishTimeStamp = new DateTime(1900, 1, 1);
@@ -1024,9 +1043,9 @@ namespace Sjuklöner.Controllers
 
             claim.CreationDate = DateTime.Now;
             claim.StatusDate = DateTime.Now;
-            claim.QualifyingDate = create1VM.FirstDayOfSicknessDate;
-            claim.LastDayOfSicknessDate = create1VM.LastDayOfSicknessDate;
-            claim.NumberOfSickDays = 1 + (create1VM.LastDayOfSicknessDate.Date - create1VM.FirstDayOfSicknessDate.Date).Days;
+            claim.FirstClaimDate = create1VM.FirstClaimDate;
+            claim.LastClaimDate = create1VM.LastClaimDate;
+            claim.NumberOfCalendarDays = 1 + (create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
         }
@@ -1097,7 +1116,7 @@ namespace Sjuklöner.Controllers
         private Create2VM LoadDemoClaimCreate2VM(Claim claim)
         {
             Create2VM create2VM = new Create2VM();
-            var numberOfDays = 1 + (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate.Date).Days;
+            var numberOfDays = 1 + (claim.LastClaimDate.Date - claim.FirstClaimDate.Date).Days;
 
             create2VM.ReferenceNumber = claim.ReferenceNumber;
             List<ScheduleRow> rowList = new List<ScheduleRow>();
@@ -1114,7 +1133,7 @@ namespace Sjuklöner.Controllers
                 ScheduleRow scheduleRow = new ScheduleRow();
 
                 //Assign values to the ScheduleRowDate and ScheduleRowWeekDay properties in the viewmodel
-                dateInSchedule = claim.QualifyingDate.AddDays(i);
+                dateInSchedule = claim.FirstClaimDate.AddDays(i);
 
                 CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SE");
@@ -1142,7 +1161,7 @@ namespace Sjuklöner.Controllers
         private Create2VM LoadClaimCreate2VM(Claim claim)
         {
             Create2VM create2VM = new Create2VM();
-            var numberOfDays = (claim.LastDayOfSicknessDate.Date - claim.QualifyingDate.Date).Days + 1;
+            var numberOfDays = (claim.LastClaimDate.Date - claim.FirstClaimDate.Date).Days + 1;
 
             create2VM.ReferenceNumber = claim.ReferenceNumber;
             create2VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
@@ -1178,18 +1197,31 @@ namespace Sjuklöner.Controllers
             string[] onCallDaySIArray = new string[20];
             string[] onCallNightSIArray = new string[20];
 
-            string[,] hoursSIPerSubAndDay = new string[20, 70];
-            string[,] unsocialEveningSIPerSubAndDay = new string[20, 70];
-            string[,] unsocialNightSIPerSubAndDay = new string[20, 70];
-            string[,] unsocialWeekendSIPerSubAndDay = new string[20, 70];
-            string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 70];
-            string[,] onCallDaySIPerSubAndDay = new string[20, 70];
-            string[,] onCallNightSIPerSubAndDay = new string[20, 70];
+
+            //string[] hoursPerSubAndDay2 = new string[20];
+
+            List<string[]> hoursSIPerSubAndDay = new List<string[]>();
+            List<string[]> unsocialEveningSIPerSubAndDay = new List<string[]>();
+            List<string[]> unsocialNightSIPerSubAndDay = new List<string[]>();
+            List<string[]> unsocialWeekendSIPerSubAndDay = new List<string[]>();
+            List<string[]> unsocialGrandWeekendSIPerSubAndDay = new List<string[]>();
+            List<string[]> onCallDaySIPerSubAndDay = new List<string[]>();
+            List<string[]> onCallNightSIPerSubAndDay = new List<string[]>();
+
+
+
+            //string[,] hoursSIPerSubAndDay = new string[20, 70];
+            //string[,] unsocialEveningSIPerSubAndDay = new string[20, 70];
+            //string[,] unsocialNightSIPerSubAndDay = new string[20, 70];
+            //string[,] unsocialWeekendSIPerSubAndDay = new string[20, 70];
+            //string[,] unsocialGrandWeekendSIPerSubAndDay = new string[20, 70];
+            //string[,] onCallDaySIPerSubAndDay = new string[20, 70];
+            //string[,] onCallNightSIPerSubAndDay = new string[20, 70];
 
             if (claim.CompletionStage >= 2)
             {
                 var dayIdx = 0;
-                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
                 foreach (var day in claimDays)
                 {
                     hoursSIArray = day.HoursSI.Split('+').ToArray();
@@ -1202,13 +1234,20 @@ namespace Sjuklöner.Controllers
 
                     for (int subIdx = 0; subIdx < claim.NumberOfSubAssistants; subIdx++)
                     {
-                        hoursSIPerSubAndDay[subIdx, dayIdx] = hoursSIArray[subIdx];
-                        unsocialEveningSIPerSubAndDay[subIdx, dayIdx] = unsocialEveningSIArray[subIdx];
-                        unsocialNightSIPerSubAndDay[subIdx, dayIdx] = unsocialNightSIArray[subIdx];
-                        unsocialWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialWeekendSIArray[subIdx];
-                        unsocialGrandWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialGrandWeekendSIArray[subIdx];
-                        onCallDaySIPerSubAndDay[subIdx, dayIdx] = onCallDaySIArray[subIdx];
-                        onCallNightSIPerSubAndDay[subIdx, dayIdx] = onCallNightSIArray[subIdx];
+                        hoursSIPerSubAndDay.Add(hoursSIArray);
+                        unsocialEveningSIPerSubAndDay.Add(unsocialEveningSIArray);
+                        unsocialNightSIPerSubAndDay.Add(unsocialNightSIArray);
+                        unsocialWeekendSIPerSubAndDay.Add(unsocialWeekendSIArray);
+                        unsocialGrandWeekendSIPerSubAndDay.Add(unsocialGrandWeekendSIArray);
+                        onCallDaySIPerSubAndDay.Add(onCallDaySIArray);
+                        onCallNightSIPerSubAndDay.Add(onCallNightSIArray);
+                        //hoursSIPerSubAndDay[subIdx, dayIdx] = hoursSIArray[subIdx];
+                        //unsocialEveningSIPerSubAndDay[subIdx, dayIdx] = unsocialEveningSIArray[subIdx];
+                        //unsocialNightSIPerSubAndDay[subIdx, dayIdx] = unsocialNightSIArray[subIdx];
+                        //unsocialWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialWeekendSIArray[subIdx];
+                        //unsocialGrandWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialGrandWeekendSIArray[subIdx];
+                        //onCallDaySIPerSubAndDay[subIdx, dayIdx] = onCallDaySIArray[subIdx];
+                        //onCallNightSIPerSubAndDay[subIdx, dayIdx] = onCallNightSIArray[subIdx];
                     }
                     dayIdx++;
                 }
@@ -1237,7 +1276,7 @@ namespace Sjuklöner.Controllers
                 scheduleRow.OnCallNightSI = onCallNightArray;
 
                 //Assign values to the ScheduleRowDate and ScheduleRowWeekDay properties in the viewmodel
-                dateInSchedule = claim.QualifyingDate.AddDays(i);
+                dateInSchedule = claim.FirstClaimDate.AddDays(i);
 
                 CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SE");
@@ -1248,6 +1287,7 @@ namespace Sjuklöner.Controllers
 
                 if (claim.CompletionStage >= 2)
                 {
+                    scheduleRow.Well = claimDays[i].Well;
                     scheduleRow.Hours = claimDays[i].Hours;
                     scheduleRow.UnsocialEvening = claimDays[i].UnsocialEvening;
                     scheduleRow.UnsocialNight = claimDays[i].UnsocialNight;
@@ -1259,14 +1299,14 @@ namespace Sjuklöner.Controllers
 
                     for (int k = 0; k < claim.NumberOfSubAssistants; k++)
                     {
-                        scheduleRow.HoursSI[k] = hoursSIPerSubAndDay[k, i];
-                        scheduleRow.UnsocialEveningSI[k] = unsocialEveningSIPerSubAndDay[k, i];
-                        scheduleRow.UnsocialNightSI[k] = unsocialNightSIPerSubAndDay[k, i];
-                        scheduleRow.UnsocialWeekendSI[k] = unsocialWeekendSIPerSubAndDay[k, i];
-                        scheduleRow.UnsocialGrandWeekendSI[k] = unsocialGrandWeekendSIPerSubAndDay[k, i];
+                        scheduleRow.HoursSI[k] = hoursSIPerSubAndDay[i][k];
+                        scheduleRow.UnsocialEveningSI[k] = unsocialEveningSIPerSubAndDay[i][k];
+                        scheduleRow.UnsocialNightSI[k] = unsocialNightSIPerSubAndDay[i][k];
+                        scheduleRow.UnsocialWeekendSI[k] = unsocialWeekendSIPerSubAndDay[i][k];
+                        scheduleRow.UnsocialGrandWeekendSI[k] = unsocialGrandWeekendSIPerSubAndDay[i][k];
 
-                        scheduleRow.OnCallDaySI[k] = onCallDaySIPerSubAndDay[k, i];
-                        scheduleRow.OnCallNightSI[k] = onCallNightSIPerSubAndDay[k, i];
+                        scheduleRow.OnCallDaySI[k] = onCallDaySIPerSubAndDay[i][k];
+                        scheduleRow.OnCallNightSI[k] = onCallNightSIPerSubAndDay[i][k];
                     }
                 }
 
@@ -1622,10 +1662,10 @@ namespace Sjuklöner.Controllers
                     }
 
                     //Check that the sum of hours for all substitute assistants is not greater than the number of hours for the regular assistant for each day
-                    int numberOfSickdays = create2VM.ScheduleRowList.Count();
+                    int numberOfCalendarDays = create2VM.ScheduleRowList.Count();
                     int numberOfSubAssistants = create2VM.NumberOfSubAssistants;
                     decimal[] subSum = new decimal[7];
-                    for (int dayIdx = 0; dayIdx < numberOfSickdays; dayIdx++)
+                    for (int dayIdx = 0; dayIdx < numberOfCalendarDays; dayIdx++)
                     {
                         for (int i = 0; i < 7; i++)
                         {
@@ -1769,7 +1809,7 @@ namespace Sjuklöner.Controllers
             decimal numberOfUnsocialHoursSI = 0;
             decimal numberOfOnCallHoursSI = 0;
 
-            DateTime claimDate = claim.QualifyingDate;
+            DateTime claimDate = claim.FirstClaimDate;
 
             string numberOfHoursWithSIConcat = "";
             string numberOfOrdinaryHoursSIConcat = "";
@@ -1789,7 +1829,14 @@ namespace Sjuklöner.Controllers
             string OnCallDaySIConcat = "";
             string OnCallNightSIConcat = "";
 
-            int dayIdx = 1;
+            int sickDayCounter = 1;
+            int qdIdx = 0;
+            int day2Idx = 0;
+            int day14Idx = 0;
+            int day15Idx = 0;
+            int lastDayIdx = 0;
+
+            int dayIdx = 0;
             foreach (var day in create2VM.ScheduleRowList)
             {
                 for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
@@ -1807,9 +1854,9 @@ namespace Sjuklöner.Controllers
                 {
                     ReferenceNumber = create2VM.ReferenceNumber,
                     DateString = day.ScheduleRowDateString,
-                    Date = claimDate.AddDays(dayIdx - 1),
-                    SickDayNumber = dayIdx,
-
+                    Date = claimDate.AddDays(dayIdx),
+                    CalendarDayNumber = dayIdx + 1,
+                    Well = day.Well,
                     Hours = day.Hours,
                     UnsocialEvening = day.UnsocialEvening,
                     UnsocialNight = day.UnsocialNight,
@@ -1825,7 +1872,37 @@ namespace Sjuklöner.Controllers
                     OnCallDaySI = OnCallDaySIConcat,
                     OnCallNightSI = OnCallNightSIConcat
                 };
+                if (claimDay.Well)
+                {
+                    claimDay.SickDayNumber = null;
+                }
+                else
+                {
+                    switch (sickDayCounter)
+                    {
+                        case 1:
+                            qdIdx = dayIdx;
+                            break;
+                        case 2:
+                            day2Idx = dayIdx;
+                            break;
+                        case 14:
+                            day14Idx = dayIdx;
+                            break;
+                        case 15:
+                            day15Idx = dayIdx;
+                            break;
+                        default:
+                            break;
+                    }
+                    claimDay.SickDayNumber = sickDayCounter;
+                    lastDayIdx = dayIdx;
+                    sickDayCounter++;
+                }
                 db.ClaimDays.Add(claimDay);
+
+                claim.NumberOfSickDays = sickDayCounter - 1;
+                claim.AdjustedNumberOfSickDays = sickDayCounter - 1;
 
                 numberOfOrdinaryHours = numberOfOrdinaryHours + Convert.ToDecimal(day.Hours);
                 numberOfUnsocialHours = numberOfUnsocialHours + Convert.ToDecimal(day.UnsocialEvening) + Convert.ToDecimal(day.UnsocialNight) + Convert.ToDecimal(day.UnsocialWeekend) + Convert.ToDecimal(day.UnsocialGrandWeekend);
@@ -1856,6 +1933,24 @@ namespace Sjuklöner.Controllers
                 dayIdx++;
             }
 
+            db.SaveChanges();
+            var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create2VM.ReferenceNumber).ToList();
+            //Identify qd, day2, day14, day15 and last day of sickness
+            claim.QualifyingDayDate = claimDays[qdIdx].Date.ToShortDateString();
+            if (day2Idx != 0)
+            {
+                claim.Day2OfSicknessDate = claimDays[day2Idx].Date.ToShortDateString();
+            }
+            if (day14Idx != 0)
+            {
+                claim.Day14OfSicknessDate = claimDays[day14Idx].Date.ToShortDateString();
+            }
+            if (day15Idx != 0)
+            {
+                claim.Day15OfSicknessDate = claimDays[day15Idx].Date.ToShortDateString();
+            }
+            claim.LastDayofSicknessDate = claimDays[lastDayIdx].Date.ToShortDateString();
+
             claim.NumberOfAbsenceHours = numberOfAbsenceHours;
             claim.NumberOfOrdinaryHours = numberOfOrdinaryHours;
             claim.NumberOfUnsocialHours = numberOfUnsocialHours;
@@ -1878,6 +1973,9 @@ namespace Sjuklöner.Controllers
             claim.NumberOfOrdinaryHoursSIConcat = numberOfOrdinaryHoursSIConcat;
             claim.NumberOfUnsocialHoursSIConcat = numberOfUnsocialHoursSIConcat;
             claim.NumberOfOnCallHoursSIConcat = numberOfOnCallHoursSIConcat;
+
+
+
 
             if (claim.CompletionStage < 2)
             {
@@ -1943,7 +2041,7 @@ namespace Sjuklöner.Controllers
 
                 //Calculate the model sum
                 List<ClaimDay> claimDays = new List<ClaimDay>();
-                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create3VM.ClaimNumber).OrderBy(c => c.SickDayNumber).ToList();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == create3VM.ClaimNumber).OrderBy(c => c.CalendarDayNumber).ToList();
                 if (claimDays.Count() > 0)
                 {
                     CalculateModelSum(claim, claimDays, null, null);
@@ -1993,7 +2091,7 @@ namespace Sjuklöner.Controllers
             Create3VM create3VM = new Create3VM();
             create3VM.ClaimNumber = refNumber;
 
-            var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.SickDayNumber).ToList();
+            var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == refNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
             decimal hours = 0;
             decimal unsocialEvening = 0;
@@ -2099,6 +2197,7 @@ namespace Sjuklöner.Controllers
             var VM = new Create4VM();
             VM.ClaimNumber = ClaimNumber;
             var claim = db.Claims.Where(c => c.ReferenceNumber == ClaimNumber).FirstOrDefault();
+            VM.NumberOfCalendarDays = claim.NumberOfCalendarDays;
             VM.NumberOfSickDays = claim.NumberOfSickDays;
             VM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
@@ -2144,7 +2243,7 @@ namespace Sjuklöner.Controllers
                 //if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
                 //    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas.");
 
-                if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
+                if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfCalendarDays > 7)
                     ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas.");
 
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
@@ -2209,7 +2308,7 @@ namespace Sjuklöner.Controllers
                             //claim.SickleaveNotificationCheck = false;
                             //claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
 
-                            if (claim.NumberOfSickDays > 7)
+                            if (claim.NumberOfCalendarDays > 7)
                             {
                                 claim.MedicalCertificateCheck = false;
                                 claim.MedicalCertificateCheckMsg = "Kontroll ej utförd";
@@ -2227,17 +2326,19 @@ namespace Sjuklöner.Controllers
                             claim.FKSubAssistantCheckMsg = "Kontroll ej utförd";
 
                             //FK attachment checks for substitute assistants 2 - 20
-                            string fkCheckBool = "";
-                            string fkCheckMsg = "";
-
-                            for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                            if (claim.NumberOfSubAssistants > 1)
                             {
-                                fkCheckBool += "false£";
-                                fkCheckMsg += "Kontroll ej utförd£";
-                            }
+                                string fkCheckBool = "";
+                                string fkCheckMsg = "";
 
-                            claim.FKSubAssistantCheckMsgConcat = fkCheckMsg;
-                            claim.FKSubAssistantCheckBoolConcat = fkCheckBool;
+                                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                                {
+                                    fkCheckBool += "false£";
+                                    fkCheckMsg += "Kontroll ej utförd£";
+                                }
+                                claim.FKSubAssistantCheckMsgConcat = fkCheckMsg;
+                                claim.FKSubAssistantCheckBoolConcat = fkCheckBool;
+                            }
 
                             //Set default values for transfers
                             claim.BasisForDecision = false;
@@ -2373,7 +2474,7 @@ namespace Sjuklöner.Controllers
             if (claim != null)
             {
                 //Find ClaimDay records for the claim
-                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
                 //These check results are hardcoded for the demo. Need to be changed for the real solution.
 
@@ -2456,14 +2557,14 @@ namespace Sjuklöner.Controllers
                         {
                             //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                             //decision about personal assistance covers the whole sickleave period.
-                            endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                            endOfAssistance = claim.LastClaimDate.Date.AddDays(20);
                         }
                     }
                     else
                     {
                         //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
-                        endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                        endOfAssistance = claim.LastClaimDate.Date.AddDays(20);
                     }
 
                     DateTime startOfAssistance = new DateTime();
@@ -2504,14 +2605,14 @@ namespace Sjuklöner.Controllers
                         {
                             //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
                             //decision about personal assistance covers the whole sickleave period.
-                            startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                            startOfAssistance = claim.FirstClaimDate.Date.AddDays(-20);
                         }
                     }
                     else
                     {
                         //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
-                        startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                        startOfAssistance = claim.FirstClaimDate.Date.AddDays(-20);
                     }
 
                     //Check if the last day of approved personal assistance is equal to or greater than the first day of the sickperiod and earlier than the last day of the sickleave period. 
@@ -2520,11 +2621,11 @@ namespace Sjuklöner.Controllers
                     //1. The case where the last date of approved assistance is within the sickleave period 
                     //2. The case where the first date of approved assistance is within the sickleave period. 
                     //The case where both the qualifying date and last day of sickness are outside the approved personal assistance dates is not covered. It is a very unlikely case.
-                    if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
+                    if (endOfAssistance.Date < claim.LastClaimDate.Date && endOfAssistance.Date >= claim.FirstClaimDate.Date)
                     {
                         //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
-                        int numberOfDaysToRemove = (claim.LastDayOfSicknessDate.Date - endOfAssistance.Date).Days;
-                        int startIndex = claim.NumberOfSickDays - numberOfDaysToRemove;
+                        int numberOfDaysToRemove = (claim.LastClaimDate.Date - endOfAssistance.Date).Days;
+                        int startIndex = claim.NumberOfCalendarDays - numberOfDaysToRemove;
 
                         //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
                         //does not cover the whole sickleave period.
@@ -2535,10 +2636,10 @@ namespace Sjuklöner.Controllers
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate + ", vilket endast täcker en del av sjukperioden";
                         partiallyCovered = true;
                     }
-                    else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
+                    else if (startOfAssistance.Date > claim.FirstClaimDate.Date && startOfAssistance.Date <= claim.LastClaimDate.Date)
                     {
                         //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
-                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.QualifyingDate.Date).Days;
+                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.FirstClaimDate.Date).Days;
                         int startIndex = 0;
 
                         //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
@@ -2551,7 +2652,7 @@ namespace Sjuklöner.Controllers
                         partiallyCovered = true;
                     }
                     //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
-                    else if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date) //CHECK THIS OUT
+                    else if (endOfAssistance.Date >= claim.LastClaimDate.Date) //CHECK THIS OUT
                     {
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns.";
                     }
@@ -2583,28 +2684,31 @@ namespace Sjuklöner.Controllers
                 recommendationVM.FKSubAssistantCheck = claim.FKSubAssistantCheck;
                 recommendationVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
 
-                //handle multiple substitute assistants 2 - 20
-                string[] fkAttachmentSubAssistantsAsString = new string[20];
-                bool[] fkAttachmentSubAssistants = new bool[20];
-                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
-
-                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                if (claim.NumberOfSubAssistants > 1)
                 {
-                    if (fkAttachmentSubAssistantsAsString[i] == "true")
+                    //handle multiple substitute assistants 2 - 20
+                    string[] fkAttachmentSubAssistantsAsString = new string[20];
+                    bool[] fkAttachmentSubAssistants = new bool[20];
+                    fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                    for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        fkAttachmentSubAssistants[i] = true;
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        {
+                            fkAttachmentSubAssistants[i] = true;
+                        }
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        {
+                            fkAttachmentSubAssistants[i] = false;
+                        }
                     }
-                    else if (fkAttachmentSubAssistantsAsString[i] == "false")
-                    {
-                        fkAttachmentSubAssistants[i] = false;
-                    }
+
+                    string[] fkAttachmentSubAssistantsMsg = new string[20];
+                    fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
+
+                    recommendationVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
+                    recommendationVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
                 }
-
-                string[] fkAttachmentSubAssistantsMsg = new string[20];
-                fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
-
-                recommendationVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
-                recommendationVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
 
                 recommendationVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
                 recommendationVM.NumberOfSickDays = claim.NumberOfSickDays;
@@ -2721,7 +2825,7 @@ namespace Sjuklöner.Controllers
             if (claim != null)
             {
                 //Find ClaimDay records for the claim
-                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
                 //These check results are hardcoded for the demo. Need to be changed for the real solution.
 
@@ -2804,14 +2908,14 @@ namespace Sjuklöner.Controllers
                         {
                             //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                             //decision about personal assistance covers the whole sickleave period.
-                            endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                            endOfAssistance = claim.LastClaimDate.Date.AddDays(20);
                         }
                     }
                     else
                     {
                         //Set a default value for endOfAssistance in case Robin did not set a value for claim.LastAssistanceDate. The default is big enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
-                        endOfAssistance = claim.LastDayOfSicknessDate.Date.AddDays(20);
+                        endOfAssistance = claim.LastClaimDate.Date.AddDays(20);
                     }
 
                     DateTime startOfAssistance = new DateTime();
@@ -2852,14 +2956,14 @@ namespace Sjuklöner.Controllers
                         {
                             //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
                             //decision about personal assistance covers the whole sickleave period.
-                            startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                            startOfAssistance = claim.FirstClaimDate.Date.AddDays(-20);
                         }
                     }
                     else
                     {
                         //Set a default value for startOfAssistance in case Robin did not set a value for claim.FirstAssistanceDate. The default is small enough to ensure that the
                         //decision about personal assistance covers the whole sickleave period.
-                        startOfAssistance = claim.QualifyingDate.Date.AddDays(-20);
+                        startOfAssistance = claim.FirstClaimDate.Date.AddDays(-20);
                     }
 
                     //Check if the last day of approved personal assistance is equal to or greater than the first day of the sickperiod and earlier than the last day of the sickleave period. 
@@ -2868,11 +2972,11 @@ namespace Sjuklöner.Controllers
                     //1. The case where the last date of approved assistance is within the sickleave period 
                     //2. The case where the first date of approved assistance is within the sickleave period. 
                     //The case where both the qualifying date and last day of sickness are outside the approved personal assistance dates is not covered. It is a very unlikely case.
-                    if (endOfAssistance.Date < claim.LastDayOfSicknessDate.Date && endOfAssistance.Date >= claim.QualifyingDate.Date)
+                    if (endOfAssistance.Date < claim.LastClaimDate.Date && endOfAssistance.Date >= claim.FirstClaimDate.Date)
                     {
                         //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
-                        int numberOfDaysToRemove = (claim.LastDayOfSicknessDate.Date - endOfAssistance.Date).Days;
-                        int startIndex = claim.NumberOfSickDays - numberOfDaysToRemove;
+                        int numberOfDaysToRemove = (claim.LastClaimDate.Date - endOfAssistance.Date).Days;
+                        int startIndex = claim.NumberOfCalendarDays - numberOfDaysToRemove;
 
                         //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
                         //does not cover the whole sickleave period.
@@ -2883,10 +2987,10 @@ namespace Sjuklöner.Controllers
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns t. o. m. " + claim.LastAssistanceDate + ", vilket endast täcker en del av sjukperioden";
                         partiallyCovered = true;
                     }
-                    else if (startOfAssistance.Date > claim.QualifyingDate.Date && startOfAssistance.Date <= claim.LastDayOfSicknessDate.Date)
+                    else if (startOfAssistance.Date > claim.FirstClaimDate.Date && startOfAssistance.Date <= claim.LastClaimDate.Date)
                     {
                         //Calculate the number of claimdays to be removed from the model sum calcluation and the start index (zero-based) of the range of claimdays that shall be included in the model sum calculation
-                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.QualifyingDate.Date).Days;
+                        int numberOfDaysToRemove = (startOfAssistance.Date - claim.FirstClaimDate.Date).Days;
                         int startIndex = 0;
 
                         //Calculate the model sum. Take into consideration that a number of claimdays must be excluded from the model sum calculation due to the fact that the decision about personal assistance
@@ -2899,7 +3003,7 @@ namespace Sjuklöner.Controllers
                         partiallyCovered = true;
                     }
                     //Check if the last day of approved personal assistance is equal to or after the last day of the sickperiod. Claim.LastAssistanceDate is filled in by Robin. 
-                    else if (endOfAssistance.Date >= claim.LastDayOfSicknessDate.Date) //CHECK THIS OUT
+                    else if (endOfAssistance.Date >= claim.LastClaimDate.Date) //CHECK THIS OUT
                     {
                         recommendationVM.AssistanceCheckMsg = "Giltigt beslut om assistans finns.";
                     }
@@ -2931,28 +3035,31 @@ namespace Sjuklöner.Controllers
                 recommendationVM.FKSubAssistantCheck = claim.FKSubAssistantCheck;
                 recommendationVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
 
-                //handle multiple substitute assistants 2 - 20
-                string[] fkAttachmentSubAssistantsAsString = new string[20];
-                bool[] fkAttachmentSubAssistants = new bool[20];
-                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
-
-                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                if (claim.NumberOfSubAssistants > 1)
                 {
-                    if (fkAttachmentSubAssistantsAsString[i] == "true")
+                    //handle multiple substitute assistants 2 - 20
+                    string[] fkAttachmentSubAssistantsAsString = new string[20];
+                    bool[] fkAttachmentSubAssistants = new bool[20];
+                    fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                    for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        fkAttachmentSubAssistants[i] = true;
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        {
+                            fkAttachmentSubAssistants[i] = true;
+                        }
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        {
+                            fkAttachmentSubAssistants[i] = false;
+                        }
                     }
-                    else if (fkAttachmentSubAssistantsAsString[i] == "false")
-                    {
-                        fkAttachmentSubAssistants[i] = false;
-                    }
+
+                    string[] fkAttachmentSubAssistantsMsg = new string[20];
+                    fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
+
+                    recommendationVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
+                    recommendationVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
                 }
-
-                string[] fkAttachmentSubAssistantsMsg = new string[20];
-                fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
-
-                recommendationVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
-                recommendationVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
 
                 recommendationVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
                 recommendationVM.NumberOfSickDays = claim.NumberOfSickDays;
@@ -3032,10 +3139,10 @@ namespace Sjuklöner.Controllers
                     claim.AdmOffName = me.FirstName + " " + me.LastName;
                 }
 
-                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
-                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
-                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
-                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
+                claim.FirstClaimDateAsString = claim.FirstClaimDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.FirstClaimDateAsString = claim.FirstClaimDateAsString.Remove(6, 1);
+                claim.LastClaimDateAsString = claim.LastClaimDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastClaimDateAsString = claim.LastClaimDateAsString.Remove(6, 1);
                 claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
                 claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
                 claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
@@ -3043,10 +3150,10 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
-                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
-                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
                 db.Entry(claim).State = EntityState.Modified;
@@ -3288,8 +3395,8 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.RegAssistantSSN = claim.RegAssistantSSN;
                 claimDetailsOmbudVM.RegPhoneNumber = claim.RegPhoneNumber;
                 claimDetailsOmbudVM.RegEmail = claim.RegEmail;
-                claimDetailsOmbudVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
-                claimDetailsOmbudVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
+                claimDetailsOmbudVM.FirstClaimDate = claim.FirstClaimDate.ToShortDateString();
+                claimDetailsOmbudVM.LastClaimDate = claim.LastClaimDate.ToShortDateString();
 
                 //Vikarierande assistent 1
                 claimDetailsOmbudVM.SubAssistantName = claim.SubFirstName + " " + claim.SubLastName;
@@ -3315,7 +3422,7 @@ namespace Sjuklöner.Controllers
 
                 claimDetailsOmbudVM.NumberOfSubAssistants = claim.NumberOfSubAssistants;
 
-                claimDetailsOmbudVM.NumberOfSickDays = claim.NumberOfSickDays;
+                claimDetailsOmbudVM.NumberOfCalendarDays = claim.NumberOfCalendarDays;
 
                 //claimDetailsOmbudVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsOmbudVM.cs.
                 //claimDetailsOmbudVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
@@ -3370,7 +3477,7 @@ namespace Sjuklöner.Controllers
                 string[,] onCallDaySIPerSubAndDay = new string[20, 70];
                 string[,] onCallNightSIPerSubAndDay = new string[20, 70];
 
-                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
                 int index = 0;
                 foreach (var day in claimDays)
                 {
@@ -3403,8 +3510,10 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.OnCallDaySIPerSubAndDay = onCallDaySIPerSubAndDay;
                 claimDetailsOmbudVM.OnCallNightSIPerSubAndDay = onCallNightSIPerSubAndDay;
 
-                //var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                //var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
                 claimDetailsOmbudVM.ClaimDays = claimDays;
+                claimDetailsOmbudVM.NumberOfSickDays = claim.NumberOfSickDays;
+                claimDetailsOmbudVM.AdjustedNumberOfSickDays = claim.NumberOfSickDays;
             }
 
             if (claim.CompletionStage >= 3)
@@ -3414,6 +3523,12 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.SocialFees = claim.ClaimedSocialFees;
                 claimDetailsOmbudVM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
                 claimDetailsOmbudVM.ClaimSum = claim.ClaimedSum;
+
+                claimDetailsOmbudVM.AdjustedNumberOfSickDays = claim.AdjustedNumberOfSickDays;
+                claimDetailsOmbudVM.Day2OfSicknessDate = claim.Day2OfSicknessDate;
+                claimDetailsOmbudVM.Day14OfSicknessDate = claim.Day14OfSicknessDate;
+                claimDetailsOmbudVM.Day15OfSicknessDate = claim.Day15OfSicknessDate;
+                claimDetailsOmbudVM.LastDayofSicknessDate = claim.LastDayofSicknessDate;
             }
 
             if (claim.CompletionStage >= 4)
@@ -3440,29 +3555,31 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.FKRegAssistantCheckMsg = claim.FKRegAssistantCheckMsg;
                 claimDetailsOmbudVM.FKSubAssistantCheckMsg = claim.FKSubAssistantCheckMsg;
 
-                //FK attachment checks for substitute assistants 2 - 20
-                string[] fkAttachmentSubAssistantsAsString = new string[20];
-                bool[] fkAttachmentSubAssistants = new bool[20];
-                fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
-
-                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                if (claim.NumberOfSubAssistants > 1)
                 {
-                    if (fkAttachmentSubAssistantsAsString[i] == "true")
+                    //FK attachment checks for substitute assistants 2 - 20
+                    string[] fkAttachmentSubAssistantsAsString = new string[20];
+                    bool[] fkAttachmentSubAssistants = new bool[20];
+                    fkAttachmentSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£');
+
+                    for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        fkAttachmentSubAssistants[i] = true;
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        {
+                            fkAttachmentSubAssistants[i] = true;
+                        }
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        {
+                            fkAttachmentSubAssistants[i] = false;
+                        }
                     }
-                    else if (fkAttachmentSubAssistantsAsString[i] == "false")
-                    {
-                        fkAttachmentSubAssistants[i] = false;
-                    }
+
+                    string[] fkAttachmentSubAssistantsMsg = new string[20];
+                    fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
+
+                    claimDetailsOmbudVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
+                    claimDetailsOmbudVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
                 }
-
-                string[] fkAttachmentSubAssistantsMsg = new string[20];
-                fkAttachmentSubAssistantsMsg = claim.FKSubAssistantCheckMsgConcat.Split('£');
-
-                claimDetailsOmbudVM.FKSubAssistantCheckBoolArray = fkAttachmentSubAssistants;
-                claimDetailsOmbudVM.FKSubAssistantCheckMsgArray = fkAttachmentSubAssistantsMsg;
-
                 //Not Used
                 //claimDetailsOmbudVM.SickleaveNotificationCheckMsg = claim.SickleaveNotificationCheckMsg;
 
@@ -3471,7 +3588,7 @@ namespace Sjuklöner.Controllers
 
                 //Add calculation and results from calculation
                 List<ClaimDay> claimDays = new List<ClaimDay>();
-                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+                claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
                 //Calculate the model sum
                 //if (claimDays.Count() > 0)
@@ -3696,244 +3813,244 @@ namespace Sjuklöner.Controllers
             }
         }
 
-        public ActionResult ShowClaimDetails(string referenceNumber)
-        {
-            var claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == referenceNumber).FirstOrDefault();
+        //public ActionResult ShowClaimDetails(string referenceNumber)
+        //{
+        //    var claim = db.Claims.Include(c => c.ClaimStatus).Where(c => c.ReferenceNumber == referenceNumber).FirstOrDefault();
 
-            List<ClaimDay> claimDays = new List<ClaimDay>();
-            claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.SickDayNumber).ToList();
+        //    List<ClaimDay> claimDays = new List<ClaimDay>();
+        //    claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
-            //Calculate the model sum
-            if (claimDays.Count() > 0)
-            {
-                CalculateModelSum(claim, claimDays, null, null);
-            }
+        //    //Calculate the model sum
+        //    if (claimDays.Count() > 0)
+        //    {
+        //        CalculateModelSum(claim, claimDays, null, null);
+        //    }
 
-            ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
+        //    ClaimDetailsVM claimDetailsVM = new ClaimDetailsVM();
 
-            claimDetailsVM.ReferenceNumber = referenceNumber;
-            claimDetailsVM.StatusName = claim.ClaimStatus.Name;
-            claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
+        //    claimDetailsVM.ReferenceNumber = referenceNumber;
+        //    claimDetailsVM.StatusName = claim.ClaimStatus.Name;
+        //    claimDetailsVM.DefaultCollectiveAgreement = claim.DefaultCollectiveAgreement;
 
-            //Kommun
-            claimDetailsVM.Council = "Helsingborgs kommun";
-            claimDetailsVM.Administration = "Vård- och omsorgsförvaltningen";
+        //    //Kommun
+        //    claimDetailsVM.Council = "Helsingborgs kommun";
+        //    claimDetailsVM.Administration = "Vård- och omsorgsförvaltningen";
 
-            //Assistansberättigad
-            claimDetailsVM.CustomerName = claim.CustomerName;
-            claimDetailsVM.CustomerSSN = claim.CustomerSSN;
-            //claimDetailsVM.CustomerAddress = claim.CustomerAddress;
-            claimDetailsVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
+        //    //Assistansberättigad
+        //    claimDetailsVM.CustomerName = claim.CustomerName;
+        //    claimDetailsVM.CustomerSSN = claim.CustomerSSN;
+        //    //claimDetailsVM.CustomerAddress = claim.CustomerAddress;
+        //    claimDetailsVM.CustomerPhoneNumber = claim.CustomerPhoneNumber;
 
-            //Ombud/uppgiftslämnare
-            claimDetailsVM.OmbudName = claim.OmbudFirstName + " " + claim.OmbudLastName;
-            claimDetailsVM.OmbudPhoneNumber = claim.OmbudPhoneNumber;
+        //    //Ombud/uppgiftslämnare
+        //    claimDetailsVM.OmbudName = claim.OmbudFirstName + " " + claim.OmbudLastName;
+        //    claimDetailsVM.OmbudPhoneNumber = claim.OmbudPhoneNumber;
 
-            //Assistansanordnare
-            claimDetailsVM.CompanyName = claim.CompanyName; ;
-            claimDetailsVM.OrganisationNumber = claim.OrganisationNumber;
-            claimDetailsVM.GiroNumber = claim.AccountNumber;
-            claimDetailsVM.CompanyAddress = claim.StreetAddress;
-            claimDetailsVM.CompanyPhoneNumber = claim.CompanyPhoneNumber;
-            claimDetailsVM.CollectiveAgreement = claim.CollectiveAgreementName + ", " + claim.CollectiveAgreementSpecName;
-            claimDetailsVM.Workplace = "Björkängen, Birgittagården"; //This can probably be removed
+        //    //Assistansanordnare
+        //    claimDetailsVM.CompanyName = claim.CompanyName; ;
+        //    claimDetailsVM.OrganisationNumber = claim.OrganisationNumber;
+        //    claimDetailsVM.GiroNumber = claim.AccountNumber;
+        //    claimDetailsVM.CompanyAddress = claim.StreetAddress;
+        //    claimDetailsVM.CompanyPhoneNumber = claim.CompanyPhoneNumber;
+        //    claimDetailsVM.CollectiveAgreement = claim.CollectiveAgreementName + ", " + claim.CollectiveAgreementSpecName;
+        //    claimDetailsVM.Workplace = "Björkängen, Birgittagården"; //This can probably be removed
 
-            //Insjuknad ordinarie assistent
-            //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
-            claimDetailsVM.AssistantName = claim.RegFirstName + " " + claim.RegLastName;
-            claimDetailsVM.AssistantSSN = claim.RegAssistantSSN;
-            claimDetailsVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
-            claimDetailsVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
+        //    //Insjuknad ordinarie assistent
+        //    //Källa till belopp: https://assistanskoll.se/Guider-Att-arbeta-som-personlig-assistent.html (Vårdföretagarna)
+        //    claimDetailsVM.AssistantName = claim.RegFirstName + " " + claim.RegLastName;
+        //    claimDetailsVM.AssistantSSN = claim.RegAssistantSSN;
+        //    claimDetailsVM.QualifyingDayDate = claim.QualifyingDate.ToShortDateString();
+        //    claimDetailsVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate.ToShortDateString();
 
-            claimDetailsVM.NumberOfSickDays = claim.NumberOfSickDays;
+        //    claimDetailsVM.NumberOfSickDays = claim.NumberOfSickDays;
 
-            claimDetailsVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsVM.cs.
-            claimDetailsVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
-            claimDetailsVM.Sickpay = claim.ClaimedSickPay;
-            claimDetailsVM.HolidayPay = claim.ClaimedHolidayPay;
-            claimDetailsVM.SocialFees = claim.ClaimedSocialFees;
-            claimDetailsVM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
+        //    claimDetailsVM.Salary = claim.HourlySalary;  //This property is used either as an hourly salary or as a monthly salary in claimDetailsVM.cs.
+        //    claimDetailsVM.HourlySalary = claim.HourlySalary;    //This property is used as the hourly salary in calculations.
+        //    claimDetailsVM.Sickpay = claim.ClaimedSickPay;
+        //    claimDetailsVM.HolidayPay = claim.ClaimedHolidayPay;
+        //    claimDetailsVM.SocialFees = claim.ClaimedSocialFees;
+        //    claimDetailsVM.PensionAndInsurance = claim.ClaimedPensionAndInsurance;
 
-            claimDetailsVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
-            claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
-            claimDetailsVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
-            claimDetailsVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
+        //    claimDetailsVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
+        //    claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
+        //    claimDetailsVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
+        //    claimDetailsVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
 
-            claimDetailsVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
-            claimDetailsVM.NumberOfOrdinaryHoursSI = claim.NumberOfOrdinaryHoursSI;
-            claimDetailsVM.NumberOfUnsocialHoursSI = claim.NumberOfUnsocialHoursSI;
-            claimDetailsVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
+        //    claimDetailsVM.NumberOfHoursWithSI = claim.NumberOfHoursWithSI;
+        //    claimDetailsVM.NumberOfOrdinaryHoursSI = claim.NumberOfOrdinaryHoursSI;
+        //    claimDetailsVM.NumberOfUnsocialHoursSI = claim.NumberOfUnsocialHoursSI;
+        //    claimDetailsVM.NumberOfOnCallHoursSI = claim.NumberOfOnCallHoursSI;
 
-            claimDetailsVM.ClaimSum = claim.ClaimedSum;
+        //    claimDetailsVM.ClaimSum = claim.ClaimedSum;
 
-            claimDetailsVM.DecisionMade = false;
-            if (claim.ClaimStatus.Name == "Beslutad")
-            {
-                claimDetailsVM.ApprovedSum = claim.ApprovedSum;
-                claimDetailsVM.RejectedSum = claim.RejectedSum;
-                claimDetailsVM.DecisionMade = true;
-            }
+        //    claimDetailsVM.DecisionMade = false;
+        //    if (claim.ClaimStatus.Name == "Beslutad")
+        //    {
+        //        claimDetailsVM.ApprovedSum = claim.ApprovedSum;
+        //        claimDetailsVM.RejectedSum = claim.RejectedSum;
+        //        claimDetailsVM.DecisionMade = true;
+        //    }
 
-            //Underlag lönekostnader
-            claimDetailsVM.PerHourUnsocialEvening = claim.PerHourUnsocialEvening;
-            claimDetailsVM.PerHourUnsocialNight = claim.PerHourUnsocialNight;
-            claimDetailsVM.PerHourUnsocialWeekend = claim.PerHourUnsocialWeekend;
-            claimDetailsVM.PerHourUnsocialHoliday = claim.PerHourUnsocialHoliday;
-            claimDetailsVM.PerHourOnCallWeekday = claim.PerHourOnCallWeekday;
-            claimDetailsVM.PerHourOnCallWeekend = claim.PerHourOnCallWeekend;
+        //    //Underlag lönekostnader
+        //    claimDetailsVM.PerHourUnsocialEvening = claim.PerHourUnsocialEvening;
+        //    claimDetailsVM.PerHourUnsocialNight = claim.PerHourUnsocialNight;
+        //    claimDetailsVM.PerHourUnsocialWeekend = claim.PerHourUnsocialWeekend;
+        //    claimDetailsVM.PerHourUnsocialHoliday = claim.PerHourUnsocialHoliday;
+        //    claimDetailsVM.PerHourOnCallWeekday = claim.PerHourOnCallWeekday;
+        //    claimDetailsVM.PerHourOnCallWeekend = claim.PerHourOnCallWeekend;
 
 
-            claimDetailsVM.HolidayPayRate = claim.HolidayPayRate;
-            claimDetailsVM.SocialFeeRate = claim.SocialFeeRate;
-            claimDetailsVM.PensionAndInsuranceRate = claim.PensionAndInsuranceRate;
-            claimDetailsVM.SickPayRate = claim.SickPayRate;
+        //    claimDetailsVM.HolidayPayRate = claim.HolidayPayRate;
+        //    claimDetailsVM.SocialFeeRate = claim.SocialFeeRate;
+        //    claimDetailsVM.PensionAndInsuranceRate = claim.PensionAndInsuranceRate;
+        //    claimDetailsVM.SickPayRate = claim.SickPayRate;
 
-            claimDetailsVM.SickPayRateAsString = claim.SickPayRateAsString;
-            claimDetailsVM.HolidayPayRateAsString = claim.HolidayPayRateAsString;
-            claimDetailsVM.SocialFeeRateAsString = claim.SocialFeeRateAsString;
-            claimDetailsVM.PensionAndInsuranceRateAsString = claim.PensionAndInsuranceRateAsString;
-            claimDetailsVM.HourlySalaryAsString = claim.HourlySalaryAsString;
+        //    claimDetailsVM.SickPayRateAsString = claim.SickPayRateAsString;
+        //    claimDetailsVM.HolidayPayRateAsString = claim.HolidayPayRateAsString;
+        //    claimDetailsVM.SocialFeeRateAsString = claim.SocialFeeRateAsString;
+        //    claimDetailsVM.PensionAndInsuranceRateAsString = claim.PensionAndInsuranceRateAsString;
+        //    claimDetailsVM.HourlySalaryAsString = claim.HourlySalaryAsString;
 
-            var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.StartDate).ToList();
-            List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
-            for (int i = 0; i < claimCalculations.Count(); i++)
-            {
-                ClaimCalculation claimCalc = new ClaimCalculation();
-                claimCalc.StartDate = claimCalculations[i].StartDate.Date;
-                claimCalc.EndDate = claimCalculations[i].EndDate.Date;
+        //    var claimCalculations = db.ClaimCalculations.Where(c => c.ReferenceNumber == referenceNumber).OrderBy(c => c.StartDate).ToList();
+        //    List<ClaimCalculation> claimCalcs = new List<ClaimCalculation>();
+        //    for (int i = 0; i < claimCalculations.Count(); i++)
+        //    {
+        //        ClaimCalculation claimCalc = new ClaimCalculation();
+        //        claimCalc.StartDate = claimCalculations[i].StartDate.Date;
+        //        claimCalc.EndDate = claimCalculations[i].EndDate.Date;
 
-                claimCalc.PerHourUnsocialEvening = claimCalculations[i].PerHourUnsocialEvening;
-                claimCalc.PerHourUnsocialNight = claimCalculations[i].PerHourUnsocialNight;
-                claimCalc.PerHourUnsocialWeekend = claimCalculations[i].PerHourUnsocialWeekend;
-                claimCalc.PerHourUnsocialHoliday = claimCalculations[i].PerHourUnsocialHoliday;
-                claimCalc.PerHourOnCallWeekday = claimCalculations[i].PerHourOnCallWeekday;
-                claimCalc.PerHourOnCallWeekend = claimCalculations[i].PerHourOnCallWeekend;
+        //        claimCalc.PerHourUnsocialEvening = claimCalculations[i].PerHourUnsocialEvening;
+        //        claimCalc.PerHourUnsocialNight = claimCalculations[i].PerHourUnsocialNight;
+        //        claimCalc.PerHourUnsocialWeekend = claimCalculations[i].PerHourUnsocialWeekend;
+        //        claimCalc.PerHourUnsocialHoliday = claimCalculations[i].PerHourUnsocialHoliday;
+        //        claimCalc.PerHourOnCallWeekday = claimCalculations[i].PerHourOnCallWeekday;
+        //        claimCalc.PerHourOnCallWeekend = claimCalculations[i].PerHourOnCallWeekend;
 
-                if (i == 0)
-                {
-                    //QUALIFYING DAY
+        //        if (i == 0)
+        //        {
+        //            //QUALIFYING DAY
 
-                    //Hours for qualifying day
-                    claimCalc.HoursQD = claimCalculations[i].HoursQD;
+        //            //Hours for qualifying day
+        //            claimCalc.HoursQD = claimCalculations[i].HoursQD;
 
-                    //Holiday pay for qualifying day
-                    claimCalc.HolidayPayQD = claimCalculations[i].HolidayPayQD;
-                    claimCalc.HolidayPayCalcQD = claimCalculations[i].HolidayPayCalcQD;
+        //            //Holiday pay for qualifying day
+        //            claimCalc.HolidayPayQD = claimCalculations[i].HolidayPayQD;
+        //            claimCalc.HolidayPayCalcQD = claimCalculations[i].HolidayPayCalcQD;
 
-                    //Social fees for qualifying day
-                    claimCalc.SocialFeesQD = claimCalculations[i].SocialFeesQD;
-                    claimCalc.SocialFeesCalcQD = claimCalculations[i].SocialFeesCalcQD;
+        //            //Social fees for qualifying day
+        //            claimCalc.SocialFeesQD = claimCalculations[i].SocialFeesQD;
+        //            claimCalc.SocialFeesCalcQD = claimCalculations[i].SocialFeesCalcQD;
 
-                    //Pension and insurance for qualifying day
-                    claimCalc.PensionAndInsuranceQD = claimCalculations[i].PensionAndInsuranceQD;
-                    claimCalc.PensionAndInsuranceCalcQD = claimCalculations[i].PensionAndInsuranceCalcQD;
+        //            //Pension and insurance for qualifying day
+        //            claimCalc.PensionAndInsuranceQD = claimCalculations[i].PensionAndInsuranceQD;
+        //            claimCalc.PensionAndInsuranceCalcQD = claimCalculations[i].PensionAndInsuranceCalcQD;
 
-                    //Sum for qualifying day (sum of the three previous items)
-                    claimCalc.CostQD = claimCalculations[i].CostQD;
-                    claimCalc.CostCalcQD = claimCalculations[i].CostCalcQD;
-                }
+        //            //Sum for qualifying day (sum of the three previous items)
+        //            claimCalc.CostQD = claimCalculations[i].CostQD;
+        //            claimCalc.CostCalcQD = claimCalculations[i].CostCalcQD;
+        //        }
 
-                //DAY 2 TO DAY 14
-                claimCalc.HoursD2T14 = "0,00";
-                claimCalc.UnsocialEveningD2T14 = "0,00";
-                claimCalc.UnsocialNightD2T14 = "0,00";
-                claimCalc.UnsocialWeekendD2T14 = "0,00";
-                claimCalc.UnsocialGrandWeekendD2T14 = "0,00";
-                claimCalc.UnsocialSumD2T14 = "0,00";
-                claimCalc.OnCallDayD2T14 = "0,00";
-                claimCalc.OnCallNightD2T14 = "0,00";
-                claimCalc.OnCallSumD2T14 = "0,00";
+        //        //DAY 2 TO DAY 14
+        //        claimCalc.HoursD2T14 = "0,00";
+        //        claimCalc.UnsocialEveningD2T14 = "0,00";
+        //        claimCalc.UnsocialNightD2T14 = "0,00";
+        //        claimCalc.UnsocialWeekendD2T14 = "0,00";
+        //        claimCalc.UnsocialGrandWeekendD2T14 = "0,00";
+        //        claimCalc.UnsocialSumD2T14 = "0,00";
+        //        claimCalc.OnCallDayD2T14 = "0,00";
+        //        claimCalc.OnCallNightD2T14 = "0,00";
+        //        claimCalc.OnCallSumD2T14 = "0,00";
 
-                claimCalc.HoursD2T14 = claimCalculations[i].HoursD2T14;
+        //        claimCalc.HoursD2T14 = claimCalculations[i].HoursD2T14;
 
-                claimCalc.UnsocialEveningD2T14 = claimCalculations[i].UnsocialEveningD2T14;
-                claimCalc.UnsocialNightD2T14 = claimCalculations[i].UnsocialNightD2T14;
-                claimCalc.UnsocialWeekendD2T14 = claimCalculations[i].UnsocialWeekendD2T14;
-                claimCalc.UnsocialGrandWeekendD2T14 = claimCalculations[i].UnsocialGrandWeekendD2T14;
+        //        claimCalc.UnsocialEveningD2T14 = claimCalculations[i].UnsocialEveningD2T14;
+        //        claimCalc.UnsocialNightD2T14 = claimCalculations[i].UnsocialNightD2T14;
+        //        claimCalc.UnsocialWeekendD2T14 = claimCalculations[i].UnsocialWeekendD2T14;
+        //        claimCalc.UnsocialGrandWeekendD2T14 = claimCalculations[i].UnsocialGrandWeekendD2T14;
 
-                claimCalc.OnCallDayD2T14 = claimCalculations[i].OnCallDayD2T14;
-                claimCalc.OnCallNightD2T14 = claimCalculations[i].OnCallNightD2T14;
+        //        claimCalc.OnCallDayD2T14 = claimCalculations[i].OnCallDayD2T14;
+        //        claimCalc.OnCallNightD2T14 = claimCalculations[i].OnCallNightD2T14;
 
-                claimCalc.UnsocialSumD2T14 = claimCalculations[i].UnsocialSumD2T14;
-                claimCalc.OnCallSumD2T14 = claimCalculations[i].OnCallSumD2T14;
+        //        claimCalc.UnsocialSumD2T14 = claimCalculations[i].UnsocialSumD2T14;
+        //        claimCalc.OnCallSumD2T14 = claimCalculations[i].OnCallSumD2T14;
 
-                //These numbers go to the assistant's part of the view
-                claimDetailsVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
-                claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
-                claimDetailsVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
-                claimDetailsVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
+        //        //These numbers go to the assistant's part of the view
+        //        claimDetailsVM.NumberOfAbsenceHours = claim.NumberOfAbsenceHours;
+        //        claimDetailsVM.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours;
+        //        claimDetailsVM.NumberOfUnsocialHours = claim.NumberOfUnsocialHours;
+        //        claimDetailsVM.NumberOfOnCallHours = claim.NumberOfOnCallHours;
 
-                //Load the money by category for day 2 to day 14
-                //Sickpay for day 2 to day 14
-                claimCalc.SalaryD2T14 = claimCalculations[i].SalaryD2T14;
-                claimCalc.SalaryCalcD2T14 = claimCalculations[i].SalaryCalcD2T14;
+        //        //Load the money by category for day 2 to day 14
+        //        //Sickpay for day 2 to day 14
+        //        claimCalc.SalaryD2T14 = claimCalculations[i].SalaryD2T14;
+        //        claimCalc.SalaryCalcD2T14 = claimCalculations[i].SalaryCalcD2T14;
 
-                //Holiday pay for day 2 to day 14
-                claimCalc.HolidayPayD2T14 = claimCalculations[i].HolidayPayD2T14;
-                claimCalc.HolidayPayCalcD2T14 = claimCalculations[i].HolidayPayCalcD2T14;
+        //        //Holiday pay for day 2 to day 14
+        //        claimCalc.HolidayPayD2T14 = claimCalculations[i].HolidayPayD2T14;
+        //        claimCalc.HolidayPayCalcD2T14 = claimCalculations[i].HolidayPayCalcD2T14;
 
-                //Unsocial evening pay for day 2 to day 14
-                claimCalc.UnsocialEveningPayD2T14 = claimCalculations[i].UnsocialEveningPayD2T14;
-                claimCalc.UnsocialEveningPayCalcD2T14 = claimCalculations[i].UnsocialEveningPayCalcD2T14;
+        //        //Unsocial evening pay for day 2 to day 14
+        //        claimCalc.UnsocialEveningPayD2T14 = claimCalculations[i].UnsocialEveningPayD2T14;
+        //        claimCalc.UnsocialEveningPayCalcD2T14 = claimCalculations[i].UnsocialEveningPayCalcD2T14;
 
-                //Unsocial night pay for day 2 to day 14
-                claimCalc.UnsocialNightPayD2T14 = claimCalculations[i].UnsocialNightPayD2T14;
-                claimCalc.UnsocialNightPayCalcD2T14 = claimCalculations[i].UnsocialNightPayCalcD2T14;
+        //        //Unsocial night pay for day 2 to day 14
+        //        claimCalc.UnsocialNightPayD2T14 = claimCalculations[i].UnsocialNightPayD2T14;
+        //        claimCalc.UnsocialNightPayCalcD2T14 = claimCalculations[i].UnsocialNightPayCalcD2T14;
 
-                //Unsocial weekend pay for day 2 to day 14
-                claimCalc.UnsocialWeekendPayD2T14 = claimCalculations[i].UnsocialWeekendPayD2T14;
-                claimCalc.UnsocialWeekendPayCalcD2T14 = claimCalculations[i].UnsocialWeekendPayCalcD2T14;
+        //        //Unsocial weekend pay for day 2 to day 14
+        //        claimCalc.UnsocialWeekendPayD2T14 = claimCalculations[i].UnsocialWeekendPayD2T14;
+        //        claimCalc.UnsocialWeekendPayCalcD2T14 = claimCalculations[i].UnsocialWeekendPayCalcD2T14;
 
-                //Unsocial grand weekend pay for day 2 to day 14
-                claimCalc.UnsocialGrandWeekendPayD2T14 = claimCalculations[i].UnsocialGrandWeekendPayD2T14;
-                claimCalc.UnsocialGrandWeekendPayCalcD2T14 = claimCalculations[i].UnsocialGrandWeekendPayCalcD2T14;
+        //        //Unsocial grand weekend pay for day 2 to day 14
+        //        claimCalc.UnsocialGrandWeekendPayD2T14 = claimCalculations[i].UnsocialGrandWeekendPayD2T14;
+        //        claimCalc.UnsocialGrandWeekendPayCalcD2T14 = claimCalculations[i].UnsocialGrandWeekendPayCalcD2T14;
 
-                //Unsocial sum pay for day 2 to day 14
-                claimCalc.UnsocialSumPayD2T14 = claimCalculations[i].UnsocialSumPayD2T14;
-                claimCalc.UnsocialSumPayCalcD2T14 = claimCalculations[i].UnsocialSumPayCalcD2T14;
+        //        //Unsocial sum pay for day 2 to day 14
+        //        claimCalc.UnsocialSumPayD2T14 = claimCalculations[i].UnsocialSumPayD2T14;
+        //        claimCalc.UnsocialSumPayCalcD2T14 = claimCalculations[i].UnsocialSumPayCalcD2T14;
 
-                //On call day pay for day 2 to day 14
-                claimCalc.OnCallDayPayD2T14 = claimCalculations[i].OnCallDayPayD2T14;
-                claimCalc.OnCallDayPayCalcD2T14 = claimCalculations[i].OnCallDayPayCalcD2T14;
+        //        //On call day pay for day 2 to day 14
+        //        claimCalc.OnCallDayPayD2T14 = claimCalculations[i].OnCallDayPayD2T14;
+        //        claimCalc.OnCallDayPayCalcD2T14 = claimCalculations[i].OnCallDayPayCalcD2T14;
 
-                //On call night pay for day 2 to day 14
-                claimCalc.OnCallNightPayD2T14 = claimCalculations[i].OnCallNightPayD2T14;
-                claimCalc.OnCallNightPayCalcD2T14 = claimCalculations[i].OnCallNightPayCalcD2T14;
+        //        //On call night pay for day 2 to day 14
+        //        claimCalc.OnCallNightPayD2T14 = claimCalculations[i].OnCallNightPayD2T14;
+        //        claimCalc.OnCallNightPayCalcD2T14 = claimCalculations[i].OnCallNightPayCalcD2T14;
 
-                //On call sum pay for day 2 to day 14
-                claimCalc.OnCallSumPayD2T14 = claimCalculations[i].OnCallSumPayD2T14;
-                claimCalc.OnCallSumPayCalcD2T14 = claimCalculations[i].OnCallSumPayCalcD2T14;
+        //        //On call sum pay for day 2 to day 14
+        //        claimCalc.OnCallSumPayD2T14 = claimCalculations[i].OnCallSumPayD2T14;
+        //        claimCalc.OnCallSumPayCalcD2T14 = claimCalculations[i].OnCallSumPayCalcD2T14;
 
-                //Sick pay for day 2 to day 14
-                claimCalc.SickPayD2T14 = claimCalculations[i].SickPayD2T14;
-                claimCalc.SickPayCalcD2T14 = claimCalculations[i].SickPayCalcD2T14;
+        //        //Sick pay for day 2 to day 14
+        //        claimCalc.SickPayD2T14 = claimCalculations[i].SickPayD2T14;
+        //        claimCalc.SickPayCalcD2T14 = claimCalculations[i].SickPayCalcD2T14;
 
-                //Social fees for day 2 to day 14
-                claimCalc.SocialFeesD2T14 = claimCalculations[i].SocialFeesD2T14;
-                claimCalc.SocialFeesCalcD2T14 = claimCalculations[i].SocialFeesCalcD2T14;
+        //        //Social fees for day 2 to day 14
+        //        claimCalc.SocialFeesD2T14 = claimCalculations[i].SocialFeesD2T14;
+        //        claimCalc.SocialFeesCalcD2T14 = claimCalculations[i].SocialFeesCalcD2T14;
 
-                //Pensions and insurances for day 2 to day 14
-                claimCalc.PensionAndInsuranceD2T14 = claimCalculations[i].PensionAndInsuranceD2T14;
-                claimCalc.PensionAndInsuranceCalcD2T14 = claimCalculations[i].PensionAndInsuranceCalcD2T14;
+        //        //Pensions and insurances for day 2 to day 14
+        //        claimCalc.PensionAndInsuranceD2T14 = claimCalculations[i].PensionAndInsuranceD2T14;
+        //        claimCalc.PensionAndInsuranceCalcD2T14 = claimCalculations[i].PensionAndInsuranceCalcD2T14;
 
-                //Sum for day 2 to day 14
-                claimCalc.CostD2T14 = claimCalculations[i].CostD2T14;
-                claimCalc.CostCalcD2T14 = claimCalculations[i].CostCalcD2T14;
+        //        //Sum for day 2 to day 14
+        //        claimCalc.CostD2T14 = claimCalculations[i].CostD2T14;
+        //        claimCalc.CostCalcD2T14 = claimCalculations[i].CostCalcD2T14;
 
-                claimCalcs.Add(claimCalc);
-            }
-            claimDetailsVM.ClaimCalculations = claimCalcs;
+        //        claimCalcs.Add(claimCalc);
+        //    }
+        //    claimDetailsVM.ClaimCalculations = claimCalcs;
 
-            //Total sum for day 1 to day 14
-            claimDetailsVM.TotalCostD1T14 = claim.TotalCostD1T14;
-            claimDetailsVM.TotalCostCalcD1T14 = claim.TotalCostCalcD1T14;
+        //    //Total sum for day 1 to day 14
+        //    claimDetailsVM.TotalCostD1T14 = claim.TotalCostD1T14;
+        //    claimDetailsVM.TotalCostCalcD1T14 = claim.TotalCostCalcD1T14;
 
-            claimDetailsVM.Documents = claim.Documents;
+        //    claimDetailsVM.Documents = claim.Documents;
 
-            claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
+        //    claimDetailsVM.messages = db.Messages.Where(c => c.ClaimId == claim.Id).ToList();
 
-            return View("ClaimDetails", claimDetailsVM);
-        }
+        //    return View("ClaimDetails", claimDetailsVM);
+        //}
 
         // POST: Claims/Decide/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -3966,8 +4083,8 @@ namespace Sjuklöner.Controllers
                 confirmTransferVM.ClaimId = claim.Id;
                 confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
                 confirmTransferVM.CustomerSSN = claim.CustomerSSN;
-                confirmTransferVM.QualifyingDate = claim.QualifyingDate;
-                confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+                confirmTransferVM.FirstClaimDate = claim.FirstClaimDate;
+                confirmTransferVM.LastClaimDate = claim.LastClaimDate;
                 confirmTransferVM.ClaimedSum = claim.ClaimedSum;
                 confirmTransferVM.ModelSum = claim.ModelSum;
                 confirmTransferVM.ApprovedSum = claim.ApprovedSum;
@@ -4010,8 +4127,8 @@ namespace Sjuklöner.Controllers
             confirmTransferVM.ClaimId = claim.Id;
             confirmTransferVM.ReferenceNumber = claim.ReferenceNumber;
             confirmTransferVM.CustomerSSN = claim.CustomerSSN;
-            confirmTransferVM.QualifyingDate = claim.QualifyingDate;
-            confirmTransferVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
+            confirmTransferVM.FirstClaimDate = claim.FirstClaimDate;
+            confirmTransferVM.LastClaimDate = claim.LastClaimDate;
             confirmTransferVM.ClaimedSum = claim.ClaimedSum;
             confirmTransferVM.ModelSum = claim.ModelSum;
             confirmTransferVM.ApprovedSum = claim.ApprovedSum;
@@ -4041,10 +4158,10 @@ namespace Sjuklöner.Controllers
                     writer.WriteEndDocument();
                 }
 
-                claim.QualifyingDateAsString = claim.QualifyingDate.ToShortDateString().ToString().Remove(4, 1);
-                claim.QualifyingDateAsString = claim.QualifyingDateAsString.Remove(6, 1);
-                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDate.ToShortDateString().ToString().Remove(4, 1);
-                claim.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString.Remove(6, 1);
+                claim.FirstClaimDateAsString = claim.FirstClaimDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.FirstClaimDateAsString = claim.FirstClaimDateAsString.Remove(6, 1);
+                claim.LastClaimDateAsString = claim.LastClaimDate.ToShortDateString().ToString().Remove(4, 1);
+                claim.LastClaimDateAsString = claim.LastClaimDateAsString.Remove(6, 1);
                 claim.SentInDateAsString = DateTime.Now.ToShortDateString().ToString().Remove(4, 1);
                 claim.SentInDateAsString = claim.SentInDateAsString.Remove(6, 1);
                 claim.ClaimedSumAsString = String.Format("{0:0.00}", claim.ClaimedSum);
@@ -4052,10 +4169,10 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
-                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.QualifyingDateAsString + "+" + claim.LastDayOfSicknessDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
+                claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
-                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfSickDays.ToString() + "+" +
+                    claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
                 claim.ClaimStatusId = 7;      // Transfer to Procapita started
@@ -4101,8 +4218,8 @@ namespace Sjuklöner.Controllers
             decisionVM.ClaimNumber = claim.ReferenceNumber;
             decisionVM.CareCompany = "Smart Assistans";
             decisionVM.AssistantSSN = claim.RegAssistantSSN;
-            decisionVM.QualifyingDate = claim.QualifyingDate;
-            decisionVM.LastDayOfSickness = claim.LastDayOfSicknessDate;
+            decisionVM.FirstClaimDate = claim.FirstClaimDate;
+            decisionVM.LastClaimDate = claim.LastClaimDate;
             decisionVM.ClaimSum = claim.ClaimedSum;
             decisionVM.ApprovedSum = claim.ApprovedSum.ToString();
             decisionVM.RejectedSum = claim.RejectedSum.ToString();
@@ -4305,11 +4422,11 @@ namespace Sjuklöner.Controllers
             {
                 foreach (var claim in claims)
                 {
-                    if (firstDayOfSicknessDate.Date <= claim.LastDayOfSicknessDate.Date && firstDayOfSicknessDate.Date >= claim.QualifyingDate.Date)
+                    if (firstDayOfSicknessDate.Date <= claim.LastClaimDate.Date && firstDayOfSicknessDate.Date >= claim.FirstClaimDate.Date)
                     {
                         return true;
                     }
-                    if (lastDayOfSicknessDate.Date <= claim.LastDayOfSicknessDate.Date && lastDayOfSicknessDate.Date >= claim.QualifyingDate.Date)
+                    if (lastDayOfSicknessDate.Date <= claim.LastClaimDate.Date && lastDayOfSicknessDate.Date >= claim.FirstClaimDate.Date)
                     {
                         return true;
                     }
@@ -4338,27 +4455,160 @@ namespace Sjuklöner.Controllers
 
             //These declarations are needed in order for this method to be able to handle edge cases where the decision about personal assistance only
             //covers a part of the sickleave period
-            DateTime adjustedLastDayOfSickness = new DateTime();
-            adjustedLastDayOfSickness = claim.LastDayOfSicknessDate;
-            DateTime adjustedQualifyingDay = new DateTime();
-            adjustedQualifyingDay = claim.QualifyingDate;
+            //DateTime adjustedLastDayOfSickness = new DateTime();
+            //adjustedLastDayOfSickness = claim.LastClaimDate;
+            //DateTime adjustedQualifyingDay = new DateTime();
+            //adjustedQualifyingDay = claim.FirstClaimDate;
+
+            DateTime adjustedLastClaimDate = new DateTime();
+            adjustedLastClaimDate = claim.LastClaimDate;
+            DateTime adjustedFirstClaimDate = new DateTime();
+            adjustedFirstClaimDate = claim.FirstClaimDate;
+            int adjustedNumberOfCalendarDays = claim.NumberOfCalendarDays;
             int adjustedNumberOfSickdays = claim.NumberOfSickDays;
-            int sickdayNumberOffset = 0;
+            int calendarDayNumberOffset = 0;
+
+            int adjustedStartCalendarDayIdx = 0;
+            int adjustedStopCalendarDayIdx = claim.NumberOfCalendarDays - 1;
+
+            bool day1T14InThisCollAgreement = false;
+            bool day15PlusInThisCollAgreement = false;
+
+            //if (startIndex != null && numberOfDaysToRemove != null)
+            ////This is only true if the decision about personal assistance only covers a part of the sickleave period. In that case not all claimdays shall be included in the model sum calculation.
+            //{
+            //    claimDays.RemoveRange((int)startIndex, (int)numberOfDaysToRemove);
+            //    db.SaveChanges();
+            //    if (startIndex > 0) //This means that the decision about personal assistance covers one or more days of the sickleave period starting from claim.QualifyingDate (1st day of sickness), but it does not cover the whole sickleave period.
+            //    {
+            //        adjustedLastDayOfSickness = claim.LastClaimDate.AddDays(-(int)numberOfDaysToRemove);
+            //    }
+            //    else //This means that the decision about personal assistance covers one or more days at the end of the sickleave period, but not the whole period.
+            //    {
+            //        adjustedQualifyingDay = claim.FirstClaimDate.AddDays((int)numberOfDaysToRemove);
+            //        calendarDayNumberOffset = (int)numberOfDaysToRemove;
+            //    }
+            //    adjustedNumberOfCalendarDays = claim.NumberOfCalendarDays - (int)numberOfDaysToRemove;
+
+            //    //Update SickDayNumber in claimdays. Very likely the previous numbering is not valid after removing days the sickleave period.
+            //    var adjustedClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
+            //    claim.NumberOfCalendarDays = adjustedClaimDays.Count(); //Is this line needed/necessary?
+            //    db.Entry(claim).State = EntityState.Modified;
+
+            //    int sickDayCounter = 1;
+            //    foreach (var day in adjustedClaimDays)
+            //    {
+            //        if (!day.Well)
+            //        {
+            //            day.SickDayNumber = sickDayCounter;
+            //            sickDayCounter++;
+            //            db.Entry(day).State = EntityState.Modified;
+            //        }
+            //        else
+            //        {
+            //            day.SickDayNumber = null;
+            //        }
+            //    }
+            //    db.SaveChanges();
+            //}
+
+            int qdIdx = 0; //index of the qualifying day
+            int day2Idx = 0;
+            int day14Idx = 0;
+            int day15Idx = 0;
+            int lastDayIdx = 0;
 
             if (startIndex != null && numberOfDaysToRemove != null)
             //This is only true if the decision about personal assistance only covers a part of the sickleave period. In that case not all claimdays shall be included in the model sum calculation.
             {
-                claimDays.RemoveRange((int)startIndex, (int)numberOfDaysToRemove);
+                //claimDays.RemoveRange((int)startIndex, (int)numberOfDaysToRemove);
+                //db.SaveChanges();
                 if (startIndex > 0) //This means that the decision about personal assistance covers one or more days of the sickleave period starting from claim.QualifyingDate (1st day of sickness), but it does not cover the whole sickleave period.
                 {
-                    adjustedLastDayOfSickness = claim.LastDayOfSicknessDate.AddDays(-(int)numberOfDaysToRemove);
+                    adjustedLastClaimDate = claim.LastClaimDate.AddDays(-(int)numberOfDaysToRemove);
                 }
                 else //This means that the decision about personal assistance covers one or more days at the end of the sickleave period, but not the whole period.
                 {
-                    adjustedQualifyingDay = claim.QualifyingDate.AddDays((int)numberOfDaysToRemove);
-                    sickdayNumberOffset = (int)numberOfDaysToRemove;
+                    adjustedFirstClaimDate = claim.FirstClaimDate.AddDays((int)numberOfDaysToRemove);
+                    calendarDayNumberOffset = (int)numberOfDaysToRemove;
                 }
-                adjustedNumberOfSickdays = claim.NumberOfSickDays - (int)numberOfDaysToRemove;
+                adjustedNumberOfCalendarDays = claim.NumberOfCalendarDays - (int)numberOfDaysToRemove;
+
+                //Update SickDayNumber in claimdays. Very likely the previous numbering is not valid after removing days the sickleave period.
+                //var adjustedClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
+                //claim.NumberOfCalendarDays = adjustedClaimDays.Count(); //Is this line needed/necessary?
+                db.Entry(claim).State = EntityState.Modified;
+
+
+                if (startIndex == 0)
+                {
+                    adjustedStartCalendarDayIdx = (int)numberOfDaysToRemove;
+                    adjustedStopCalendarDayIdx = claim.NumberOfCalendarDays - 1;
+                }
+                else
+                {
+                    adjustedStartCalendarDayIdx = 0;
+                    adjustedStopCalendarDayIdx = claim.NumberOfCalendarDays - (int)numberOfDaysToRemove - 1;
+                }
+
+                //Reset the sickday numbering in claimDays
+                foreach (var day in claimDays)
+                {
+                    day.SickDayNumber = null;
+                    db.Entry(day).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+
+                //Update claimDays with adjusted sickday numbering
+                int sickDayCounter = 1;
+                int dayIdx = 0;
+                for (int i = adjustedStartCalendarDayIdx; i <= adjustedStopCalendarDayIdx; i++)
+                {
+                    if (!claimDays[i].Well)
+                    {
+                        switch (sickDayCounter)
+                        {
+                            case 1:
+                                qdIdx = dayIdx;
+                                break;
+                            case 2:
+                                day2Idx = dayIdx;
+                                break;
+                            case 14:
+                                day14Idx = dayIdx;
+                                break;
+                            case 15:
+                                day15Idx = dayIdx;
+                                break;
+                            default:
+                                break;
+                        }
+                        lastDayIdx = dayIdx;
+                        claimDays[i].SickDayNumber = sickDayCounter;
+                        sickDayCounter++;
+                        db.Entry(claimDays[i]).State = EntityState.Modified;
+                    }
+                }
+                adjustedNumberOfSickdays = lastDayIdx;
+
+                //Update indexes for sickdays in claim record
+                claim.QualifyingDayDate = claimDays[qdIdx].Date.ToShortDateString();
+                if (day2Idx != 0)
+                {
+                    claim.Day2OfSicknessDate = claimDays[day2Idx].Date.ToShortDateString();
+                }
+                if (day14Idx != 0)
+                {
+                    claim.Day14OfSicknessDate = claimDays[day14Idx].Date.ToShortDateString();
+                }
+                if (day15Idx != 0)
+                {
+                    claim.Day15OfSicknessDate = claimDays[day15Idx].Date.ToShortDateString();
+                }
+                claim.LastDayofSicknessDate = claimDays[lastDayIdx].Date.ToShortDateString();
+                claim.AdjustedNumberOfSickDays = adjustedNumberOfSickdays;
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
             }
 
             //Check if there are any previous ClaimCalculation records for this claim. Existing records need to be removed.
@@ -4390,10 +4640,10 @@ namespace Sjuklöner.Controllers
                 int infoIdx;
                 int infoUsedIdx;
                 int claimDayIdx = 0;
-                claimDays.OrderBy(c => c.SickDayNumber);
+                claimDays.OrderBy(c => c.CalendarDayNumber); //Should this be adjustedClaimDays?
                 do
                 {
-                    claimDayDate = adjustedQualifyingDay.AddDays(claimDays[claimDayIdx].SickDayNumber - 1 - sickdayNumberOffset);
+                    claimDayDate = adjustedFirstClaimDate.AddDays(claimDays[claimDayIdx].CalendarDayNumber - 1 - calendarDayNumberOffset); //Should this be adjustedClaimDays?
                     infoFound = false;
                     infoIdx = 0;
                     do
@@ -4433,7 +4683,7 @@ namespace Sjuklöner.Controllers
                         useDefaultCollectiveAgreement = true;
                     }
                     claimDayIdx++;
-                } while (claimDayIdx < claimDays.Count() && !useDefaultCollectiveAgreement);
+                } while (claimDayIdx < adjustedNumberOfCalendarDays && !useDefaultCollectiveAgreement);
             }
             else
             {
@@ -4447,17 +4697,17 @@ namespace Sjuklöner.Controllers
             {
                 for (int idx = 0; idx < usedCollectiveAgreementInfoIds.Count(); idx++)
                 {
-                    if (collectiveAgreementInfos[idx].EndDate.Date >= adjustedLastDayOfSickness.Date)
+                    if (collectiveAgreementInfos[idx].EndDate.Date >= adjustedLastClaimDate.Date)
                     {
-                        applicableSickDays = 1 + (adjustedLastDayOfSickness.Date - adjustedQualifyingDay).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (adjustedLastClaimDate.Date - adjustedFirstClaimDate).Days - prevSickDayIdx;
                     }
                     else
                     {
-                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - adjustedQualifyingDay).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - adjustedFirstClaimDate).Days - prevSickDayIdx;
                     }
                     prevSickDayIdx = prevSickDayIdx + applicableSickDays;
                 }
-                if (applicableSickDays < adjustedNumberOfSickdays)
+                if (applicableSickDays < adjustedNumberOfCalendarDays)
                 {
                     useDefaultCollectiveAgreement = true;
                 }
@@ -4468,8 +4718,13 @@ namespace Sjuklöner.Controllers
             //Repeat the calculation for each CollectiveAgreementInfo that applies to the sickleave period
             int startIdx;
             int stopIdx;
+            //These two variables are used if the number of sickdays is less than 15
             decimal totalCostD1D14 = 0;
             string totalCostCalcD1D14 = "";
+
+            //These two variables are used for the total cost if the numberr of sickdays is greater than 14
+            decimal totalCostD1Plus = 0;
+            string totalCostCalcD1Plus = "";
 
             if (useDefaultCollectiveAgreement)
             {
@@ -4499,16 +4754,16 @@ namespace Sjuklöner.Controllers
                     claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(collectiveAgreementInfos[idx].PerHourOnCallWeekend);
 
                     //Calculate how many days the CollectiveAgreementInfo applies to
-                    if (collectiveAgreementInfos[idx].EndDate.Date >= adjustedLastDayOfSickness.Date)
+                    if (collectiveAgreementInfos[idx].EndDate.Date >= adjustedLastClaimDate.Date)
                     {
-                        applicableSickDays = 1 + (adjustedLastDayOfSickness.Date - adjustedQualifyingDay).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (adjustedLastClaimDate.Date - adjustedFirstClaimDate).Days - prevSickDayIdx;
                     }
                     else
                     {
-                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - adjustedQualifyingDay).Days - prevSickDayIdx;
+                        applicableSickDays = 1 + (collectiveAgreementInfos[idx].EndDate - adjustedFirstClaimDate).Days - prevSickDayIdx;
                     }
-                    claimCalculation.StartDate = adjustedQualifyingDay.AddDays(prevSickDayIdx);
-                    claimCalculation.EndDate = adjustedQualifyingDay.AddDays(prevSickDayIdx + applicableSickDays - 1);
+                    claimCalculation.StartDate = adjustedFirstClaimDate.AddDays(prevSickDayIdx);
+                    claimCalculation.EndDate = adjustedFirstClaimDate.AddDays(prevSickDayIdx + applicableSickDays - 1);
                 }
                 else
                 {
@@ -4527,9 +4782,9 @@ namespace Sjuklöner.Controllers
                     claimCalculation.PerHourOnCallWeekday = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourOnCallWeekday);
                     claimCalculation.PerHourOnCallWeekend = Convert.ToDecimal(defaultCollectiveAgreementInfos[0].PerHourOnCallWeekend);
 
-                    claimCalculation.StartDate = adjustedQualifyingDay;
-                    claimCalculation.EndDate = adjustedLastDayOfSickness;
-                    applicableSickDays = adjustedNumberOfSickdays;
+                    claimCalculation.StartDate = adjustedFirstClaimDate;
+                    claimCalculation.EndDate = adjustedLastClaimDate;
+                    applicableSickDays = adjustedNumberOfCalendarDays;
                 }
 
                 if (idx == 0) //Include qualifying day only in first ClaimCalculation record
@@ -4545,14 +4800,38 @@ namespace Sjuklöner.Controllers
                     claimCalculation.PaidUnsocialWeekendHoursQD = "0,00";
                     claimCalculation.PaidUnsocialGrandWeekendHoursQD = "0,00";
 
+
+
+                    //new code for 5 day-rule
+                    //find the claimday index of the first day in the period where the assistant was sick
+                    bool firstClaimDayFound = false;
+                    int claimDayIdx = adjustedStartCalendarDayIdx;
+                    while (!firstClaimDayFound && claimDayIdx < adjustedStartCalendarDayIdx + adjustedNumberOfCalendarDays)
+                    {
+                        if (!claimDays[claimDayIdx].Well)
+                        {
+                            firstClaimDayFound = true;
+                        }
+                        claimDayIdx++;
+                    }
+                    qdIdx = claimDayIdx - 1;
+
+
+
                     //Format hours for qualifying day
-                    claimCalculation.HoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].Hours));
-                    claimCalculation.OnCallDayHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].OnCallDay));
-                    claimCalculation.OnCallNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].OnCallNight));
-                    claimCalculation.UnsocialEveningHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialEvening));
-                    claimCalculation.UnsocialNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialNight));
-                    claimCalculation.UnsocialWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialWeekend));
-                    claimCalculation.UnsocialGrandWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend));
+                    claimCalculation.HoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].Hours)); //Should this be adjustedClaimDays?
+                    claimCalculation.OnCallDayHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].OnCallDay));
+                    claimCalculation.OnCallNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].OnCallNight));
+                    claimCalculation.UnsocialEveningHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialEvening));
+                    claimCalculation.UnsocialNightHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialNight));
+                    claimCalculation.UnsocialWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialWeekend));
+                    claimCalculation.UnsocialGrandWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialGrandWeekend));
+
+                    //These numbers go to the assistant's part of the view
+                    claim.NumberOfAbsenceHours = Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimDays[qdIdx].OnCallDay) + Convert.ToDecimal(claimDays[qdIdx].OnCallNight);
+                    claim.NumberOfOrdinaryHours = Convert.ToDecimal(claimCalculation.HoursQD);
+                    claim.NumberOfUnsocialHours = Convert.ToDecimal(claimDays[qdIdx].UnsocialEvening) + Convert.ToDecimal(claimDays[qdIdx].UnsocialNight) + Convert.ToDecimal(claimDays[qdIdx].UnsocialWeekend) + Convert.ToDecimal(claimDays[qdIdx].UnsocialGrandWeekend);
+                    claim.NumberOfOnCallHours = Convert.ToDecimal(claimDays[qdIdx].OnCallDay) + Convert.ToDecimal(claimDays[qdIdx].OnCallNight);
 
                     //Calculate number of hours exceeding 8. Only those hours shall be paid.
                     if (Convert.ToDecimal(claimCalculation.HoursQD) > 8)
@@ -4654,134 +4933,313 @@ namespace Sjuklöner.Controllers
                 }
 
                 //DAY 2 TO DAY 14
-                claimCalculation.HoursD2T14 = "0,00";
-                claimCalculation.UnsocialEveningD2T14 = "0,00";
-                claimCalculation.UnsocialNightD2T14 = "0,00";
-                claimCalculation.UnsocialWeekendD2T14 = "0,00";
-                claimCalculation.UnsocialGrandWeekendD2T14 = "0,00";
-                claimCalculation.UnsocialSumD2T14 = "0,00";
-                claimCalculation.OnCallDayD2T14 = "0,00";
-                claimCalculation.OnCallNightD2T14 = "0,00";
-                claimCalculation.OnCallSumD2T14 = "0,00";
-
-                //Sum up hours by category for day 2 to 14
-                if (idx == 0)
+                if (adjustedNumberOfSickdays > 1)
                 {
-                    startIdx = 1;
+                    claimCalculation.HoursD2T14 = "0,00";
+                    claimCalculation.UnsocialEveningD2T14 = "0,00";
+                    claimCalculation.UnsocialNightD2T14 = "0,00";
+                    claimCalculation.UnsocialWeekendD2T14 = "0,00";
+                    claimCalculation.UnsocialGrandWeekendD2T14 = "0,00";
+                    claimCalculation.UnsocialSumD2T14 = "0,00";
+                    claimCalculation.OnCallDayD2T14 = "0,00";
+                    claimCalculation.OnCallNightD2T14 = "0,00";
+                    claimCalculation.OnCallSumD2T14 = "0,00";
+                }
+
+                //new code for day 15 and beyond
+                //DAY 15 and plus
+                if (adjustedNumberOfSickdays > 14)
+                {
+                    claimCalculation.HoursD15Plus = "0,00";
+                    claimCalculation.UnsocialEveningD15Plus = "0,00";
+                    claimCalculation.UnsocialNightD15Plus = "0,00";
+                    claimCalculation.UnsocialWeekendD15Plus = "0,00";
+                    claimCalculation.UnsocialGrandWeekendD15Plus = "0,00";
+                    claimCalculation.UnsocialSumD15Plus = "0,00";
+                    claimCalculation.OnCallDayD15Plus = "0,00";
+                    claimCalculation.OnCallNightD15Plus = "0,00";
+                    claimCalculation.OnCallSumD15Plus = "0,00";
+                }
+
+                //Sum up hours by category
+                if (idx == 0) //check this line perhaps startIdx should be set to claimDayIdx or qdIdx?
+                {
+                    //startIdx = 1;
+                    startIdx = qdIdx + 1;
                     stopIdx = startIdx + applicableSickDays - 1;
                 }
                 else
                 {
                     startIdx = prevSickDayIdx;
-                    stopIdx = startIdx + applicableSickDays;
+                    stopIdx = startIdx + applicableSickDays; //needs to be adjusted. Need to figure out which claimday idx X has got SickDayNumber = 14. If startIdx + applicableSickDays is greater than X, then stopIdx should be set to X. 
                 }
                 for (int i = startIdx; i < stopIdx; i++)
                 {
-                    claimCalculation.HoursD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD2T14) + Convert.ToDecimal(claimDays[i].Hours)));
+                    if (!claimDays[i].Well && claimDays[i].SickDayNumber < 15) //new if-statement for 5-day rule
+                    {
+                        claimCalculation.HoursD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD2T14) + Convert.ToDecimal(claimDays[i].Hours)));
 
-                    claimCalculation.UnsocialEveningD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimDays[i].UnsocialEvening)));
-                    claimCalculation.UnsocialNightD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimDays[i].UnsocialNight)));
-                    claimCalculation.UnsocialWeekendD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimDays[i].UnsocialWeekend)));
-                    claimCalculation.UnsocialGrandWeekendD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14) + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend)));
+                        claimCalculation.UnsocialEveningD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimDays[i].UnsocialEvening)));
+                        claimCalculation.UnsocialNightD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimDays[i].UnsocialNight)));
+                        claimCalculation.UnsocialWeekendD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimDays[i].UnsocialWeekend)));
+                        claimCalculation.UnsocialGrandWeekendD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14) + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend)));
 
-                    claimCalculation.OnCallDayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimDays[i].OnCallDay)));
-                    claimCalculation.OnCallNightD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallNightD2T14) + Convert.ToDecimal(claimDays[i].OnCallNight)));
+                        claimCalculation.OnCallDayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimDays[i].OnCallDay)));
+                        claimCalculation.OnCallNightD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallNightD2T14) + Convert.ToDecimal(claimDays[i].OnCallNight)));
+                        day1T14InThisCollAgreement = true;
+                    }
+                    else if (!claimDays[i].Well && claimDays[i].SickDayNumber > 14) //new if-statement for 5-day rule
+                    {
+                        claimCalculation.HoursD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimDays[i].Hours)));
+
+                        claimCalculation.UnsocialEveningD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialEvening)));
+                        claimCalculation.UnsocialNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialNight)));
+                        claimCalculation.UnsocialWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialWeekend)));
+                        claimCalculation.UnsocialGrandWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend)));
+
+                        claimCalculation.OnCallDayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimDays[i].OnCallDay)));
+                        claimCalculation.OnCallNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallNightD15Plus) + Convert.ToDecimal(claimDays[i].OnCallNight)));
+                        day15PlusInThisCollAgreement = true;
+                    }
                 }
-                claimCalculation.UnsocialSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14)));
-                claimCalculation.OnCallSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14)));
+                if (day1T14InThisCollAgreement)
+                {
 
-                //These numbers go to the assistant's part of the view
-                claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.HoursD2T14) + Convert.ToDecimal(claimDays[0].OnCallDay) + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimDays[0].OnCallNight) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
-                claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimCalculation.HoursD2T14);
-                claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14) + Convert.ToDecimal(claimDays[0].UnsocialEvening) + Convert.ToDecimal(claimDays[0].UnsocialNight) + Convert.ToDecimal(claimDays[0].UnsocialWeekend) + Convert.ToDecimal(claimDays[0].UnsocialGrandWeekend);
-                claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimDays[0].OnCallDay) + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimDays[0].OnCallNight) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
-                //Code maybe should be added here to calculate the number of hours for the SI assistant..
+                    claimCalculation.UnsocialSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14)));
+                    claimCalculation.OnCallSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14)));
 
-                //Calculate the money by category for day 2 to day 14
-                //Sickpay for day 2 to day 14
-                claimCalculation.SalaryD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursD2T14) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
-                claimCalculation.SalaryCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.HoursD2T14 + " timmar x " + claim.HourlySalaryAsString + " Kr";
+                    //These numbers go to the assistant's part of the view
+                    claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursD2T14) + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
+                    claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursD2T14);
+                    claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14);
+                    claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
+                    //Code maybe should be added here to calculate the number of hours for the SI assistant..
 
-                //Holiday pay for day 2 to day 14
-                claimCalculation.HolidayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryD2T14) / 100));
-                claimCalculation.HolidayPayCalcD2T14 = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryD2T14 + " Kr";
+                    //Calculate the money by category for day 2 to day 14
+                    //Sickpay for day 2 to day 14
+                    claimCalculation.SalaryD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursD2T14) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
+                    claimCalculation.SalaryCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.HoursD2T14 + " timmar x " + claim.HourlySalaryAsString + " Kr";
 
-                //Unsocial evening pay for day 2 to day 14
-                claimCalculation.UnsocialEveningPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
-                claimCalculation.UnsocialEveningPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialEveningD2T14 + " timmar x " + claimCalculation.PerHourUnsocialEveningAsString + " Kr";
+                    //Holiday pay for day 2 to day 14
+                    claimCalculation.HolidayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryD2T14) / 100));
+                    claimCalculation.HolidayPayCalcD2T14 = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryD2T14 + " Kr";
 
-                //Unsocial night pay for day 2 to day 14
-                claimCalculation.UnsocialNightPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialNightAsString) / 100));
-                claimCalculation.UnsocialNightPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialNightD2T14 + " timmar x " + claimCalculation.PerHourUnsocialNightAsString + " Kr";
+                    //Unsocial evening pay for day 2 to day 14
+                    claimCalculation.UnsocialEveningPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
+                    claimCalculation.UnsocialEveningPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialEveningD2T14 + " timmar x " + claimCalculation.PerHourUnsocialEveningAsString + " Kr";
 
-                //Unsocial weekend pay for day 2 to day 14
-                claimCalculation.UnsocialWeekendPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialWeekendAsString) / 100));
-                claimCalculation.UnsocialWeekendPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialWeekendD2T14 + " timmar x " + claimCalculation.PerHourUnsocialWeekendAsString + " Kr";
+                    //Unsocial night pay for day 2 to day 14
+                    claimCalculation.UnsocialNightPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialNightAsString) / 100));
+                    claimCalculation.UnsocialNightPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialNightD2T14 + " timmar x " + claimCalculation.PerHourUnsocialNightAsString + " Kr";
 
-                //Unsocial grand weekend pay for day 2 to day 14
-                claimCalculation.UnsocialGrandWeekendPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialHolidayAsString) / 100));
-                claimCalculation.UnsocialGrandWeekendPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialGrandWeekendD2T14 + " timmar x " + claimCalculation.PerHourUnsocialHolidayAsString + " Kr";
+                    //Unsocial weekend pay for day 2 to day 14
+                    claimCalculation.UnsocialWeekendPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialWeekendAsString) / 100));
+                    claimCalculation.UnsocialWeekendPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialWeekendD2T14 + " timmar x " + claimCalculation.PerHourUnsocialWeekendAsString + " Kr";
 
-                //Unsocial sum pay for day 2 to day 14
-                claimCalculation.UnsocialSumPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendPayD2T14)));
-                claimCalculation.UnsocialSumPayCalcD2T14 = claimCalculation.UnsocialEveningPayD2T14 + " Kr + " + claimCalculation.UnsocialNightPayD2T14 + " Kr + " + claimCalculation.UnsocialWeekendPayD2T14 + " Kr + " + claimCalculation.UnsocialGrandWeekendPayD2T14;
+                    //Unsocial grand weekend pay for day 2 to day 14
+                    claimCalculation.UnsocialGrandWeekendPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialHolidayAsString) / 100));
+                    claimCalculation.UnsocialGrandWeekendPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialGrandWeekendD2T14 + " timmar x " + claimCalculation.PerHourUnsocialHolidayAsString + " Kr";
 
-                //On call day pay for day 2 to day 14
-                claimCalculation.OnCallDayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.OnCallDayD2T14) * Convert.ToDecimal(claimCalculation.PerHourOnCallDayAsString) / 100));
-                claimCalculation.OnCallDayPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.OnCallDayD2T14 + " timmar x " + claimCalculation.PerHourOnCallDayAsString + " Kr";
+                    //Unsocial sum pay for day 2 to day 14
+                    claimCalculation.UnsocialSumPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendPayD2T14)));
+                    claimCalculation.UnsocialSumPayCalcD2T14 = claimCalculation.UnsocialEveningPayD2T14 + " Kr + " + claimCalculation.UnsocialNightPayD2T14 + " Kr + " + claimCalculation.UnsocialWeekendPayD2T14 + " Kr + " + claimCalculation.UnsocialGrandWeekendPayD2T14;
 
-                //On call night pay for day 2 to day 14
-                claimCalculation.OnCallNightPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.OnCallNightD2T14) * Convert.ToDecimal(claimCalculation.PerHourOnCallNightAsString) / 100));
-                claimCalculation.OnCallNightPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.OnCallNightD2T14 + " timmar x " + claimCalculation.PerHourOnCallNightAsString + " Kr";
+                    //On call day pay for day 2 to day 14
+                    claimCalculation.OnCallDayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.OnCallDayD2T14) * Convert.ToDecimal(claimCalculation.PerHourOnCallDayAsString) / 100));
+                    claimCalculation.OnCallDayPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.OnCallDayD2T14 + " timmar x " + claimCalculation.PerHourOnCallDayAsString + " Kr";
 
-                //On call sum pay for day 2 to day 14
-                claimCalculation.OnCallSumPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightPayD2T14)));
-                claimCalculation.OnCallSumPayCalcD2T14 = claimCalculation.OnCallDayPayD2T14 + " Kr + " + claimCalculation.OnCallNightPayD2T14;
+                    //On call night pay for day 2 to day 14
+                    claimCalculation.OnCallNightPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.OnCallNightD2T14) * Convert.ToDecimal(claimCalculation.PerHourOnCallNightAsString) / 100));
+                    claimCalculation.OnCallNightPayCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.OnCallNightD2T14 + " timmar x " + claimCalculation.PerHourOnCallNightAsString + " Kr";
 
-                //Sick pay for day 2 to day 14
-                claimCalculation.SickPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)));
-                claimCalculation.SickPayCalcD2T14 = claimCalculation.SalaryD2T14 + " Kr + " + claimCalculation.UnsocialSumPayD2T14 + " Kr + " + claimCalculation.OnCallSumPayD2T14 + " Kr";
+                    //On call sum pay for day 2 to day 14
+                    claimCalculation.OnCallSumPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightPayD2T14)));
+                    claimCalculation.OnCallSumPayCalcD2T14 = claimCalculation.OnCallDayPayD2T14 + " Kr + " + claimCalculation.OnCallNightPayD2T14;
 
-                //Social fees for day 2 to day 14
-                claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
-                //claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
-                claimCalculation.SocialFeesCalcD2T14 = claim.SocialFeeRateAsString + " % x (" + claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr)";
+                    //Sick pay for day 2 to day 14
+                    claimCalculation.SickPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)));
+                    claimCalculation.SickPayCalcD2T14 = claimCalculation.SalaryD2T14 + " Kr + " + claimCalculation.UnsocialSumPayD2T14 + " Kr + " + claimCalculation.OnCallSumPayD2T14 + " Kr";
 
-                //Pensions and insurances for day 2 to day 14
-                claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
-                //claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)) / 100));
-                claimCalculation.PensionAndInsuranceCalcD2T14 = claim.PensionAndInsuranceRateAsString + " % x (" + claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr)";
+                    //Social fees for day 2 to day 14
+                    claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
+                    //claimCalculation.SocialFeesD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
+                    claimCalculation.SocialFeesCalcD2T14 = claim.SocialFeeRateAsString + " % x (" + claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr)";
 
-                //Sum for day 2 to day 14
-                claimCalculation.CostD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.SocialFeesD2T14) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceD2T14)));
-                claimCalculation.CostCalcD2T14 = claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.SocialFeesD2T14 + " Kr + " + claimCalculation.PensionAndInsuranceD2T14 + " Kr";
+                    //Pensions and insurances for day 2 to day 14
+                    claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14)) / 100));
+                    //claimCalculation.PensionAndInsuranceD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD2T14) + Convert.ToDecimal(claimCalculation.OnCallSumPayD2T14)) / 100));
+                    claimCalculation.PensionAndInsuranceCalcD2T14 = claim.PensionAndInsuranceRateAsString + " % x (" + claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr)";
 
-                //Total sum for day 1 to day 14
-                claimCalculation.TotalCostD1T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.CostQD) + Convert.ToDecimal(claimCalculation.CostD2T14)));
-                claimCalculation.TotalCostCalcD1T14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
+                    //Sum for day 2 to day 14
+                    claimCalculation.CostD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SickPayD2T14) + Convert.ToDecimal(claimCalculation.HolidayPayD2T14) + Convert.ToDecimal(claimCalculation.SocialFeesD2T14) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceD2T14)));
+                    claimCalculation.CostCalcD2T14 = claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.SocialFeesD2T14 + " Kr + " + claimCalculation.PensionAndInsuranceD2T14 + " Kr";
+                }
 
-                //claim.ClaimStatusId = 5;
+                //new line for day 15 and beyond
+                //prevSickDayIdx = prevSickDayIdx + applicableSickDays;
+
+                if (day15PlusInThisCollAgreement)
+                {
+                    //new code for day 15 and beyond
+                    //DAY 15 and plus
+                    //claimCalculation.HoursD15Plus = "0,00";
+                    //claimCalculation.UnsocialEveningD15Plus = "0,00";
+                    //claimCalculation.UnsocialNightD15Plus = "0,00";
+                    //claimCalculation.UnsocialWeekendD15Plus = "0,00";
+                    //claimCalculation.UnsocialGrandWeekendD15Plus = "0,00";
+                    //claimCalculation.UnsocialSumD15Plus = "0,00";
+                    //claimCalculation.OnCallDayD15Plus = "0,00";
+                    //claimCalculation.OnCallNightD15Plus = "0,00";
+                    //claimCalculation.OnCallSumD15Plus = "0,00";
+
+                    ////Sum up hours by category for day 15 and beyond
+                    //startIdx = prevSickDayIdx;
+                    //stopIdx = startIdx + applicableSickDays;
+
+                    //for (int i = startIdx; i < stopIdx; i++)
+                    //{
+                    //    if (!claimDays[i].Well && claimDays[i].SickDayNumber > 14) //new if-statement for 5-day rule
+                    //    {
+                    //        claimCalculation.HoursD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimDays[i].Hours)));
+
+                    //        claimCalculation.UnsocialEveningD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialEvening)));
+                    //        claimCalculation.UnsocialNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialNight)));
+                    //        claimCalculation.UnsocialWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialWeekend)));
+                    //        claimCalculation.UnsocialGrandWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend)));
+
+                    //        claimCalculation.OnCallDayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimDays[i].OnCallDay)));
+                    //        claimCalculation.OnCallNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallNightD15Plus) + Convert.ToDecimal(claimDays[i].OnCallNight)));
+                    //    }
+                    //}
+
+                    claimCalculation.UnsocialSumD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus)));
+                    claimCalculation.OnCallSumD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus)));
+
+                    //These numbers go to the assistant's part of the view
+                    claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus);
+                    claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursD15Plus);
+                    claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus);
+                    claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus);
+                    //Code maybe should be added here to calculate the number of hours for the SI assistant..
+
+                    //Calculate the money by category for day 15 and beyond
+                    //Sickpay for day 15 and beyond
+                    claimCalculation.SalaryD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursD15Plus) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
+                    claimCalculation.SalaryCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.HoursD15Plus + " timmar x " + claim.HourlySalaryAsString + " Kr";
+
+                    //Holiday pay for day 15 and beyond
+                    claimCalculation.HolidayPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryD15Plus) / 100));
+                    claimCalculation.HolidayPayCalcD15Plus = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryD15Plus + " Kr";
+
+                    //Unsocial evening pay for day 15 and beyond
+                    claimCalculation.UnsocialEveningPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
+                    claimCalculation.UnsocialEveningPayCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialEveningD15Plus + " timmar x " + claimCalculation.PerHourUnsocialEveningAsString + " Kr";
+
+                    //Unsocial night pay for day 15 and beyond
+                    claimCalculation.UnsocialNightPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) * Convert.ToDecimal(claimCalculation.PerHourUnsocialNightAsString) / 100));
+                    claimCalculation.UnsocialNightPayCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialNightD15Plus + " timmar x " + claimCalculation.PerHourUnsocialNightAsString + " Kr";
+
+                    //Unsocial weekend pay for day 15 and beyond
+                    claimCalculation.UnsocialWeekendPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) * Convert.ToDecimal(claimCalculation.PerHourUnsocialWeekendAsString) / 100));
+                    claimCalculation.UnsocialWeekendPayCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialWeekendD15Plus + " timmar x " + claimCalculation.PerHourUnsocialWeekendAsString + " Kr";
+
+                    //Unsocial grand weekend pay for day 15 and beyond
+                    claimCalculation.UnsocialGrandWeekendPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus) * Convert.ToDecimal(claimCalculation.PerHourUnsocialHolidayAsString) / 100));
+                    claimCalculation.UnsocialGrandWeekendPayCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.UnsocialGrandWeekendD15Plus + " timmar x " + claimCalculation.PerHourUnsocialHolidayAsString + " Kr";
+
+                    //Unsocial sum pay for day 15 and beyond
+                    claimCalculation.UnsocialSumPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningPayD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightPayD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendPayD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendPayD15Plus)));
+                    claimCalculation.UnsocialSumPayCalcD15Plus = claimCalculation.UnsocialEveningPayD15Plus + " Kr + " + claimCalculation.UnsocialNightPayD15Plus + " Kr + " + claimCalculation.UnsocialWeekendPayD15Plus + " Kr + " + claimCalculation.UnsocialGrandWeekendPayD15Plus;
+
+                    //On call day pay for day 15 and beyond
+                    claimCalculation.OnCallDayPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) * Convert.ToDecimal(claimCalculation.PerHourOnCallDayAsString) / 100));
+                    claimCalculation.OnCallDayPayCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.OnCallDayD15Plus + " timmar x " + claimCalculation.PerHourOnCallDayAsString + " Kr";
+
+                    //On call night pay for day 15 and beyond
+                    claimCalculation.OnCallNightPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.OnCallNightD15Plus) * Convert.ToDecimal(claimCalculation.PerHourOnCallNightAsString) / 100));
+                    claimCalculation.OnCallNightPayCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.OnCallNightD15Plus + " timmar x " + claimCalculation.PerHourOnCallNightAsString + " Kr";
+
+                    //On call sum pay for day 15 and beyond
+                    claimCalculation.OnCallSumPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayPayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightPayD15Plus)));
+                    claimCalculation.OnCallSumPayCalcD15Plus = claimCalculation.OnCallDayPayD15Plus + " Kr + " + claimCalculation.OnCallNightPayD15Plus;
+
+                    //Sick pay for day 15 and beyond
+                    claimCalculation.SickPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SalaryD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallSumPayD15Plus)));
+                    claimCalculation.SickPayCalcD15Plus = claimCalculation.SalaryD15Plus + " Kr + " + claimCalculation.UnsocialSumPayD15Plus + " Kr + " + claimCalculation.OnCallSumPayD15Plus + " Kr";
+
+                    //Social fees for day 15 and beyond
+                    claimCalculation.SocialFeesD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD15Plus) + Convert.ToDecimal(claimCalculation.HolidayPayD15Plus)) / 100));
+                    //claimCalculation.SocialFeesD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SocialFeeRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallSumPayD15Plus) + Convert.ToDecimal(claimCalculation.HolidayPayD15Plus)) / 100));
+                    claimCalculation.SocialFeesCalcD15Plus = claim.SocialFeeRateAsString + " % x (" + claimCalculation.SickPayD15Plus + " Kr + " + claimCalculation.HolidayPayD15Plus + " Kr)";
+
+                    //Pensions and insurances for day 15 and beyond
+                    claimCalculation.PensionAndInsuranceD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SickPayD15Plus) + Convert.ToDecimal(claimCalculation.HolidayPayD15Plus)) / 100));
+                    //claimCalculation.PensionAndInsuranceD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.PensionAndInsuranceRateAsString) * (Convert.ToDecimal(claimCalculation.SalaryD15Plus) + Convert.ToDecimal(claimCalculation.HolidayPayD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialSumPayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallSumPayD15Plus)) / 100));
+                    claimCalculation.PensionAndInsuranceCalcD15Plus = claim.PensionAndInsuranceRateAsString + " % x (" + claimCalculation.SickPayD15Plus + " Kr + " + claimCalculation.HolidayPayD15Plus + " Kr)";
+
+                    //Sum for day 15 and beyond
+                    //claimCalculation.CostD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.SickPayD15Plus) + Convert.ToDecimal(claimCalculation.HolidayPayD15Plus) + Convert.ToDecimal(claimCalculation.SocialFeesD15Plus) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceD15Plus)));
+                    //claimCalculation.CostCalcD15Plus = claimCalculation.SickPayD15Plus + " Kr + " + claimCalculation.HolidayPayD15Plus + " Kr + " + claimCalculation.SocialFeesD15Plus + " Kr + " + claimCalculation.PensionAndInsuranceD15Plus + " Kr";
+                    claimCalculation.CostD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HolidayPayD15Plus) + Convert.ToDecimal(claimCalculation.SocialFeesD15Plus) + Convert.ToDecimal(claimCalculation.PensionAndInsuranceD15Plus)));
+                    claimCalculation.CostCalcD15Plus = claimCalculation.HolidayPayD15Plus + " Kr + " + claimCalculation.SocialFeesD15Plus + " Kr + " + claimCalculation.PensionAndInsuranceD15Plus + " Kr";
+                }
+
                 claim.StatusDate = DateTime.Now;
                 prevSickDayIdx = prevSickDayIdx + applicableSickDays;
-                db.ClaimCalculations.Add(claimCalculation);
-                db.SaveChanges();
-                totalCostD1D14 = totalCostD1D14 + Convert.ToDecimal(claimCalculation.TotalCostD1T14);
-                if (adjustedNumberOfSickdays == 1)
+
+                if (claim.NumberOfSickDays <= 14)
                 {
-                    totalCostCalcD1D14 = claimCalculation.CostQD;
+                    //Total sum for day 1 to day 14
+                    claimCalculation.TotalCostD1T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.CostQD) + Convert.ToDecimal(claimCalculation.CostD2T14)));
+                    claimCalculation.TotalCostCalcD1T14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
+
+                    db.ClaimCalculations.Add(claimCalculation);
+                    db.SaveChanges();
+                    totalCostD1D14 = totalCostD1D14 + Convert.ToDecimal(claimCalculation.TotalCostD1T14);
+                    if (adjustedNumberOfCalendarDays == 1)
+                    {
+                        totalCostCalcD1D14 = claimCalculation.CostQD;
+                    }
+                    else if (idx == 0)
+                    {
+                        totalCostCalcD1D14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
+                    }
+                    else
+                    {
+                        totalCostCalcD1D14 = totalCostCalcD1D14 + " Kr " + claimCalculation.CostD2T14;
+                    }
+                    claim.ModelSum = totalCostD1D14;
+                    claim.TotalCostD1T14 = String.Format("{0:0.00}", totalCostD1D14);
+                    claim.TotalCostCalcD1T14 = totalCostCalcD1D14;
                 }
-                else if (idx == 0)
+                else //more than 14 sickdays in the claim
                 {
-                    totalCostCalcD1D14 = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14;
+                    //Total sum for all days
+                    claimCalculation.TotalCostD1Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.CostQD) + Convert.ToDecimal(claimCalculation.CostD2T14) + +Convert.ToDecimal(claimCalculation.CostD15Plus)));
+                    claimCalculation.TotalCostCalcD1Plus = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14 + " Kr + " + claimCalculation.CostD15Plus;
+
+                    db.ClaimCalculations.Add(claimCalculation);
+                    db.SaveChanges();
+                    totalCostD1Plus = totalCostD1Plus + Convert.ToDecimal(claimCalculation.TotalCostD1Plus);
+                    if (adjustedNumberOfCalendarDays == 1)
+                    {
+                        totalCostCalcD1Plus = claimCalculation.CostQD;
+                    }
+                    else if (idx == 0)
+                    {
+                        totalCostCalcD1Plus = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14 + " Kr + " + claimCalculation.CostD15Plus;
+                    }
+                    else
+                    {
+                        totalCostCalcD1Plus = totalCostCalcD1Plus + " Kr " + claimCalculation.CostD2T14 + " Kr " + claimCalculation.CostD15Plus;
+                    }
+                    claim.ModelSum = totalCostD1Plus;
+                    claim.TotalCostD1T14 = String.Format("{0:0.00}", totalCostD1Plus);
+                    claim.TotalCostCalcD1Plus = totalCostCalcD1Plus;
                 }
-                else
-                {
-                    totalCostCalcD1D14 = totalCostCalcD1D14 + " Kr " + claimCalculation.CostD2T14;
-                }
+                day1T14InThisCollAgreement = false;
+                day15PlusInThisCollAgreement = false;
             }
-            claim.ModelSum = totalCostD1D14;
-            claim.TotalCostD1T14 = String.Format("{0:0.00}", totalCostD1D14);
-            claim.TotalCostCalcD1T14 = totalCostCalcD1D14;
             db.Entry(claim).State = EntityState.Modified;
             db.SaveChanges();
         }

@@ -108,15 +108,30 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "E-postadress:")]
         public string RegEmail { get; set; }
 
-        [Display(Name = "Karensdag, datum:")]
+        [Display(Name = "Första kalenderdag, datum:")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         //[DataType(DataType.DateTime)]
+        public string FirstClaimDate { get; set; }
+
+        [Display(Name = "Sista kalenderdag, datum:")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.DateTime)]
+        public string LastClaimDate { get; set; }
+
+        //Date of qualifying day
         public string QualifyingDayDate { get; set; }
 
-        [Display(Name = "Sista sjukdag, datum:")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        //[DataType(DataType.DateTime)]
-        public string LastDayOfSicknessDate { get; set; }
+        //Date of sickday number 2
+        public string Day2OfSicknessDate { get; set; }
+
+        //Date of sickday number 14
+        public string Day14OfSicknessDate { get; set; }
+
+        //Date of sickday number 15
+        public string Day15OfSicknessDate { get; set; }
+
+        //Date of last sickday number in the claim
+        public string LastDayofSicknessDate { get; set; }
 
         [Display(Name = "Lön, tim- eller månadslön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
@@ -305,9 +320,41 @@ namespace Sjuklöner.Viewmodels
 
         public bool DefaultCollectiveAgreement { get; set; }
 
-        [Display(Name = "Antal sjukdagar:")]
+        [Display(Name = "Antal kalenderdagar i sjukperioden:")]
+        public int NumberOfCalendarDays { get; set; }
+
+        [Display(Name = "Antal sjukdagar i ansökan:")]
         public int NumberOfSickDays { get; set; }
 
+        [Display(Name = "Antal sjukdagar med sjuklöneersättning:")]
+        public int AdjustedNumberOfSickDays { get; set; }
+
+        ////Date of qualifying day
+        //[Display(Name = "Första sjukdag, datum:")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //public string QualifyingDayDate { get; set; }
+
+        ////Date of sickday number 2
+        //[Display(Name = "Sjukdag 2, datum:")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //public string Day2OfSicknessDate { get; set; }
+
+        ////Date of sickday number 14
+        //[Display(Name = "Sjukdag 14, datum:")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //public string Day14OfSicknessDate { get; set; }
+
+        ////Date of sickday number 15
+        //[Display(Name = "Sjukdag 15, datum:")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //public string Day15OfSicknessDate { get; set; }
+
+        ////Date of last sickday number in the claim
+        //[Display(Name = "Sista sjukdag, datum:")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        //public string LastDayOfSicknessDate { get; set; }
+
+        //The two properties below are used for the total cost if the number of sickdays in the claim is less than 15
         [Display(Name = "Kostnad för sjukperioden (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string TotalCostD1T14 { get; set; }
@@ -315,6 +362,15 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kostnad för sjukperioden (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string TotalCostCalcD1T14 { get; set; }
+
+        //The two properties below are used for the total cost if the number of sickdays in the claim is greater than 14
+        [Display(Name = "Kostnad för sjukperioden (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string TotalCostD1Plus { get; set; }
+
+        [Display(Name = "Kostnad för sjukperioden (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string TotalCostCalcD1Plus { get; set; }
 
         [Display(Name = "Kontroll av organisationsnummer:")]
         public string IVOCheck { get; set; }

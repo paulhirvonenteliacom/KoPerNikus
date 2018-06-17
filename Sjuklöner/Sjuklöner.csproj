@@ -384,6 +384,30 @@
     <Compile Include="Migrations\201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.Designer.cs">
       <DependentUpon>201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806140940526_AddedPropertyWellToClaimDays.cs" />
+    <Compile Include="Migrations\201806140940526_AddedPropertyWellToClaimDays.Designer.cs">
+      <DependentUpon>201806140940526_AddedPropertyWellToClaimDays.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806150855173_AddedPropertiesFor15SickdaysAndBeyond.cs" />
+    <Compile Include="Migrations\201806150855173_AddedPropertiesFor15SickdaysAndBeyond.Designer.cs">
+      <DependentUpon>201806150855173_AddedPropertiesFor15SickdaysAndBeyond.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806170813271_ChangedNamesOfFirstAndLastSicknessDayPropertiesInClaim.cs" />
+    <Compile Include="Migrations\201806170813271_ChangedNamesOfFirstAndLastSicknessDayPropertiesInClaim.Designer.cs">
+      <DependentUpon>201806170813271_ChangedNamesOfFirstAndLastSicknessDayPropertiesInClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806170820448_ChangedNamesOfQualifyingAndLastDayOfSicknessDateAsStringPropertiesInClaim.cs" />
+    <Compile Include="Migrations\201806170820448_ChangedNamesOfQualifyingAndLastDayOfSicknessDateAsStringPropertiesInClaim.Designer.cs">
+      <DependentUpon>201806170820448_ChangedNamesOfQualifyingAndLastDayOfSicknessDateAsStringPropertiesInClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806170858485_AddedSickDayDateStringPropertiesToClaim.cs" />
+    <Compile Include="Migrations\201806170858485_AddedSickDayDateStringPropertiesToClaim.Designer.cs">
+      <DependentUpon>201806170858485_AddedSickDayDateStringPropertiesToClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.cs" />
+    <Compile Include="Migrations\201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.Designer.cs">
+      <DependentUpon>201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -753,6 +777,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.resx">
       <DependentUpon>201806120633042_AddedQualifyingDayApplicablePropertytoClaimClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806140940526_AddedPropertyWellToClaimDays.resx">
+      <DependentUpon>201806140940526_AddedPropertyWellToClaimDays.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806150855173_AddedPropertiesFor15SickdaysAndBeyond.resx">
+      <DependentUpon>201806150855173_AddedPropertiesFor15SickdaysAndBeyond.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806170813271_ChangedNamesOfFirstAndLastSicknessDayPropertiesInClaim.resx">
+      <DependentUpon>201806170813271_ChangedNamesOfFirstAndLastSicknessDayPropertiesInClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806170820448_ChangedNamesOfQualifyingAndLastDayOfSicknessDateAsStringPropertiesInClaim.resx">
+      <DependentUpon>201806170820448_ChangedNamesOfQualifyingAndLastDayOfSicknessDateAsStringPropertiesInClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806170858485_AddedSickDayDateStringPropertiesToClaim.resx">
+      <DependentUpon>201806170858485_AddedSickDayDateStringPropertiesToClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.resx">
+      <DependentUpon>201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

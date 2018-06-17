@@ -41,16 +41,16 @@ namespace Sjuklöner.Viewmodels
         public string CustomerPhoneNumber { get; set; }
 
         [Required]
-        [Display(Name = "Första sjukdag")]
+        [Display(Name = "Första kalenderdag")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        public DateTime FirstDayOfSicknessDate { get; set; }
+        public DateTime FirstClaimDate { get; set; }
 
         [Required]
-        [Display(Name = "Sista sjukdag")]
+        [Display(Name = "Sista kalenderdag")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        public DateTime LastDayOfSicknessDate { get; set; }
+        public DateTime LastClaimDate { get; set; }
 
         //[Required]
         [Range(typeof(int), "1", "999999", ErrorMessage = "En ordinarie assistent måste väljas")]

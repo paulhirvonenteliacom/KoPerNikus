@@ -23,6 +23,8 @@ namespace Sjuklöner.Viewmodels
 
     public class ScheduleRow
     {
+        public bool Well { get; set; } //Frisk, true/false för denna property avgör om en dag räknas som en sjukdag eller inte
+
         public string ScheduleRowDate { get; set; }
 
         [DataType(DataType.DateTime)]

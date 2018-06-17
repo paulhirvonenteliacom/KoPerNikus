@@ -18,10 +18,10 @@ namespace Sjuklöner.Viewmodels
         public string AssistantSSN { get; set; }
 
         [Display(Name = "Första sjukdag")]
-        public DateTime QualifyingDate { get; set; }
+        public DateTime FirstClaimDate { get; set; }
 
         [Display(Name = "Sista sjukdag")]
-        public DateTime LastDayOfSickness { get; set; }
+        public DateTime LastClaimDate { get; set; }
 
         [Display(Name = "Yrkat belopp (Kr)")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

@@ -24,7 +24,11 @@ namespace Sjuklöner.Models
 
         public int CollectiveAgreementInfoId { get; set; }
 
-        public int SickDayNumber { get; set; }
+        public int? SickDayNumber { get; set; }
+
+        public int CalendarDayNumber { get; set; }
+
+        public bool Well { get; set; } //Well = true betyder att ordinarie assistent varit frisk den dagen. Well = false betyder att ordinarie assistent varit sjuk den dagen.
 
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string Hours { get; set; }

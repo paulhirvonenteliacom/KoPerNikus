@@ -259,7 +259,7 @@
                 @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "create1-label control-label" })
             </div>
             <div class="col col-md-6">
-                @Html.LabelFor(model => model.FirstDayOfSicknessDate, htmlAttributes: new { @class = "create1-label control-label" })
+                @Html.LabelFor(model => model.FirstClaimDate, htmlAttributes: new { @class = "create1-label control-label" })
             </div>
         </div>
 
@@ -268,7 +268,7 @@
                 @Html.EditorFor(model => model.CustomerSSN, new { htmlAttributes = new { @class = "form-control" } })
             </div>
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.FirstDayOfSicknessDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.FirstClaimDate, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 
@@ -277,7 +277,7 @@
                 @Html.ValidationMessageFor(model => model.CustomerSSN, "", new { @class = "text-danger font-size-11", id = "customer-SSN-val" })
             </div>
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.FirstDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.FirstClaimDate, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
 
@@ -286,7 +286,7 @@
                 @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "create1-label control-label" })
             </div>
             <div class="col col-md-6">
-                @Html.LabelFor(model => model.LastDayOfSicknessDate, htmlAttributes: new { @class = "create1-label control-label" })
+                @Html.LabelFor(model => model.LastClaimDate, htmlAttributes: new { @class = "create1-label control-label" })
             </div>
         </div>
 
@@ -295,7 +295,7 @@
                 @Html.EditorFor(model => model.CustomerPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
             </div>
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.LastDayOfSicknessDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.LastClaimDate, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
 
@@ -304,7 +304,7 @@
                 @Html.ValidationMessageFor(model => model.CustomerPhoneNumber, "", new { @class = "text-danger font-size-11" })
             </div>
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.LastDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.LastClaimDate, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>
 

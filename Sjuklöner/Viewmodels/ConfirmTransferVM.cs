@@ -16,15 +16,15 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Kundens personnummer")]
         public string CustomerSSN { get; set; }
 
-        [Display(Name = "Första sjukdag")]
+        [Display(Name = "Första kalenderdag")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime QualifyingDate { get; set; }
+        public DateTime FirstClaimDate { get; set; }
 
-        [Display(Name = "Sista sjukdag")]
+        [Display(Name = "Sista kalenderdag")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime LastDayOfSicknessDate { get; set; }
+        public DateTime LastClaimDate { get; set; }
 
         [Display(Name = "Yrkat belopp (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

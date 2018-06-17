@@ -236,18 +236,39 @@ namespace Sjuklöner.Models
         //[RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^ 0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string StandInSSN { get; set; }
 
-        [Display(Name = "Första sjukdag")]
+        [Display(Name = "Första kalenderdag")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]        
-        public DateTime QualifyingDate { get; set; }
+        public DateTime FirstClaimDate { get; set; }
 
-        [Display(Name = "Sista sjukdag")]
+        [Display(Name = "Sista kalenderdag")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime LastDayOfSicknessDate { get; set; }
+        public DateTime LastClaimDate { get; set; }
 
         [Display(Name = "Antal sjukdagar")]
         public int NumberOfSickDays { get; set; }
+
+        [Display(Name = "Antal sjukdagar")]
+        public int AdjustedNumberOfSickDays { get; set; }
+
+        [Display(Name = "Antal sjukdagar")]
+        public int NumberOfCalendarDays { get; set; }
+
+        //Date of qualifying day
+        public string QualifyingDayDate { get; set; }
+
+        //Date of sickday number 2
+        public string Day2OfSicknessDate { get; set; }
+
+        //Date of sickday number 14
+        public string Day14OfSicknessDate { get; set; }
+
+        //Date of sickday number 15
+        public string Day15OfSicknessDate { get; set; }
+
+        //Date of last sickday number in the claim
+        public string LastDayofSicknessDate { get; set; }
 
         [Display(Name = "Antal timmar frånvaro")]
         public decimal NumberOfAbsenceHours { get; set; }
@@ -317,9 +338,9 @@ namespace Sjuklöner.Models
         public decimal RejectedSum { get; set; }
 
         //These string properties are used by the robot when it transfers information to Procapita
-        public string QualifyingDateAsString { get; set; }
+        public string FirstClaimDateAsString { get; set; }
 
-        public string LastDayOfSicknessDateAsString { get; set; }
+        public string LastClaimDateAsString { get; set; }
 
         public string SentInDateAsString { get; set; }
 
@@ -385,6 +406,15 @@ namespace Sjuklöner.Models
         [Display(Name = "Kostnad för sjukperioden (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string TotalCostCalcD1T14 { get; set; }
+
+        //The two properties below are used for the total cost if the number of sickdays in the claim is greater than 14
+        [Display(Name = "Kostnad för sjukperioden (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string TotalCostD1Plus { get; set; }
+
+        [Display(Name = "Kostnad för sjukperioden (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string TotalCostCalcD1Plus { get; set; }
 
         public virtual CareCompany CareCompany { get; set; }
 

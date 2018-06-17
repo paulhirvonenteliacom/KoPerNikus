@@ -35,6 +35,8 @@ namespace Sjuklöner.Viewmodels
 
         public int NumberOfSickDays { get; set; }
 
+        public int NumberOfCalendarDays { get; set; }
+
         public int NumberOfSubAssistants { get; set; }
     }
 }

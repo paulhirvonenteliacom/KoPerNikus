@@ -807,7 +807,7 @@ li a {
 
 .btn-secondary-xsmall7 {
     height: 19px;
-    margin-left: 0;
+    margin-left: 15px;
     font-size: 12px;
     width: 54px;
     padding: 0 5px 10px 3px;
@@ -1081,8 +1081,19 @@ li a {
 }
 
 .date-left-padding2 {
-    padding-left: 90px;
+    padding-left: 78px;
     padding-bottom: 5px;
+}
+
+.date-left-padding3 {
+    padding-left: 37px;
+    margin-right: 28px;
+    display: inline-block;
+    float: left;
+}
+
+.date-left-padding4 {
+    padding-left: 44px;
 }
 
 .smallcol {
@@ -1677,6 +1688,10 @@ li a {
 
 .date-padding {
     padding-top: 123px;
+}
+
+date-padding2 {
+    display: inline-block;
 }
 
 .date-margin {
