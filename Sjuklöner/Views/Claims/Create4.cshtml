@@ -65,8 +65,15 @@
                 <div class="col bold-14 label-align-top display-right-align col-md-2">
                     Lönespecifikation, ordinarie assistent
                 </div>
-                <div class="col-md-10">
-                    <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default" />
+                <div class="col-md-10" id="SalaryAttachmentDiv">
+                    @if (!Model.SalaryAttachmentExists)
+                    {
+                        <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default" onchange="checkErrors()" />
+                    }
+                    else
+                    {
+                        <p id="SalaryAttachmentButton">Det finns redan en lönespecifikation <button onclick="ReplaceFile(event, 'SalaryAttachment', 'SalaryAttachment')">Byt fil</button></p>
+                    }
                 </div>
             </div>
             <div class="row row-height-14 line-height-07">
@@ -91,8 +98,15 @@
                     <div class="col bold-14 padding-top-10 display-right-align col-md-2">
                         Läkarintyg
                     </div>
-                    <div class="col-md-10">
-                        <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" />
+                    <div class="col-md-10" id="DoctorsCertificateDiv">
+                        @if (!Model.DoctorsCertificateExists)
+                        {
+                            <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" onchange="checkErrors()" />
+                        }
+                        else
+                        {
+                            <p id="DoctorsCertificateButton">Det finns redan ett läkarintyg <button onclick="ReplaceFile(event, 'DoctorsCertificate', 'DoctorsCertificate')">Byt fil</button></p>
+                        }
                     </div>
                 </div>
                 <div class="row row-height-14 line-height-07">
@@ -140,8 +154,15 @@
                 <div class="col bold-14 label-align-top display-right-align col-md-2">
                     Tidsredovisning, ordinarie assistent
                 </div>
-                <div class="col-md-10">
-                    <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default" />
+                <div class="col-md-10" id="TimeReportDiv">
+                    @if (!Model.TimeReportExists)
+                    {
+                        <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default" onchange="checkErrors()" />
+                    }
+                    else
+                    {
+                        <p id="TimeReportButton">Det finns redan en tidsredovisning för den här assistenten <button onclick="ReplaceFile(event, 'TimeReport', 'TimeReport')">Byt fil</button></p>
+                    }
                 </div>
             </div>
             <div class="row row-height-14 line-height-07">
@@ -151,6 +172,7 @@
             </div>
             <div class="row row-height-14">
             </div>
+            <div style="display:none;" id="AssistantHasFileDiv"></div>
 
             @for (int i = 0; i < Model.NumberOfSubAssistants; i++)
             {
@@ -175,13 +197,20 @@
                             Tidsredovisning, vikarierande assistent @(i + 1)
                         </div>
                     }
-                    <div class="col col-md-10">
-                        <input type="file" name="TimeReportStandIn" id="TimeReportStandIn" class="wide-input btn btn-default" />
+                    <div class="col col-md-10" id="TimeReportStandIn[@i]Div">
+                        @if (!Model.TimeReportStandInExists[i])
+                        {
+                            <input type="file" name="TimeReportStandIn" id="TimeReportStandIn[@i]" class="timereportstandin wide-input btn btn-default" onchange="checkErrors()" />
+                        }
+                        else
+                        {
+                            <p id="TimeReportStandIn[@i]Button"><span class="timereportstandin"></span>Det finns redan en tidsredovisning för den här assistenten <button onclick="ReplaceFile(event, 'TimeReportStandIn[@i]', 'timereportstandin')">Byt fil</button></p>
+                        }
                     </div>
                 </div>
                 <div class="row row-height-14 line-height-07">
                     <div class="col col-md-offset-2 col-md-10">
-                        @Html.ValidationMessageFor(model => model.TimeReportStandIn[i], "", new { @class = "text-danger font-size-11", id = "timereport-subassistant-val" })
+                        @Html.ValidationMessageFor(model => model.TimeReportStandIn[i], "", new { @class = "timereport-subassistant-val text-danger font-size-11" })
                     </div>
                 </div>
                 <div class="row row-height-14">
@@ -240,12 +269,61 @@
 
         $("form").submit(function (e) {
             if (!checkValidationErrors()) {
+                e.preventDefault();
                 var erroronpage = document.getElementById('valerror-on-page');
                 erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller skicka in ansökan.";
-                e.preventDefault();
+            }
+            var idx = 0;
+            var timereportsstandin = document.getElementsByClassName("timereportstandin");
+            var assistantcount = document.getElementsByClassName("timereport-subassistant-val");
+            var inputHidden = document.createElement('input');
+            while (idx < assistantcount.length) {
+                if (timereportsstandin != null && timereportsstandin[idx] != null && timereportsstandin[idx].value != "" && timereportsstandin[idx].value != null) {
+                    inputHidden = document.createElement('input');
+                    inputHidden.type = "hidden";
+                    inputHidden.name = "AssistantHasFile";
+                    inputHidden.id = "AssistantHasFile[" + idx + "]";
+                    inputHidden.value = true;
+                }
+                else {
+                    inputHidden = document.createElement('input');
+                    inputHidden.type = "hidden";
+                    inputHidden.name = "AssistantHasFile";
+                    inputHidden.id = "AssistantHasFile[" + idx + "]";
+                    inputHidden.value = false;
+                }
+                document.getElementById("AssistantHasFileDiv").appendChild(inputHidden)
+                idx++;
             }
         });
     });
+
+    function checkErrors() {
+        var salaryspecregassistantval = document.getElementById('salaryspec-regassistant-val');
+        var doctorscertificateval = document.getElementById('doctors-certificate-val');
+        var timereportregassistantval = document.getElementById('timereport-regassistant-val');
+        var timereportsubassistantval = document.getElementsByClassName('timereport-subassistant-val');
+
+        if (document.getElementById("SalaryAttachment").value != "") {
+            salaryspecregassistantval.innerHTML = "";
+        }
+        if (document.getElementById("TimeReport").value != "") {
+            timereportregassistantval.innerHTML = "";
+        }
+        var numberofsickdays = parseInt(document.getElementById('numberofsickdays').value);
+
+        if (numberofsickdays > 7 && document.getElementById("DoctorsCertificate").value != "") {
+                doctorscertificateval.innerHTML = "";
+        }
+        var idx = 0;
+        var timereportsstandin = document.getElementsByClassName("timereportstandin");
+        while (idx < timereportsstandin.length) {
+            if (timereportsstandin[idx].value != "") {
+                timereportsubassistantval[idx].innerHTML = "";
+            }
+            idx++;
+        }
+    }
 
     function checkValidationErrors() {
         var validationErrorFound = false;
@@ -254,6 +332,27 @@
         var doctorscertificateval = document.getElementById('doctors-certificate-val');
         var timereportregassistantval = document.getElementById('timereport-regassistant-val');
         var timereportsubassistantval = document.getElementsByClassName('timereport-subassistant-val');
+
+        if (!@Json.Encode(Model.SalaryAttachmentExists) && document.getElementById("SalaryAttachment").value == "") {
+            salaryspecregassistantval.innerHTML = "Lönespecifikation för ordinarie assistent saknas.";
+        }
+        if (!@Json.Encode(Model.TimeReportExists) && document.getElementById("TimeReport").value == "") {
+            timereportregassistantval.innerHTML = "Tidsredovisning för ordinarie assistent saknas.";
+        }
+        var numberofsickdays = parseInt(document.getElementById('numberofsickdays').value);
+
+        if (numberofsickdays > 7 && !@Json.Encode(Model.DoctorsCertificateExists) && document.getElementById("DoctorsCertificate").value == "") {
+            doctorscertificateval.innerHTML = "Läkarintyg saknas.";
+        }
+        var idx = 0;
+        var timereportsstandin = document.getElementsByClassName("timereportstandin");
+        var timereportexistsarray = @Html.Raw(Json.Encode(Model.TimeReportStandInExists));
+        while (idx < timereportsstandin.length) {
+            if (timereportexistsarray[idx] && timereportsstandin[idx].value == "") {
+                timereportsubassistantval[idx].innerHTML = "Tidsredovisning för vikarierande assistent saknas.";
+            }
+            idx++;
+        }
 
         if (!validationErrorFound) {
             if (salaryspecregassistantval.innerHTML != "" ||
@@ -264,7 +363,7 @@
 
         var idx = 0;
         while (!validationErrorFound && idx < timereportsubassistantval.length) {
-            if (timereportsubassistantval[i].innerHTML != "") {
+            if (timereportsubassistantval[idx].innerHTML != "") {
                 validationErrorFound = true;
             }
             idx++;
@@ -286,6 +385,18 @@
         else {
             return false;
         }
+    }
+
+    function ReplaceFile(e, f, n) {
+        e.preventDefault();
+        var inputFile = document.createElement('input');
+        inputFile.type = "file";
+        inputFile.name = n;
+        inputFile.id = f;
+        inputFile.className = n + " wide-input btn btn-default";
+        inputFile.onchange = "checkErrors()";
+
+        document.getElementById(f + 'Div').replaceChild(inputFile, document.getElementById(f + 'Button'))
     }
 
     $(function () {
