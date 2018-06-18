@@ -256,19 +256,40 @@ namespace Sjuklöner.Models
         public int NumberOfCalendarDays { get; set; }
 
         //Date of qualifying day
-        public string QualifyingDayDate { get; set; }
+        public DateTime? QualifyingDayDate { get; set; }
 
         //Date of sickday number 2
-        public string Day2OfSicknessDate { get; set; }
+        public DateTime? Day2OfSicknessDate { get; set; }
 
         //Date of sickday number 14
-        public string Day14OfSicknessDate { get; set; }
+        public DateTime? Day14OfSicknessDate { get; set; }
 
         //Date of sickday number 15
-        public string Day15OfSicknessDate { get; set; }
+        public DateTime? Day15OfSicknessDate { get; set; }
 
         //Date of last sickday number in the claim
-        public string LastDayofSicknessDate { get; set; }
+        public DateTime? LastDayOfSicknessDate { get; set; }
+
+        //Date of qualifying day
+        public string QualifyingDayDateAsString { get; set; }
+
+        //Date of sickday number 2
+        public string Day2OfSicknessDateAsString { get; set; }
+
+        //Date of sickday number 14
+        public string Day14OfSicknessDateAsString { get; set; }
+
+        //Date of sickday number 15
+        public string Day15OfSicknessDateAsString { get; set; }
+
+        //Date of last sickday number in the claim
+        public string LastDayOfSicknessDateAsString { get; set; }
+
+        //First claim day as short string
+        public string FirstClaimDayShort { get; set; }
+
+        //Last claim day as short string
+        public string LastClaimDayShort { get; set; }
 
         [Display(Name = "Antal timmar frånvaro")]
         public decimal NumberOfAbsenceHours { get; set; }

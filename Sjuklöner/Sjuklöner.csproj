@@ -408,6 +408,18 @@
     <Compile Include="Migrations\201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.Designer.cs">
       <DependentUpon>201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806180517514_ChangedTypeOfClaimDateProperties.cs" />
+    <Compile Include="Migrations\201806180517514_ChangedTypeOfClaimDateProperties.Designer.cs">
+      <DependentUpon>201806180517514_ChangedTypeOfClaimDateProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806180554284_AddedDatePropertiesToClaim.cs" />
+    <Compile Include="Migrations\201806180554284_AddedDatePropertiesToClaim.Designer.cs">
+      <DependentUpon>201806180554284_AddedDatePropertiesToClaim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806180719186_AddedFirstAndLastClaimDayShortProperties.cs" />
+    <Compile Include="Migrations\201806180719186_AddedFirstAndLastClaimDayShortProperties.Designer.cs">
+      <DependentUpon>201806180719186_AddedFirstAndLastClaimDayShortProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -795,6 +807,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.resx">
       <DependentUpon>201806171824304_AddedAdjustedNumberOfSickDaysPropertyToClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806180517514_ChangedTypeOfClaimDateProperties.resx">
+      <DependentUpon>201806180517514_ChangedTypeOfClaimDateProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806180554284_AddedDatePropertiesToClaim.resx">
+      <DependentUpon>201806180554284_AddedDatePropertiesToClaim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806180719186_AddedFirstAndLastClaimDayShortProperties.resx">
+      <DependentUpon>201806180719186_AddedFirstAndLastClaimDayShortProperties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

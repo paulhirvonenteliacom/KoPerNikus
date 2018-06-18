@@ -1,6 +1,11 @@
 ﻿@model Sjuklöner.Viewmodels.ClaimDetailsOmbudVM
 
 @*<body>*@
+@{
+    bool day2T14HeadingAlreadyShown = false;
+    bool day15PlusHeadingAlreadyShown = false;
+}
+
 <div class="row">
     <div class="col col-md-offset-2">
         @Html.ActionLink("Skapa Pdf-dokument", "ClaimDetailsAsPdf", new { refNumber = Model.ReferenceNumber }, new { @class = "btn btn-primary btn-primary-wide" })
@@ -1401,12 +1406,13 @@
                         </div>
                     </div>
                     <br />
+                    <br />
 
                     if (i == 0)
                     {
                         <div class="row form-group-subheading">
                             @*Karensdag, @Model.ClaimCalculations[0].StartDate.ToShortDateString()*@
-                            Karensdag: @Model.QualifyingDayDate
+                            Karensdag: @Model.QualifyingDayDateAsString
 
                         </div>
 
@@ -1792,40 +1798,70 @@
                             </div>
                         </div>
                         <br />
+                        <br />
+
                         if (Model.AdjustedNumberOfSickDays > 1)
                         {
-                            if (Model.AdjustedNumberOfSickDays > 1 && Model.AdjustedNumberOfSickDays < 14)
+                            if (!day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays < 14)
                             {
                                 <div class="row form-group-subheading">
-                                    Sjukdag 2 - Sjukdag @Model.AdjustedNumberOfSickDays: @Model.Day2OfSicknessDate - @Model.LastDayofSicknessDate
+                                    Sjukdag 2 - Sjukdag @Model.AdjustedNumberOfSickDays:
                                 </div>
                             }
-                            else
+                            else if (!day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 13)
                             {
                                 <div class="row form-group-subheading">
-                                    Sjukdag 2 - Sjukdag 14: @Model.Day2OfSicknessDate - @Model.Day14OfSicknessDate
+                                    Sjukdag 2 - Sjukdag 14
                                 </div>
                             }
-                        }
-                        <br />
-                    }
-                    if (Model.AdjustedNumberOfSickDays > 1)
-                    {
-                        @*<div>
-                                @if (i == 0)
+                            if (!day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays <= 14)
+                            {
+                                <div class="row form-group-subheading2">
+                                    @Model.Day2OfSicknessDateAsString - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                </div>
+                            }
+                            else if (!day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 14)
+                            {
+                                if (Model.ClaimCalculations[i].EndDate < Model.Day14OfSicknessDate)
                                 {
-                                    <div class="row form-group-subheading">
-                                        @Model.ClaimCalculations[i].StartDate.AddDays(1).ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                    <div class="row form-group-subheading2">
+                                        @Model.Day2OfSicknessDateAsString - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
                                     </div>
                                 }
                                 else
                                 {
-                                    <div class="row form-group-subheading">
+                                    <div class="row form-group-subheading2">
+                                        @Model.Day2OfSicknessDateAsString - @Model.Day14OfSicknessDateAsString
+                                    </div>
+                                }
+                            }
+                            else if (day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays <= 14)
+                            {
+                                <div class="row form-group-subheading2">
+                                    @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                </div>
+                            }
+                            else if (day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 14)
+                            {
+                                if (Model.ClaimCalculations[i].EndDate < Model.Day14OfSicknessDate)
+                                {
+                                    <div class="row form-group-subheading2">
                                         @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
                                     </div>
                                 }
-                            </div>
-                            <br />*@
+                                else
+                                {
+                                    <div class="row form-group-subheading2">
+                                        @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.Day14OfSicknessDateAsString
+                                    </div>
+                                }
+                            }
+                            if (!day2T14HeadingAlreadyShown)
+                            {
+                                day2T14HeadingAlreadyShown = true;
+                            }
+                        }
+                        <br />
                         <div class="row">
                             <div class="col col-md-4">
                                 <div class="row">
@@ -2206,28 +2242,44 @@
                             </div>
                         </div>
                         <br />
-                        if (Model.AdjustedNumberOfSickDays > 14)
-                        {
-                            if (Model.AdjustedNumberOfSickDays > 15)
-                            {
-                                <div class="row form-group-subheading">
-                                    Sjukdag 15 - Sjukdag @Model.AdjustedNumberOfSickDays: @Model.Day15OfSicknessDate - @Model.LastDayofSicknessDate
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="row form-group-subheading">
-                                    Sjukdag 15: @Model.Day15OfSicknessDate
-                                </div>
-                            }
-                        }
                         <br />
                     }
-
 
                     //Day 15 and beyond
                     if (Model.AdjustedNumberOfSickDays > 14)
                     {
+                        if (!day15PlusHeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 15)
+                        {
+                            <div class="row form-group-subheading">
+                                Sjukdag 15 - Sjukdag @Model.AdjustedNumberOfSickDays
+                            </div>
+                        }
+                        else if (!day15PlusHeadingAlreadyShown && Model.AdjustedNumberOfSickDays == 15)
+                        {
+                            <div class="row form-group-subheading">
+                                Sjukdag 15
+                            </div>
+                        }
+                        if (!day15PlusHeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 15)
+                        {
+                            <div class="row form-group-subheading2">
+                                @Model.Day15OfSicknessDateAsString - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                            </div>
+                        }
+                        else if (day15PlusHeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 15)
+                        {
+                            <div class="row form-group-subheading2">
+                                @Model.ClaimCalculations[i].StartDate.ToShortDateString() - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                            </div>
+                        }
+                        else if (!day15PlusHeadingAlreadyShown && Model.AdjustedNumberOfSickDays == 15)
+                        {
+                            <div class="row form-group-subheading2">
+                                @Model.Day15OfSicknessDateAsString
+                            </div>
+                            day15PlusHeadingAlreadyShown = true;
+                        }
+                        <br />
                         @*<div>
                                 @if (i == 0)
                                 {
@@ -2624,12 +2676,10 @@
                             </div>
                         </div>
                     }
-
-
                 }
-                @if (Model.NumberOfSickDays <= 14)
+
+                @if (Model.AdjustedNumberOfSickDays <= 14)
                 {
-                    <br />
                     <div class="row">
                         <div class="col col-md-4">
                             <div class="row">
@@ -2659,7 +2709,6 @@
                 else
                 {
                     //more than 14 sickdays
-                    <br />
                     <div class="row">
                         <div class="col col-md-4">
                             <div class="row">

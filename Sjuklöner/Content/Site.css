@@ -1740,6 +1740,11 @@ date-padding2 {
     padding-left: 5px;
 }
 
+.form-group-subheading2 {
+    font-size: 14px;
+    padding-left: 5px;
+}
+
 .form-group-div-frame {
     border: 1px solid;
     border-color: #c6bdbd;
