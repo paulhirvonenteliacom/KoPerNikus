@@ -461,12 +461,12 @@ namespace Sjuklöner.Controllers
             //Check that the last day of sickness is equal to or greater than the first day of sickness
             if (create1VM.FirstClaimDate.Date > create1VM.LastClaimDate.Date)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
+                ModelState.AddModelError("LastClaimDate", "Sjukperiodens sista dag får inte vara tidigare än sjukperiodens första dag.");
             }
             //Check that the number of calendar days in the claim is maximum 70. This takes the 5-day rule into consideration. 
             if ((create1VM.LastClaimDate.Date - create1VM.FirstClaimDate.Date).Days > 69)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Antalet kalenderdagar överstiger gränsen för vad som är möjligt.");
+                ModelState.AddModelError("LastClaimDate", "Antalet kalenderdagar överstiger gränsen för vad som är möjligt.");
             }
             //Check that the last day in the sickleave period is not older than one year
             //First check if one of the 3 previous years is a leap year
@@ -492,7 +492,7 @@ namespace Sjuklöner.Controllers
             }
             if ((DateTime.Now.Date - create1VM.LastClaimDate.Date).Days > numberOfDays)
             {
-                ModelState.AddModelError("LastDayOfSicknessDate", "Det går inte att ansöka om ersättning mer än tre år tillbaka i tiden.");
+                ModelState.AddModelError("LastClaimDate", "Det går inte att ansöka om ersättning mer än tre år tillbaka i tiden.");
             }
             //Check if the regular assistant has been selected
             if (create1VM.SelectedRegAssistantId == null)
@@ -512,7 +512,7 @@ namespace Sjuklöner.Controllers
             string regAssistantSSN = db.Assistants.Where(a => a.Id == create1VM.SelectedRegAssistantId).FirstOrDefault().AssistantSSN;
             if (OverlappingClaim(refNumber, create1VM.FirstClaimDate, create1VM.LastClaimDate, create1VM.CustomerSSN, regAssistantSSN))
             {
-                ModelState.AddModelError("FirstDayOfSicknessDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund och samma ordinarie assistent.");
+                ModelState.AddModelError("FirstClaimDate", "En eller flera sjukdagar överlappar med en existerande ansökan för samma kund och samma ordinarie assistent.");
             }
             //Check if no substitute was selected in the substitutes beyond the first mandatory substitute assistant
             for (int i = 0; i < create1VM.NumberOfSubAssistants - 1; i++)
@@ -1836,6 +1836,7 @@ namespace Sjuklöner.Controllers
             int sickDayCounter = 1;
             int qdIdx = 0;
             int day2Idx = 0;
+            int day7Idx = 0;
             int day14Idx = 0;
             int day15Idx = 0;
             int lastDayIdx = 0;
@@ -1889,6 +1890,9 @@ namespace Sjuklöner.Controllers
                             break;
                         case 2:
                             day2Idx = dayIdx;
+                            break;
+                        case 7:
+                            day7Idx = dayIdx;
                             break;
                         case 14:
                             day14Idx = dayIdx;
@@ -1947,6 +1951,11 @@ namespace Sjuklöner.Controllers
             {
                 claim.Day2OfSicknessDate = claimDays[day2Idx].Date;
                 claim.Day2OfSicknessDateAsString = claimDays[day2Idx].Date.ToShortDateString();
+            }
+            if (day7Idx != 0)
+            {
+                claim.Day7OfSicknessDate = claimDays[day7Idx].Date;
+                claim.Day7OfSicknessDateAsString = claimDays[day7Idx].Date.ToShortDateString();
             }
             if (day14Idx != 0)
             {
@@ -2070,11 +2079,24 @@ namespace Sjuklöner.Controllers
                         totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesQD);
                         totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceQD);
                     }
-                    //DAY 2 TO DAY 14
-                    totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
-                    totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
-                    totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
-                    totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
+
+                    if (claim.AdjustedNumberOfSickDays > 1)
+                    {
+                        //DAY 2 TO DAY 14
+                        totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD2T14);
+                        totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD2T14);
+                        totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD2T14);
+                        totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD2T14);
+                    }
+
+                    if (claim.AdjustedNumberOfSickDays > 14)
+                    {
+                        //DAY 15 and beyond
+                        //totalSickPayCalc += Convert.ToDecimal(claimCalculations[i].SickPayD15Plus); //Sickpay shall not be included from day 15 and beyond
+                        totalHolidayPayCalc += Convert.ToDecimal(claimCalculations[i].HolidayPayD15Plus);
+                        totalSocialFeesCalc += Convert.ToDecimal(claimCalculations[i].SocialFeesD15Plus);
+                        totalPensionAndInsuranceCalc += Convert.ToDecimal(claimCalculations[i].PensionAndInsuranceD15Plus);
+                    }
                 }
 
                 //Calculated values according to Collective Agreement should be shown in the View 
@@ -2082,7 +2104,14 @@ namespace Sjuklöner.Controllers
                 create3VM.HolidayPay = String.Format("{0:0.00}", totalHolidayPayCalc);
                 create3VM.SocialFees = String.Format("{0:0.00}", totalSocialFeesCalc);
                 create3VM.PensionAndInsurance = String.Format("{0:0.00}", totalPensionAndInsuranceCalc);
-                create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1T14);
+                if (claim.AdjustedNumberOfSickDays < 15)
+                {
+                    create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1T14);
+                }
+                else
+                {
+                    create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1Plus);
+                }
                 create3VM.ShowCalculatedValues = true;
             }
             else   // This should never happen ?
@@ -2264,8 +2293,9 @@ namespace Sjuklöner.Controllers
                 //if (!CheckExistingDocument(claim, "SickLeaveNotification", model.SickLeaveNotification))
                 //    ModelState.AddModelError("SickLeaveNotification", "Sjukfrånvaroanmälan saknas.");
 
-                if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfCalendarDays > 7)
-                    ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas.");
+                //The lack of a doctor's certificate should not prevent a claim from being submitted. It will however impact the claim sum calculation such that sickpay only will be approved for up to 7 days
+                //if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfCalendarDays > 7)
+                //    ModelState.AddModelError("DoctorsCertificate", "Läkarintyg saknas.");
 
                 if (!CheckExistingDocument(claim, "TimeReport", model.TimeReport))
                     ModelState.AddModelError("TimeReport", "Tidsredovisning för ordinarie assistent saknas.");
@@ -2350,7 +2380,12 @@ namespace Sjuklöner.Controllers
                             //claim.SickleaveNotificationCheck = false;
                             //claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
 
-                            if (claim.NumberOfCalendarDays > 7)
+                            if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
+                            {
+                                claim.MissingDoctorsCertificate = true;
+                            }
+
+                            if (claim.NumberOfSickDays > 7)
                             {
                                 claim.MedicalCertificateCheck = false;
                                 claim.MedicalCertificateCheckMsg = "Kontroll ej utförd";
@@ -2748,6 +2783,11 @@ namespace Sjuklöner.Controllers
                         recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas för sjukperioden.";
                     }
                 }
+                //The following if statement ensures that the number of paid sickdays is limited to 7 if the doctorss certificate is missing 
+                if (!partiallyCovered && claim.MissingDoctorsCertificate)
+                {
+                    CalculateModelSum(claim, claimDays, null, null);
+                }
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -3099,6 +3139,11 @@ namespace Sjuklöner.Controllers
                         recommendationVM.AssistanceCheckMsg = "Beslut om assistans saknas för sjukperioden.";
                     }
                 }
+                //The following if statement ensures that the number of paid sickdays is limited to 7 if the doctorss certificate is missing 
+                if (!partiallyCovered && claim.MissingDoctorsCertificate)
+                {
+                    CalculateModelSum(claim, claimDays, null, null);
+                }
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -3294,6 +3339,10 @@ namespace Sjuklöner.Controllers
             {
                 resultMsg += "Beslut om assistans saknas. ";
             }
+            if (claim.ModelSumReducedDueToMissingDoctorsCertificate)
+            {
+                resultMsg += "Ingen hänsyn tagen till sjukdagar från och med den 8:e sjukdagen eftersom läkarintyg inte bifogats. ";
+            }
             if (!claim.SalarySpecRegAssistantCheck)
             {
                 resultMsg += "Kontroll av ordinarie assistents lönespecifikation gav negativt resultat. ";
@@ -3308,7 +3357,7 @@ namespace Sjuklöner.Controllers
             //}
             if (!claim.MedicalCertificateCheck)
             {
-                resultMsg += "Kontroll av sjukintyg gav negativt resultat. ";
+                resultMsg += "Kontroll av läkarintyg gav negativt resultat. ";
             }
             if (!claim.FKRegAssistantCheck)
             {
@@ -3627,12 +3676,14 @@ namespace Sjuklöner.Controllers
                 claimDetailsOmbudVM.AdjustedNumberOfSickDays = claim.AdjustedNumberOfSickDays;
                 claimDetailsOmbudVM.QualifyingDayDate = claim.QualifyingDayDate;
                 claimDetailsOmbudVM.Day2OfSicknessDate = claim.Day2OfSicknessDate;
+                claimDetailsOmbudVM.Day7OfSicknessDate = claim.Day7OfSicknessDate;
                 claimDetailsOmbudVM.Day14OfSicknessDate = claim.Day14OfSicknessDate;
                 claimDetailsOmbudVM.Day15OfSicknessDate = claim.Day15OfSicknessDate;
                 claimDetailsOmbudVM.LastDayOfSicknessDate = claim.LastDayOfSicknessDate;
 
                 claimDetailsOmbudVM.QualifyingDayDateAsString = claim.QualifyingDayDateAsString;
                 claimDetailsOmbudVM.Day2OfSicknessDateAsString = claim.Day2OfSicknessDateAsString;
+                claimDetailsOmbudVM.Day7OfSicknessDateAsString = claim.Day7OfSicknessDateAsString;
                 claimDetailsOmbudVM.Day14OfSicknessDateAsString = claim.Day14OfSicknessDateAsString;
                 claimDetailsOmbudVM.Day15OfSicknessDateAsString = claim.Day15OfSicknessDateAsString;
                 claimDetailsOmbudVM.LastDayOfSicknessDateAsString = claim.LastDayOfSicknessDateAsString;
@@ -3648,6 +3699,11 @@ namespace Sjuklöner.Controllers
                     claimDetailsOmbudVM.ApprovedSum = claim.ApprovedSum;
                     claimDetailsOmbudVM.RejectedSum = claim.RejectedSum;
                     claimDetailsOmbudVM.DecisionMade = true;
+                }
+
+                if (claim.ClaimStatusId != 2)
+                {
+                    claimDetailsOmbudVM.ModelSumReducedDueToMissingDoctorsCertificate = claim.ModelSumReducedDueToMissingDoctorsCertificate;
                 }
             }
 
@@ -3724,6 +3780,10 @@ namespace Sjuklöner.Controllers
 
                         //Hours for qualifying day
                         claimCalc.HoursQD = claimCalculations[i].HoursQD;
+
+                        //Salary base for holiday pay
+                        claimCalc.SalaryBaseQD = claimCalculations[i].SalaryBaseQD;
+                        claimCalc.SalaryBaseCalcQD = claimCalculations[i].SalaryBaseCalcQD;
 
                         //Sickpay for qualifying day (only if more than 8,00 hours on that day)
                         claimCalc.SalaryQD = claimCalculations[i].SalaryQD;
@@ -3809,6 +3869,11 @@ namespace Sjuklöner.Controllers
                         claimCalc.OnCallSumD2T14 = claimCalculations[i].OnCallSumD2T14;
 
                         //Load the money by category for day 2 to day 14
+
+                        //Salary base for holiday pay for day 2 to 14
+                        claimCalc.SalaryBaseD2T14 = claimCalculations[i].SalaryBaseD2T14;
+                        claimCalc.SalaryBaseCalcD2T14 = claimCalculations[i].SalaryBaseCalcD2T14;
+
                         //Sickpay for day 2 to day 14
                         claimCalc.SalaryD2T14 = claimCalculations[i].SalaryD2T14;
                         claimCalc.SalaryCalcD2T14 = claimCalculations[i].SalaryCalcD2T14;
@@ -3893,6 +3958,10 @@ namespace Sjuklöner.Controllers
                         claimCalc.OnCallSumD15Plus = claimCalculations[i].OnCallSumD15Plus;
 
                         //Load the money by category for day 15 and beyond
+                        //Salary base for holiday pay for day 15 and beyond
+                        claimCalc.SalaryBaseD15Plus = claimCalculations[i].SalaryBaseD15Plus;
+                        claimCalc.SalaryBaseCalcD15Plus = claimCalculations[i].SalaryBaseCalcD15Plus;
+
                         //Sickpay for day 15 and beyond
                         claimCalc.SalaryD15Plus = claimCalculations[i].SalaryD15Plus;
                         claimCalc.SalaryCalcD15Plus = claimCalculations[i].SalaryCalcD15Plus;
@@ -3934,8 +4003,8 @@ namespace Sjuklöner.Controllers
                         claimCalc.OnCallSumPayCalcD15Plus = claimCalculations[i].OnCallSumPayCalcD15Plus;
 
                         //Sick pay for day 15 and beyond
-                        //claimCalc.SickPayD15Plus = claimCalculations[i].SickPayD15Plus;
-                        //claimCalc.SickPayCalcD15Plus = claimCalculations[i].SickPayCalcD15Plus;
+                        claimCalc.SickPayD15Plus = claimCalculations[i].SickPayD15Plus;
+                        claimCalc.SickPayCalcD15Plus = claimCalculations[i].SickPayCalcD15Plus;
 
                         //Social fees for day 15 and beyond
                         claimCalc.SocialFeesD15Plus = claimCalculations[i].SocialFeesD15Plus;
@@ -3962,7 +4031,7 @@ namespace Sjuklöner.Controllers
                 }
                 else
                 {
-                    //Total sum for day 15 and beyond
+                    //Total sum for day 1 and beyond
                     claimDetailsOmbudVM.TotalCostD1Plus = claim.TotalCostD1Plus;
                     claimDetailsOmbudVM.TotalCostCalcD1Plus = claim.TotalCostCalcD1Plus;
                 }
@@ -4726,9 +4795,35 @@ namespace Sjuklöner.Controllers
 
             int qdIdx = 0; //index of the qualifying day
             int day2Idx = 0;
+            int day7Idx = 0; //This is the index of the 7th sickday and it is used for adjusting the number of sickdays to 7 in the calculation if there is no doctor's certificate and the number of sickdays is greater than 7.
             int day14Idx = 0;
             int day15Idx = 0;
             int lastDayIdx = 0;
+
+            //This if statement will force the execution inside the next if-statement if the only reason to adjust the number of sickdays is that no doctor's certificate was attached and the claim contains more
+            //than 7 sickdays.
+            int idx2 = 0;
+            bool day7Found = false;
+            if ((startIndex == null && numberOfDaysToRemove == null) && (claim.MissingDoctorsCertificate && adjustedNumberOfSickdays > 7 && claim.ClaimStatusId != 2))
+            {
+                //Figure out which day index corresponds to the 7:th sick day. StartIndex shall be set to that index + 1 and numberOfDaysToRemove shall be calculated
+                while (!day7Found && idx2 < claimDays.Count())
+                {
+                    if (claimDays[idx2].SickDayNumber == 7)
+                    {
+                        day7Found = true;
+                    }
+                    idx2++;
+                }
+                if (day7Found)
+                {
+                    startIndex = idx2;
+                    numberOfDaysToRemove = claimDays.Count() - startIndex;
+                }
+                claim.ModelSumReducedDueToMissingDoctorsCertificate = true;
+                db.Entry(claim).State = EntityState.Modified;
+                db.SaveChanges();
+            }
 
             if (startIndex != null && numberOfDaysToRemove != null)
             //This is only true if the decision about personal assistance only covers a part of the sickleave period. In that case not all claimdays shall be included in the model sum calculation.
@@ -4749,8 +4844,6 @@ namespace Sjuklöner.Controllers
                 //Update SickDayNumber in claimdays. Very likely the previous numbering is not valid after removing days the sickleave period.
                 //var adjustedClaimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
                 //claim.NumberOfCalendarDays = adjustedClaimDays.Count(); //Is this line needed/necessary?
-                db.Entry(claim).State = EntityState.Modified;
-
 
                 if (startIndex == 0)
                 {
@@ -4786,6 +4879,9 @@ namespace Sjuklöner.Controllers
                             case 2:
                                 day2Idx = dayIdx;
                                 break;
+                            case 7:
+                                day7Idx = dayIdx;
+                                break;
                             case 14:
                                 day14Idx = dayIdx;
                                 break;
@@ -4800,8 +4896,21 @@ namespace Sjuklöner.Controllers
                         sickDayCounter++;
                         db.Entry(claimDays[i]).State = EntityState.Modified;
                     }
+                    dayIdx++;
                 }
-                adjustedNumberOfSickdays = lastDayIdx;
+
+                adjustedNumberOfSickdays = sickDayCounter - 1;
+
+                //Discard sick day 8 and beyond from the modelsum calculation if no doctor's certificate has been attached to the claim. Adjust properties and indexes accordingly
+                if (claim.ModelSumReducedDueToMissingDoctorsCertificate && claim.ClaimStatusId != 2)
+                {
+                    adjustedNumberOfSickdays = 7;
+                    lastDayIdx = day7Idx;
+                    day14Idx = 0;
+                    day15Idx = 0;
+                    adjustedStopCalendarDayIdx = day7Idx;
+                    adjustedLastClaimDate = claimDays[day7Idx].Date;
+                }
 
                 //Update indexes for sickdays in claim record
                 claim.QualifyingDayDate = claimDays[qdIdx].Date;
@@ -4811,6 +4920,11 @@ namespace Sjuklöner.Controllers
                 {
                     claim.Day2OfSicknessDate = claimDays[day2Idx].Date;
                     claim.Day2OfSicknessDateAsString = claimDays[day2Idx].Date.ToShortDateString();
+                }
+                if (day7Idx != 0)
+                {
+                    claim.Day7OfSicknessDate = claimDays[day7Idx].Date;
+                    claim.Day7OfSicknessDateAsString = claimDays[day7Idx].Date.ToShortDateString();
                 }
                 if (day14Idx != 0)
                 {
@@ -4859,10 +4973,10 @@ namespace Sjuklöner.Controllers
                 int infoIdx;
                 int infoUsedIdx;
                 int claimDayIdx = 0;
-                claimDays.OrderBy(c => c.CalendarDayNumber); //Should this be adjustedClaimDays?
+                claimDays.OrderBy(c => c.CalendarDayNumber);
                 do
                 {
-                    claimDayDate = adjustedFirstClaimDate.AddDays(claimDays[claimDayIdx].CalendarDayNumber - 1 - calendarDayNumberOffset); //Should this be adjustedClaimDays?
+                    claimDayDate = adjustedFirstClaimDate.AddDays(claimDays[claimDayIdx].CalendarDayNumber - 1 - calendarDayNumberOffset);
                     infoFound = false;
                     infoIdx = 0;
                     do
@@ -5095,12 +5209,16 @@ namespace Sjuklöner.Controllers
                     }
 
                     //Sickpay for qualifying day
+                    claimCalculation.SalaryBaseQD = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString)));
+                    claimCalculation.SalaryBaseCalcQD = claimCalculation.HoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
+
+                    //Sickpay for qualifying day
                     claimCalculation.SalaryQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidHoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.SalaryCalcQD = claim.SickPayRateAsString + " % x " + claimCalculation.PaidHoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
 
                     //Holiday pay for qualifying day
-                    claimCalculation.HolidayPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursQD) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
-                    claimCalculation.HolidayPayCalcQD = claim.HolidayPayRateAsString + " % x " + claimCalculation.HoursQD + " timmar x " + claim.HourlySalaryAsString + " Kr";
+                    claimCalculation.HolidayPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryBaseQD) / 100));
+                    claimCalculation.HolidayPayCalcQD = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryBaseQD + " Kr";
 
                     //Unsocial evening pay for qualifying day
                     claimCalculation.UnsocialEveningPayQD = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.PaidUnsocialEveningHoursQD) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
@@ -5235,13 +5353,17 @@ namespace Sjuklöner.Controllers
                     //Code maybe should be added here to calculate the number of hours for the SI assistant..
 
                     //Calculate the money by category for day 2 to day 14
+                    //Salary base for day 2 to day 14
+                    claimCalculation.SalaryBaseD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD2T14) * Convert.ToDecimal(claim.HourlySalaryAsString)));
+                    claimCalculation.SalaryBaseCalcD2T14 = claimCalculation.HoursD2T14 + " timmar x " + claim.HourlySalaryAsString + " Kr";
+
                     //Sickpay for day 2 to day 14
                     claimCalculation.SalaryD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursD2T14) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.SalaryCalcD2T14 = claim.SickPayRateAsString + " % x " + claimCalculation.HoursD2T14 + " timmar x " + claim.HourlySalaryAsString + " Kr";
 
                     //Holiday pay for day 2 to day 14
-                    claimCalculation.HolidayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryD2T14) / 100));
-                    claimCalculation.HolidayPayCalcD2T14 = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryD2T14 + " Kr";
+                    claimCalculation.HolidayPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryBaseD2T14) / 100));
+                    claimCalculation.HolidayPayCalcD2T14 = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryBaseD2T14 + " Kr";
 
                     //Unsocial evening pay for day 2 to day 14
                     claimCalculation.UnsocialEveningPayD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
@@ -5342,13 +5464,17 @@ namespace Sjuklöner.Controllers
                     //Code maybe should be added here to calculate the number of hours for the SI assistant..
 
                     //Calculate the money by category for day 15 and beyond
+                    //Salary base for holiday pay for day 15 and beyond
+                    claimCalculation.SalaryBaseD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD15Plus) * Convert.ToDecimal(claim.HourlySalaryAsString)));
+                    claimCalculation.SalaryBaseCalcD15Plus = claimCalculation.HoursD15Plus + " timmar x " + claim.HourlySalaryAsString + " Kr";
+
                     //Sickpay for day 15 and beyond
                     claimCalculation.SalaryD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.HoursD15Plus) * Convert.ToDecimal(claim.HourlySalaryAsString) / 100));
                     claimCalculation.SalaryCalcD15Plus = claim.SickPayRateAsString + " % x " + claimCalculation.HoursD15Plus + " timmar x " + claim.HourlySalaryAsString + " Kr";
 
                     //Holiday pay for day 15 and beyond
-                    claimCalculation.HolidayPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryD15Plus) / 100));
-                    claimCalculation.HolidayPayCalcD15Plus = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryD15Plus + " Kr";
+                    claimCalculation.HolidayPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.HolidayPayRateAsString) * Convert.ToDecimal(claimCalculation.SalaryBaseD15Plus) / 100));
+                    claimCalculation.HolidayPayCalcD15Plus = claim.HolidayPayRateAsString + " % x " + claimCalculation.SalaryBaseD15Plus + " Kr";
 
                     //Unsocial evening pay for day 15 and beyond
                     claimCalculation.UnsocialEveningPayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claim.SickPayRateAsString) * Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) * Convert.ToDecimal(claimCalculation.PerHourUnsocialEveningAsString) / 100));
@@ -5434,7 +5560,7 @@ namespace Sjuklöner.Controllers
                 else //more than 14 sickdays in the claim
                 {
                     //Total sum for all days
-                    claimCalculation.TotalCostD1Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.CostQD) + Convert.ToDecimal(claimCalculation.CostD2T14) + +Convert.ToDecimal(claimCalculation.CostD15Plus)));
+                    claimCalculation.TotalCostD1Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.CostQD) + Convert.ToDecimal(claimCalculation.CostD2T14) + Convert.ToDecimal(claimCalculation.CostD15Plus)));
                     claimCalculation.TotalCostCalcD1Plus = claimCalculation.CostQD + " Kr + " + claimCalculation.CostD2T14 + " Kr + " + claimCalculation.CostD15Plus;
 
                     db.ClaimCalculations.Add(claimCalculation);
