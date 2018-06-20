@@ -3243,6 +3243,17 @@ namespace Sjuklöner.Controllers
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
 
+                string[] subAssistantBools = claim.FKSubAssistantCheckBoolConcat.Split('£');
+                string[] subAssistantCheckMsgs = claim.FKSubAssistantCheckMsgConcat.Split('£');
+                for (int idx = 0; idx < subAssistantBools.Length; idx++)
+                {
+                    claim.TransferToProcapitaString = claim.TransferToProcapitaString + "+" + subAssistantBools[idx];
+                }
+                for (int idx = 0; idx < subAssistantBools.Length; idx++)
+                {
+                    claim.TransferToProcapitaString = claim.TransferToProcapitaString + "+" + subAssistantCheckMsgs[idx];
+                }
+
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
 
@@ -4364,6 +4375,17 @@ namespace Sjuklöner.Controllers
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
                     claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+
+                string[] subAssistantBools = claim.FKSubAssistantCheckBoolConcat.Split('£');
+                string[] subAssistantCheckMsgs = claim.FKSubAssistantCheckMsgConcat.Split('£');
+                for (int idx = 0; idx < subAssistantBools.Length; idx++)
+                {
+                    claim.TransferToProcapitaString = claim.TransferToProcapitaString + "+" + subAssistantBools[idx];
+                }
+                for (int idx = 0; idx < subAssistantBools.Length; idx++)
+                {
+                    claim.TransferToProcapitaString = claim.TransferToProcapitaString + "+" + subAssistantCheckMsgs[idx];
+                }
 
                 claim.ClaimStatusId = 7;      // Transfer to Procapita started
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
