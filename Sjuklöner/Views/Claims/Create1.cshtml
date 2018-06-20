@@ -243,10 +243,10 @@
 
         <div class="row row-validation-20 line-height-07">
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.CustomerName, null, new { @class = "text-danger font-size-11" })
             </div>
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11", id = "regular-assistant-val" })
+                @Html.ValidationMessageFor(model => model.RegularAssistants, null, new { @class = "text-danger font-size-11", id = "regular-assistant-val" })
             </div>
         </div>
 
@@ -270,10 +270,10 @@
 
         <div class="row row-validation-20 line-height-07">
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.CustomerSSN, "", new { @class = "text-danger font-size-11", id = "customer-SSN-val" })
+                @Html.ValidationMessageFor(model => model.CustomerSSN, null, new { @class = "text-danger font-size-11", id = "customer-SSN-val" })
             </div>
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.FirstClaimDate, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.FirstClaimDate, null, new { @class = "text-danger font-size-11", id = "first-claim-date-val" })
             </div>
         </div>
 
@@ -297,10 +297,10 @@
 
         <div class="row row-validation-20 line-height-07">
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.CustomerPhoneNumber, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.CustomerPhoneNumber, null, new { @class = "text-danger font-size-11" })
             </div>
             <div class="col col-md-6">
-                @Html.ValidationMessageFor(model => model.LastClaimDate, "", new { @class = "text-danger font-size-11" })
+                @Html.ValidationMessageFor(model => model.LastClaimDate, null, new { @class = "text-danger font-size-11", id = "last-claim-date-val" })
             </div>
         </div>
 
@@ -449,6 +449,8 @@
     //this function checks if there are any validation errors on the page
     function checkValidationErrors() {
         var validationErrorFound = false;
+        var firstClaimDateVal = document.getElementById('first-claim-date-val');
+        var lastClaimDateVal = document.getElementById('last-claim-date-val');
         var customerSSNVal = document.getElementById('customer-SSN-val');
         var regAssistantVal = document.getElementById('regular-assistant-val');
         var firstSubVal = document.getElementById('first-subassistant-val');
@@ -456,7 +458,7 @@
         var assistantddlcounter = document.getElementById('ddl-counter');
         var subassddlcounterInt = parseInt(assistantddlcounter.value);
 
-        if (customerSSNVal.innerHTML != "" || regAssistantVal.innerHTML != "" || firstSubVal.innerHTML != "") {
+        if (customerSSNVal.innerHTML != "" || regAssistantVal.innerHTML != "" || firstSubVal.innerHTML != "" || firstClaimDateVal.innerHTML != "" || lastClaimDateVal.innerHTML != "") {
             validationErrorFound = true;
         }
 

@@ -315,7 +315,6 @@ namespace Sjuklöner.Controllers
                 }
                 else
                 {
-                    //Need to remove the substitute assistant??
                     numberOfRemovedSubAssistants++;
                 }
             }
@@ -4929,14 +4928,6 @@ namespace Sjuklöner.Controllers
                 db.ClaimCalculations.RemoveRange(prevClaimCalculations);
             }
 
-            //Reset number of hours in claim record. If not reset, the same hours will be included several times.
-            claim.NumberOfAbsenceHours = (decimal)0.00;
-            claim.NumberOfOrdinaryHours = (decimal)0.00;
-            claim.NumberOfUnsocialHours = (decimal)0.00;
-            claim.NumberOfOnCallHours = (decimal)0.00;
-            db.Entry(claim).State = EntityState.Modified;
-            db.SaveChanges();
-
             //Assign a CollAgreementInfo id to each claim day. This is required in order for the correct hourly pay to be used in the calculations.
             var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == claim.CareCompany.SelectedCollectiveAgreementId).OrderBy(c => c.StartDate).ToList();
             List<int> usedCollectiveAgreementInfoIds = new List<int>(); //This list is used for figuring out which collective agreement infos have been used.
@@ -5138,12 +5129,6 @@ namespace Sjuklöner.Controllers
                     claimCalculation.UnsocialWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialWeekend));
                     claimCalculation.UnsocialGrandWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialGrandWeekend));
 
-                    //These numbers go to the assistant's part of the view
-                    claim.NumberOfAbsenceHours = Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimDays[qdIdx].OnCallDay) + Convert.ToDecimal(claimDays[qdIdx].OnCallNight);
-                    claim.NumberOfOrdinaryHours = Convert.ToDecimal(claimCalculation.HoursQD);
-                    claim.NumberOfUnsocialHours = Convert.ToDecimal(claimDays[qdIdx].UnsocialEvening) + Convert.ToDecimal(claimDays[qdIdx].UnsocialNight) + Convert.ToDecimal(claimDays[qdIdx].UnsocialWeekend) + Convert.ToDecimal(claimDays[qdIdx].UnsocialGrandWeekend);
-                    claim.NumberOfOnCallHours = Convert.ToDecimal(claimDays[qdIdx].OnCallDay) + Convert.ToDecimal(claimDays[qdIdx].OnCallNight);
-
                     //Calculate number of hours exceeding 8. Only those hours shall be paid.
                     if (Convert.ToDecimal(claimCalculation.HoursQD) > 8)
                     {
@@ -5323,13 +5308,6 @@ namespace Sjuklöner.Controllers
                     claimCalculation.UnsocialSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14)));
                     claimCalculation.OnCallSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14)));
 
-                    //These numbers go to the assistant's part of the view
-                    claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursD2T14) + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
-                    claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursD2T14);
-                    claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14);
-                    claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
-                    //Code maybe should be added here to calculate the number of hours for the SI assistant..
-
                     //Calculate the money by category for day 2 to day 14
                     //Salary base for day 2 to day 14
                     claimCalculation.SalaryBaseD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD2T14) * Convert.ToDecimal(claim.HourlySalaryAsString)));
@@ -5394,52 +5372,12 @@ namespace Sjuklöner.Controllers
                     claimCalculation.CostCalcD2T14 = claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.SocialFeesD2T14 + " Kr + " + claimCalculation.PensionAndInsuranceD2T14 + " Kr";
                 }
 
-                //new line for day 15 and beyond
-                //prevSickDayIdx = prevSickDayIdx + applicableSickDays;
-
+                //day 15 and beyond
                 if (day15PlusInThisCollAgreement)
                 {
-                    //new code for day 15 and beyond
-                    //DAY 15 and plus
-                    //claimCalculation.HoursD15Plus = "0,00";
-                    //claimCalculation.UnsocialEveningD15Plus = "0,00";
-                    //claimCalculation.UnsocialNightD15Plus = "0,00";
-                    //claimCalculation.UnsocialWeekendD15Plus = "0,00";
-                    //claimCalculation.UnsocialGrandWeekendD15Plus = "0,00";
-                    //claimCalculation.UnsocialSumD15Plus = "0,00";
-                    //claimCalculation.OnCallDayD15Plus = "0,00";
-                    //claimCalculation.OnCallNightD15Plus = "0,00";
-                    //claimCalculation.OnCallSumD15Plus = "0,00";
-
-                    ////Sum up hours by category for day 15 and beyond
-                    //startIdx = prevSickDayIdx;
-                    //stopIdx = startIdx + applicableSickDays;
-
-                    //for (int i = startIdx; i < stopIdx; i++)
-                    //{
-                    //    if (!claimDays[i].Well && claimDays[i].SickDayNumber > 14) //new if-statement for 5-day rule
-                    //    {
-                    //        claimCalculation.HoursD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimDays[i].Hours)));
-
-                    //        claimCalculation.UnsocialEveningD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialEvening)));
-                    //        claimCalculation.UnsocialNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialNight)));
-                    //        claimCalculation.UnsocialWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialWeekend)));
-                    //        claimCalculation.UnsocialGrandWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend)));
-
-                    //        claimCalculation.OnCallDayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimDays[i].OnCallDay)));
-                    //        claimCalculation.OnCallNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallNightD15Plus) + Convert.ToDecimal(claimDays[i].OnCallNight)));
-                    //    }
-                    //}
 
                     claimCalculation.UnsocialSumD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus)));
                     claimCalculation.OnCallSumD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus)));
-
-                    //These numbers go to the assistant's part of the view
-                    claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus);
-                    claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursD15Plus);
-                    claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus);
-                    claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus);
-                    //Code maybe should be added here to calculate the number of hours for the SI assistant..
 
                     //Calculate the money by category for day 15 and beyond
                     //Salary base for holiday pay for day 15 and beyond
