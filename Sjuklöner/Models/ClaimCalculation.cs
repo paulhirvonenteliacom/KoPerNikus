@@ -179,6 +179,14 @@ namespace Sjuklöner.Models
 
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryBaseQD { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryBaseCalcQD { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
         public string HolidayPayQD { get; set; }
 
         [Display(Name = "Semesterersättning (Kr):")]
@@ -293,6 +301,14 @@ namespace Sjuklöner.Models
         [Display(Name = "Sjuklön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string SickPayCalcD2T14 { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryBaseD2T14 { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryBaseCalcD2T14 { get; set; }
 
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
@@ -443,6 +459,14 @@ namespace Sjuklöner.Models
         [Display(Name = "Sjuklön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]
         public string SickPayCalcD15Plus { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryBaseD15Plus { get; set; }
+
+        [Display(Name = "Semesterersättning (Kr):")]
+        [DisplayFormat(DataFormatString = "{0:f2}")]
+        public string SalaryBaseCalcD15Plus { get; set; }
 
         [Display(Name = "Semesterersättning (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

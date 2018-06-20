@@ -231,6 +231,12 @@ namespace Sjuklöner.Models
         //A qualifying day is not applicable if a new sickleaveperiod occurs within 5 days of a previous sickleaveperiod 
         public bool QualifyingDayApplicable { get; set; }
 
+        //This property is true if tha claim is for more than 7 sickdays and the doctors certificate is missing
+        public bool MissingDoctorsCertificate { get; set; }
+
+        //This property is true if the model sum is reduced due to a missing doctors certificate
+        public bool ModelSumReducedDueToMissingDoctorsCertificate { get; set; }
+
         //[Required]
         [Display(Name = "Vikarierande assistents personnummer")]
         //[RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^ 0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
@@ -261,6 +267,9 @@ namespace Sjuklöner.Models
         //Date of sickday number 2
         public DateTime? Day2OfSicknessDate { get; set; }
 
+        //Date of sickday number 7
+        public DateTime? Day7OfSicknessDate { get; set; }
+
         //Date of sickday number 14
         public DateTime? Day14OfSicknessDate { get; set; }
 
@@ -275,6 +284,9 @@ namespace Sjuklöner.Models
 
         //Date of sickday number 2
         public string Day2OfSicknessDateAsString { get; set; }
+
+        //Date of sickday number 7
+        public string Day7OfSicknessDateAsString { get; set; }
 
         //Date of sickday number 14
         public string Day14OfSicknessDateAsString { get; set; }

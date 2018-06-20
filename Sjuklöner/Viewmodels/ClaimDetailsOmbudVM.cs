@@ -124,6 +124,9 @@ namespace Sjuklöner.Viewmodels
         //Date of sickday number 2
         public DateTime? Day2OfSicknessDate { get; set; }
 
+        //Date of sickday number 7
+        public DateTime? Day7OfSicknessDate { get; set; }
+
         //Date of sickday number 14
         public DateTime? Day14OfSicknessDate { get; set; }
 
@@ -139,6 +142,9 @@ namespace Sjuklöner.Viewmodels
         //Date of sickday number 2
         public string Day2OfSicknessDateAsString { get; set; }
 
+        //Date of sickday number 7
+        public string Day7OfSicknessDateAsString { get; set; }
+
         //Date of sickday number 14
         public string Day14OfSicknessDateAsString { get; set; }
 
@@ -147,6 +153,9 @@ namespace Sjuklöner.Viewmodels
 
         //Date of last sickday number in the claim
         public string LastDayOfSicknessDateAsString { get; set; }
+
+        //This property is true if the model sum is reduced due to a missing doctors certificate
+        public bool ModelSumReducedDueToMissingDoctorsCertificate { get; set; }
 
         [Display(Name = "Lön, tim- eller månadslön (Kr):")]
         [DisplayFormat(DataFormatString = "{0:f2}")]

@@ -1405,6 +1405,7 @@
                             </div>
                         </div>
                     </div>
+                    <hr class="hr-low-margin" />
                     <br />
                     <br />
 
@@ -1424,6 +1425,27 @@
                         <br />
 
                         <div class="row">
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
+                                        Underlag för semesterersättning:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryBaseCalcQD)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryBaseQD) Kr
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
@@ -1657,6 +1679,7 @@
                             <div class="col col-md-2 text-right bold-18">
                                 @Html.DisplayFor(m => m.ClaimCalculations[i].SickPayQD) Kr
                             </div>
+
                             <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
@@ -1797,6 +1820,7 @@
                                 </div>
                             </div>
                         </div>
+                        <hr class="hr-low-margin" />
                         <br />
                         <br />
 
@@ -1863,6 +1887,26 @@
                         }
                         <br />
                         <div class="row">
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
+                                        Underlag för semesterersättning:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryBaseCalcD2T14)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryBaseD2T14) Kr
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
@@ -2168,7 +2212,7 @@
                                     <div class="col col-md-4">
                                         <div class="row">
                                             <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, sjukdag 2 till sjukdag @Model.AdjustedNumberOfSickDays:
+                                                Summa, sjukdag 2 - sjukdag @Model.AdjustedNumberOfSickDays:
                                             </div>
                                         </div>
                                     </div>
@@ -2178,7 +2222,7 @@
                                     <div class="col col-md-4">
                                         <div class="row">
                                             <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, sjukdag 2 till sjukdag 14:
+                                                Summa, sjukdag 2 - sjukdag 14:
                                             </div>
                                         </div>
                                     </div>
@@ -2241,6 +2285,14 @@
                                 </div>
                             </div>
                         </div>
+                        <hr class="hr-low-margin" />
+                        if (Model.ModelSumReducedDueToMissingDoctorsCertificate)
+                        {
+                            <br />
+                            <div class="sickday-info">
+                                Antalet sjukdagar som beräkningen tagit hänsyn till har reducerats till 7 eftersom läkarintyg saknas.
+                            </div>
+                        }
                         <br />
                         <br />
                     }
@@ -2279,7 +2331,6 @@
                             </div>
                             day15PlusHeadingAlreadyShown = true;
                         }
-                        <br />
                         @*<div>
                                 @if (i == 0)
                                 {
@@ -2527,6 +2578,47 @@
                             <div class="col col-md-4">
                                 <div class="row">
                                     <div class="col col-md-12 control-label-left-small-padding">
+                                        Underlag för semesterersättning:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryBaseCalcD15Plus)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryBaseD15Plus) Kr
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
+                                        Lön, 80% på ordinarie timlön:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="row">
+                                    <div class="col col-md-8">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryCalcD15Plus)
+                                    </div>
+                                    <div class="col col-md-1">
+                                        =
+                                    </div>
+                                    <div class="col col-md-3 text-right">
+                                        @Html.DisplayFor(m => m.ClaimCalculations[i].SalaryD15Plus) Kr
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="col col-md-4">
+                                <div class="row">
+                                    <div class="col col-md-12 control-label-left-small-padding">
                                         Semesterersättning:
                                     </div>
                                 </div>
@@ -2602,7 +2694,7 @@
                                     <div class="col col-md-4">
                                         <div class="row">
                                             <div class="col col-md-12 control-label-left-small-padding bold-18">
-                                                Summa, sjukdag 15 till sjukdag @Model.AdjustedNumberOfSickDays:
+                                                Summa, sjukdag 15 - sjukdag @Model.AdjustedNumberOfSickDays:
                                             </div>
                                         </div>
                                     </div>
@@ -2675,6 +2767,9 @@
                                 </div>
                             </div>
                         </div>
+                        <hr class="hr-low-margin" />
+                        <br />
+                        <br />
                     }
                 }
 
@@ -2684,7 +2779,7 @@
                         <div class="col col-md-4">
                             <div class="row">
                                 <div class="col col-md-12 control-label-left-small-padding form-group-subheading">
-                                    Summa sjukperioden:
+                                    Summa hela sjukperioden:
                                 </div>
                             </div>
                         </div>
@@ -2713,7 +2808,7 @@
                         <div class="col col-md-4">
                             <div class="row">
                                 <div class="col col-md-12 control-label-left-small-padding form-group-subheading">
-                                    Summa sjukperioden:
+                                    Summa hela sjukperioden:
                                 </div>
                             </div>
                         </div>
@@ -2734,11 +2829,12 @@
                             @Html.DisplayFor(m => m.TotalCostD1Plus) Kr
                         </div>
                     </div>
+                    <br />
+                    <br />
                 }
+
                 @if (Model.DefaultCollectiveAgreement)
                 {
-                    <br />
-                    <br />
                     <div class="row display-padding5">
                         Defaultvärden för OB- och jourersättningar har använts i beräkningen.@Html.ActionLink("Klicka här ", "Index", "CollectiveAgreements", null, new { @class = "breadcrumb-padding" })för att lägga in aktuella ersättningsbelopp enligt kollektivavtal.
                     </div>

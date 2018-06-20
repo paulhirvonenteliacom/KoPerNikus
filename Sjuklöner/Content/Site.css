@@ -1745,6 +1745,12 @@ date-padding2 {
     padding-left: 5px;
 }
 
+.sickday-info {
+    font-size: 14px;
+    margin-left: -55px;
+    padding-left: 0;
+}
+
 .form-group-div-frame {
     border: 1px solid;
     border-color: #c6bdbd;
@@ -2260,6 +2266,14 @@ a:hover, a:focus {
 
 .highlight-red {
     color: #d2322d;
+}
+
+#approvedsum {
+    padding-top: 1px;
+}
+
+#rejectedsum {
+    padding-top: 1px;
 }
 
 .frame-procapita-login {
