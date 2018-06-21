@@ -108,7 +108,7 @@
                 <div class="row row-height-14-3 line-height-08 margin-bottom-small4">
                     <div class="col col-md-2">
                     </div>
-                    <div class="col col-md-6 no-col-padding">
+                    <div class="col col-md-10 no-col-padding">
                         <div class="reg-assistant-val text-danger font-size-11">
                         </div>
                     </div>
@@ -191,11 +191,11 @@
                     <div class="row line-height-10">
                         @*<div class="schedule-date date-left-padding col col-md-2">*@
                         <div class="schedule-date col col-md-2">
-                            <div class="date-left-padding3 ">
-                                @Html.EditorFor(model => model.ScheduleRowList[i].Well)
+                            <div class="date-left-padding3">
+                                @Html.EditorFor(model => model.ScheduleRowList[i].Well, new { htmlAttributes = new { @class = "well-checkbox" } })
                             </div>
                             <div class="date-padding2">
-                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
+                                @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString, new { htmlAttributes = new { @class = "calendardate" } })
                                 @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
                             </div>
                         </div>
@@ -587,6 +587,9 @@
         var oncallNight = document.getElementsByClassName("oncall-night");
         var numberOfCalendarDays = numberOfHours.length;
 
+        var wellCheckbox = document.getElementsByClassName('well-checkbox');
+        var calendarDate = document.getElementsByClassName('calendardate');
+
         var dayIdx = 0;
         var gapCounter = 0;
 
@@ -597,7 +600,7 @@
                 (unsocialWeekend[dayIdx].value == "" || parseFloat(unsocialWeekend[dayIdx].value.replace(',', '.')) == 0) &&
                 (unsocialGrandWeekend[dayIdx].value == "" || parseFloat(unsocialGrandWeekend[dayIdx].value.replace(',', '.')) == 0) &&
                 (oncallDay[dayIdx].value == "" || parseFloat(oncallDay[dayIdx].value.replace(',', '.')) == 0) &&
-                (oncallNight[dayIdx].value == "" || parseFloat(oncallNight[dayIdx].value.replace(',', '.')) == 0)) {
+                (oncallNight[dayIdx].value == "" || parseFloat(oncallNight[dayIdx].value.replace(',', '.')) == 0) || wellCheckbox[dayIdx].nextElementSibling.value == true) {
                 gapCounter++;
             }
             else {
@@ -607,8 +610,9 @@
         }
 
         var regassistantval = document.getElementsByClassName('reg-assistant-val');
-        if (gapCounter == 5) {
-            regassistantval[0].innerHTML = "Det finns minst 5 på varandra följande dagar utan timmar. En separat ansökan måste göras för en ny sjukperiod.";
+        if (gapCounter == 5 && dayIdx < numberOfCalendarDays) { //No validation error displayed if the 5 day gap is at the very end of the claims calendardays
+            var date = document.getElementsByClassName('date-padding2')[dayIdx].innerText.trim();
+            regassistantval[0].innerHTML = "En ny sjukperiod börjar efter 5 dagar i följd som frisk eller arbetsfria dagar som sjuk. En separat ansökan måste därför skickas in fr. o. m. " + date + ".";
             return false;
         }
         else {

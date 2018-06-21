@@ -71,155 +71,6 @@
     </div>
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger font-size-11" })
-
-    @*<div class="row">
-        </div>
-        <div class="no-col-padding col col-md-6 display-inline-block">
-            <div class="row">
-                <div class="col col-md-6">
-                    @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-                <div class="col col-md-6">
-                    @Html.LabelFor(model => model.RegularAssistants, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-            </div>
-
-            <div class="row row-height-36">
-                <div class="col col-md-6">
-                    @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-                <div class="col col-md-6">
-                    @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control", onchange = "select_regular_assistant()" })
-                </div>
-            </div>
-
-            <div class="row row-validation-20 line-height-07">
-                <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger font-size-11" })
-                </div>
-                <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.RegularAssistants, "", new { @class = "text-danger font-size-11", id = "regular-assistant-val" })
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-md-6">
-                    @Html.LabelFor(model => model.CustomerSSN, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-                <div class="col col-md-6">
-                    @Html.LabelFor(model => model.FirstDayOfSicknessDate, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-            </div>
-
-            <div class="row row-height-36">
-                <div class="col col-md-6">
-                    @Html.EditorFor(model => model.CustomerSSN, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-                <div class="col col-md-6">
-                    @Html.EditorFor(model => model.FirstDayOfSicknessDate, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-
-            <div class="row row-validation-20 line-height-07">
-                <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.CustomerSSN, "", new { @class = "text-danger font-size-11" })
-                </div>
-                <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.FirstDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-md-6">
-                    @Html.LabelFor(model => model.CustomerPhoneNumber, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-                <div class="col col-md-6">
-                    @Html.LabelFor(model => model.LastDayOfSicknessDate, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-            </div>
-
-            <div class="row row-height-36">
-                <div class="col col-md-6">
-                    @Html.EditorFor(model => model.CustomerPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-                <div class="col col-md-6">
-                    @Html.EditorFor(model => model.LastDayOfSicknessDate, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-
-            <div class="row row-validation-20 line-height-07">
-                <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.CustomerPhoneNumber, "", new { @class = "text-danger font-size-11" })
-                </div>
-                <div class="col col-md-6">
-                    @Html.ValidationMessageFor(model => model.LastDayOfSicknessDate, "", new { @class = "text-danger font-size-11" })
-                </div>
-            </div>
-
-            <div class="row row-height-20">
-                <div class="col col-md-6">
-                </div>
-                <div class="col col-md-6">
-                </div>
-            </div>
-
-            <div class="row row-height-36">
-                <div class="col col-md-6">
-                    <div class="no-col-padding col col-md-4">
-                        <input class="btn btn-primary btn-primary-small2" type="submit" name="submitButton" value="Till steg 2" id="proceed" />
-                    </div>
-                    <div class="no-col-padding col col-md-4">
-                        <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-1" type="submit" name="submitButton" value="Spara" id="save" />
-                    </div>
-                    <div class="no-col-padding col col-md-4">
-                        @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-2" })
-                    </div>
-                </div>
-                <div class="col col-md-6">
-                    @if (Model.CompletionStage >= 1)
-                    {
-                        <div class="row">
-                            <div class="btn-left-margin-15">
-                                @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-
-            <div class="row row-validation-20 line-height-07">
-                <div class="col col-md-6">
-                </div>
-                <div class="col col-md-6">
-                </div>
-            </div>
-        </div>
-
-        <div id="anchor-beyond4ddls" class="col col-md-6 display-inline-block">
-            <div class="row">
-                <div class="col col-md-8">
-                    @Html.LabelFor(model => model.SubstituteAssistants, htmlAttributes: new { @class = "create1-label control-label" })
-                </div>
-            </div>
-
-            <div class="row row-height-36">
-                <div class="col col-md-8 right-col-padding-42">
-                    @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control", onchange = "select_first_subassistant()" })
-                    <input id="Button+" class="btn btn btn-primary btn-primary-xsmall5 float-right" type="button" value="+" onclick="addsubassistant_onclick()" />
-                </div>
-            </div>
-
-            <div class="row row-validation-20 row-height-20 line-height-07">
-                <div class="col col-md-8">
-                    @Html.ValidationMessageFor(model => model.SubstituteAssistants, "", new { @class = "text-danger font-size-11", id = "first-subassistant-val" })
-                </div>
-            </div>
-        </div>*@
-
-
-
-
-    //TEST
     <div class="row">
     </div>
     <div class="no-col-padding col col-md-8 display-inline-block">
@@ -403,6 +254,12 @@
         var form = document.getElementsByTagName("form");
         for (var i = 0; i < form.length; i++) {
             form[i].id = "form";
+        }
+
+        if (!checkValidationErrors()) {
+            var erroronpage = document.getElementById('valerror-on-page');
+            erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 2.";
+            //e.preventDefault();
         }
 
         $("form").submit(function (e) {
