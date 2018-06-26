@@ -65,7 +65,7 @@
             <p class="negative-left-margin10 col col-md-12 line-height-10">@TempData["PdfFail"]</p>
         </div>
     }
-    
+
     <div class="row">
         <p class="col col-md-10 second-page-header5">Steg 1 av 4: Ange personuppgifter och sjukperiod</p>
     </div>
@@ -85,10 +85,10 @@
 
         <div class="row row-height-36">
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", tabindex = "1" } })
             </div>
             <div class="col col-md-6">
-                @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control", onchange = "select_regular_assistant()" })
+                @Html.DropDownListFor(model => model.SelectedRegAssistantId, new SelectList(Model.RegularAssistants, "Value", "Text", Model.SelectedRegAssistantId), "- ingen vald -", new { @class = "form-control", tabindex = "4", onchange = "select_regular_assistant()" })
             </div>
         </div>
 
@@ -112,10 +112,10 @@
 
         <div class="row row-height-36">
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.CustomerSSN, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.CustomerSSN, new { htmlAttributes = new { @class = "form-control", tabindex = "2" } })
             </div>
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.FirstClaimDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.FirstClaimDate, new { htmlAttributes = new { @class = "form-control", tabindex = "5" } })
             </div>
         </div>
 
@@ -139,10 +139,10 @@
 
         <div class="row row-height-36">
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.CustomerPhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.CustomerPhoneNumber, new { htmlAttributes = new { @class = "form-control", tabindex = "3" } })
             </div>
             <div class="col col-md-6">
-                @Html.EditorFor(model => model.LastClaimDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.LastClaimDate, new { htmlAttributes = new { @class = "form-control", tabindex = "6" } })
             </div>
         </div>
 
@@ -171,7 +171,7 @@
                     <input class="btn btn-secondary btn-secondary-small2 btn-left-margin-10" type="submit" name="submitButton" value="Spara" id="save" />
                 </div>
                 <div class="no-col-padding col col-md-3">
-                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-21" })
+                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small2 btn-left-margin-21", id = "cancel" })
                 </div>
             </div>
             <div class="col col-md-4">
@@ -179,7 +179,7 @@
                 {
                     <div class="row">
                         <div class="btn-left-margin-15">
-                            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small" })
+                            @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small", id = "refnumber" })
                         </div>
                     </div>
                 }
@@ -203,7 +203,7 @@
 
         <div class="row row-height-36">
             <div class="col col-md-12 right-col-padding-42">
-                @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control", onchange = "select_first_subassistant()" })
+                @Html.DropDownListFor(model => model.SelectedSubAssistantId, new SelectList(Model.SubstituteAssistants, "Value", "Text", Model.SelectedSubAssistantId), "- ingen vald -", new { id = "subassistant1-ddl", @class = "display-inline-block form-control", tabindex = "7", onchange = "select_first_subassistant()" })
                 <input id="Button+" class="btn btn btn-primary btn-primary-xsmall5 float-right" type="button" value="+" onclick="addsubassistant_onclick()" />
             </div>
         </div>
@@ -249,6 +249,18 @@
                 numOfRow = i + 1;
                 addSubAssistant(newddl, numOfRow, notRemoveButton);
             }
+        }
+
+        //set tabindexes of buttons
+        var proceedbtn = document.getElementById('proceed');
+        var savebtn = document.getElementById('save');
+        var cancelbtn = document.getElementById('cancel');
+        var refnumberbtn = document.getElementById('refnumber');
+        proceedbtn.setAttribute('tabindex', subassddlcounterInt + 7);
+        savebtn.setAttribute('tabindex', subassddlcounterInt + 8);
+        cancelbtn.setAttribute('tabindex', subassddlcounterInt + 9);
+        if (refnumberbtn != null) {
+            refnumberbtn.setAttribute('tabindex', subassddlcounterInt + 10);
         }
 
         var form = document.getElementsByTagName("form");
@@ -661,6 +673,20 @@
 
         //allow maximum 20 substitute assistants
         if (subassddlcounterInt < 20) {
+            //update tabindexes of buttons
+            var proceedbtn = document.getElementById('proceed');
+            var savebtn = document.getElementById('save');
+            var cancelbtn = document.getElementById('cancel');
+            var refnumberbtn = document.getElementById('refnumber');
+            if (notRemoveButton) {
+                proceedbtn.setAttribute('tabindex', subassddlcounterInt + 8);
+                savebtn.setAttribute('tabindex', subassddlcounterInt + 9);
+                cancelbtn.setAttribute('tabindex', subassddlcounterInt + 10);
+                if (refnumberbtn != null) {
+                    refnumberbtn.setAttribute('tabindex', subassddlcounterInt + 11);
+                }
+            }
+
             //get the reference of the anchor div
             var mainDiv = document.getElementById('anchor-beyond4ddls');
 
@@ -697,6 +723,7 @@
             var newDropDownList = document.createElement('select');
             newDropDownList.id = 'ddl' + numOfRow;
             newDropDownList.setAttribute('class', 'display-inline-block form-control subass-ddl');
+            newDropDownList.setAttribute('tabindex', numOfRow + 6);
             newDropDownList.setAttribute('onchange', 'UpdateSelectedItem(this)');
             newDropDownList.setAttribute('data-val', 'true');
             newDropDownList.setAttribute('data-val-range-min', '1');
@@ -736,7 +763,7 @@
                 newDropDownList.selectedIndex = selectedItems[numOfRow - 2].value;
             }
 
-            //create remove button for each email adress
+            //create remove button for each ddl
             var newButton = document.createElement('input');
             newButton.type = 'button';
             newButton.value = '-';
@@ -819,10 +846,23 @@
                 var ddl = document.getElementsByClassName('subass-ddl');
                 for (var i = 0; i < subassddlcounterInt - 2; i++) {
                     ddl[i].id = 'ddl' + (i + 2).toString();
+                    ddl[i].setAttribute('tabindex', (i + 8).toString());
                     var options = ddl[i].children;
                     for (var k = 0; k < options.length; k++) {
                         options[k].className = 'option' + (i + 2).toString();
                     }
+                }
+
+                //update tabindexes of buttons
+                var proceedbtn = document.getElementById('proceed');
+                var savebtn = document.getElementById('save');
+                var cancelbtn = document.getElementById('cancel');
+                var refnumberbtn = document.getElementById('refnumber');
+                proceedbtn.setAttribute('tabindex', subassddlcounterInt + 7);
+                savebtn.setAttribute('tabindex', subassddlcounterInt + 8);
+                cancelbtn.setAttribute('tabindex', subassddlcounterInt + 9);
+                if (refnumberbtn != null) {
+                    refnumberbtn.setAttribute('tabindex', subassddlcounterInt + 10);
                 }
 
                 //load current assistants

@@ -67,11 +67,11 @@
                 <div class="col-md-10" id="SalaryAttachmentDiv">
                     @if (!Model.SalaryAttachmentExists)
                     {
-                        <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default" onchange="checkErrors()" />
+                        <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default tabidx" autofocus="autofocus" tabindex="1" onchange="checkErrors()" />
                     }
                     else
                     {
-                        <p id="SalaryAttachmentButton">Det finns redan en lönespecifikation <button onclick="ReplaceFile(event, 'SalaryAttachment', 'SalaryAttachment')">Byt fil</button></p>
+                        <p id="SalaryAttachmentButton">Det finns redan en lönespecifikation <button class="tabidx" onclick="ReplaceFile(event, 'SalaryAttachment', 'SalaryAttachment')">Byt fil</button></p>
                     }
                 </div>
             </div>
@@ -100,11 +100,11 @@
                     <div class="col-md-10" id="DoctorsCertificateDiv">
                         @if (!Model.DoctorsCertificateExists)
                         {
-                            <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default" onchange="checkErrors()" />
+                            <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default tabidx" onchange="checkErrors()" />
                         }
                         else
                         {
-                            <p id="DoctorsCertificateButton">Det finns redan ett läkarintyg <button onclick="ReplaceFile(event, 'DoctorsCertificate', 'DoctorsCertificate')">Byt fil</button></p>
+                            <p id="DoctorsCertificateButton">Det finns redan ett läkarintyg <button class="tabidx" onclick="ReplaceFile(event, 'DoctorsCertificate', 'DoctorsCertificate')">Byt fil</button></p>
                         }
                     </div>
                 </div>
@@ -116,30 +116,6 @@
                 <div class="row row-height-14">
                 </div>
             }
-
-            <!--<div class="row row-height-14 row-top-margin align-bottom4">
-                <div class="col col-md-2">
-
-                </div>
-                <div class="col col-md-10">
-                    @Html.DisplayFor(modelItem => Model.RegAssistantSSNAndName)
-                </div>
-            </div>
-            <div class="row row-height-26">
-                <div class="col bold-14 padding-top-10 display-right-align col-md-2">
-                    Sjukfrånvaroanmälan
-                </div>
-                <div class="col-md-10">
-                    <input type="file" name="SickLeaveNotification" id="SickLeaveNotification" class="wide-input btn btn-default" />
-                </div>
-            </div>
-            <div class="row row-height-14 line-height-07">
-                <div class="col col-md-offset-2 col-md-10">
-                    @*Html.ValidationMessageFor(model => model.SickLeaveNotification, "", new { @class = "text-danger font-size-11" })*@
-                </div>
-            </div>
-            <div class="row row-height-14">
-            </div>-->
 
             <div class="row row-height-14 row-top-margin align-bottom4">
                 <div class="col col-md-2">
@@ -156,11 +132,11 @@
                 <div class="col-md-10" id="TimeReportDiv">
                     @if (!Model.TimeReportExists)
                     {
-                        <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default" onchange="checkErrors()" />
+                        <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default tabidx" onchange="checkErrors()" />
                     }
                     else
                     {
-                        <p id="TimeReportButton">Det finns redan en tidsredovisning för den här assistenten <button onclick="ReplaceFile(event, 'TimeReport', 'TimeReport')">Byt fil</button></p>
+                        <p id="TimeReportButton">Det finns redan en tidsredovisning för den här assistenten <button class="tabidx" onclick="ReplaceFile(event, 'TimeReport', 'TimeReport')">Byt fil</button></p>
                     }
                 </div>
             </div>
@@ -199,11 +175,11 @@
                     <div class="col col-md-10" id="TimeReportStandIn[@i]Div">
                         @if (!Model.TimeReportStandInExists[i])
                         {
-                            <input type="file" name="TimeReportStandIn" id="TimeReportStandIn[@i]" class="timereportstandin wide-input btn btn-default" onchange="checkErrors()" />
+                            <input type="file" name="TimeReportStandIn" id="TimeReportStandIn[@i]" class="timereportstandin timereptabindex wide-input btn btn-default tabidx" onchange="checkErrors()" />
                         }
                         else
                         {
-                            <p id="TimeReportStandIn[@i]Button"><span class="timereportstandin"></span>Det finns redan en tidsredovisning för den här assistenten <button onclick="ReplaceFile(event, 'TimeReportStandIn[@i]', 'timereportstandin')">Byt fil</button></p>
+                            <p id="TimeReportStandIn[@i]Button"><span class="timereportstandin"></span>Det finns redan en tidsredovisning för den här assistenten <button class="tabidx" onclick="ReplaceFile(event, 'TimeReportStandIn[@i]', 'timereportstandin')">Byt fil</button></p>
                         }
                     </div>
                 </div>
@@ -218,16 +194,16 @@
 
             <div class="row row-top-margin">
                 <div class="small-padding-left3 col col-md-offset-2 col-md-1">
-                    <input class="btn btn-primary btn-primary-small btn-left-margin-10" type="submit" name="submitButton" value="Skicka in" id="proceed" />
+                    <input class="btn btn-primary btn-primary-small btn-left-margin-10 tabidx" type="submit" name="submitButton" value="Skicka in" id="proceed" />
                 </div>
                 <div class="small-padding-left3 col col-md-1">
-                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-7" type="submit" name="submitButton" value="Spara" id="save" />
+                    <input class="btn btn-secondary btn-secondary-small btn-left-margin-7 tabidx" type="submit" name="submitButton" value="Spara" id="save" />
                 </div>
                 <div class="small-padding-left3 col col-md-1">
-                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small btn-left-margin-4" })
+                    @Html.ActionLink("Avbryt", "IndexPageOmbud", null, new { @class = "btn btn-secondary btn-secondary-small btn-left-margin-4 tabidx" })
                 </div>
                 <div class="small-padding-left3 col col-md-1">
-                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-1" })
+                    @Html.ActionLink(Model.ClaimNumber, "_ShowClaim", new { refNumber = Model.ClaimNumber }, new { @class = "js-show-view-btn btn btn-secondary btn-secondary-small btn-left-margin-1 tabidx" })
                 </div>
 
                 <div class="hidden-by-default" id="claimnumber">@Model.ClaimNumber</div>
@@ -261,6 +237,12 @@
         var form = document.getElementsByTagName("form");
         for (var i = 0; i < form.length; i++) {
             form[i].id = "form";
+        }
+
+        //Set tabindexes
+        var tab = document.getElementsByClassName("tabidx");
+        for (var i = 0; i < tab.length; i++) {
+            tab[i].setAttribute('tabindex', i + 1);
         }
 
         $("form").submit(function (e) {

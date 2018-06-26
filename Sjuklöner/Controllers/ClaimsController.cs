@@ -1235,23 +1235,14 @@ namespace Sjuklöner.Controllers
                     onCallDaySIArray = day.OnCallDaySI.Split('+').ToArray();
                     onCallNightSIArray = day.OnCallNightSI.Split('+').ToArray();
 
-                    for (int subIdx = 0; subIdx < claim.NumberOfSubAssistants; subIdx++)
-                    {
-                        hoursSIPerSubAndDay.Add(hoursSIArray);
-                        unsocialEveningSIPerSubAndDay.Add(unsocialEveningSIArray);
-                        unsocialNightSIPerSubAndDay.Add(unsocialNightSIArray);
-                        unsocialWeekendSIPerSubAndDay.Add(unsocialWeekendSIArray);
-                        unsocialGrandWeekendSIPerSubAndDay.Add(unsocialGrandWeekendSIArray);
-                        onCallDaySIPerSubAndDay.Add(onCallDaySIArray);
-                        onCallNightSIPerSubAndDay.Add(onCallNightSIArray);
-                        //hoursSIPerSubAndDay[subIdx, dayIdx] = hoursSIArray[subIdx];
-                        //unsocialEveningSIPerSubAndDay[subIdx, dayIdx] = unsocialEveningSIArray[subIdx];
-                        //unsocialNightSIPerSubAndDay[subIdx, dayIdx] = unsocialNightSIArray[subIdx];
-                        //unsocialWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialWeekendSIArray[subIdx];
-                        //unsocialGrandWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialGrandWeekendSIArray[subIdx];
-                        //onCallDaySIPerSubAndDay[subIdx, dayIdx] = onCallDaySIArray[subIdx];
-                        //onCallNightSIPerSubAndDay[subIdx, dayIdx] = onCallNightSIArray[subIdx];
-                    }
+                    hoursSIPerSubAndDay.Add(hoursSIArray);
+                    unsocialEveningSIPerSubAndDay.Add(unsocialEveningSIArray);
+                    unsocialNightSIPerSubAndDay.Add(unsocialNightSIArray);
+                    unsocialWeekendSIPerSubAndDay.Add(unsocialWeekendSIArray);
+                    unsocialGrandWeekendSIPerSubAndDay.Add(unsocialGrandWeekendSIArray);
+                    onCallDaySIPerSubAndDay.Add(onCallDaySIArray);
+                    onCallNightSIPerSubAndDay.Add(onCallNightSIArray);
+
                     dayIdx++;
                 }
             }
