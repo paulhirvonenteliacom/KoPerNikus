@@ -3274,11 +3274,34 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
+
+                //New code
+
+
+                string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
+                fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
+
+                string[] fkAttachmentBoolSubAssistantsAsString = new string[20];
+                fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+
+                string fkAttachmentMsgSubAssistantConcat = "";
+                string fkAttachmentBoolSubAssistantConcat = "";
+
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                }
+
+                //new code
+
+
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
-                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName + "+" + claim.NumberOfSubAssistants.ToString() + "+" + fkAttachmentMsgSubAssistantConcat + "+" + fkAttachmentBoolSubAssistantConcat;
 
                 db.Entry(claim).State = EntityState.Modified;
                 db.SaveChanges();
@@ -4421,11 +4444,32 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
+                //New code
+
+
+                string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
+                fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
+
+                string[] fkAttachmentBoolSubAssistantsAsString = new string[20];
+                fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+
+                string fkAttachmentMsgSubAssistantConcat = "";
+                string fkAttachmentBoolSubAssistantConcat = "";
+
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                }
+
+                //new code
+
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
-                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName + "+" + claim.NumberOfSubAssistants.ToString() + "+" + fkAttachmentMsgSubAssistantConcat + "+" + fkAttachmentBoolSubAssistantConcat;
 
                 claim.ClaimStatusId = 7;      // Transfer to Procapita started
                 claim.BasisForDecisionTransferStartTimeStamp = DateTime.Now;
