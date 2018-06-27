@@ -324,7 +324,7 @@
                         </div>
                     </div>
 
-                    <div class="row line-height-08 margin-bottom-small3">
+                    <div class="row line-height-08">
                         <div class="col col-md-2">
                         </div>
                         <div class="col col-md-5 no-col-padding">
@@ -335,6 +335,15 @@
                         </div>
                         <div class="col col-md-2">
                             <div class="bottom-border">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-height-14-3 line-height-08 margin-bottom-small4">
+                        <div class="col col-md-2">
+                        </div>
+                        <div class="col col-md-10 no-col-padding">
+                            <div class="sub-assistant-val text-danger font-size-11">
                             </div>
                         </div>
                     </div>
@@ -661,6 +670,9 @@
             if (!checkIfEmptyRegAssistant()) {
                 check5DayGap();
             }
+            if (document.activeElement.id = "proceed") {
+                checkIfEmptySubAssistants(true);
+            }
             if (!checkValidationErrors()) {
                 var erroronpage = document.getElementById('valerror-on-page');
                 erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 3.";
@@ -772,7 +784,7 @@
         }
 
         var subAssistantHoursExist = false;
-        if (!checkIfEmptySubAssistants()) {
+        if (!checkIfEmptySubAssistants(false)) {
             subAssistantHoursExist = true;
         }
 
@@ -788,7 +800,7 @@
         }
     }
 
-    function checkIfEmptySubAssistants() {
+    function checkIfEmptySubAssistants(submit) {
         var numberOfHours = document.getElementsByClassName("hours");
         var numberOfHoursSI = document.getElementsByClassName("hours-si");
         var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
@@ -802,32 +814,61 @@
         var numberOfCalendarDays = numberOfHours.length;
         var numberOfSubAssistants = numberOfHoursSI.length / numberOfCalendarDays;
 
-        //check if at least one field has been filled in for at least one substitute assistant
-        var dayIdx = 0;
-        var subIdx = 0;
-        var hoursFound = false;
-        while (!hoursFound && dayIdx < numberOfCalendarDays) {
-            while (!hoursFound && subIdx < numberOfSubAssistants) {
-                if ((numberOfHoursSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
-                    (unsocialEveningSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
-                    (unsocialNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
-                    (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
-                    (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
-                    (oncallDaySI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
-                    (oncallNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0)) {
-                    hoursFound = true;
+        if (!submit) {
+            //check if at least one field has been filled in for at least one substitute assistant
+            var dayIdx = 0;
+            var subIdx = 0;
+            var hoursFound = false;
+            while (!hoursFound && dayIdx < numberOfCalendarDays) {
+                while (!hoursFound && subIdx < numberOfSubAssistants) {
+                    if ((numberOfHoursSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialEveningSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (oncallDaySI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (oncallNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0)) {
+                        hoursFound = true;
+                    }
+                    subIdx++;
                 }
-                subIdx++;
+                dayIdx++;
+                subIdx = 0;
             }
-            dayIdx++;
-            subIdx = 0;
-        }
 
-        if (hoursFound) {
-            return false;
+            if (hoursFound) {
+                return false;
+            }
+            else {
+                return true;
+            }
         }
         else {
-            return true;
+            //check that each sub assistant has at least one field filled in
+            var subassistantval = document.getElementsByClassName('sub-assistant-val');
+
+            var dayIdx = 0;
+            var subIdx = 0;
+            var hoursFound = false;
+            for (subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
+                while (!hoursFound && dayIdx < numberOfCalendarDays) {
+                    if ((numberOfHoursSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialEveningSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (oncallDaySI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0) ||
+                        (oncallNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value != "" && parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + dayIdx].value.replace(',', '.')) > 0)) {
+                        hoursFound = true;
+                    }
+                    dayIdx++;
+                }
+                if (!hoursFound) {
+                    subassistantval[subIdx].innerHTML = "Inga timmar ifyllda för denna vikarierande assistent.";
+                }
+                dayIdx = 0;
+                hoursFound = false;
+            }
         }
     }
 
@@ -926,6 +967,16 @@
             }
             var erroronpage = document.getElementById('valerror-on-page');
             erroronpage.innerHTML = "";
+
+            //clear validation error for ordinary assistant
+            var regassistantval = document.getElementsByClassName('reg-assistant-val');
+            regassistantval[0].innerHTML = "";
+
+            //clear validation error for all sub assistants
+            var subassistantval = document.getElementsByClassName('sub-assistant-val');
+            for (var i = 0; i < subassistantval.length; i++) {
+                subassistantval[i].innerHTML = "";
+            }
         }
     }
 
@@ -1000,6 +1051,18 @@
             var regassistantval = document.getElementsByClassName('reg-assistant-val');
             if (regassistantval[0].innerHTML != "") {
                 validationErrorFound = true;
+            }
+        }
+
+        //check if hours have been filled in for all sub assistants
+        if (!validationErrorFound) {
+            subIdx = 0;
+            var subassistantval = document.getElementsByClassName('sub-assistant-val');
+            while (!validationErrorFound && subIdx < subassistantval.length) {
+                if (subassistantval[subIdx].innerHTML != "") {
+                    validationErrorFound = true;
+                }
+                subIdx++;
             }
         }
 
@@ -1081,6 +1144,13 @@
                 }
             }
         }
+
+        //reset validation error for sub assistant lacking hours
+        var subassistantval = document.getElementsByClassName('sub-assistant-val');
+        if (subassistantval[subIndex].innerHTML != "") {
+            subassistantval[subIndex].innerHTML = "";
+        }
+
 
         //calculate number of sickdays and number of substitute assistants
         var numberOfHours = document.getElementsByClassName("hours");
@@ -1174,37 +1244,6 @@
                 if (otherFault) {
                     failValidation = true;
                 }
-                //if (!otherFault) {
-                //        for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //            if (subIdx != subIndex && unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-
-
-                //                //new code start
-
-                //                //validateInput(dayIndex, subIdx, hourType, true);
-
-                //                //new code end
-
-                //                //unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-                //                valInfo.innerHTML = "";
-                //            }
-                //        }
-                //        if (unsocialeveningval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-
-                //            //new code start
-
-                //            //validateInput(dayIndex, 99, hourType, true);
-
-                //            //new code end
-
-                //            //unsocialeveningval[parseInt(dayIndex)].innerHTML = "";
-                //            valInfo.innerHTML = "";
-                //        }
-                //    //}
-                //}
-                //else {
-                //    failValidation = true;
-                //}
             }
             else if (hourType == 3) {
                 while (!otherFault && subIdx < numberOfSubAssistants) {
@@ -1260,21 +1299,6 @@
                 if (otherFault) {
                     failValidation = true;
                 }
-                //if (!otherFault) {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (subIdx != subIndex && unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //            unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-                //            valInfo.innerHTML = "";
-                //        }
-                //    }
-                //    if (unsocialweekendval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //        unsocialweekendval[parseInt(dayIndex)].innerHTML = "";
-                //        valInfo.innerHTML = "";
-                //    }
-                //}
-                //else {
-                //    failValidation = true;
-                //}
             }
             else if (hourType == 5) {
                 while (!otherFault && subIdx < numberOfSubAssistants) {
@@ -1295,21 +1319,6 @@
                 if (otherFault) {
                     failValidation = true;
                 }
-                //if (!otherFault) {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (subIdx != subIndex && unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //            unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-                //            valInfo.innerHTML = "";
-                //        }
-                //    }
-                //    if (unsocialgrandweekendval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //        unsocialgrandweekendval[parseInt(dayIndex)].innerHTML = "";
-                //        valInfo.innerHTML = "";
-                //    }
-                //}
-                //else {
-                //    failValidation = true;
-                //}
             }
             else if (hourType == 6) {
                 while (!otherFault && subIdx < numberOfSubAssistants) {
@@ -1330,21 +1339,6 @@
                 if (otherFault) {
                     failValidation = true;
                 }
-                //if (!otherFault) {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (subIdx != subIndex && oncalldayvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //            oncalldayvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-                //            valInfo.innerHTML = "";
-                //        }
-                //    }
-                //    if (oncalldayval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //        oncalldayval[parseInt(dayIndex)].innerHTML = "";
-                //        valInfo.innerHTML = "";
-                //    }
-                //}
-                //else {
-                //    failValidation = true;
-                //}
             }
             else if (hourType == 7) {
                 while (!otherFault && subIdx < numberOfSubAssistants) {
@@ -1365,21 +1359,6 @@
                 if (otherFault) {
                     failValidation = true;
                 }
-                //if (!otherFault) {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (subIdx != subIndex && oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //            oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-                //            valInfo.innerHTML = "";
-                //        }
-                //    }
-                //    if (oncallnightval[parseInt(dayIndex)].innerHTML == "Annat fält måste rättas.") {
-                //        oncallnightval[parseInt(dayIndex)].innerHTML = "";
-                //        valInfo.innerHTML = "";
-                //    }
-                //}
-                //else {
-                //    failValidation = true;
-                //}
             }
         }
 
@@ -1659,16 +1638,6 @@
                         if ((reset && hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML != "") || !reset) {
                             if (tooManySubHours) {
                                 hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.";
-                                //if (subIdx != subIndex && hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.") {
-                                //    subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIdx, valInfo);
-
-                                //    //check if substitutes' hours are greater than regular assistant's hours
-                                //    if (subAndRegHourComparisonPossible) {
-                                //        var valInfoAss = hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var amountAss = numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var tooManySubHoursAss = compareSubAndRegHours(amountAss, valInfoAss, hourType, dayIndex, subIdx, reset);
-                                //    }
-                                //    if (!tooManySubHoursAss) {
                             }
                             else {
                                 //check if possible to calculate unsocial hours
@@ -1689,7 +1658,7 @@
                                 }
                                 else {
                                     if (UHcalculatedOtherAss && tooManyUHOtherAss) {
-                                        hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar."
+                                        hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
                                     }
                                     else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
                                         hoursvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -1706,17 +1675,6 @@
                         if ((reset && unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML != "") || !reset) {
                             if (tooManySubHours) {
                                 unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.";
-
-
-                                ////if (subIdx != subIndex && unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.") {
-                                //    subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIdx, valInfo);
-
-                                //    //check if substitutes' hours are greater than regular assistant's hours
-                                //    if (subAndRegHourComparisonPossible) {
-                                //        var valInfoAss = unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var amountAss = unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var tooManySubHoursAss = compareSubAndRegHours(amountAss, valInfoAss, hourType, dayIndex, subIdx, reset);
-                                //    }
                             }
                             else {
                                 //check if possible to calculate unsocial hours
@@ -1727,7 +1685,7 @@
                                     UHcalculatedOtherAss = true;
                                 }
                                 if (UHcalculatedOtherAss && tooManyUHOtherAss) {
-                                    unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar."
+                                    unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
                                 }
                                 else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
                                     unsocialeveningvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -1743,16 +1701,6 @@
                         if ((reset && unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML != "") || !reset) {
                             if (tooManySubHours) {
                                 unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.";
-                                //if (subIdx != subIndex && unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.") {
-                                //    subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIdx, valInfo);
-
-                                //    //check if substitutes' hours are greater than regular assistant's hours
-                                //    if (subAndRegHourComparisonPossible) {
-                                //        var valInfoAss = unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var amountAss = unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var tooManySubHoursAss = compareSubAndRegHours(amountAss, valInfoAss, hourType, dayIndex, subIdx, reset);
-                                //    }
-                                //    if (!tooManySubHoursAss) {
                             }
                             else {
                                 //check if possible to calculate unsocial hours
@@ -1763,7 +1711,7 @@
                                     UHcalculatedOtherAss = true;
                                 }
                                 if (UHcalculatedOtherAss && tooManyUHOtherAss) {
-                                    unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar."
+                                    unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
                                 }
                                 else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
                                     unsocialnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -1779,16 +1727,6 @@
                         if ((reset && unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML != "") || !reset) {
                             if (tooManySubHours) {
                                 unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.";
-                                //if (subIdx != subIndex && unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.") {
-                                //    subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIdx, valInfo);
-
-                                //    //check if substitutes' hours are greater than regular assistant's hours
-                                //    if (subAndRegHourComparisonPossible) {
-                                //        var valInfoAss = unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var amountAss = unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var tooManySubHoursAss = compareSubAndRegHours(amountAss, valInfoAss, hourType, dayIndex, subIdx, reset);
-                                //    }
-                                //    if (!tooManySubHoursAss) {
                             }
                             else {
                                 //check if possible to calculate unsocial hours
@@ -1799,7 +1737,7 @@
                                     UHcalculatedOtherAss = true;
                                 }
                                 if (UHcalculatedOtherAss && tooManyUHOtherAss) {
-                                    unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar."
+                                    unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
                                 }
                                 else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
                                     unsocialweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -1815,16 +1753,6 @@
                         if ((reset && unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML != "") || !reset) {
                             if (tooManySubHours) {
                                 unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.";
-                                //if (subIdx != subIndex && unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.") {
-                                //    subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIdx, valInfo);
-
-                                //    //check if substitutes' hours are greater than regular assistant's hours
-                                //    if (subAndRegHourComparisonPossible) {
-                                //        var valInfoAss = unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var amountAss = unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var tooManySubHoursAss = compareSubAndRegHours(amountAss, valInfoAss, hourType, dayIndex, subIdx, reset);
-                                //    }
-                                //    if (!tooManySubHoursAss) {
                             }
                             else {
                                 //check if possible to calculate unsocial hours
@@ -1835,7 +1763,7 @@
                                     UHcalculatedOtherAss = true;
                                 }
                                 if (UHcalculatedOtherAss && tooManyUHOtherAss) {
-                                    unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar."
+                                    unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
                                 }
                                 else if (UHcalculatedOtherAss && !tooManyUHOtherAss) {
                                     unsocialgrandweekendvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -1870,7 +1798,7 @@
                                     HDcalculatedOtherAss = true;
                                 }
                                 if (HDcalculatedOtherAss && tooManyHDOtherAss) {
-                                    oncalldayvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många timmar."
+                                    oncalldayvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många timmar.";
                                 }
                                 else if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
                                     oncalldayvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -1886,16 +1814,6 @@
                         if ((reset && oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML != "") || !reset) {
                             if (tooManySubHours) {
                                 oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.";
-                                //if (subIdx != subIndex && oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML == "För många vikarietimmar.") {
-                                //    subAndRegHourComparisonPossible = checkSubAndRegHours(hourType, dayIndex, subIdx, valInfo);
-
-                                //    //check if substitutes' hours are greater than regular assistant's hours
-                                //    if (subAndRegHourComparisonPossible) {
-                                //        var valInfoAss = oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var amountAss = oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)];
-                                //        var tooManySubHoursAss = compareSubAndRegHours(amountAss, valInfoAss, hourType, dayIndex, subIdx, reset);
-                                //    }
-                                //    if (!tooManySubHoursAss) {
                             }
                             else {
                                 calcWorkAndOncallHoursPossibleOtherAss = checkWorkAndOncallHours(hourType, dayIndex, subIdx);
@@ -1905,7 +1823,7 @@
                                     HDcalculatedOtherAss = true;
                                 }
                                 if (HDcalculatedOtherAss && tooManyHDOtherAss) {
-                                    oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många timmar."
+                                    oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många timmar.";
                                 }
                                 else if (HDcalculatedOtherAss && !tooManyHDOtherAss) {
                                     oncallnightvalsi[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
@@ -2249,28 +2167,16 @@
                 }
             }
             if (!failValidation) {
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (sumSIHours > 0 && sumSIHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2286,34 +2192,19 @@
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
-                //else {
-                //    valInfo.innerHTML = "";
-                //}
             }
             if (!failValidation) {
                 var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialEvening[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2329,34 +2220,19 @@
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
-                //else {
-                //    valInfo.innerHTML = "";
-                //}
             }
             if (!failValidation) {
                 var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialNight[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2372,34 +2248,19 @@
                     valInfo.innerHTML = "Ordinarie assistent måste fyllas i först.";
                     failValidation = true;
                 }
-                //else {
-                //    valInfo.innerHTML = "";
-                //}
             }
             if (!failValidation) {
                 var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(unsocialWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2415,34 +2276,19 @@
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
-                //else {
-                //    valInfo.innerHTML = "";
-                //}
             }
             if (!failValidation) {
                 var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialGrandWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2458,34 +2304,19 @@
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
-                //else {
-                //    valInfo.innerHTML = "";
-                //}
             }
             if (!failValidation) {
                 var oncallDaySI = document.getElementsByClassName("oncall-day-si");
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (sumSIHours > 0 && sumSIHours > parseFloat(oncallDay[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2501,34 +2332,19 @@
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
-                //else {
-                //    valInfo.innerHTML = "";
-                //}
             }
             if (!failValidation) {
                 var oncallNightSI = document.getElementsByClassName("oncall-night-si");
-                //if (amount != "0") {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
                     if (oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
                         sumSIHours += parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
                     }
                 }
-                //}
-                //else {
-                //    for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                //        if (oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "" && subIdx != subIndex) {
-                //            sumSIHours += parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
-                //        }
-                //    }
-                //}
                 if (amount == "0" && reset) {
                     if (sumSIHours > 0) {
                         valInfo.innerHTML = "För många vikarietimmar.";
                         failValidation = true;
                     }
-                    //else {
-                    //    valInfo.innerHTML = "";
-                    //}
                 }
                 else if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(oncallNight[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
@@ -2878,13 +2694,6 @@
         if (tooManyHours && hourType == 4) {
             unsocialweekendvalsi[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
         }
-        //else if (hourtype == 4 && (unsocialWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "" ||
-        //    unsocialWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "0" ||
-        //    unsocialWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "0,0" ||
-        //    unsocialWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "0,00" ||
-        //    unsocialWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "00,00")) {
-        //    unsocialweekendvalsi[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-        //}
         else if (!tooManyHours && hourType == 4 && clearVal) {
             unsocialweekendvalsi[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
         }
@@ -2892,13 +2701,6 @@
         if (tooManyHours && hourType == 5) {
             unsocialgrandweekendvalsi[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "För många OB-timmar.";
         }
-        //else if (hourtype == 5 && (unsocialGrandWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "" ||
-        //    unsocialGrandWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "0" ||
-        //    unsocialGrandWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "0,0" ||
-        //    unsocialGrandWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "0,00" ||
-        //    unsocialGrandWeekendSI[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].value == "00,00")) {
-        //    unsocialgrandweekendvalsi[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
-        //}
         else if (!tooManyHours && hourType == 5 && clearVal) {
             unsocialgrandweekendvalsi[(subIndex * numberOfCalendarDays) + parseInt(dayIndex)].innerHTML = "";
         }

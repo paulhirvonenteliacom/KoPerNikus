@@ -2588,8 +2588,6 @@ namespace Sjuklöner.Controllers
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
 
-                //These check results are hardcoded for the demo. Need to be changed for the real solution.
-
                 recommendationVM.IvoCheck = false;
                 recommendationVM.IvoCheck = claim.IVOCheck;
                 if (!recommendationVM.IvoCheck)
@@ -2879,7 +2877,10 @@ namespace Sjuklöner.Controllers
                         index++;
                     }
 
-                    if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    //Activate IVO: The two following commented lines need to replace the subsequent two lines when the IVO-check shall be activated
+                    //if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    //    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
+                    if (!recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
                         !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
                     {
                         recommendationVM.ApprovedSum = "0,00";
@@ -2943,8 +2944,6 @@ namespace Sjuklöner.Controllers
             {
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
-
-                //These check results are hardcoded for the demo. Need to be changed for the real solution.
 
                 recommendationVM.IvoCheck = false;
                 recommendationVM.IvoCheck = claim.IVOCheck;
@@ -3210,7 +3209,10 @@ namespace Sjuklöner.Controllers
                     index++;
                 }
 
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                //Activate IVO: The two following commented lines need to replace the subsequent two lines when the IVO-check shall be activated
+                //if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                //    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
+                if (!recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
                     !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
                 {
                     recommendationVM.ApprovedSum = "0,00";
@@ -3302,10 +3304,11 @@ namespace Sjuklöner.Controllers
             {
                 resultMsg += "Det yrkade beloppet överstiger det beräknade beloppet. ";
             }
-            if (!claim.IVOCheck)
-            {
-                resultMsg += "Verksamheten saknas i Vårdgivarregistret på www.ivo.se. ";
-            }
+            //Activate IVO: The four following commented lines need to be uncommented when the IVO-check shall be activated
+            //if (!claim.IVOCheck)
+            //{
+            //    resultMsg += "Verksamheten saknas i Vårdgivarregistret på www.ivo.se. ";
+            //}
             if (!claim.ProxyCheck)
             {
                 resultMsg += "Ombudet saknar giltig fullmakt. ";

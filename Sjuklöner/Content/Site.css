@@ -2215,6 +2215,10 @@ a:hover, a:focus {
     padding-left: 4px;
 }
 
+.small-padding-left11 {
+    padding-left: 12px;
+}
+
 .table-button-cell {
     width: 114px;
 }

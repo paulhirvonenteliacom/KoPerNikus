@@ -52,21 +52,22 @@
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="form-group margin-bottom-small col line-height-06">
-                @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
-                @if (!Model.IvoCheck)
-                {
-                    <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.IvoCheckMsg)
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
-                        <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.IvoCheckMsg)
-                    </div>
-                }
-            </div>
+            @*Activate IVO: The following commented div need to be uncommented when the IVO-check shall be activated*@
+            @*<div class="form-group margin-bottom-small col line-height-06">
+                    @Html.LabelFor(model => model.IvoCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
+                    @if (!Model.IvoCheck)
+                    {
+                        <div class="col-md-8 align-bottom6 display-result decision-padding-left negative-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/red.jpg" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-8 align-bottom6 display-result decision-padding-left positive-result" id="ProCapitaCheck">
+                            <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.IvoCheckMsg)
+                        </div>
+                    }
+                </div>*@
 
             <div class="form-group margin-bottom-small col line-height-06">
                 @Html.LabelFor(model => model.AssistanceCheck, htmlAttributes: new { @class = "control-label control-label-large2 col-md-4" })
