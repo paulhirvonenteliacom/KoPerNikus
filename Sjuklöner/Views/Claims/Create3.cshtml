@@ -49,18 +49,18 @@
         <p class="col col-md-2"></p>
         <p class="col col-md-4 second-page-header3">Steg 3 av 4: Ange belopp</p>
     </div>
-    if (Model.ShowCalculatedValues == true)
-    {
+    //if (Model.ShowCalculatedValues == true)
+    //{
         <div class="row">
             <p class="col col-md-2"></p>
             <p class="col-small-left-padding2 col col-md-8">De förifyllda beloppen är förslag beräknade utifrån antal timmar, timlön och angivet kollektivavtal.</p>
         </div>
-    }
+    @*}
     else
     {
         <div class="row height-14">
         </div>
-    }
+    }*@
     <div class="row">
         <div class="form-horizontal">
             @*<div class="col col-md-6">*@
@@ -75,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group small-bottom-margin">
+            <div class="form-group small-bottom-margin top-margin-7">
                 @Html.LabelFor(model => model.HolidayPay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.HolidayPay, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.HolidayPay, id = "holidaypay", onchange = "calculateSum()", onblur = "calculateSum()" } })
@@ -84,7 +84,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group small-bottom-margin">
+            <div class="form-group small-bottom-margin top-margin-7">
                 @Html.LabelFor(model => model.SocialFees, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-4">
                     @Html.EditorFor(model => model.SocialFees, new { htmlAttributes = new { @class = "form-control", @placeholder = Model.SocialFees, id = "socialfees", onchange = "calculateSum()", onblur = "calculateSum()" } })

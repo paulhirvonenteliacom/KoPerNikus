@@ -2102,7 +2102,7 @@ namespace Sjuklöner.Controllers
                 {
                     create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1Plus);
                 }
-                create3VM.ShowCalculatedValues = true;
+                //create3VM.ShowCalculatedValues = true;
             }
             else   // This should never happen ?
             {
@@ -2370,7 +2370,7 @@ namespace Sjuklöner.Controllers
                             //claim.SickleaveNotificationCheck = false;
                             //claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
 
-                            if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
+                            if (!CheckExistingDocument(claim, "DoctorsCertificate") && claim.NumberOfSickDays > 7)
                             {
                                 claim.MissingDoctorsCertificate = true;
                             }

@@ -109,8 +109,7 @@
                     <div class="col col-md-2">
                     </div>
                     <div class="col col-md-10 no-col-padding">
-                        <div class="reg-assistant-val text-danger font-size-11">
-                        </div>
+                        <div class="reg-assistant-val text-danger font-size-11"></div>
                     </div>
                 </div>
 
@@ -343,8 +342,7 @@
                         <div class="col col-md-2">
                         </div>
                         <div class="col col-md-10 no-col-padding">
-                            <div class="sub-assistant-val text-danger font-size-11">
-                            </div>
+                            <div class="sub-assistant-val text-danger font-size-11"></div>
                         </div>
                     </div>
 
@@ -579,7 +577,7 @@
         }
 
         //This function triggers validation of input when pressing Enter but prevents submit
-        $(document).on('keypress', 'input[type="text"]', function (e) {
+        $(document).on('keypress keydown keyup', 'input[type="text"]', function (e) {
             var index = 0;
             var subIdx = 0;
             var dayIdx = 0;
@@ -661,7 +659,7 @@
                     dayIdx = parseInt(elem.id.substring(16));
                     validateInput(dayIdx, 99, 7);
                 }
-                e.preventDefault();
+                //e.preventDefault();
                 return false;
             }
         });
@@ -672,11 +670,11 @@
             }
             if (document.activeElement.id = "proceed") {
                 checkIfEmptySubAssistants(true);
-            }
-            if (!checkValidationErrors()) {
-                var erroronpage = document.getElementById('valerror-on-page');
-                erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 3.";
-                e.preventDefault();
+                if (!checkValidationErrors()) {
+                    var erroronpage = document.getElementById('valerror-on-page');
+                    erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 3.";
+                    e.preventDefault();
+                }
             }
             //if ($(document.activeElement).attr('type') == 'submit') {
             //    return true;
@@ -1146,9 +1144,11 @@
         }
 
         //reset validation error for sub assistant lacking hours
-        var subassistantval = document.getElementsByClassName('sub-assistant-val');
-        if (subassistantval[subIndex].innerHTML != "") {
-            subassistantval[subIndex].innerHTML = "";
+        if (subIndex != 99) {
+            var subassistantval = document.getElementsByClassName('sub-assistant-val');
+            if (subassistantval[subIndex].innerHTML != "") {
+                subassistantval[subIndex].innerHTML = "";
+            }
         }
 
 

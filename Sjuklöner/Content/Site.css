@@ -1423,6 +1423,10 @@ li a {
     padding-right: 0;
 }
 
+.top-margin-7 {
+    margin-top: 18px;
+}
+
 .no-padding-top{
     padding-top: 0;
 }
