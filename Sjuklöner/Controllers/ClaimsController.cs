@@ -2544,13 +2544,14 @@ namespace Sjuklöner.Controllers
             if (!string.IsNullOrWhiteSpace(claim.OmbudEmail))
             {
                 MailMessage message = new MailMessage();
-                message.From = new MailAddress("ourrobotdemo@gmail.com");
-                message.To.Add(new MailAddress(claim.OmbudEmail));
+                message.From = new MailAddress("robin@bitoreq.se");
+                //message.To.Add(new MailAddress(claim.OmbudEmail));
+                message.To.Add(new MailAddress("paul.hirvonen@bitoreq.se"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                //SendEmail(message); Remove comment after test
+                SendEmail(message);
             }
 
             using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + claim.ReferenceNumber + ".xml")))
@@ -5552,7 +5553,7 @@ namespace Sjuklöner.Controllers
             smtpClient.Credentials = credentials;
             //smtpClient.UseDefaultCredentials = true;
 
-            if (smtpHost == "smtp.gmail.com")
+            if (smtpHost == "smtp-mail.outlook.com")
                 smtpClient.EnableSsl = true;
 
             smtpClient.Send(message);
