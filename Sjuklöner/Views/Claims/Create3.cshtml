@@ -17,7 +17,7 @@
         </ol>
     </nav>
 </div>
-@using (Html.BeginForm("Create3", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post))
+@using (Html.BeginForm("Create3", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post, new { id = "form"}))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.ClaimNumber)
@@ -179,10 +179,10 @@
     $('#PdfEventCreate3Fail').delay(100000).hide(0);
 
     $(document).ready(function assignIdsToSubAssistants() {
-        var form = document.getElementsByTagName("form");
-        for (var i = 0; i < form.length; i++) {
-            form[i].id = "form";
-        }
+        //var form = document.getElementsByTagName("form");
+        //for (var i = 0; i < form.length; i++) {
+        //    form[i].id = "form";
+        //}
 
         $("form").submit(function (e) {
             if (!checkValidationErrors()) {

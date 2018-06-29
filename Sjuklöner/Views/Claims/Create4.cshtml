@@ -17,7 +17,7 @@
     </nav>
 </div>
 
-@using (Html.BeginForm("Create4", "Claims", new { noOfSubAssistants = Model.NumberOfSubAssistants }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create4", "Claims", new { noOfSubAssistants = Model.NumberOfSubAssistants }, FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ClaimNumber)
@@ -234,10 +234,10 @@
     $('#PdfEventCreate4Fail').delay(100000).hide(0);
 
     $(document).ready(function assignIdsToSubAssistants() {
-        var form = document.getElementsByTagName("form");
-        for (var i = 0; i < form.length; i++) {
-            form[i].id = "form";
-        }
+        //var form = document.getElementsByTagName("form");
+        //for (var i = 0; i < form.length; i++) {
+        //    form[i].id = "form";
+        //}
 
         //Set tabindexes
         var tab = document.getElementsByClassName("tabidx");

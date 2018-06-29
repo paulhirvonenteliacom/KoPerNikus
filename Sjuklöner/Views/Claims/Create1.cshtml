@@ -14,7 +14,7 @@
     </nav>
 </div>
 
-@using (Html.BeginForm("Create1", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post))
+@using (Html.BeginForm("Create1", "Claims", new { refNumber = Model.ClaimNumber }, FormMethod.Post, new { id = "form"}))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.ClaimNumber)
@@ -263,10 +263,10 @@
             refnumberbtn.setAttribute('tabindex', subassddlcounterInt + 10);
         }
 
-        var form = document.getElementsByTagName("form");
-        for (var i = 0; i < form.length; i++) {
-            form[i].id = "form";
-        }
+        //var form = document.getElementsByTagName("form");
+        //for (var i = 0; i < form.length; i++) {
+        //    form[i].id = "form";
+        //}
 
         if (!checkValidationErrors()) {
             var erroronpage = document.getElementById('valerror-on-page');

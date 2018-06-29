@@ -15,7 +15,7 @@
         </ol>
     </nav>
 </div>
-@using (Html.BeginForm("Create2", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post))
+@using (Html.BeginForm("Create2", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post, new { id = "form"}))
 {
     @Html.AntiForgeryToken()
     for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
@@ -565,10 +565,10 @@
     var proceedattempted = false;
 
     $(document).ready(function assignIdsToSubAssistants() {
-        var form = document.getElementsByTagName("form");
-        for (var i = 0; i < form.length; i++) {
-            form[i].id = "form";
-        }
+        //var form = document.getElementsByTagName("form");
+        //for (var i = 0; i < form.length; i++) {
+        //    form[i].id = "form";
+        //}
 
         var numberOfHoursSI = document.getElementsByClassName("hours-si");
         var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
