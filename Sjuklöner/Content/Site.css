@@ -501,6 +501,10 @@ li a {
     margin-left: 40px;
 }
 
+.left-margin-100 {
+    margin-left: 100px;
+}
+
 .table {
     margin-left: 15px;
 }
@@ -1423,6 +1427,10 @@ li a {
     padding-right: 0;
 }
 
+.top-margin-7 {
+    margin-top: 18px;
+}
+
 .no-padding-top{
     padding-top: 0;
 }
@@ -1502,6 +1510,10 @@ li a {
 
 .row-top-margin {
     margin-top: 12px;
+}
+
+.row-top-margin2 {
+    margin-top: 5px;
 }
 
 .small-row-margin {
@@ -1747,7 +1759,7 @@ date-padding2 {
 
 .sickday-info {
     font-size: 14px;
-    margin-left: -55px;
+    margin-left: -6px;
     padding-left: 0;
 }
 
@@ -2215,6 +2227,10 @@ a:hover, a:focus {
     padding-left: 4px;
 }
 
+.small-padding-left11 {
+    padding-left: 12px;
+}
+
 .table-button-cell {
     width: 114px;
 }
@@ -2331,4 +2347,12 @@ a:hover, a:focus {
 
 .hidden-by-default {
     display: none;
+}
+
+.dont-show {
+    visibility: hidden;
+}
+
+.well-checkbox {
+    margin-top: 2px !important;
 }

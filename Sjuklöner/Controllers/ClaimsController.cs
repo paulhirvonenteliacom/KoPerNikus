@@ -315,7 +315,6 @@ namespace Sjuklöner.Controllers
                 }
                 else
                 {
-                    //Need to remove the substitute assistant??
                     numberOfRemovedSubAssistants++;
                 }
             }
@@ -1236,23 +1235,14 @@ namespace Sjuklöner.Controllers
                     onCallDaySIArray = day.OnCallDaySI.Split('+').ToArray();
                     onCallNightSIArray = day.OnCallNightSI.Split('+').ToArray();
 
-                    for (int subIdx = 0; subIdx < claim.NumberOfSubAssistants; subIdx++)
-                    {
-                        hoursSIPerSubAndDay.Add(hoursSIArray);
-                        unsocialEveningSIPerSubAndDay.Add(unsocialEveningSIArray);
-                        unsocialNightSIPerSubAndDay.Add(unsocialNightSIArray);
-                        unsocialWeekendSIPerSubAndDay.Add(unsocialWeekendSIArray);
-                        unsocialGrandWeekendSIPerSubAndDay.Add(unsocialGrandWeekendSIArray);
-                        onCallDaySIPerSubAndDay.Add(onCallDaySIArray);
-                        onCallNightSIPerSubAndDay.Add(onCallNightSIArray);
-                        //hoursSIPerSubAndDay[subIdx, dayIdx] = hoursSIArray[subIdx];
-                        //unsocialEveningSIPerSubAndDay[subIdx, dayIdx] = unsocialEveningSIArray[subIdx];
-                        //unsocialNightSIPerSubAndDay[subIdx, dayIdx] = unsocialNightSIArray[subIdx];
-                        //unsocialWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialWeekendSIArray[subIdx];
-                        //unsocialGrandWeekendSIPerSubAndDay[subIdx, dayIdx] = unsocialGrandWeekendSIArray[subIdx];
-                        //onCallDaySIPerSubAndDay[subIdx, dayIdx] = onCallDaySIArray[subIdx];
-                        //onCallNightSIPerSubAndDay[subIdx, dayIdx] = onCallNightSIArray[subIdx];
-                    }
+                    hoursSIPerSubAndDay.Add(hoursSIArray);
+                    unsocialEveningSIPerSubAndDay.Add(unsocialEveningSIArray);
+                    unsocialNightSIPerSubAndDay.Add(unsocialNightSIArray);
+                    unsocialWeekendSIPerSubAndDay.Add(unsocialWeekendSIArray);
+                    unsocialGrandWeekendSIPerSubAndDay.Add(unsocialGrandWeekendSIArray);
+                    onCallDaySIPerSubAndDay.Add(onCallDaySIArray);
+                    onCallNightSIPerSubAndDay.Add(onCallNightSIArray);
+
                     dayIdx++;
                 }
             }
@@ -1357,62 +1347,62 @@ namespace Sjuklöner.Controllers
                     //Set all empty hour properties to zero
                     if (row.Hours == "")
                     {
-                        row.Hours = "0";
+                        row.Hours = "0,00";
                     }
                     if (row.UnsocialEvening == "")
                     {
-                        row.UnsocialEvening = "0";
+                        row.UnsocialEvening = "0,00";
                     }
                     if (row.UnsocialNight == "")
                     {
-                        row.UnsocialNight = "0";
+                        row.UnsocialNight = "0,00";
                     }
                     if (row.UnsocialWeekend == "")
                     {
-                        row.UnsocialWeekend = "0";
+                        row.UnsocialWeekend = "0,00";
                     }
                     if (row.UnsocialGrandWeekend == "")
                     {
-                        row.UnsocialGrandWeekend = "0";
+                        row.UnsocialGrandWeekend = "0,00";
                     }
                     if (row.OnCallDay == "")
                     {
-                        row.OnCallDay = "0";
+                        row.OnCallDay = "0,00";
                     }
                     if (row.OnCallNight == "")
                     {
-                        row.OnCallNight = "0";
+                        row.OnCallNight = "0,00";
                     }
 
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
                         if (row.HoursSI[i] == "")
                         {
-                            row.HoursSI[i] = "0";
+                            row.HoursSI[i] = "0,00";
                         }
                         if (row.UnsocialEveningSI[i] == "")
                         {
-                            row.UnsocialEveningSI[i] = "0";
+                            row.UnsocialEveningSI[i] = "0,00";
                         }
                         if (row.UnsocialNightSI[i] == "")
                         {
-                            row.UnsocialNightSI[i] = "0";
+                            row.UnsocialNightSI[i] = "0,00";
                         }
                         if (row.UnsocialWeekendSI[i] == "")
                         {
-                            row.UnsocialWeekendSI[i] = "0";
+                            row.UnsocialWeekendSI[i] = "0,00";
                         }
                         if (row.UnsocialGrandWeekendSI[i] == "")
                         {
-                            row.UnsocialGrandWeekendSI[i] = "0";
+                            row.UnsocialGrandWeekendSI[i] = "0,00";
                         }
                         if (row.OnCallDaySI[i] == "")
                         {
-                            row.OnCallDaySI[i] = "0";
+                            row.OnCallDaySI[i] = "0,00";
                         }
                         if (row.OnCallNightSI[i] == "")
                         {
-                            row.OnCallNightSI[i] = "0";
+                            row.OnCallNightSI[i] = "0,00";
                         }
                     }
                     idx++;
@@ -1846,14 +1836,78 @@ namespace Sjuklöner.Controllers
             {
                 for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    HoursSIConcat += day.HoursSI[i] + "+";
-                    UnsocialEveningSIConcat += day.UnsocialEveningSI[i] + "+";
-                    UnsocialNightSIConcat += day.UnsocialNightSI[i] + "+";
-                    UnsocialWeekendSIConcat += day.UnsocialWeekendSI[i] + "+";
-                    UnsocialGrandWeekendSIConcat += day.UnsocialGrandWeekendSI[i] + "+";
-                    OnCallDaySIConcat += day.OnCallDaySI[i] + "+";
-                    OnCallNightSIConcat += day.OnCallNightSI[i] + "+";
+                    HoursSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.HoursSI[i])) + "+";
+                    UnsocialEveningSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialEveningSI[i])) + "+";
+                    UnsocialNightSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialNightSI[i])) + "+";
+                    UnsocialWeekendSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialWeekendSI[i])) + "+";
+                    UnsocialGrandWeekendSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialGrandWeekendSI[i])) + "+";
+                    OnCallDaySIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallDaySI[i])) + "+";
+                    OnCallNightSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallNightSI[i])) + "+";
+                    //UnsocialNightSIConcat += day.UnsocialNightSI[i] + "+";
+                    //UnsocialWeekendSIConcat += day.UnsocialWeekendSI[i] + "+";
+                    //UnsocialGrandWeekendSIConcat += day.UnsocialGrandWeekendSI[i] + "+";
+                    //OnCallDaySIConcat += day.OnCallDaySI[i] + "+";
+                    //OnCallNightSIConcat += day.OnCallNightSI[i] + "+";
                 }
+
+                //The lines below ensure the same format 0,00 for all input
+                if (day.Hours == null)
+                {
+                    day.Hours = "0,00";
+                }
+                else
+                {
+                    day.Hours = String.Format("{0:0.00}", Convert.ToDecimal(day.Hours));
+                }
+                if (day.UnsocialEvening == null)
+                {
+                    day.UnsocialEvening = "0,00";
+                }
+                else
+                {
+                    day.UnsocialEvening = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialEvening));
+                }
+                if (day.UnsocialNight == null)
+                {
+                    day.UnsocialNight = "0,00";
+                }
+                else
+                {
+                    day.UnsocialNight = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialNight));
+                }
+                if (day.UnsocialWeekend == null)
+                {
+                    day.UnsocialWeekend = "0,00";
+                }
+                else
+                {
+                    day.UnsocialWeekend = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialWeekend));
+                }
+                if (day.UnsocialGrandWeekend == null)
+                {
+                    day.UnsocialGrandWeekend = "0,00";
+                }
+                else
+                {
+                    day.UnsocialGrandWeekend = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialGrandWeekend));
+                }
+                if (day.OnCallDay == null)
+                {
+                    day.OnCallDay = "0,00";
+                }
+                else
+                {
+                    day.OnCallDay = String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallDay));
+                }
+                if (day.OnCallNight == null)
+                {
+                    day.OnCallNight = "0,00";
+                }
+                else
+                {
+                    day.OnCallNight = String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallNight));
+                }
+
 
                 var claimDay = new ClaimDay
                 {
@@ -2112,7 +2166,7 @@ namespace Sjuklöner.Controllers
                 {
                     create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1Plus);
                 }
-                create3VM.ShowCalculatedValues = true;
+                //create3VM.ShowCalculatedValues = true;
             }
             else   // This should never happen ?
             {
@@ -2380,7 +2434,7 @@ namespace Sjuklöner.Controllers
                             //claim.SickleaveNotificationCheck = false;
                             //claim.SickleaveNotificationCheckMsg = "Kontroll ej utförd";
 
-                            if (!CheckExistingDocument(claim, "DoctorsCertificate", model.DoctorsCertificate) && claim.NumberOfSickDays > 7)
+                            if (!CheckExistingDocument(claim, "DoctorsCertificate") && claim.NumberOfSickDays > 7)
                             {
                                 claim.MissingDoctorsCertificate = true;
                             }
@@ -2554,13 +2608,13 @@ namespace Sjuklöner.Controllers
             if (!string.IsNullOrWhiteSpace(claim.OmbudEmail))
             {
                 MailMessage message = new MailMessage();
-                message.From = new MailAddress("ourrobotdemo@gmail.com");
+                message.From = new MailAddress("robin@bitoreq.se");
                 message.To.Add(new MailAddress(claim.OmbudEmail));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                //SendEmail(message); Remove comment after test
+                //SendEmail(message);
             }
 
             using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + claim.ReferenceNumber + ".xml")))
@@ -2597,8 +2651,6 @@ namespace Sjuklöner.Controllers
             {
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
-
-                //These check results are hardcoded for the demo. Need to be changed for the real solution.
 
                 recommendationVM.IvoCheck = false;
                 recommendationVM.IvoCheck = claim.IVOCheck;
@@ -2820,11 +2872,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        if (fkAttachmentSubAssistantsAsString[i] == "1")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -2889,7 +2941,10 @@ namespace Sjuklöner.Controllers
                         index++;
                     }
 
-                    if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    //Activate IVO: The two following commented lines need to replace the subsequent two lines when the IVO-check shall be activated
+                    //if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                    //    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
+                    if (!recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
                         !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
                     {
                         recommendationVM.ApprovedSum = "0,00";
@@ -2953,8 +3008,6 @@ namespace Sjuklöner.Controllers
             {
                 //Find ClaimDay records for the claim
                 var claimDays = db.ClaimDays.Where(c => c.ReferenceNumber == claim.ReferenceNumber).OrderBy(c => c.CalendarDayNumber).ToList();
-
-                //These check results are hardcoded for the demo. Need to be changed for the real solution.
 
                 recommendationVM.IvoCheck = false;
                 recommendationVM.IvoCheck = claim.IVOCheck;
@@ -3176,11 +3229,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        if (fkAttachmentSubAssistantsAsString[i] == "1")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -3220,7 +3273,10 @@ namespace Sjuklöner.Controllers
                     index++;
                 }
 
-                if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                //Activate IVO: The two following commented lines need to replace the subsequent two lines when the IVO-check shall be activated
+                //if (!recommendationVM.IvoCheck || !recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
+                //    !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
+                if (!recommendationVM.CompleteCheck || !recommendationVM.ProxyCheck || !recommendationVM.AssistanceCheck || !recommendationVM.SalarySpecRegAssistantCheck ||
                     !recommendationVM.MedicalCertificateCheck || !recommendationVM.FKRegAssistantCheck || !recommendationVM.FKSubAssistantCheck || !FKSubAssistantAttachmentOK)
                 {
                     recommendationVM.ApprovedSum = "0,00";
@@ -3282,11 +3338,34 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
+
+                //New code
+
+
+                string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
+                fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
+
+                string[] fkAttachmentBoolSubAssistantsAsString = new string[20];
+                fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+
+                string fkAttachmentMsgSubAssistantConcat = "";
+                string fkAttachmentBoolSubAssistantConcat = "";
+
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                }
+
+                //new code
+
+
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
-                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName + "+" + claim.NumberOfSubAssistants.ToString() + "+" + fkAttachmentMsgSubAssistantConcat + "+" + fkAttachmentBoolSubAssistantConcat;
 
                 string[] subAssistantBools = claim.FKSubAssistantCheckBoolConcat.Split('£');
                 string[] subAssistantCheckMsgs = claim.FKSubAssistantCheckMsgConcat.Split('£');
@@ -3323,10 +3402,11 @@ namespace Sjuklöner.Controllers
             {
                 resultMsg += "Det yrkade beloppet överstiger det beräknade beloppet. ";
             }
-            if (!claim.IVOCheck)
-            {
-                resultMsg += "Verksamheten saknas i Vårdgivarregistret på www.ivo.se. ";
-            }
+            //Activate IVO: The four following commented lines need to be uncommented when the IVO-check shall be activated
+            //if (!claim.IVOCheck)
+            //{
+            //    resultMsg += "Verksamheten saknas i Vårdgivarregistret på www.ivo.se. ";
+            //}
             if (!claim.ProxyCheck)
             {
                 resultMsg += "Ombudet saknar giltig fullmakt. ";
@@ -3727,11 +3807,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        if (fkAttachmentSubAssistantsAsString[i] == "1")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -4439,11 +4519,32 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
+                //New code
+
+
+                string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
+                fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
+
+                string[] fkAttachmentBoolSubAssistantsAsString = new string[20];
+                fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+
+                string fkAttachmentMsgSubAssistantConcat = "";
+                string fkAttachmentBoolSubAssistantConcat = "";
+
+
+                for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
+                {
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                }
+
+                //new code
+
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
                     claim.IVOCheckMsg + "+" + claim.ProxyCheckMsg + "+" + claim.AssistanceCheckMsg + "+" + claim.SalarySpecRegAssistantCheckMsg + "+" + claim.SickleaveNotificationCheckMsg + "+" +
                     claim.MedicalCertificateCheckMsg + "+" + claim.FKRegAssistantCheckMsg + "+" + claim.FKSubAssistantCheckMsg + "+" + claim.NumberOfCalendarDays.ToString() + "+" +
-                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName;
+                    claim.CustomerSSN.Substring(2) + "+" + claim.CustomerName + "+" + claim.NumberOfSubAssistants.ToString() + "+" + fkAttachmentMsgSubAssistantConcat + "+" + fkAttachmentBoolSubAssistantConcat;
 
                 string[] subAssistantBools = claim.FKSubAssistantCheckBoolConcat.Split('£');
                 string[] subAssistantCheckMsgs = claim.FKSubAssistantCheckMsgConcat.Split('£');
@@ -4951,14 +5052,6 @@ namespace Sjuklöner.Controllers
                 db.ClaimCalculations.RemoveRange(prevClaimCalculations);
             }
 
-            //Reset number of hours in claim record. If not reset, the same hours will be included several times.
-            claim.NumberOfAbsenceHours = (decimal)0.00;
-            claim.NumberOfOrdinaryHours = (decimal)0.00;
-            claim.NumberOfUnsocialHours = (decimal)0.00;
-            claim.NumberOfOnCallHours = (decimal)0.00;
-            db.Entry(claim).State = EntityState.Modified;
-            db.SaveChanges();
-
             //Assign a CollAgreementInfo id to each claim day. This is required in order for the correct hourly pay to be used in the calculations.
             var collectiveAgreementInfos = db.CollectiveAgreementInfos.Where(c => c.CollectiveAgreementHeaderId == claim.CareCompany.SelectedCollectiveAgreementId).OrderBy(c => c.StartDate).ToList();
             List<int> usedCollectiveAgreementInfoIds = new List<int>(); //This list is used for figuring out which collective agreement infos have been used.
@@ -5160,12 +5253,6 @@ namespace Sjuklöner.Controllers
                     claimCalculation.UnsocialWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialWeekend));
                     claimCalculation.UnsocialGrandWeekendHoursQD = String.Format("{0:0.00}", Convert.ToDecimal("0,00") + Convert.ToDecimal(claimDays[qdIdx].UnsocialGrandWeekend));
 
-                    //These numbers go to the assistant's part of the view
-                    claim.NumberOfAbsenceHours = Convert.ToDecimal(claimCalculation.HoursQD) + Convert.ToDecimal(claimDays[qdIdx].OnCallDay) + Convert.ToDecimal(claimDays[qdIdx].OnCallNight);
-                    claim.NumberOfOrdinaryHours = Convert.ToDecimal(claimCalculation.HoursQD);
-                    claim.NumberOfUnsocialHours = Convert.ToDecimal(claimDays[qdIdx].UnsocialEvening) + Convert.ToDecimal(claimDays[qdIdx].UnsocialNight) + Convert.ToDecimal(claimDays[qdIdx].UnsocialWeekend) + Convert.ToDecimal(claimDays[qdIdx].UnsocialGrandWeekend);
-                    claim.NumberOfOnCallHours = Convert.ToDecimal(claimDays[qdIdx].OnCallDay) + Convert.ToDecimal(claimDays[qdIdx].OnCallNight);
-
                     //Calculate number of hours exceeding 8. Only those hours shall be paid.
                     if (Convert.ToDecimal(claimCalculation.HoursQD) > 8)
                     {
@@ -5345,13 +5432,6 @@ namespace Sjuklöner.Controllers
                     claimCalculation.UnsocialSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14)));
                     claimCalculation.OnCallSumD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14)));
 
-                    //These numbers go to the assistant's part of the view
-                    claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursD2T14) + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
-                    claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursD2T14);
-                    claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD2T14) + Convert.ToDecimal(claimCalculation.UnsocialNightD2T14) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD2T14) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD2T14);
-                    claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimCalculation.OnCallDayD2T14) + Convert.ToDecimal(claimCalculation.OnCallNightD2T14);
-                    //Code maybe should be added here to calculate the number of hours for the SI assistant..
-
                     //Calculate the money by category for day 2 to day 14
                     //Salary base for day 2 to day 14
                     claimCalculation.SalaryBaseD2T14 = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD2T14) * Convert.ToDecimal(claim.HourlySalaryAsString)));
@@ -5416,52 +5496,12 @@ namespace Sjuklöner.Controllers
                     claimCalculation.CostCalcD2T14 = claimCalculation.SickPayD2T14 + " Kr + " + claimCalculation.HolidayPayD2T14 + " Kr + " + claimCalculation.SocialFeesD2T14 + " Kr + " + claimCalculation.PensionAndInsuranceD2T14 + " Kr";
                 }
 
-                //new line for day 15 and beyond
-                //prevSickDayIdx = prevSickDayIdx + applicableSickDays;
-
+                //day 15 and beyond
                 if (day15PlusInThisCollAgreement)
                 {
-                    //new code for day 15 and beyond
-                    //DAY 15 and plus
-                    //claimCalculation.HoursD15Plus = "0,00";
-                    //claimCalculation.UnsocialEveningD15Plus = "0,00";
-                    //claimCalculation.UnsocialNightD15Plus = "0,00";
-                    //claimCalculation.UnsocialWeekendD15Plus = "0,00";
-                    //claimCalculation.UnsocialGrandWeekendD15Plus = "0,00";
-                    //claimCalculation.UnsocialSumD15Plus = "0,00";
-                    //claimCalculation.OnCallDayD15Plus = "0,00";
-                    //claimCalculation.OnCallNightD15Plus = "0,00";
-                    //claimCalculation.OnCallSumD15Plus = "0,00";
-
-                    ////Sum up hours by category for day 15 and beyond
-                    //startIdx = prevSickDayIdx;
-                    //stopIdx = startIdx + applicableSickDays;
-
-                    //for (int i = startIdx; i < stopIdx; i++)
-                    //{
-                    //    if (!claimDays[i].Well && claimDays[i].SickDayNumber > 14) //new if-statement for 5-day rule
-                    //    {
-                    //        claimCalculation.HoursD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimDays[i].Hours)));
-
-                    //        claimCalculation.UnsocialEveningD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialEvening)));
-                    //        claimCalculation.UnsocialNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialNight)));
-                    //        claimCalculation.UnsocialWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialWeekend)));
-                    //        claimCalculation.UnsocialGrandWeekendD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus) + Convert.ToDecimal(claimDays[i].UnsocialGrandWeekend)));
-
-                    //        claimCalculation.OnCallDayD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimDays[i].OnCallDay)));
-                    //        claimCalculation.OnCallNightD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallNightD15Plus) + Convert.ToDecimal(claimDays[i].OnCallNight)));
-                    //    }
-                    //}
 
                     claimCalculation.UnsocialSumD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus)));
                     claimCalculation.OnCallSumD15Plus = String.Format("{0:0.00}", (Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus)));
-
-                    //These numbers go to the assistant's part of the view
-                    claim.NumberOfAbsenceHours = claim.NumberOfAbsenceHours + Convert.ToDecimal(claimCalculation.HoursD15Plus) + Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus);
-                    claim.NumberOfOrdinaryHours = claim.NumberOfOrdinaryHours + Convert.ToDecimal(claimCalculation.HoursD15Plus);
-                    claim.NumberOfUnsocialHours = claim.NumberOfUnsocialHours + Convert.ToDecimal(claimCalculation.UnsocialEveningD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialNightD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialWeekendD15Plus) + Convert.ToDecimal(claimCalculation.UnsocialGrandWeekendD15Plus);
-                    claim.NumberOfOnCallHours = claim.NumberOfOnCallHours + Convert.ToDecimal(claimCalculation.OnCallDayD15Plus) + Convert.ToDecimal(claimCalculation.OnCallNightD15Plus);
-                    //Code maybe should be added here to calculate the number of hours for the SI assistant..
 
                     //Calculate the money by category for day 15 and beyond
                     //Salary base for holiday pay for day 15 and beyond
@@ -5598,7 +5638,7 @@ namespace Sjuklöner.Controllers
             smtpClient.Credentials = credentials;
             //smtpClient.UseDefaultCredentials = true;
 
-            if (smtpHost == "smtp.gmail.com")
+            if (smtpHost == "smtp-mail.outlook.com")
                 smtpClient.EnableSsl = true;
 
             smtpClient.Send(message);

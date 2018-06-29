@@ -33,7 +33,7 @@
         else
         {
             <div class="col col-md-6 left-margin-12 font-size-16">
-                Välkommen! Du är nu registrerad som ombud för @Model.CompanyName. För att kunna skapa en ansökan krävs information om två assistenter. Den ena är den insjuknade ordinarie assistenten och den andra är den vikarierande assistenten.
+                Välkommen! Du är nu registrerad som ombud för @Model.CompanyName. För att kunna skapa en ansökan krävs information om minst två assistenter, en insjuknad ordinarie assistent och minst en vikarierande assistent.
                 <p class="col-no-left-padding">@Html.ActionLink("Klicka här ", "Create", "Assistants", null, null)för att skapa assistenter.</p>
             </div>
         }
@@ -72,10 +72,10 @@
                             Kundens personnummer
                         </th>
                         <th class="ssmall-col-ombud">
-                            Första sjukdag
+                            Första kalenderdag
                         </th>
                         <th class="ssmall-col-ombud">
-                            Sista sjukdag
+                            Sista kalenderdag
                         </th>
                         <th class="small-col-ombud">
                             Yrkat belopp (Kr)
@@ -168,13 +168,13 @@
                             Kundens personnummer
                         </th>
                         <th class="ssmall-col-ombud">
-                            Första sjukdag
+                            Första kalenderdag
                         </th>
                         <th class="ssmall-col-ombud">
-                            Sista sjukdag
+                            Sista kalenderdag
                         </th>
                         @*<th class="ssmall-col-ombud">
-                                Antal sjukdagar
+                                Antal kalenderdagar
                             </th>*@
                         <th class="small-col-ombud">
                             Yrkat belopp (Kr)
@@ -272,10 +272,10 @@
                             Kundens personnummer
                         </th>
                         <th class="ssmall-col-ombud">
-                            Första sjukdag
+                            Första kalenderdag
                         </th>
                         <th class="ssmall-col-ombud">
-                            Sista sjukdag
+                            Sista kalenderdag
                         </th>
                         <th class="small-col-ombud">
                             Yrkat belopp (Kr)
