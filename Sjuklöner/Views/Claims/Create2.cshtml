@@ -190,9 +190,18 @@
                     <div class="row line-height-10">
                         @*<div class="schedule-date date-left-padding col col-md-2">*@
                         <div class="schedule-date col col-md-2">
-                            <div class="date-left-padding3">
-                                @Html.EditorFor(model => model.ScheduleRowList[i].Well, new { htmlAttributes = new { @class = "well-checkbox", onchange = "check5DayGap()" } })
-                            </div>
+                            @if (i == 0)
+                            {
+                                <div class="date-left-padding3">
+                                    @Html.EditorFor(model => model.ScheduleRowList[i].Well, new { htmlAttributes = new { @class = "well-checkbox dont-show", onchange = "check5DayGap()" } })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="date-left-padding3">
+                                    @Html.EditorFor(model => model.ScheduleRowList[i].Well, new { htmlAttributes = new { @class = "well-checkbox", onchange = "check5DayGap()" } })
+                                </div>
+                            }
                             <div class="date-padding2">
                                 @Html.DisplayFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString, new { htmlAttributes = new { @class = "calendardate" } })
                                 @Html.HiddenFor(modelItem => Model.ScheduleRowList[i].ScheduleRowDateString)
@@ -552,6 +561,9 @@
 
     $('#PdfEventCreate2Fail').delay(100000).hide(0);
 
+    //this variable keeps track of if a proceed has been attempted. The 5-day rule is only checked after proceed has been attempted.
+    var proceedattempted = false;
+
     $(document).ready(function assignIdsToSubAssistants() {
         var form = document.getElementsByTagName("form");
         for (var i = 0; i < form.length; i++) {
@@ -665,16 +677,18 @@
         });
 
         $("form").submit(function (e) {
-            if (!checkIfEmptyRegAssistant()) {
+            //tbc
+            if (document.activeElement.id == "proceed") {
+                proceedattempted = true;
+            }
+            if (!checkIfEmptyRegAssistant() && proceedattempted) {
                 check5DayGap();
             }
-            if (document.activeElement.id = "proceed") {
-                checkIfEmptySubAssistants(true);
-                if (!checkValidationErrors()) {
-                    var erroronpage = document.getElementById('valerror-on-page');
-                    erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 3.";
-                    e.preventDefault();
-                }
+            checkIfEmptySubAssistants(true);
+            if (!checkValidationErrors()) {
+                var erroronpage = document.getElementById('valerror-on-page');
+                erroronpage.innerHTML = "Fel måste rättas först innan det går att spara eller gå vidare till steg 3.";
+                e.preventDefault();
             }
             //if ($(document.activeElement).attr('type') == 'submit') {
             //    return true;
@@ -718,6 +732,7 @@
         var unsocialGrandWeekend = document.getElementsByClassName("unsocial-grandweekend");
         var oncallDay = document.getElementsByClassName("oncall-day");
         var oncallNight = document.getElementsByClassName("oncall-night");
+
         var numberOfCalendarDays = numberOfHours.length;
 
         var wellCheckbox = document.getElementsByClassName('well-checkbox');
@@ -726,30 +741,60 @@
         var dayIdx = 0;
         var gapCounter = 0;
 
-        while (gapCounter < 5 && dayIdx < numberOfCalendarDays) {
-            if ((numberOfHours[dayIdx].value == "" || parseFloat(numberOfHours[dayIdx].value.replace(',', '.')) == 0) &&
-                (unsocialEvening[dayIdx].value == "" || parseFloat(unsocialEvening[dayIdx].value.replace(',', '.')) == 0) &&
-                (unsocialNight[dayIdx].value == "" || parseFloat(unsocialNight[dayIdx].value.replace(',', '.')) == 0) &&
-                (unsocialWeekend[dayIdx].value == "" || parseFloat(unsocialWeekend[dayIdx].value.replace(',', '.')) == 0) &&
-                (unsocialGrandWeekend[dayIdx].value == "" || parseFloat(unsocialGrandWeekend[dayIdx].value.replace(',', '.')) == 0) &&
-                (oncallDay[dayIdx].value == "" || parseFloat(oncallDay[dayIdx].value.replace(',', '.')) == 0) &&
-                (oncallNight[dayIdx].value == "" || parseFloat(oncallNight[dayIdx].value.replace(',', '.')) == 0) || wellCheckbox[dayIdx].checked == true) {
-                gapCounter++;
+        if (proceedattempted) {
+            while (gapCounter < 5 && dayIdx < numberOfCalendarDays) {
+                if ((numberOfHours[dayIdx].value == "" || parseFloat(numberOfHours[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialEvening[dayIdx].value == "" || parseFloat(unsocialEvening[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialNight[dayIdx].value == "" || parseFloat(unsocialNight[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialWeekend[dayIdx].value == "" || parseFloat(unsocialWeekend[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialGrandWeekend[dayIdx].value == "" || parseFloat(unsocialGrandWeekend[dayIdx].value.replace(',', '.')) == 0) &&
+                    (oncallDay[dayIdx].value == "" || parseFloat(oncallDay[dayIdx].value.replace(',', '.')) == 0) &&
+                    (oncallNight[dayIdx].value == "" || parseFloat(oncallNight[dayIdx].value.replace(',', '.')) == 0) || wellCheckbox[dayIdx].checked == true) {
+                    gapCounter++;
+                }
+                else {
+                    gapCounter = 0;
+                }
+                dayIdx++;
             }
-            else {
-                gapCounter = 0;
-            }
-            dayIdx++;
         }
 
+        var sickdayafterwelldayFound = false;
         var regassistantval = document.getElementsByClassName('reg-assistant-val');
         if (gapCounter == 5 && dayIdx < numberOfCalendarDays) { //No validation error displayed if the 5 day gap is at the very end of the claims calendardays
+            //find the dayIdx of the first sickday after the days of being well
+            while (!sickdayafterwelldayFound && dayIdx < numberOfCalendarDays) {
+                if ((numberOfHours[dayIdx].value == "" || parseFloat(numberOfHours[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialEvening[dayIdx].value == "" || parseFloat(unsocialEvening[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialNight[dayIdx].value == "" || parseFloat(unsocialNight[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialWeekend[dayIdx].value == "" || parseFloat(unsocialWeekend[dayIdx].value.replace(',', '.')) == 0) &&
+                    (unsocialGrandWeekend[dayIdx].value == "" || parseFloat(unsocialGrandWeekend[dayIdx].value.replace(',', '.')) == 0) &&
+                    (oncallDay[dayIdx].value == "" || parseFloat(oncallDay[dayIdx].value.replace(',', '.')) == 0) &&
+                    (oncallNight[dayIdx].value == "" || parseFloat(oncallNight[dayIdx].value.replace(',', '.')) == 0) || wellCheckbox[dayIdx].checked == true) {
+                    dayIdx++;
+                }
+                else {
+                    sickdayafterwelldayFound = true;
+                }
+            }
+        }
+        if (sickdayafterwelldayFound) {
             var date = document.getElementsByClassName('date-padding2')[dayIdx].innerText.trim();
-            regassistantval[0].innerHTML = "En ny sjukperiod börjar efter 5 dagar i följd som frisk eller arbetsfria dagar som sjuk. En separat ansökan måste därför skickas in fr. o. m. " + date + ".";
+            regassistantval[0].innerHTML = "En ny sjukperiod börjar efter mer än 4 dagar i följd som frisk eller arbetsfria dagar som sjuk. En separat ansökan måste därför skickas in fr. o. m. " + date + ".";
             return false;
         }
         else {
             regassistantval[0].innerHTML = "";
+
+            //clear validation errors for +rest buttons if possible and below the "Spara" and "Gå till steg 3" buttons if no validation errors on the page
+            if (checkValidationErrors()) {
+                var erroronpage = document.getElementById('valerror-on-page');
+                erroronpage.innerHTML = "";
+
+                //clear validation error for ordinary assistant
+                var regassistantval = document.getElementsByClassName('reg-assistant-val');
+                regassistantval[0].innerHTML = "";
+            }
             return true;
         }
     }

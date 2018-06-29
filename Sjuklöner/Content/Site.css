@@ -501,6 +501,10 @@ li a {
     margin-left: 40px;
 }
 
+.left-margin-100 {
+    margin-left: 100px;
+}
+
 .table {
     margin-left: 15px;
 }
@@ -1508,6 +1512,10 @@ li a {
     margin-top: 12px;
 }
 
+.row-top-margin2 {
+    margin-top: 5px;
+}
+
 .small-row-margin {
     margin-left: -3px;
     margin-right: -3px;
@@ -2339,4 +2347,12 @@ a:hover, a:focus {
 
 .hidden-by-default {
     display: none;
+}
+
+.dont-show {
+    visibility: hidden;
+}
+
+.well-checkbox {
+    margin-top: 2px !important;
 }

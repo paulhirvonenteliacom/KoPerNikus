@@ -1347,62 +1347,62 @@ namespace Sjuklöner.Controllers
                     //Set all empty hour properties to zero
                     if (row.Hours == "")
                     {
-                        row.Hours = "0";
+                        row.Hours = "0,00";
                     }
                     if (row.UnsocialEvening == "")
                     {
-                        row.UnsocialEvening = "0";
+                        row.UnsocialEvening = "0,00";
                     }
                     if (row.UnsocialNight == "")
                     {
-                        row.UnsocialNight = "0";
+                        row.UnsocialNight = "0,00";
                     }
                     if (row.UnsocialWeekend == "")
                     {
-                        row.UnsocialWeekend = "0";
+                        row.UnsocialWeekend = "0,00";
                     }
                     if (row.UnsocialGrandWeekend == "")
                     {
-                        row.UnsocialGrandWeekend = "0";
+                        row.UnsocialGrandWeekend = "0,00";
                     }
                     if (row.OnCallDay == "")
                     {
-                        row.OnCallDay = "0";
+                        row.OnCallDay = "0,00";
                     }
                     if (row.OnCallNight == "")
                     {
-                        row.OnCallNight = "0";
+                        row.OnCallNight = "0,00";
                     }
 
                     for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                     {
                         if (row.HoursSI[i] == "")
                         {
-                            row.HoursSI[i] = "0";
+                            row.HoursSI[i] = "0,00";
                         }
                         if (row.UnsocialEveningSI[i] == "")
                         {
-                            row.UnsocialEveningSI[i] = "0";
+                            row.UnsocialEveningSI[i] = "0,00";
                         }
                         if (row.UnsocialNightSI[i] == "")
                         {
-                            row.UnsocialNightSI[i] = "0";
+                            row.UnsocialNightSI[i] = "0,00";
                         }
                         if (row.UnsocialWeekendSI[i] == "")
                         {
-                            row.UnsocialWeekendSI[i] = "0";
+                            row.UnsocialWeekendSI[i] = "0,00";
                         }
                         if (row.UnsocialGrandWeekendSI[i] == "")
                         {
-                            row.UnsocialGrandWeekendSI[i] = "0";
+                            row.UnsocialGrandWeekendSI[i] = "0,00";
                         }
                         if (row.OnCallDaySI[i] == "")
                         {
-                            row.OnCallDaySI[i] = "0";
+                            row.OnCallDaySI[i] = "0,00";
                         }
                         if (row.OnCallNightSI[i] == "")
                         {
-                            row.OnCallNightSI[i] = "0";
+                            row.OnCallNightSI[i] = "0,00";
                         }
                     }
                     idx++;
@@ -1836,14 +1836,78 @@ namespace Sjuklöner.Controllers
             {
                 for (int i = 0; i < create2VM.NumberOfSubAssistants; i++)
                 {
-                    HoursSIConcat += day.HoursSI[i] + "+";
-                    UnsocialEveningSIConcat += day.UnsocialEveningSI[i] + "+";
-                    UnsocialNightSIConcat += day.UnsocialNightSI[i] + "+";
-                    UnsocialWeekendSIConcat += day.UnsocialWeekendSI[i] + "+";
-                    UnsocialGrandWeekendSIConcat += day.UnsocialGrandWeekendSI[i] + "+";
-                    OnCallDaySIConcat += day.OnCallDaySI[i] + "+";
-                    OnCallNightSIConcat += day.OnCallNightSI[i] + "+";
+                    HoursSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.HoursSI[i])) + "+";
+                    UnsocialEveningSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialEveningSI[i])) + "+";
+                    UnsocialNightSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialNightSI[i])) + "+";
+                    UnsocialWeekendSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialWeekendSI[i])) + "+";
+                    UnsocialGrandWeekendSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialGrandWeekendSI[i])) + "+";
+                    OnCallDaySIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallDaySI[i])) + "+";
+                    OnCallNightSIConcat += String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallNightSI[i])) + "+";
+                    //UnsocialNightSIConcat += day.UnsocialNightSI[i] + "+";
+                    //UnsocialWeekendSIConcat += day.UnsocialWeekendSI[i] + "+";
+                    //UnsocialGrandWeekendSIConcat += day.UnsocialGrandWeekendSI[i] + "+";
+                    //OnCallDaySIConcat += day.OnCallDaySI[i] + "+";
+                    //OnCallNightSIConcat += day.OnCallNightSI[i] + "+";
                 }
+
+                //The lines below ensure the same format 0,00 for all input
+                if (day.Hours == null)
+                {
+                    day.Hours = "0,00";
+                }
+                else
+                {
+                    day.Hours = String.Format("{0:0.00}", Convert.ToDecimal(day.Hours));
+                }
+                if (day.UnsocialEvening == null)
+                {
+                    day.UnsocialEvening = "0,00";
+                }
+                else
+                {
+                    day.UnsocialEvening = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialEvening));
+                }
+                if (day.UnsocialNight == null)
+                {
+                    day.UnsocialNight = "0,00";
+                }
+                else
+                {
+                    day.UnsocialNight = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialNight));
+                }
+                if (day.UnsocialWeekend == null)
+                {
+                    day.UnsocialWeekend = "0,00";
+                }
+                else
+                {
+                    day.UnsocialWeekend = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialWeekend));
+                }
+                if (day.UnsocialGrandWeekend == null)
+                {
+                    day.UnsocialGrandWeekend = "0,00";
+                }
+                else
+                {
+                    day.UnsocialGrandWeekend = String.Format("{0:0.00}", Convert.ToDecimal(day.UnsocialGrandWeekend));
+                }
+                if (day.OnCallDay == null)
+                {
+                    day.OnCallDay = "0,00";
+                }
+                else
+                {
+                    day.OnCallDay = String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallDay));
+                }
+                if (day.OnCallNight == null)
+                {
+                    day.OnCallNight = "0,00";
+                }
+                else
+                {
+                    day.OnCallNight = String.Format("{0:0.00}", Convert.ToDecimal(day.OnCallNight));
+                }
+
 
                 var claimDay = new ClaimDay
                 {
@@ -2545,13 +2609,12 @@ namespace Sjuklöner.Controllers
             {
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("robin@bitoreq.se");
-                //message.To.Add(new MailAddress(claim.OmbudEmail));
-                message.To.Add(new MailAddress("paul.hirvonen@bitoreq.se"));
+                message.To.Add(new MailAddress(claim.OmbudEmail));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
 
-                SendEmail(message);
+                //SendEmail(message);
             }
 
             using (var writer = XmlWriter.Create(Server.MapPath("\\sjukloner" + "\\" + claim.ReferenceNumber + ".xml")))
