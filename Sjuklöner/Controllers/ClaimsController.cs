@@ -2872,11 +2872,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "true")
+                        if (fkAttachmentSubAssistantsAsString[i] == "1")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
