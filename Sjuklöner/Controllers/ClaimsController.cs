@@ -2097,16 +2097,16 @@ namespace Sjuklöner.Controllers
         {
             Create3VM create3VM = new Create3VM();
             create3VM.ClaimNumber = claim.ReferenceNumber;
-            if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
-            {
-                create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
-                create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
-                create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
-                create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
-                create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
-            }
-            else if (claim.CompletionStage < 3) // stage 3 has not been filled in earlier. Show calculated values according to Collective Agreement
-            {
+            //if (claim.CompletionStage >= 3) //CompletionStage >= 3 means that stage 3 has been filled in earlier. This is an update of stage 3
+            //{
+            //    create3VM.SickPay = String.Format("{0:0.00}", claim.ClaimedSickPay);
+            //    create3VM.HolidayPay = String.Format("{0:0.00}", claim.ClaimedHolidayPay);
+            //    create3VM.SocialFees = String.Format("{0:0.00}", claim.ClaimedSocialFees);
+            //    create3VM.PensionAndInsurance = String.Format("{0:0.00}", claim.ClaimedPensionAndInsurance);
+            //    create3VM.ClaimSum = String.Format("{0:0.00}", claim.ClaimedSum);
+            //}
+            //else if (claim.CompletionStage < 3) // stage 3 has not been filled in earlier. Show calculated values according to Collective Agreement
+            //{
                 decimal totalSickPayCalc = 0;
                 decimal totalHolidayPayCalc = 0;
                 decimal totalSocialFeesCalc = 0;
@@ -2167,15 +2167,15 @@ namespace Sjuklöner.Controllers
                     create3VM.ClaimSum = String.Format("{0:0.00}", claim.TotalCostD1Plus);
                 }
                 //create3VM.ShowCalculatedValues = true;
-            }
-            else   // This should never happen ?
-            {
-                create3VM.SickPay = "00,00";
-                create3VM.HolidayPay = "00,00";
-                create3VM.SocialFees = "00,00";
-                create3VM.PensionAndInsurance = "00,00";
-                create3VM.ClaimSum = "00,00";
-            }
+            //}
+            //else   // This should never happen ?
+            //{
+            //    create3VM.SickPay = "00,00";
+            //    create3VM.HolidayPay = "00,00";
+            //    create3VM.SocialFees = "00,00";
+            //    create3VM.PensionAndInsurance = "00,00";
+            //    create3VM.ClaimSum = "00,00";
+            //}
             return create3VM;
         }
 
@@ -5028,6 +5028,7 @@ namespace Sjuklöner.Controllers
             if (prevClaimCalculations.Count() > 0)
             {
                 db.ClaimCalculations.RemoveRange(prevClaimCalculations);
+                db.SaveChanges();
             }
 
             //Assign a CollAgreementInfo id to each claim day. This is required in order for the correct hourly pay to be used in the calculations.
@@ -5206,19 +5207,22 @@ namespace Sjuklöner.Controllers
 
 
 
-                    //new code for 5 day-rule
-                    //find the claimday index of the first day in the period where the assistant was sick
+                    ////new code for 5 day-rule
+                    ////find the claimday index of the first day in the period where the assistant was sick
                     bool firstClaimDayFound = false;
                     int claimDayIdx = adjustedStartCalendarDayIdx;
-                    while (!firstClaimDayFound && claimDayIdx < adjustedStartCalendarDayIdx + adjustedNumberOfCalendarDays)
+                    if (adjustedStartCalendarDayIdx != 0)
                     {
-                        if (!claimDays[claimDayIdx].Well)
+                        while (!firstClaimDayFound && claimDayIdx < adjustedStartCalendarDayIdx + adjustedNumberOfCalendarDays)
                         {
-                            firstClaimDayFound = true;
+                            if (!claimDays[claimDayIdx].Well)
+                            {
+                                firstClaimDayFound = true;
+                            }
+                            claimDayIdx++;
                         }
-                        claimDayIdx++;
+                        qdIdx = claimDayIdx - 1;
                     }
-                    qdIdx = claimDayIdx - 1;
 
 
 
