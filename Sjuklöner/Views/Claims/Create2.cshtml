@@ -15,7 +15,7 @@
         </ol>
     </nav>
 </div>
-@using (Html.BeginForm("Create2", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post, new { id = "form"}))
+@using (Html.BeginForm("Create2", "Claims", new { refNumber = Model.ReferenceNumber }, FormMethod.Post, new { id = "form" }))
 {
     @Html.AntiForgeryToken()
     for (int i = 0; i < Model.ScheduleRowList.Count(); i++)
@@ -2213,17 +2213,35 @@
             }
             if (!failValidation) {
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    //repeat the 4 lines below for the other hourTypes + the if statement above
+                    else {
+                        if (subIdx != subIndex && numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(numberOfHoursSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (sumSIHours > 0 && sumSIHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                //else if (sumSIHours > 0 && sumSIHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //    valInfo.innerHTML = "För många vikarietimmar.";
+                //    failValidation = true;
+                //}
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (sumSIHours > 0 && sumSIHours > parseFloat(numberOfHours[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2241,17 +2259,24 @@
             if (!failValidation) {
                 var unsocialEveningSI = document.getElementsByClassName("unsocial-evening-si");
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    else {
+                        if (subIdx != subIndex && unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialEveningSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialEvening[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialEvening[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2269,17 +2294,24 @@
             if (!failValidation) {
                 var unsocialNightSI = document.getElementsByClassName("unsocial-night-si");
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    else {
+                        if (subIdx != subIndex && unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialNight[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialNight[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2290,24 +2322,31 @@
             if (subIndex != 99) {
                 if (amount != "" && amount != "0" && amount != "0,0" && amount != "00,00" && amount != "0,00" &&
                     (unsocialWeekend[dayIndex].value == "" || unsocialWeekend[dayIndex].value == "0" || unsocialWeekend[dayIndex].value == "0,0" || unsocialWeekend[dayIndex].value == "00,00" || unsocialWeekend[dayIndex].value == "0,00")) {
-                    valInfo.innerHTML = "Ordinarie assistent måste fyllas i först.";
+                    valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
             }
             if (!failValidation) {
                 var unsocialWeekendSI = document.getElementsByClassName("unsocial-weekend-si");
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    else {
+                        if (subIdx != subIndex && unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(unsocialWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(unsocialWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2325,17 +2364,24 @@
             if (!failValidation) {
                 var unsocialGrandWeekendSI = document.getElementsByClassName("unsocial-grandweekend-si");
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    else {
+                        if (subIdx != subIndex && unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(unsocialGrandWeekendSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialGrandWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (sumSIHours > 0 && sumSIHours > parseFloat(unsocialGrandWeekend[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2353,17 +2399,24 @@
             if (!failValidation) {
                 var oncallDaySI = document.getElementsByClassName("oncall-day-si");
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    else {
+                        if (subIdx != subIndex && oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(oncallDaySI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (sumSIHours > 0 && sumSIHours > parseFloat(oncallDay[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (sumSIHours > 0 && sumSIHours > parseFloat(oncallDay[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -2381,17 +2434,24 @@
             if (!failValidation) {
                 var oncallNightSI = document.getElementsByClassName("oncall-night-si");
                 for (var subIdx = 0; subIdx < numberOfSubAssistants; subIdx++) {
-                    if (oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
-                        sumSIHours += parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                    if (!reset) {
+                        if (oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
+                    }
+                    else {
+                        if (subIdx != subIndex && oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value != "") {
+                            sumSIHours += parseFloat(oncallNightSI[(subIdx * numberOfCalendarDays) + parseInt(dayIndex)].value.replace(',', '.'));
+                        }
                     }
                 }
-                if (amount == "0" && reset) {
-                    if (sumSIHours > 0) {
-                        valInfo.innerHTML = "För många vikarietimmar.";
-                        failValidation = true;
-                    }
-                }
-                else if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(oncallNight[parseInt(dayIndex)].value.replace(',', '.'))) {
+                //if (amount == "0" && reset) {
+                //    if (sumSIHours > 0) {
+                //        valInfo.innerHTML = "För många vikarietimmar.";
+                //        failValidation = true;
+                //    }
+                //}
+                if (!failValidation && sumSIHours > 0 && sumSIHours > parseFloat(oncallNight[parseInt(dayIndex)].value.replace(',', '.'))) {
                     valInfo.innerHTML = "För många vikarietimmar.";
                     failValidation = true;
                 }
@@ -3128,6 +3188,8 @@
         var oncalldayvalsi = document.getElementsByClassName('oncall-day-si-val');
         var oncallnightvalsi = document.getElementsByClassName('oncall-night-si-val');
 
+
+        //this function must be updated so that when reset is done also the validation error "För många vikarietimmar" is reset for regular and sub assistants if relevant.
         //numberOfHours.length is equal to the number of sickdays
         //the number of substitute assistants can be calculated as numberOfHoursSI.length divided by numberOfHours.length
         var numberOfCalendarDays = numberOfHours.length;
