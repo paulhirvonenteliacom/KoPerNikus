@@ -64,14 +64,14 @@
                 <div class="col bold-14 label-align-top display-right-align col-md-2">
                     Lönespecifikation, ordinarie assistent
                 </div>
-                <div class="col-md-10" id="SalaryAttachmentDiv">
+                <div class="col-md-4" id="SalaryAttachmentDiv">
                     @if (!Model.SalaryAttachmentExists)
                     {
                         <input type="file" name="SalaryAttachment" id="SalaryAttachment" class="wide-input btn btn-default tabidx" autofocus="autofocus" tabindex="1" onchange="checkErrors()" />
                     }
                     else
                     {
-                        <p id="SalaryAttachmentButton">Det finns redan en lönespecifikation <button class="tabidx" onclick="ReplaceFile(event, 'SalaryAttachment', 'SalaryAttachment')">Byt fil</button></p>
+                        <p id="SalaryAttachmentButton">Det finns redan en lönespecifikation <button class="tabidx float-right" onclick="ReplaceFile(event, 'SalaryAttachment', 'SalaryAttachment')">Byt fil</button></p>
                     }
                 </div>
             </div>
@@ -97,14 +97,14 @@
                     <div class="col bold-14 padding-top-10 display-right-align col-md-2">
                         Läkarintyg
                     </div>
-                    <div class="col-md-10" id="DoctorsCertificateDiv">
+                    <div class="col-md-4" id="DoctorsCertificateDiv">
                         @if (!Model.DoctorsCertificateExists)
                         {
                             <input type="file" name="DoctorsCertificate" id="DoctorsCertificate" class="wide-input btn btn-default tabidx" onchange="checkErrors()" />
                         }
                         else
                         {
-                            <p id="DoctorsCertificateButton">Det finns redan ett läkarintyg <button class="tabidx" onclick="ReplaceFile(event, 'DoctorsCertificate', 'DoctorsCertificate')">Byt fil</button></p>
+                            <p id="DoctorsCertificateButton">Det finns redan ett läkarintyg <button class="tabidx float-right" onclick="ReplaceFile(event, 'DoctorsCertificate', 'DoctorsCertificate')">Byt fil</button></p>
                         }
                     </div>
                 </div>
@@ -129,14 +129,14 @@
                 <div class="col bold-14 label-align-top display-right-align col-md-2">
                     Tidsredovisning, ordinarie assistent
                 </div>
-                <div class="col-md-10" id="TimeReportDiv">
+                <div class="col-md-4" id="TimeReportDiv">
                     @if (!Model.TimeReportExists)
                     {
                         <input type="file" name="TimeReport" id="TimeReport" class="wide-input btn btn-default tabidx" onchange="checkErrors()" />
                     }
                     else
                     {
-                        <p id="TimeReportButton">Det finns redan en tidsredovisning för den här assistenten <button class="tabidx" onclick="ReplaceFile(event, 'TimeReport', 'TimeReport')">Byt fil</button></p>
+                        <p id="TimeReportButton">Det finns redan en tidsredovisning för den här assistenten <button class="tabidx float-right" onclick="ReplaceFile(event, 'TimeReport', 'TimeReport')">Byt fil</button></p>
                     }
                 </div>
             </div>
@@ -172,14 +172,14 @@
                             Tidsredovisning, vikarierande assistent @(i + 1)
                         </div>
                     }
-                    <div class="col col-md-10" id="TimeReportStandIn[@i]Div">
+                    <div class="col col-md-4" id="TimeReportStandIn[@i]Div">
                         @if (!Model.TimeReportStandInExists[i])
                         {
                             <input type="file" name="TimeReportStandIn" id="TimeReportStandIn[@i]" class="timereportstandin timereptabindex wide-input btn btn-default tabidx" onchange="checkErrors()" />
                         }
                         else
                         {
-                            <p id="TimeReportStandIn[@i]Button"><span class="timereportstandin"></span>Det finns redan en tidsredovisning för den här assistenten <button class="tabidx" onclick="ReplaceFile(event, 'TimeReportStandIn[@i]', 'timereportstandin')">Byt fil</button></p>
+                            <p id="TimeReportStandIn[@i]Button"><span class="timereportstandin"></span>Det finns redan en tidsredovisning för den här assistenten <button class="tabidx float-right" onclick="ReplaceFile(event, 'TimeReportStandIn[@i]', 'timereportstandin')">Byt fil</button></p>
                         }
                     </div>
                 </div>

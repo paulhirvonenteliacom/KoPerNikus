@@ -2074,25 +2074,48 @@ a:hover, a:focus {
     width: 11%;
     vertical-align: text-top;
 }
-
-.claimpdf-col {
-    width: 5%;
-    vertical-align: text-top;
+.col-xs-push-1 {
+    left: 8.333333333333332%;
 }
 
-.claimpdf-twocol {
-    width: 320px;
-    vertical-align: text-top;
+.col-xs-push-2 {
+    left: 16.666666666666664%;
 }
 
-.claimpdf-threecol {
-    width: 214px;
-    vertical-align: text-top;
+.col-xs-push-3 {
+    left: 25%;
 }
 
-.claimpdf-manycol {
-    width: 13%;
-    vertical-align: text-top;
+.col-xs-push-4 {
+    left: 33.33333333333333%;
+}
+
+.col-xs-push-5 {
+    left: 41.66666666666667%;
+}
+
+.col-xs-push-6 {
+    left: 50%;
+}
+
+.col-xs-push-7 {
+    left: 58.333333333333336%;
+}
+
+.col-xs-push-8 {
+    left: 66.66666666666666%;
+}
+
+.col-xs-push-9 {
+    left: 75%;
+}
+
+.col-xs-push-10 {
+    left: 83.33333333333334%;
+}
+
+.col-xs-push-11 {
+    left: 91.66666666666666%;
 }
 
 .input-height {
