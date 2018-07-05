@@ -594,6 +594,9 @@
                             Datum
                         </th>
                         <th class="claimdetails-col row-divider">
+                            Sjuk/Frisk
+                        </th>
+                        <th class="claimdetails-col row-divider">
                             Arbetade timmar
                         </th>
                         <th class="claimdetails-col row-divider">
@@ -622,6 +625,18 @@
                             <td>
                                 @Html.DisplayFor(m => m.ClaimDays[i].DateString)
                             </td>
+                            @if (Model.ClaimDays[i].Well)
+                            {
+                                <td>
+                                    Frisk
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    Sjuk
+                                </td>
+                            }
                             <td>
                                 @Html.DisplayFor(m => m.ClaimDays[i].Hours)
                             </td>
