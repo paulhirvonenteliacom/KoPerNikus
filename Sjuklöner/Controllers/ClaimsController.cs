@@ -2609,7 +2609,7 @@ namespace Sjuklöner.Controllers
             {
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("robin@bitoreq.se");
-                message.To.Add(new MailAddress("kenneth.sorling@gmail.com"));
+                message.To.Add(new MailAddress("niklas.hagman@bitoreq.se"));
                 message.Subject = "Ny ansökan med referensnummer: " + ClaimNumber;
                 message.Body = "Vi har mottagit din ansökan med referensnummer " + ClaimNumber + ". Normalt får du ett beslut inom 1 - 3 dagar." + "\n" + "\n" +
                                                     "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
@@ -4623,7 +4623,6 @@ namespace Sjuklöner.Controllers
                 message.From = new MailAddress("ourrobotdemo@gmail.com");
 
                 message.To.Add(new MailAddress(claim.OmbudEmail));
-                //message.To.Add(new MailAddress("e.niklashagman@gmail.com"));
                 message.Subject = "Beslut om ansökan med referensnummer: " + claim.ReferenceNumber;
                 message.Body = "Beslut om ansökan med referensnummer " + claim.ReferenceNumber + " har fattats." + "\n" + "\n" +
                                 "Med vänliga hälsningar, Vård- och omsorgsförvaltningen";
