@@ -4508,9 +4508,6 @@ namespace Sjuklöner.Controllers
                 claim.ApprovedSumAsString = String.Format("{0:0.00}", claim.ApprovedSum);
                 claim.RejectedSumAsString = String.Format("{0:0.00}", claim.RejectedSum);
 
-                //New code
-
-
                 string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
                 fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
 
@@ -4526,8 +4523,6 @@ namespace Sjuklöner.Controllers
                     fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
                     fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
                 }
-
-                //new code
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
                     claim.ClaimedSumAsString + "+" + claim.ModelSumAsString + "+" + claim.ApprovedSumAsString + "+" + claim.RejectedSumAsString + "+" +
