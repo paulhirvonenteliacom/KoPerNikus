@@ -432,6 +432,10 @@
     <Compile Include="Migrations\201806200623331_AddedMissingDoctorsCertificateProperty.Designer.cs">
       <DependentUpon>201806200623331_AddedMissingDoctorsCertificateProperty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807161436363_AddedMoreThan10DayPropertyToClaimClass.cs" />
+    <Compile Include="Migrations\201807161436363_AddedMoreThan10DayPropertyToClaimClass.Designer.cs">
+      <DependentUpon>201807161436363_AddedMoreThan10DayPropertyToClaimClass.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -837,6 +841,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806200623331_AddedMissingDoctorsCertificateProperty.resx">
       <DependentUpon>201806200623331_AddedMissingDoctorsCertificateProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807161436363_AddedMoreThan10DayPropertyToClaimClass.resx">
+      <DependentUpon>201807161436363_AddedMoreThan10DayPropertyToClaimClass.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

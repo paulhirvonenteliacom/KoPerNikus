@@ -154,6 +154,9 @@ namespace Sjuklöner.Viewmodels
         //Date of last sickday number in the claim
         public string LastDayOfSicknessDateAsString { get; set; }
 
+        //Indicates if a qualifying day should apply or not to the claim due to the rule about maximum 10 qualifying days during the last 12 months 
+        public bool MoreThan10SickleavePeriods { get; set; }
+
         //This property is true if the model sum is reduced due to a missing doctors certificate
         public bool ModelSumReducedDueToMissingDoctorsCertificate { get; set; }
 

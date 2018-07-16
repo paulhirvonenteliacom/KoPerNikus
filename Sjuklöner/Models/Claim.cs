@@ -242,6 +242,9 @@ namespace Sjuklöner.Models
         //[RegularExpression(@"(((20)((0[0-9])|(1[0-7])))|(([1][^ 0-8])?\d{2}))((0[1-9])|1[0-2])((0[1-9])|(1[0-9])|(2[0-9])|(3[01]))[-]?\d{4}$")]
         public string StandInSSN { get; set; }
 
+        //Indicates if a qualifying day should apply or not to the claim due to the rule about maximum 10 qualifying days during the last 12 months 
+        public bool MoreThan10SickleavePeriods { get; set; }
+
         [Display(Name = "Första kalenderdag")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]        
