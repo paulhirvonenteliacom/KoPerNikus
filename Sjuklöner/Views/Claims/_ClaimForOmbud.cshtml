@@ -1735,9 +1735,18 @@
                             }
                             if (!day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays <= 14)
                             {
-                                <div class="row form-group-subheading2">
-                                    @Model.QualifyingDayDateAsString - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
-                                </div>
+                                if (Model.AdjustedNumberOfSickDays == 1)
+                                {
+                                    <div class="row form-group-subheading2">
+                                        @Model.QualifyingDayDateAsString
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row form-group-subheading2">
+                                        @Model.QualifyingDayDateAsString - @Model.ClaimCalculations[i].EndDate.ToShortDateString()
+                                    </div>
+                                }
                             }
                             else if (!day2T14HeadingAlreadyShown && Model.AdjustedNumberOfSickDays > 14)
                             {
