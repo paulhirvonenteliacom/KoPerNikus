@@ -2417,7 +2417,8 @@ namespace Sjuklöner.Controllers
                             claim.SentInDate = DateTime.Now;
 
                             //Set default values for ivo and Procapita checks
-                            claim.IVOCheck = false;
+                            claim.IVOCheck = true; //When IVO check is activated again, the property IVOCheck needs to be defaulted to false again!
+                            //claim.IVOCheck = false;
                             claim.IVOCheckMsg = "Kontroll ej utförd";
                             claim.ProxyCheck = false;
                             claim.ProxyCheckMsg = "Kontroll ej utförd";
