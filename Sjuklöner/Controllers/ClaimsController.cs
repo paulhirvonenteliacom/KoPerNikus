@@ -3354,8 +3354,8 @@ namespace Sjuklöner.Controllers
 
                 for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                 {
-                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
-                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "£";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "£";
                 }
 
                 //new code
