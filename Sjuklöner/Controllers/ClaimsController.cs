@@ -4524,8 +4524,8 @@ namespace Sjuklöner.Controllers
 
                 for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                 {
-                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
-                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "£";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "£";
                 }
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
