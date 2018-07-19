@@ -2873,11 +2873,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "1")
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -3230,11 +3230,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "1")
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -3799,11 +3799,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "1")
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
