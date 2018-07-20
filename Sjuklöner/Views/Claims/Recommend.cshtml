@@ -364,6 +364,13 @@
                     <div class="col-md-8 align-bottom8 display-result decision-padding-left positive-result" id="ProCapitaCheck">
                         <img class="check-result-img" src="~/Content/Images/green.png" />@Html.DisplayFor(model => Model.DecisionMsg)
                     </div>
+
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left">
+                        Beslut om ansökan:
+                    </div>
+                    <div class="col-md-8 align-bottom8 display-result decision-padding-left">
+                        @Html.DisplayFor(model => Model.DecisionContent)
+                    </div>
                 }
             </div>
 
