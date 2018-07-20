@@ -2918,6 +2918,7 @@ namespace Sjuklöner.Controllers
                 if (claim.ClaimStatusId == 1)
                 {
                     recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString() + ".";
+                    recommendationVM.DecisionContent = claim.DecisionContent;
                 }
 
 

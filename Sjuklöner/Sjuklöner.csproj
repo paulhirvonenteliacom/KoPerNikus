@@ -436,6 +436,10 @@
     <Compile Include="Migrations\201807161436363_AddedMoreThan10DayPropertyToClaimClass.Designer.cs">
       <DependentUpon>201807161436363_AddedMoreThan10DayPropertyToClaimClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807201421558_AddedDecisionContentToClaim.cs" />
+    <Compile Include="Migrations\201807201421558_AddedDecisionContentToClaim.Designer.cs">
+      <DependentUpon>201807201421558_AddedDecisionContentToClaim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -844,6 +848,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807161436363_AddedMoreThan10DayPropertyToClaimClass.resx">
       <DependentUpon>201807161436363_AddedMoreThan10DayPropertyToClaimClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807201421558_AddedDecisionContentToClaim.resx">
+      <DependentUpon>201807201421558_AddedDecisionContentToClaim.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
