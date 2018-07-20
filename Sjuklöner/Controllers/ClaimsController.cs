@@ -3344,10 +3344,13 @@ namespace Sjuklöner.Controllers
 
 
                 string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
-                fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
-
                 string[] fkAttachmentBoolSubAssistantsAsString = new string[20];
-                fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+
+                if (claim.NumberOfSubAssistants > 1)
+                {
+                    fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
+                    fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+                }
 
                 string fkAttachmentMsgSubAssistantConcat = "";
                 string fkAttachmentBoolSubAssistantConcat = "";
