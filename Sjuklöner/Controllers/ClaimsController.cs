@@ -2897,6 +2897,9 @@ namespace Sjuklöner.Controllers
                 recommendationVM.BasisForDecision = claim.BasisForDecision;
                 recommendationVM.BasisForDecisionMsg = claim.BasisForDecisionMsg;
 
+
+
+
                 recommendationVM.Decision = claim.Decision;
                 recommendationVM.DecisionMsg = claim.DecisionMsg;
 
