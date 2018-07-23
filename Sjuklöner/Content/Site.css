@@ -1943,6 +1943,10 @@ date-padding2 {
     font-weight: normal;
 }
 
+.padding-right1 {
+    padding-right: 9px;
+}
+
 .display-result {
     font-size: 16px;
 }
@@ -2147,6 +2151,10 @@ a:hover, a:focus {
 
 .decision-padding-left2 {
     padding-left: 48px;
+}
+
+.decision-padding-left3 {
+    padding-left: 53px;
 }
 
 .control-width-small {
