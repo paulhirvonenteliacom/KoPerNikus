@@ -36,7 +36,7 @@
         </div>
     }
     <br />
-    <br />    
+    <br />
 
     <hr class="claim-divider" />
     <div class="row">
@@ -64,9 +64,9 @@
                         <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col-admin">
+                        @*<th class="small-col-admin">
                             Kundens personnummer
-                        </th>
+                        </th>*@
                         <th class="ssmall-col-admin">
                             Första kalenderdag
                         </th>
@@ -76,8 +76,14 @@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col-admin"></th>
-                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
+                            Rek. godkänt belopp (Kr)
+                        </th>
+                        <th class="small-col-admin">
+                            Rek. avslaget belopp (Kr)
+                        </th>
+                        @*<th class="small-col-admin"></th>
+                            <th class="small-col-admin"></th>*@
                     </tr>
 
                     @foreach (var item in Model.InInboxClaims)
@@ -101,9 +107,9 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
                             </td>
-                            <td>
+                            @*<td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
+                            </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FirstClaimDayShort)
                             </td>
@@ -113,13 +119,14 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
-                            <td></td>
-                            <td></td>
-                            @*<td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
-                                </td>*@
+                            <td class="highlight-green-bold">
+                                @Html.DisplayFor(modelItem => item.ApprovedSum)
+                            </td>
+                            <td class="highlight-red-bold">
+                                @Html.DisplayFor(modelItem => item.RejectedSum)
+                            </td>
+                            @*<td></td>
+                                <td></td>*@
                         </tr>
                     }
 
@@ -161,9 +168,9 @@
                         <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col-admin">
+                        @*<th class="small-col-admin">
                             Kundens personnummer
-                        </th>
+                        </th>*@
                         <th class="ssmall-col-admin">
                             Första kalenderdag
                         </th>
@@ -173,8 +180,14 @@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col-admin"></th>
-                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin">
+                            Rek. godkänt belopp (Kr)
+                        </th>
+                        <th class="small-col-admin">
+                            Rek. avslaget belopp (Kr)
+                        </th>
+                        @*<th class="small-col-admin"></th>
+                            <th class="small-col-admin"></th>*@
                     </tr>
 
                     @foreach (var item in Model.UnderReviewClaims)
@@ -198,9 +211,9 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
                             </td>
-                            <td>
+                            @*<td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
+                            </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FirstClaimDayShort)
                             </td>
@@ -213,13 +226,14 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
-                            <td></td>
-                            <td></td>
-                            @*<td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
-                                </td>*@
+                            <td class="highlight-green-bold">
+                                @Html.DisplayFor(modelItem => item.ApprovedSum)
+                            </td>
+                            <td class="highlight-red-bold">
+                                @Html.DisplayFor(modelItem => item.RejectedSum)
+                            </td>
+                            @*<td></td>
+                                <td></td>*@
                         </tr>
                     }
 
@@ -261,9 +275,9 @@
                         <th class="small-col-admin">
                             Assistentens personnummer
                         </th>
-                        <th class="small-col-admin">
+                        @*<th class="small-col-admin">
                             Kundens personnummer
-                        </th>
+                        </th>*@
                         <th class="ssmall-col-admin">
                             Första kalenderdag
                         </th>
@@ -273,12 +287,8 @@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
-                        <th class="small-col-admin">
-                            Godkänt belopp (Kr)
-                        </th>
-                        <th class="small-col-admin">
-                            Avslaget belopp (Kr)
-                        </th>
+                        <th class="small-col-admin"></th>
+                        <th class="small-col-admin"></th>
                     </tr>
 
                     @foreach (var item in Model.DecidedClaims)
@@ -302,9 +312,9 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.RegAssistantSSN)
                             </td>
-                            <td>
+                            @*<td>
                                 @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>
+                            </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FirstClaimDayShort)
                             </td>
@@ -314,17 +324,8 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
-                            <td class="highlight-green-bold">
-                                @Html.DisplayFor(modelItem => item.ApprovedSum)
-                            </td>
-                            <td class="highlight-red-bold">
-                                @Html.DisplayFor(modelItem => item.RejectedSum)
-                            </td>
-                            @*<td>
-                                @Html.ActionLink("Uppdatera", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Detaljer", "Details", new { id = item.Id })
-                                @Html.ActionLink("Ta bort", "Delete", new { id = item.Id })
-                                </td>*@
+                            <td></td>
+                            <td></td>
                         </tr>
                     }
 
