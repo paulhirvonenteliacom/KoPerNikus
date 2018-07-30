@@ -5,23 +5,9 @@
 }
 <body>
     <div class="row index-page-margin">
-        @using (Html.BeginForm("IndexPageAdmin", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            <p class="page-header col col-md-7">Ansökningar</p>
-            <select name="searchBy" class="col-md-2 input-sm align-bottom5">
-                <option value="Referensnummer">Referensnummer</option>
-                <option value="CSSN">Kundens personnummer</option>
-                <option value="ASSN">Assistentens personnummer</option>
-                <option value="Ombud">Ombudets efternamn</option>
-                <option value="Bolag">Assistansbolagets namn</option>
-                <option value="Handl">Handläggarens efternamn</option>
-            </select>
-            <input type="text" name="searchString" id="searchString" class="input-height col-md-2 input-sm align-bottom5" />
-            <div class="col col-md-1 col-no-left-padding col-no-right-padding">
-                <input type="submit" value="Sök" class="btn btn-secondary btn-secondary-xsmall input-height align-bottom5" />
-            </div>
-        }
+        <p class="page-header12 col col-md-10">Ansökningar</p>
     </div>
+
     @if (TempData["PdfSuccess"] != null)
     {
         <div class="alert positive-result row" id="PdfEventAdmin">
@@ -38,11 +24,60 @@
     <br />
 
     <hr class="claim-divider" />
+    @using (Html.BeginForm("IndexPageAdmin", "Claims", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="row">
+            <div class="col col-md-4 second-page-header7">
+                Filtrera ansökningar
+            </div>
+        </div>
+        <div class="row filter-row">
+            <div class="col col-md-3 align-bottom9">
+                @Html.DropDownListFor(model => model.SelectedTimePeriodId, new SelectList(Model.TimePeriods, "Value", "Text", Model.SelectedTimePeriodId), "- Ingen vald tidsperiod -", new { @class = "form-control claim-filter1" })
+            </div>
+            <div class="col col-md-3 align-bottom9">
+                @Html.DropDownListFor(model => model.SelectedKeyId, new SelectList(Model.Keys, "Value", "Text", Model.SelectedKeyId), "- Ingen vald söknyckel -", new { @class = "form-control claim-filter2", id = "searchkey", onchange = "selectSearchKey()" })
+            </div>
+            <div class="col col-md-3 align-bottom9">
+                @Html.EditorFor(model => model.SearchString, new { htmlAttributes = new { placeholder = "Ange söktext här", @class = "form-control claim-filter3", autofocus = "autofocus", id = "searchtext", onchange = "checkValidationError()" } })
+            </div>
+            <div class="col col-md-1 col-no-left-padding col-no-right-padding">
+                <input type="submit" value="Filtrera" class="btn btn-secondary btn-secondary-small3 align-bottom9" id="filter-btn" onclick="checkIfKeySelected()" />
+            </div>
+        </div>
+        <div class="row row-validation-20 line-height-07">
+            <div class="col col-md-2">
+            </div>
+            <div class="col col-md-8 text-danger font-size-11 filter-error" id="searchstring_butnokey">
+            </div>
+        </div>
+    }
+
+    <hr class="claim-divider2" />
     <div class="row">
         <div class="col">
-            <div class="second-page-header">
-                Inkorg
-            </div>
+            @if (Model.InInboxClaims?.Count() > 0 && ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString)))
+            {
+                <div class="second-page-header8">
+                    Inkorg (@Model.NumberOfInboxFiltered av @Model.NumberOfInbox st)
+                </div>
+                <div class="ordinary-text">
+                    @Model.FilterTextInbox
+                </div>
+            }
+            else if (Model.InInboxClaims?.Count() == 0 && ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString)))
+            {
+                <div class="second-page-header8">
+                    Inkorg (@Model.NumberOfInboxFiltered av @Model.NumberOfInbox st)
+                </div>
+            }
+            else
+            {
+                <div class="second-page-header9">
+                    Inkorg (@Model.NumberOfInbox st)
+                </div>
+            }
+
             @if (Model.InInboxClaims?.Count() > 0)
             {
                 <table class="table">
@@ -61,11 +96,11 @@
                             Assistansbolag
                         </th>
                         @*<th class="small-col-admin">
-                            Assistentens personnummer
-                        </th>*@
+                        Assistentens personnummer
+                    </th>*@
                         @*<th class="small-col-admin">
-                            Kundens personnummer
-                        </th>*@
+                        Kundens personnummer
+                    </th>*@
                         <th class="ssmall-col-admin">
                             Första kalenderdag
                         </th>
@@ -73,8 +108,8 @@
                             Sista kalenderdag
                         </th>
                         @*<th class="small-col-admin">
-                                Antal kalenderdagar
-                            </th>*@
+                        Antal kalenderdagar
+                    </th>*@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
@@ -106,11 +141,11 @@
                                 @Html.DisplayFor(modelItem => item.CompanyName)
                             </td>
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                            </td>*@
+                            @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+                        </td>*@
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>*@
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FirstClaimDayShort)
                             </td>
@@ -118,8 +153,8 @@
                                 @Html.DisplayFor(modelItem => item.LastClaimDayShort)
                             </td>
                             @*<td>
-                                    @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>*@
+                            @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
@@ -137,22 +172,46 @@
 
                 </table>
             }
+            else if ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString))
+            {
+                <div class="ordinary-text">
+                    Det finns inga ansökningar i inkorgen som uppfyller det valda filtret.
+                </div>
+            }
             else
             {
-                <div class="left-margin-23 font-size-16">
+                <div class="ordinary-text">
                     Det finns inga ansökningar i inkorgen.
                 </div>
-                <br />
             }
         </div>
     </div>
 
-    <hr class="claim-divider" />
+    <hr class="claim-divider2" />
     <div class="row">
         <div class="col">
-            <div class="second-page-header">
-                Överförda till Procapita
-            </div>
+            @if ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString))
+            {
+                <div class="second-page-header8">
+                    Överförda till Procapita (@Model.NumberOfReviewFiltered av @Model.NumberOfReview st)
+                </div>
+                <div class="ordinary-text">
+                    @Model.FilterTextReview
+                </div>
+            }
+            else if (Model.UnderReviewClaims?.Count() == 0 && ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString)))
+            {
+                <div class="second-page-header8">
+                    Överförda till Procapita (@Model.NumberOfReviewFiltered av @Model.NumberOfReview st)
+                </div>
+            }
+            else
+            {
+                <div class="second-page-header9">
+                    Överförda till Procapita (@Model.NumberOfReview st)
+                </div>
+            }
+
             @if (Model.UnderReviewClaims?.Count() > 0)
             {
                 <table class="table">
@@ -171,11 +230,11 @@
                             Assistansbolag
                         </th>
                         @*<th class="small-col-admin">
-                            Assistentens personnummer
-                        </th>*@
+                        Assistentens personnummer
+                    </th>*@
                         @*<th class="small-col-admin">
-                            Kundens personnummer
-                        </th>*@
+                        Kundens personnummer
+                    </th>*@
                         <th class="ssmall-col-admin">
                             Första kalenderdag
                         </th>
@@ -183,8 +242,8 @@
                             Sista kalenderdag
                         </th>
                         @*<th class="small-col-admin">
-                                Antal kalenderdagar
-                            </th>*@
+                        Antal kalenderdagar
+                    </th>*@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
@@ -216,11 +275,11 @@
                                 @Html.DisplayFor(modelItem => item.CompanyName)
                             </td>
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                            </td>*@
+                            @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+                        </td>*@
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>*@
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FirstClaimDayShort)
                             </td>
@@ -228,8 +287,8 @@
                                 @Html.DisplayFor(modelItem => item.LastClaimDayShort)
                             </td>
                             @*<td>
-                                    @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>*@
+                            @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
@@ -245,22 +304,46 @@
 
                 </table>
             }
+            else if ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString))
+            {
+                <div class="ordinary-text">
+                    Det finns inga ansökningar som är överförda till Procapita och som uppfyller det valda filtret.
+                </div>
+            }
             else
             {
-                <div class="left-margin-23 font-size-16">
+                <div class="ordinary-text">
                     Det finns inga ansökningar som är överförda till Procapita.
                 </div>
-                <br />
             }
         </div>
     </div>
 
-    <hr class="claim-divider" />
+    <hr class="claim-divider2" />
     <div class="row">
         <div class="col">
-            <div class="second-page-header">
-                Beslutade
-            </div>
+            @if ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString))
+            {
+                <div class="second-page-header8">
+                    Beslutade (@Model.NumberOfDecidedFiltered av @Model.NumberOfDecided st)
+                </div>
+                <div class="ordinary-text">
+                    @Model.FilterTextDecided
+                </div>
+            }
+            else if (Model.DecidedClaims?.Count() == 0 && ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString)))
+            {
+                <div class="second-page-header8">
+                    Beslutade (@Model.NumberOfDecidedFiltered av @Model.NumberOfDecided st)
+                </div>
+            }
+            else
+            {
+                <div class="second-page-header9">
+                    Beslutade (@Model.NumberOfDecided st)
+                </div>
+            }
+
             @if (Model.DecidedClaims?.Count() > 0)
             {
                 <table class="table">
@@ -279,11 +362,11 @@
                             Assistansbolag
                         </th>
                         @*<th class="small-col-admin">
-                            Assistentens personnummer
-                        </th>*@
+                        Assistentens personnummer
+                    </th>*@
                         @*<th class="small-col-admin">
-                            Kundens personnummer
-                        </th>*@
+                        Kundens personnummer
+                    </th>*@
                         <th class="ssmall-col-admin">
                             Första kalenderdag
                         </th>
@@ -291,8 +374,8 @@
                             Sista kalenderdag
                         </th>
                         @*<th class="small-col-admin">
-                                Antal kalenderdagar
-                            </th>*@
+                        Antal kalenderdagar
+                    </th>*@
                         <th class="small-col-admin">
                             Yrkat belopp (Kr)
                         </th>
@@ -320,11 +403,11 @@
                                 @Html.DisplayFor(modelItem => item.CompanyName)
                             </td>
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.RegAssistantSSN)
-                            </td>*@
+                            @Html.DisplayFor(modelItem => item.RegAssistantSSN)
+                        </td>*@
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.CustomerSSN)
-                            </td>*@
+                            @Html.DisplayFor(modelItem => item.CustomerSSN)
+                        </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FirstClaimDayShort)
                             </td>
@@ -332,8 +415,8 @@
                                 @Html.DisplayFor(modelItem => item.LastClaimDayShort)
                             </td>
                             @*<td>
-                                    @Html.DisplayFor(modelItem => item.NumberOfSickDays)
-                                </td>*@
+                            @Html.DisplayFor(modelItem => item.NumberOfSickDays)
+                        </td>*@
                             <td>
                                 @Html.DisplayFor(modelItem => item.ClaimedSum)
                             </td>
@@ -347,17 +430,22 @@
 
                 </table>
             }
+            else if ((Model.SelectedTimePeriodId != null && Model.SelectedTimePeriodId != 0) || (Model.SelectedKeyId != null && Model.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(Model.SearchString))
+            {
+                <div class="ordinary-text">
+                    Du har inga beslutade ansökningar som uppfyller det valda filtret.
+                </div>
+            }
             else
             {
-                <div class="left-margin-23 font-size-16">
-                    Det finns inga beslutade ansökningar.
+                <div class="ordinary-text">
+                    Du har inga beslutade ansökningar.
                 </div>
-                <br />
             }
         </div>
     </div>
 
-    <hr class="claim-divider" />
+    <hr class="claim-divider2" />
 
     <div class="row row-padding2">
         <div class="col-left-margin-6 col col-md-2">
