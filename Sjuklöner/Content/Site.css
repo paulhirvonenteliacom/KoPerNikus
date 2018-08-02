@@ -927,11 +927,11 @@ li a {
 }
 
 .btn-secondary-xsmall7 {
-    height: 19px;
+    height: 30px;
     margin-left: 15px;
-    font-size: 12px;
-    width: 90px;
-    padding: 0 5px 10px 3px;
+    font-size: 14px;
+    width: 70px;
+    padding: 5px 5px 10px 3px;
     border: 1px solid red;
     text-align: center;
 }
@@ -1223,6 +1223,21 @@ li a {
 
 .date-left-padding4 {
     padding-left: 44px;
+    margin-bottom: 10px;
+    margin-top: -10px;
+}
+
+.date-left-padding5 {
+    padding-left: 78px;
+    padding-bottom: 5px;
+    margin-top: -16px;
+}
+
+.date-left-padding6 {
+    padding-left: 78px;
+    padding-bottom: 5px;
+    margin-bottom: 4px;
+    margin-top: -10px;
 }
 
 .smallcol {
