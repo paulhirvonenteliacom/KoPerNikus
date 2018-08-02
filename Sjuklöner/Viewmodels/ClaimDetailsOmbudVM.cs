@@ -447,5 +447,11 @@ namespace Sjuklöner.Viewmodels
 
         [Display(Name = "Kommentarer")]
         public List<Message> messages { get; set; }
+
+        [Display(Name = "Beslutsinnehåll")]
+        public string DecisionContent { get; set; }
+
+        [Display(Name = "Beslutsdatum")]
+        public DateTime DecisionTransferTimeStamp { get; set; }
     }
 }

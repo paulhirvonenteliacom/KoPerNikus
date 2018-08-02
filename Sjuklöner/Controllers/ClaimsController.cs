@@ -4229,6 +4229,8 @@ namespace Sjuklöner.Controllers
                 {
                     claimDetailsOmbudVM.ApprovedSum = claim.ApprovedSum;
                     claimDetailsOmbudVM.RejectedSum = claim.RejectedSum;
+                    claimDetailsOmbudVM.DecisionContent = claim.DecisionContent;
+                    claimDetailsOmbudVM.DecisionTransferTimeStamp = claim.DecisionTransferTimeStamp;
                     claimDetailsOmbudVM.DecisionMade = true;
                 }
 

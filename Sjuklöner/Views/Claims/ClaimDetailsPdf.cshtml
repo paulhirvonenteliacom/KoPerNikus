@@ -814,23 +814,26 @@
                 <div class="col col-xs-5">
                     <div class="form-group line-height-12 display-large-font">
                         <div class="row label-padding">
-                            @Html.LabelFor(model => model.ApprovedSum, htmlAttributes: new { @class = "control-label-left-align control-label-large col-xs-12" })
+                            @Html.LabelFor(model => model.DecisionTransferTimeStamp, htmlAttributes: new { @class = "control-label-left-align control-label-large col-xs-12" })
                         </div>
                         <div class="row display-padding">
-                            @Html.DisplayFor(m => m.ApprovedSum)
+                            @Html.DisplayFor(m => m.DecisionTransferTimeStamp)
                         </div>
                     </div>
                 </div>
-                <div class="col col-xs-5">
-                    <div class="form-group line-height-12 display-large-font">
-                        <div class="row label-padding">
-                            @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label-left-align2 control-label-large col-xs-12" })
-                        </div>
-                        <div class="row display-padding6">
-                            @Html.DisplayFor(m => m.RejectedSum)
+                @if (User.IsInRole("AdministrativeOfficial") || User.IsInRole("Admin"))
+                {
+                    <div class="col col-xs-5">
+                        <div class="form-group line-height-12 display-large-font">
+                            <div class="row label-padding">
+                                @Html.LabelFor(model => model.RejectedSum, htmlAttributes: new { @class = "control-label-left-align2 control-label-large col-xs-12" })
+                            </div>
+                            <div class="row display-padding6">
+                                @Html.DisplayFor(m => m.RejectedSum)
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     }
