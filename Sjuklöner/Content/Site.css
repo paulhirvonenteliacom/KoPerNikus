@@ -2454,11 +2454,13 @@ a:hover, a:focus {
 }
 
 #approvedsum {
-    padding-top: 1px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 #rejectedsum {
-    padding-top: 1px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .frame-procapita-login {
