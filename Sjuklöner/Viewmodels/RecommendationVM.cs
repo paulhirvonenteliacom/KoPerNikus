@@ -73,6 +73,7 @@ namespace Sjuklöner.Viewmodels
         [Display(Name = "Beslut från Procapita:")]
         public bool Decision { get; set; }
         public string DecisionMsg { get; set; }
+        public string DecisionContent { get; set; }
 
         public DateTime DecisionTransferTimeStamp { get; set; }
 

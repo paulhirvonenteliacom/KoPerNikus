@@ -366,6 +366,24 @@
                     </div>
                 }
             </div>
+            @if (Model.Decision)
+            {
+                <div class="row">
+                    <div class="form-horizontal">
+                        <div class="form-group margin-bottom-small col line-height-10">
+                            <div class="col-md-4 control-label control-label-large2 padding-right1">
+                                Beslut:
+                            </div>
+                            <div class="col-md-8 align-bottom7 display-result decision-padding-left3">
+                                @foreach(var contentLine in Model.DecisionContent.Split('\n'))
+                                {
+                                    <p>@contentLine</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
 
         </div>
     </div>

@@ -85,13 +85,13 @@
             </div>
             @if (User.IsInRole("Admin"))
             {
-                <div>
+                <div class="small-padding-left8 col col-md-1">
                     @Html.ActionLink("Avbryt", "IndexAllOmbuds", "Account", null, new { @class = "btn btn-secondary btn-secondary-small" })
                 </div>
             }
             else
             {
-                <div>
+                <div class="small-padding-left8 col col-md-1">
                     @Html.ActionLink("Avbryt", "IndexOmbud", "CareCompanies", null, new { @class = "btn btn-secondary btn-secondary-small" })
                 </div>
             }

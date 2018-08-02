@@ -79,7 +79,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CollectiveAgreement, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.CareCompany.SelectedCollectiveAgreementId, new SelectList(@Model.CollectiveAgreement, "Value", "Text", Model.CareCompany.SelectedCollectiveAgreementId), new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.CareCompany.SelectedCollectiveAgreementId, new SelectList(@Model.CollectiveAgreement, "Value", "Text", Model.CareCompany.SelectedCollectiveAgreementId), new { @class = "form-control" } )
                 @Html.ValidationMessageFor(model => model.CollectiveAgreement, "", new { @class = "text-danger font-size-11" })
             </div>
         </div>

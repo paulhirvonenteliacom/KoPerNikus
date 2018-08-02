@@ -51,9 +51,39 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims
         [Authorize(Roles = "Ombud")]
-        public ActionResult IndexPageOmbud(string searchString, string searchBy = "Referensnummer")
+        public ActionResult IndexPageOmbud(IndexPageOmbudVM indexPageOmbudVM)
         {
-            IndexPageOmbudVM indexPageOmbudVM = new IndexPageOmbudVM();
+            int numberOfDecided = 0;
+            int numberOfDraft = 0;
+            int numberOfReview = 0;
+
+            int numberOfDecidedFiltered = 0;
+            int numberOfDraftFiltered = 0;
+            int numberOfReviewFiltered = 0;
+
+            //Set the filter text that shows information about selected filter settings.
+            string filterTextDecided = "";
+            string filterTextDraft = "";
+            string filterTextReview = "";
+            if ((indexPageOmbudVM.SelectedTimePeriodId != null && indexPageOmbudVM.SelectedTimePeriodId != 0)
+                || (indexPageOmbudVM.SelectedKeyId != null && indexPageOmbudVM.SelectedKeyId != 0)
+                || indexPageOmbudVM.MyClaims || !string.IsNullOrWhiteSpace(indexPageOmbudVM.SearchString))
+            {
+                filterTextDecided = "Bara ansökningar som uppfyller det valda filtret visas.";
+                filterTextDraft = "Bara ansökningar som uppfyller det valda filtret visas.";
+                filterTextReview = "Bara ansökningar som uppfyller det valda filtret visas.";
+            }
+
+            var timePeriodDdlString = new List<SelectListItem>();
+            timePeriodDdlString.Add(new SelectListItem() { Text = "En vecka bakåt", Value = "1" });
+            timePeriodDdlString.Add(new SelectListItem() { Text = "En månad bakåt", Value = "2" });
+            indexPageOmbudVM.TimePeriods = timePeriodDdlString;
+
+            var keyDdlString = new List<SelectListItem>();
+            keyDdlString.Add(new SelectListItem() { Text = "Referensnummer", Value = "1" });
+            keyDdlString.Add(new SelectListItem() { Text = "Kundens personnummer", Value = "2" });
+            keyDdlString.Add(new SelectListItem() { Text = "Assistentens personnummer", Value = "3" });
+            indexPageOmbudVM.Keys = keyDdlString;
 
             var me = db.Users.Find(User.Identity.GetUserId());
             int companyId = (int)me.CareCompanyId;
@@ -65,18 +95,108 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var draftClaims = claims.Where(c => c.ClaimStatusId == 2);
                 var underReviewClaims = claims.Where(c => c.ClaimStatusId == 3 || c.ClaimStatusId == 4 || c.ClaimStatusId == 5 || c.ClaimStatusId == 6 || c.ClaimStatusId == 7);
-                if (searchBy == "Mine")
+
+                numberOfDecided = decidedClaims.Count();
+                numberOfDraft = draftClaims.Count();
+                numberOfReview = underReviewClaims.Count();
+
+                if (indexPageOmbudVM.SelectedTimePeriodId == 1)
+                {
+                    DateTime oneWeek = DateTime.Now.AddDays(-7);
+                    decidedClaims = decidedClaims.Where(c => c.DecisionDate >= oneWeek);
+                    draftClaims = draftClaims.Where(c => c.CreationDate >= oneWeek);
+                    underReviewClaims = underReviewClaims.Where(c => c.SentInDate >= oneWeek);
+                    filterTextDecided += ", Beslutsdatum: Högst en vecka bakåt";
+                    filterTextDraft += ", Skapad datum: Högst en vecka bakåt";
+                    filterTextReview += ", Inskickad datum: Högst en vecka bakåt";
+                    filterTextDecided.Replace(" ", "&nbsp;");
+                    filterTextDraft.Replace(" ", "&nbsp;");
+                    filterTextReview.Replace(" ", "&nbsp;");
+                }
+                else if (indexPageOmbudVM.SelectedTimePeriodId == 2)
+                {
+                    DateTime oneMonth = DateTime.Now.AddMonths(-1);
+                    decidedClaims = decidedClaims.Where(c => c.DecisionDate >= oneMonth);
+                    draftClaims = draftClaims.Where(c => c.CreationDate >= oneMonth);
+                    underReviewClaims = underReviewClaims.Where(c => c.SentInDate >= oneMonth);
+                    filterTextDecided += ", Beslutsdatum: Högst en månad bakåt";
+                    filterTextDraft += ", Skapad datum: Högst en månad bakåt";
+                    filterTextReview += ", Inskickad datum: Högst en månad bakåt";
+                }
+
+                if ((indexPageOmbudVM.SelectedKeyId == 1 || indexPageOmbudVM.SelectedKeyId == 2 ||
+                    indexPageOmbudVM.SelectedKeyId == 3) && !string.IsNullOrWhiteSpace(indexPageOmbudVM.SearchString))
+                {
+                    decidedClaims = Search2(decidedClaims, indexPageOmbudVM.SearchString, indexPageOmbudVM.SelectedKeyId);
+                    draftClaims = Search2(draftClaims, indexPageOmbudVM.SearchString, indexPageOmbudVM.SelectedKeyId);
+                    underReviewClaims = Search2(underReviewClaims, indexPageOmbudVM.SearchString, indexPageOmbudVM.SelectedKeyId);
+                    switch (indexPageOmbudVM.SelectedKeyId)
+                    {
+                        case 1:
+                            filterTextDecided += ", Söknyckel: Referensnummer";
+                            filterTextDraft += ", Söknyckel: Referensnummer";
+                            filterTextReview += ", Söknyckel: Referensnummer";
+                            break;
+
+                        case 2:
+                            filterTextDecided += ", Söknyckel: Kundens personnummer";
+                            filterTextDraft += ", Söknyckel: Kundens personnummer";
+                            filterTextReview += ", Söknyckel: Kundens personnummer";
+                            break;
+
+                        case 3:
+                            filterTextDecided += ", Söknyckel: Assistentens personnummer";
+                            filterTextDraft += ", Söknyckel: Assistentens personnummer";
+                            filterTextReview += ", Söknyckel: Assistentens personnummer";
+                            break;
+
+                        default:
+                            break;
+                    }
+                    filterTextDecided += ", Söktext: " + indexPageOmbudVM.SearchString;
+                    filterTextDraft += ", Söktext: " + indexPageOmbudVM.SearchString;
+                    filterTextReview += ", Söktext: " + indexPageOmbudVM.SearchString;
+                }
+                else if ((indexPageOmbudVM.SelectedKeyId == 1 || indexPageOmbudVM.SelectedKeyId == 2 ||
+                        indexPageOmbudVM.SelectedKeyId == 3) && string.IsNullOrWhiteSpace(indexPageOmbudVM.SearchString))
+                {
+                    filterTextDecided += ", Söktext: Ingen";
+                    filterTextDraft += ", Söktext: Ingen";
+                    filterTextReview += ", Söktext: Ingen";
+                }
+
+                if (indexPageOmbudVM.MyClaims)
                 {
                     decidedClaims = decidedClaims.Where(c => c.OmbudEmail == me.Email);
                     draftClaims = draftClaims.Where(c => c.OmbudEmail == me.Email);
                     underReviewClaims = underReviewClaims.Where(c => c.OmbudEmail == me.Email);
+                    filterTextDecided += ", Mina ansökningar";
+                    filterTextDraft += ", Mina ansökningar";
+                    filterTextReview += ", Mina ansökningar";
                 }
-                else if (!string.IsNullOrWhiteSpace(searchString))
+
+                if (!string.IsNullOrWhiteSpace(filterTextDecided))
+                //this can be used as criteria for a filter to have been applied. The code below removes a superfluous comma character from the filtertext
                 {
-                    decidedClaims = Search(decidedClaims, searchString, searchBy);
-                    draftClaims = Search(draftClaims, searchString, searchBy);
-                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                    int firstComma = filterTextDecided.IndexOf(",");
+                    filterTextDecided = filterTextDecided.Substring(0, firstComma) + filterTextDecided.Substring(firstComma + 1);
+                    firstComma = filterTextDraft.IndexOf(",");
+                    filterTextDraft = filterTextDraft.Substring(0, firstComma) + filterTextDraft.Substring(firstComma + 1);
+                    firstComma = filterTextReview.IndexOf(",");
+                    filterTextReview = filterTextReview.Substring(0, firstComma) + filterTextReview.Substring(firstComma + 1);
                 }
+
+                numberOfDecidedFiltered = decidedClaims.Count();
+                numberOfDraftFiltered = draftClaims.Count();
+                numberOfReviewFiltered = underReviewClaims.Count();
+
+                indexPageOmbudVM.NumberOfDecided = numberOfDecided;
+                indexPageOmbudVM.NumberOfDraft = numberOfDraft;
+                indexPageOmbudVM.NumberOfReview = numberOfReview;
+
+                indexPageOmbudVM.NumberOfDecidedFiltered = numberOfDecidedFiltered;
+                indexPageOmbudVM.NumberOfDraftFiltered = numberOfDraftFiltered;
+                indexPageOmbudVM.NumberOfReviewFiltered = numberOfReviewFiltered;
 
                 indexPageOmbudVM.DecidedClaims = decidedClaims.ToList(); //Old "Rejected
                 indexPageOmbudVM.DraftClaims = draftClaims.ToList();
@@ -91,14 +211,49 @@ namespace Sjuklöner.Controllers
                 indexPageOmbudVM.AssistantsExist = true;
             }
 
+            indexPageOmbudVM.FilterTextDecided = filterTextDecided;
+            indexPageOmbudVM.FilterTextDraft = filterTextDraft;
+            indexPageOmbudVM.FilterTextReview = filterTextReview;
+
             return View("IndexPageOmbud", indexPageOmbudVM);
         }
 
         // GET: Claims
         [Authorize(Roles = "AdministrativeOfficial")]
-        public ActionResult IndexPageAdmOff(string searchString, string searchBy = "Referensnummer")
+        public ActionResult IndexPageAdmOff(IndexPageAdmOffVM indexPageAdmOffVM)
         {
-            IndexPageAdmOffVM indexPageAdmOffVM = new IndexPageAdmOffVM();
+            int numberOfDecided = 0;
+            int numberOfInbox = 0;
+            int numberOfReview = 0;
+
+            int numberOfDecidedFiltered = 0;
+            int numberOfInboxFiltered = 0;
+            int numberOfReviewFiltered = 0;
+
+            //Set the filter text that shows information about selected filter settings.
+            string filterTextDecided = "";
+            string filterTextInbox = "";
+            string filterTextReview = "";
+            if ((indexPageAdmOffVM.SelectedTimePeriodId != null && indexPageAdmOffVM.SelectedTimePeriodId != 0)
+                || (indexPageAdmOffVM.SelectedKeyId != null && indexPageAdmOffVM.SelectedKeyId != 0) || indexPageAdmOffVM.MyClaims || !string.IsNullOrWhiteSpace(indexPageAdmOffVM.SearchString))
+            {
+                filterTextDecided = "Bara ansökningar som uppfyller det valda filtret visas.";
+                filterTextInbox = "Bara ansökningar som uppfyller det valda filtret visas.";
+                filterTextReview = "Bara ansökningar som uppfyller det valda filtret visas.";
+            }
+
+            var timePeriodDdlString = new List<SelectListItem>();
+            timePeriodDdlString.Add(new SelectListItem() { Text = "En vecka bakåt", Value = "1" });
+            timePeriodDdlString.Add(new SelectListItem() { Text = "En månad bakåt", Value = "2" });
+            indexPageAdmOffVM.TimePeriods = timePeriodDdlString;
+
+            var keyDdlString = new List<SelectListItem>();
+            keyDdlString.Add(new SelectListItem() { Text = "Referensnummer", Value = "1" });
+            keyDdlString.Add(new SelectListItem() { Text = "Kundens personnummer", Value = "2" });
+            keyDdlString.Add(new SelectListItem() { Text = "Assistentens personnummer", Value = "3" });
+            keyDdlString.Add(new SelectListItem() { Text = "Ombudets efternamn", Value = "5" });
+            keyDdlString.Add(new SelectListItem() { Text = "Bolagsnamn", Value = "6" });
+            indexPageAdmOffVM.Keys = keyDdlString;
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
@@ -108,22 +263,135 @@ namespace Sjuklöner.Controllers
                 var decidedClaims = claims.Where(c => c.ClaimStatusId == 1);
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
                 var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6 || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita
-                if (searchBy == "Mine")
+
+                numberOfDecided = decidedClaims.Count();
+                numberOfInbox = inInboxClaims.Count();
+                numberOfReview = underReviewClaims.Count();
+
+                if (indexPageAdmOffVM.SelectedTimePeriodId == 1)
                 {
-                    decidedClaims = decidedClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
-                    inInboxClaims = inInboxClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
-                    underReviewClaims = underReviewClaims.Where(c => c.AdmOffName.Contains(me.FirstName) && c.AdmOffName.Contains(me.LastName));
+                    DateTime oneWeek = DateTime.Now.AddDays(-7);
+                    decidedClaims = decidedClaims.Where(c => c.DecisionDate >= oneWeek);
+                    inInboxClaims = inInboxClaims.Where(c => c.CreationDate >= oneWeek);
+                    underReviewClaims = underReviewClaims.Where(c => c.SentInDate >= oneWeek);
+                    filterTextDecided += ", Beslutsdatum: Högst en vecka bakåt";
+                    filterTextInbox += ", Skapad datum: Högst en vecka bakåt";
+                    filterTextReview += ", Inskickad datum: Högst en vecka bakåt";
+                    filterTextDecided.Replace(" ", "&nbsp;");
+                    filterTextInbox.Replace(" ", "&nbsp;");
+                    filterTextReview.Replace(" ", "&nbsp;");
                 }
-                else if (!string.IsNullOrWhiteSpace(searchString))
+                else if (indexPageAdmOffVM.SelectedTimePeriodId == 2)
                 {
-                    decidedClaims = Search(decidedClaims, searchString, searchBy);
-                    inInboxClaims = Search(inInboxClaims, searchString, searchBy);
-                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                    DateTime oneMonth = DateTime.Now.AddMonths(-1);
+                    decidedClaims = decidedClaims.Where(c => c.DecisionDate >= oneMonth);
+                    inInboxClaims = inInboxClaims.Where(c => c.CreationDate >= oneMonth);
+                    underReviewClaims = underReviewClaims.Where(c => c.SentInDate >= oneMonth);
+                    filterTextDecided += ", Beslutsdatum: Högst en månad bakåt";
+                    filterTextInbox += ", Skapad datum: Högst en månad bakåt";
+                    filterTextReview += ", Inskickad datum: Högst en månad bakåt";
                 }
+
+                if ((indexPageAdmOffVM.SelectedKeyId == 1 || indexPageAdmOffVM.SelectedKeyId == 2 ||
+                    indexPageAdmOffVM.SelectedKeyId == 3 || indexPageAdmOffVM.SelectedKeyId == 5 ||
+                    indexPageAdmOffVM.SelectedKeyId == 6) && !string.IsNullOrWhiteSpace(indexPageAdmOffVM.SearchString))
+                {
+                    decidedClaims = Search2(decidedClaims, indexPageAdmOffVM.SearchString, indexPageAdmOffVM.SelectedKeyId);
+                    inInboxClaims = Search2(inInboxClaims, indexPageAdmOffVM.SearchString, indexPageAdmOffVM.SelectedKeyId);
+                    underReviewClaims = Search2(underReviewClaims, indexPageAdmOffVM.SearchString, indexPageAdmOffVM.SelectedKeyId);
+                    switch (indexPageAdmOffVM.SelectedKeyId)
+                    {
+                        case 1:
+                            filterTextDecided += ", Söknyckel: Referensnummer";
+                            filterTextInbox += ", Söknyckel: Referensnummer";
+                            filterTextReview += ", Söknyckel: Referensnummer";
+                            break;
+
+                        case 2:
+                            filterTextDecided += ", Söknyckel: Kundens personnummer";
+                            filterTextInbox += ", Söknyckel: Kundens personnummer";
+                            filterTextReview += ", Söknyckel: Kundens personnummer";
+                            break;
+
+                        case 3:
+                            filterTextDecided += ", Söknyckel: Assistentens personnummer";
+                            filterTextInbox += ", Söknyckel: Assistentens personnummer";
+                            filterTextReview += ", Söknyckel: Assistentens personnummer";
+                            break;
+
+                        case 5:
+                            filterTextDecided += ", Söknyckel: Ombudets efternamn";
+                            filterTextInbox += ", Söknyckel: Ombudets efternamn";
+                            filterTextReview += ", Söknyckel: Ombudets efternamn";
+                            break;
+
+                        case 6:
+                            filterTextDecided += ", Söknyckel: Bolagsnamn";
+                            filterTextInbox += ", Söknyckel: Bolagsnamn";
+                            filterTextReview += ", Söknyckel: Bolagsnamn";
+                            break;
+
+                        default:
+                            break;
+                    }
+                    filterTextDecided += ", Söktext: " + indexPageAdmOffVM.SearchString;
+                    filterTextInbox += ", Söktext: " + indexPageAdmOffVM.SearchString;
+                    filterTextReview += ", Söktext: " + indexPageAdmOffVM.SearchString;
+                }
+                else if ((indexPageAdmOffVM.SelectedKeyId == 1 || indexPageAdmOffVM.SelectedKeyId == 2 ||
+                    indexPageAdmOffVM.SelectedKeyId == 3 || indexPageAdmOffVM.SelectedKeyId == 5 ||
+                    indexPageAdmOffVM.SelectedKeyId == 6) && string.IsNullOrWhiteSpace(indexPageAdmOffVM.SearchString))
+                {
+                    filterTextDecided += ", Söktext: Ingen";
+                    filterTextInbox += ", Söktext: Ingen";
+                    filterTextReview += ", Söktext: Ingen";
+                }
+
+                if (indexPageAdmOffVM.MyClaims)
+                {
+                    decidedClaims = decidedClaims.Where(c => c.AdmOffId == me.Id);
+                    inInboxClaims = inInboxClaims.Where(c => c.AdmOffId == me.Id);
+                    underReviewClaims = underReviewClaims.Where(c => c.AdmOffId == me.Id);
+                    filterTextDecided += ", Mina ansökningar";
+                    filterTextInbox += ", Mina ansökningar";
+                    filterTextReview += ", Mina ansökningar";
+                }
+
+                if (!string.IsNullOrWhiteSpace(filterTextDecided))
+                //this can be used as criteria for a filter to have been applied. The code below removes a superfluous comma character from the filtertext
+                {
+                    int firstComma = filterTextDecided.IndexOf(",");
+                    filterTextDecided = filterTextDecided.Substring(0, firstComma) + filterTextDecided.Substring(firstComma + 1);
+                    firstComma = filterTextInbox.IndexOf(",");
+                    filterTextInbox = filterTextInbox.Substring(0, firstComma) + filterTextInbox.Substring(firstComma + 1);
+                    firstComma = filterTextReview.IndexOf(",");
+                    filterTextReview = filterTextReview.Substring(0, firstComma) + filterTextReview.Substring(firstComma + 1);
+                }
+
+                numberOfDecidedFiltered = decidedClaims.Count();
+                numberOfInboxFiltered = inInboxClaims.Count();
+                numberOfReviewFiltered = underReviewClaims.Count();
+
+                indexPageAdmOffVM.NumberOfDecided = numberOfDecided;
+                indexPageAdmOffVM.NumberOfInbox = numberOfInbox;
+                indexPageAdmOffVM.NumberOfReview = numberOfReview;
+
+                indexPageAdmOffVM.NumberOfDecidedFiltered = numberOfDecidedFiltered;
+                indexPageAdmOffVM.NumberOfInboxFiltered = numberOfInboxFiltered;
+                indexPageAdmOffVM.NumberOfReviewFiltered = numberOfReviewFiltered;
+
+                indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
+                indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
+                indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
+
                 indexPageAdmOffVM.DecidedClaims = decidedClaims.ToList();
                 indexPageAdmOffVM.InInboxClaims = inInboxClaims.ToList();
                 indexPageAdmOffVM.UnderReviewClaims = underReviewClaims.ToList();
             }
+
+            indexPageAdmOffVM.FilterTextDecided = filterTextDecided;
+            indexPageAdmOffVM.FilterTextInbox = filterTextInbox;
+            indexPageAdmOffVM.FilterTextReview = filterTextReview;
 
             return View("IndexPageAdmOff", indexPageAdmOffVM);
         }
@@ -131,9 +399,42 @@ namespace Sjuklöner.Controllers
 
         // GET: Claims
         [Authorize(Roles = "Admin")]
-        public ActionResult IndexPageAdmin(string searchString, string searchBy = "Referensnummer")
+        public ActionResult IndexPageAdmin(IndexPageAdmOffVM indexPageAdmin)
         {
-            IndexPageAdmOffVM indexPageAdmin = new IndexPageAdmOffVM();
+            int numberOfDecided = 0;
+            int numberOfInbox = 0;
+            int numberOfReview = 0;
+
+            int numberOfDecidedFiltered = 0;
+            int numberOfInboxFiltered = 0;
+            int numberOfReviewFiltered = 0;
+
+            //Set the filter text that shows information about selected filter settings.
+            string filterTextDecided = "";
+            string filterTextInbox = "";
+            string filterTextReview = "";
+
+            if ((indexPageAdmin.SelectedTimePeriodId != null && indexPageAdmin.SelectedTimePeriodId != 0)
+                || (indexPageAdmin.SelectedKeyId != null && indexPageAdmin.SelectedKeyId != 0) || !string.IsNullOrWhiteSpace(indexPageAdmin.SearchString))
+            {
+                filterTextDecided = "Bara ansökningar som uppfyller det valda filtret visas.";
+                filterTextInbox = "Bara ansökningar som uppfyller det valda filtret visas.";
+                filterTextReview = "Bara ansökningar som uppfyller det valda filtret visas.";
+            }
+
+            var timePeriodDdlString = new List<SelectListItem>();
+            timePeriodDdlString.Add(new SelectListItem() { Text = "En vecka bakåt", Value = "1" });
+            timePeriodDdlString.Add(new SelectListItem() { Text = "En månad bakåt", Value = "2" });
+            indexPageAdmin.TimePeriods = timePeriodDdlString;
+
+            var keyDdlString = new List<SelectListItem>();
+            keyDdlString.Add(new SelectListItem() { Text = "Referensnummer", Value = "1" });
+            keyDdlString.Add(new SelectListItem() { Text = "Kundens personnummer", Value = "2" });
+            keyDdlString.Add(new SelectListItem() { Text = "Assistentens personnummer", Value = "3" });
+            keyDdlString.Add(new SelectListItem() { Text = "Handläggarens efternamn", Value = "4" });
+            keyDdlString.Add(new SelectListItem() { Text = "Ombudets efternamn", Value = "5" });
+            keyDdlString.Add(new SelectListItem() { Text = "Bolagsnamn", Value = "6" });
+            indexPageAdmin.Keys = keyDdlString;
 
             var me = db.Users.Find(User.Identity.GetUserId());
 
@@ -144,53 +445,193 @@ namespace Sjuklöner.Controllers
                 var inInboxClaims = claims.Where(c => c.ClaimStatusId == 5);
                 var underReviewClaims = claims.Where(c => (c.ClaimStatusId == 6 || c.ClaimStatusId == 7)); //Claims that have been transferred to Procapita               
 
-                if (!string.IsNullOrWhiteSpace(searchString))
+                numberOfDecided = decidedClaims.Count();
+                numberOfInbox = inInboxClaims.Count();
+                numberOfReview = underReviewClaims.Count();
+
+                if (indexPageAdmin.SelectedTimePeriodId == 1)
                 {
-                    decidedClaims = Search(decidedClaims, searchString, searchBy);
-                    inInboxClaims = Search(inInboxClaims, searchString, searchBy);
-                    underReviewClaims = Search(underReviewClaims, searchString, searchBy);
+                    DateTime oneWeek = DateTime.Now.AddDays(-7);
+                    decidedClaims = decidedClaims.Where(c => c.DecisionDate >= oneWeek);
+                    inInboxClaims = inInboxClaims.Where(c => c.CreationDate >= oneWeek);
+                    underReviewClaims = underReviewClaims.Where(c => c.SentInDate >= oneWeek);
+                    filterTextDecided += ", Beslutsdatum: Högst en vecka bakåt";
+                    filterTextInbox += ", Skapad datum: Högst en vecka bakåt";
+                    filterTextReview += ", Inskickad datum: Högst en vecka bakåt";
+                    filterTextDecided.Replace(" ", "&nbsp;");
+                    filterTextInbox.Replace(" ", "&nbsp;");
+                    filterTextReview.Replace(" ", "&nbsp;");
                 }
+                else if (indexPageAdmin.SelectedTimePeriodId == 2)
+                {
+                    DateTime oneMonth = DateTime.Now.AddMonths(-1);
+                    decidedClaims = decidedClaims.Where(c => c.DecisionDate >= oneMonth);
+                    inInboxClaims = inInboxClaims.Where(c => c.CreationDate >= oneMonth);
+                    underReviewClaims = underReviewClaims.Where(c => c.SentInDate >= oneMonth);
+                    filterTextDecided += ", Beslutsdatum: Högst en månad bakåt";
+                    filterTextInbox += ", Skapad datum: Högst en månad bakåt";
+                    filterTextReview += ", Inskickad datum: Högst en månad bakåt";
+                }
+
+                if ((indexPageAdmin.SelectedKeyId == 1 || indexPageAdmin.SelectedKeyId == 2 ||
+                    indexPageAdmin.SelectedKeyId == 3 || indexPageAdmin.SelectedKeyId == 5 ||
+                    indexPageAdmin.SelectedKeyId == 6) && !string.IsNullOrWhiteSpace(indexPageAdmin.SearchString))
+                {
+                    decidedClaims = Search2(decidedClaims, indexPageAdmin.SearchString, indexPageAdmin.SelectedKeyId);
+                    inInboxClaims = Search2(inInboxClaims, indexPageAdmin.SearchString, indexPageAdmin.SelectedKeyId);
+                    underReviewClaims = Search2(underReviewClaims, indexPageAdmin.SearchString, indexPageAdmin.SelectedKeyId);
+                    switch (indexPageAdmin.SelectedKeyId)
+                    {
+                        case 1:
+                            filterTextDecided += ", Söknyckel: Referensnummer";
+                            filterTextInbox += ", Söknyckel: Referensnummer";
+                            filterTextReview += ", Söknyckel: Referensnummer";
+                            break;
+
+                        case 2:
+                            filterTextDecided += ", Söknyckel: Kundens personnummer";
+                            filterTextInbox += ", Söknyckel: Kundens personnummer";
+                            filterTextReview += ", Söknyckel: Kundens personnummer";
+                            break;
+
+                        case 3:
+                            filterTextDecided += ", Söknyckel: Assistentens personnummer";
+                            filterTextInbox += ", Söknyckel: Assistentens personnummer";
+                            filterTextReview += ", Söknyckel: Assistentens personnummer";
+                            break;
+
+                        case 5:
+                            filterTextDecided += ", Söknyckel: Ombudets efternamn";
+                            filterTextInbox += ", Söknyckel: Ombudets efternamn";
+                            filterTextReview += ", Söknyckel: Ombudets efternamn";
+                            break;
+
+                        case 6:
+                            filterTextDecided += ", Söknyckel: Bolagsnamn";
+                            filterTextInbox += ", Söknyckel: Bolagsnamn";
+                            filterTextReview += ", Söknyckel: Bolagsnamn";
+                            break;
+
+                        default:
+                            break;
+                    }
+                    filterTextDecided += ", Söktext: " + indexPageAdmin.SearchString;
+                    filterTextInbox += ", Söktext: " + indexPageAdmin.SearchString;
+                    filterTextReview += ", Söktext: " + indexPageAdmin.SearchString;
+                }
+                else if ((indexPageAdmin.SelectedKeyId == 1 || indexPageAdmin.SelectedKeyId == 2 ||
+                    indexPageAdmin.SelectedKeyId == 3 || indexPageAdmin.SelectedKeyId == 5 ||
+                    indexPageAdmin.SelectedKeyId == 6) && string.IsNullOrWhiteSpace(indexPageAdmin.SearchString))
+                {
+                    filterTextDecided += ", Söktext: Ingen";
+                    filterTextInbox += ", Söktext: Ingen";
+                    filterTextReview += ", Söktext: Ingen";
+                }
+
+                if (!string.IsNullOrWhiteSpace(filterTextDecided))
+                //this can be used as criteria for a filter to have been applied. The code below removes a superfluous comma character from the filtertext
+                {
+                    int firstComma = filterTextDecided.IndexOf(",");
+                    filterTextDecided = filterTextDecided.Substring(0, firstComma) + filterTextDecided.Substring(firstComma + 1);
+                    firstComma = filterTextInbox.IndexOf(",");
+                    filterTextInbox = filterTextInbox.Substring(0, firstComma) + filterTextInbox.Substring(firstComma + 1);
+                    firstComma = filterTextReview.IndexOf(",");
+                    filterTextReview = filterTextReview.Substring(0, firstComma) + filterTextReview.Substring(firstComma + 1);
+                }
+
+                numberOfDecidedFiltered = decidedClaims.Count();
+                numberOfInboxFiltered = inInboxClaims.Count();
+                numberOfReviewFiltered = underReviewClaims.Count();
+
+                indexPageAdmin.NumberOfDecided = numberOfDecided;
+                indexPageAdmin.NumberOfInbox = numberOfInbox;
+                indexPageAdmin.NumberOfReview = numberOfReview;
+
+                indexPageAdmin.NumberOfDecidedFiltered = numberOfDecidedFiltered;
+                indexPageAdmin.NumberOfInboxFiltered = numberOfInboxFiltered;
+                indexPageAdmin.NumberOfReviewFiltered = numberOfReviewFiltered;
+
+                indexPageAdmin.DecidedClaims = decidedClaims.ToList();
+                indexPageAdmin.InInboxClaims = inInboxClaims.ToList();
+                indexPageAdmin.UnderReviewClaims = underReviewClaims.ToList();
+
                 indexPageAdmin.DecidedClaims = decidedClaims.ToList();
                 indexPageAdmin.InInboxClaims = inInboxClaims.ToList();
                 indexPageAdmin.UnderReviewClaims = underReviewClaims.ToList();
             }
+            indexPageAdmin.FilterTextDecided = filterTextDecided;
+            indexPageAdmin.FilterTextInbox = filterTextInbox;
+            indexPageAdmin.FilterTextReview = filterTextReview;
 
             return View("IndexPageAdmin", indexPageAdmin);
         }
 
-        private IEnumerable<Claim> Search(IEnumerable<Claim> Claims, string searchString, string searchBy)
+        private IEnumerable<Claim> Search2(IEnumerable<Claim> Claims, string searchString, int? searchBy)
         {
-            if (searchBy == "Referensnummer")
+            if (searchBy == 1)
                 Claims = Claims.Where(c => c.ReferenceNumber.Contains(searchString));
-            else if (searchBy == "CSSN")    // Sökning på Kundens personnummer
+            else if (searchBy == 2)    // Sökning på Kundens personnummer
             {
                 searchString = searchString.Replace("-", "");
                 if (searchString.Length > 10)
                     searchString = searchString.Substring(2);
                 Claims = Claims.Where(c => c.CustomerSSN.Replace("-", "").Contains(searchString));
             }
-            else if (searchBy == "ASSN")    // Sökning på Assistentens personnummer
+            else if (searchBy == 3)    // Sökning på Assistentens personnummer
             {
                 searchString = searchString.Replace("-", "");
                 if (searchString.Length > 10)
                     searchString = searchString.Substring(1);
                 Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
             }
-            else if (searchBy == "Handl")             // Sökning på Handläggarens efternamn
+            else if (searchBy == 4)             // Sökning på Handläggarens efternamn
             {
                 Claims = Claims.Where(c => c.AdmOffName.Contains(searchString));
             }
-            else if (searchBy == "Ombud")             // Sökning på Ombudets efternamn
+            else if (searchBy == 5)             // Sökning på Ombudets efternamn
             {
                 Claims = Claims.Where(c => c.OmbudLastName.Contains(searchString));
             }
-            else if (searchBy == "Bolag")             // Sökning på Bolagsnamn
+            else if (searchBy == 6)             // Sökning på Bolagsnamn
             {
                 Claims = Claims.Where(c => c.CareCompany.CompanyName.Contains(searchString));
             }
-
             return Claims;
         }
+
+        //private IEnumerable<Claim> Search(IEnumerable<Claim> Claims, string searchString, string searchBy)
+        //{
+        //    if (searchBy == "Referensnummer")
+        //        Claims = Claims.Where(c => c.ReferenceNumber.Contains(searchString));
+        //    else if (searchBy == "CSSN")    // Sökning på Kundens personnummer
+        //    {
+        //        searchString = searchString.Replace("-", "");
+        //        if (searchString.Length > 10)
+        //            searchString = searchString.Substring(2);
+        //        Claims = Claims.Where(c => c.CustomerSSN.Replace("-", "").Contains(searchString));
+        //    }
+        //    else if (searchBy == "ASSN")    // Sökning på Assistentens personnummer
+        //    {
+        //        searchString = searchString.Replace("-", "");
+        //        if (searchString.Length > 10)
+        //            searchString = searchString.Substring(1);
+        //        Claims = Claims.Where(c => c.RegAssistantSSN.Replace("-", "").Contains(searchString));
+        //    }
+        //    else if (searchBy == "Handl")             // Sökning på Handläggarens efternamn
+        //    {
+        //        Claims = Claims.Where(c => c.AdmOffName.Contains(searchString));
+        //    }
+        //    else if (searchBy == "Ombud")             // Sökning på Ombudets efternamn
+        //    {
+        //        Claims = Claims.Where(c => c.OmbudLastName.Contains(searchString));
+        //    }
+        //    else if (searchBy == "Bolag")             // Sökning på Bolagsnamn
+        //    {
+        //        Claims = Claims.Where(c => c.CareCompany.CompanyName.Contains(searchString));
+        //    }
+
+        //    return Claims;
+        //}
 
         /*
         // GET: Claims/Details/5
@@ -2417,7 +2858,8 @@ namespace Sjuklöner.Controllers
                             claim.SentInDate = DateTime.Now;
 
                             //Set default values for ivo and Procapita checks
-                            claim.IVOCheck = false;
+                            claim.IVOCheck = true; //When IVO check is activated again, the property IVOCheck needs to be defaulted to false again!
+                            //claim.IVOCheck = false;
                             claim.IVOCheckMsg = "Kontroll ej utförd";
                             claim.ProxyCheck = false;
                             claim.ProxyCheckMsg = "Kontroll ej utförd";
@@ -2872,11 +3314,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "1")
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -2895,6 +3337,9 @@ namespace Sjuklöner.Controllers
                 //Results of transfers
                 recommendationVM.BasisForDecision = claim.BasisForDecision;
                 recommendationVM.BasisForDecisionMsg = claim.BasisForDecisionMsg;
+
+
+
 
                 recommendationVM.Decision = claim.Decision;
                 recommendationVM.DecisionMsg = claim.DecisionMsg;
@@ -2917,6 +3362,7 @@ namespace Sjuklöner.Controllers
                 if (claim.ClaimStatusId == 1)
                 {
                     recommendationVM.DecisionMsg = "Beslut upptäckt i Procapita " + claim.DecisionTransferTimeStamp.Date.ToShortDateString() + " kl " + claim.DecisionTransferTimeStamp.ToShortTimeString() + ".";
+                    recommendationVM.DecisionContent = claim.DecisionContent;
                 }
 
 
@@ -3229,11 +3675,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "1")
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -3343,10 +3789,13 @@ namespace Sjuklöner.Controllers
 
 
                 string[] fkAttachmentMsgSubAssistantsAsString = new string[20];
-                fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
-
                 string[] fkAttachmentBoolSubAssistantsAsString = new string[20];
-                fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+
+                if (claim.NumberOfSubAssistants > 1)
+                {
+                    fkAttachmentMsgSubAssistantsAsString = claim.FKSubAssistantCheckMsgConcat.Split('£').ToArray();
+                    fkAttachmentBoolSubAssistantsAsString = claim.FKSubAssistantCheckBoolConcat.Split('£').ToArray();
+                }
 
                 string fkAttachmentMsgSubAssistantConcat = "";
                 string fkAttachmentBoolSubAssistantConcat = "";
@@ -3354,8 +3803,8 @@ namespace Sjuklöner.Controllers
 
                 for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                 {
-                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
-                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "£";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "£";
                 }
 
                 //new code
@@ -3809,11 +4258,11 @@ namespace Sjuklöner.Controllers
 
                     for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                     {
-                        if (fkAttachmentSubAssistantsAsString[i] == "1")
+                        if (fkAttachmentSubAssistantsAsString[i] == "true")
                         {
                             fkAttachmentSubAssistants[i] = true;
                         }
-                        else if (fkAttachmentSubAssistantsAsString[i] == "0")
+                        else if (fkAttachmentSubAssistantsAsString[i] == "false")
                         {
                             fkAttachmentSubAssistants[i] = false;
                         }
@@ -4535,8 +4984,8 @@ namespace Sjuklöner.Controllers
 
                 for (int i = 0; i < claim.NumberOfSubAssistants - 1; i++)
                 {
-                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "+";
-                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "+";
+                    fkAttachmentMsgSubAssistantConcat += fkAttachmentMsgSubAssistantsAsString[i] + "£";
+                    fkAttachmentBoolSubAssistantConcat += fkAttachmentBoolSubAssistantsAsString[i] + "£";
                 }
 
                 claim.TransferToProcapitaString = "transferinfo" + claim.ReferenceNumber + "+" + claim.FirstClaimDateAsString + "+" + claim.LastClaimDateAsString + "+" + claim.SentInDateAsString + "+" + claim.RejectReason + "+" +
